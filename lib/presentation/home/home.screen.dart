@@ -27,7 +27,7 @@ class HomeScreen extends GetView<HomeController> {
             spacing: 15.0.h,
             children: [
               Image.asset(
-                AppImages.logo,
+                AppAssets.logo,
                 fit: BoxFit.contain,
                 height: 269.h,
                 width: 178.w,
@@ -53,7 +53,7 @@ class HomeScreen extends GetView<HomeController> {
                 borderColor: Colors.grey.shade900,
                 borderWidth: 1.0.w,
                 onPressed: (){},
-                iconPath: AppImages.googleLogo,
+                iconPath: AppAssets.googleLogo,
               ),
               CustomBtn(
                 btnBackgroundColor: Colors.black,
@@ -61,7 +61,7 @@ class HomeScreen extends GetView<HomeController> {
                 borderColor: Colors.grey.shade900,
                 borderWidth: 1.0.w,
                 onPressed: (){},
-                iconPath: AppImages.appleLogo,
+                iconPath: AppAssets.appleLogo,
               ),
             ],
           ),

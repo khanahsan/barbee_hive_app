@@ -1,4 +1,15 @@
-class AppImages {
+class AppAssets {
+
+  //~~~~~~~~~~~~~~~~Base Urls~~~~~~~~~~~~~~~~~~~~~~~~~//
+  static String imagesPath = "assets/images";
+  static String iconPath = "assets/icons";
+
+
+  //~~~~~~~~~~~~~~~~Icons~~~~~~~~~~~~~~~~~~~~~~~~~//
+
+
+  static String menuIcon = '$iconPath/menu_icon.svg';
+
   static const String logo = 'assets/images/barbee_logo.png';
   static const String appleLogo = 'assets/images/apple_logo.png';
   static const String googleLogo = 'assets/images/google_logo.png';

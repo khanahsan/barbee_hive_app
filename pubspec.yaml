@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   get: ^4.7.2
   my_responsive_ui: ^1.0.3+4
+  flutter_svg: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +57,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/icons/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -78,10 +80,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

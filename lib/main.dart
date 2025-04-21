@@ -9,9 +9,7 @@ import 'infrastructure/navigation/routes.dart';
 
 void main() async {
   var initialRoute = await Routes.initialRoute;
-  runApp(
-      Main(initialRoute)
-  );
+  runApp(Main(initialRoute));
 }
 
 class Main extends StatelessWidget {
@@ -21,10 +19,18 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveInitializer (
+    return ResponsiveInitializer(
       baseHeight: 956,
       baseWidth: 440,
       child: GetMaterialApp(
+        theme: ThemeData(
+          fontFamily: 'Inter',
+          textTheme: TextTheme(
+            bodyLarge: TextStyle(fontSize: 16.0),
+            titleLarge: TextStyle(fontWeight: FontWeight.bold),
+            titleSmall: TextStyle(fontSize: 16.0),
+          ),
+        ),
         initialRoute: initialRoute,
         getPages: Nav.routes,
         initialBinding: InitialBindings(),

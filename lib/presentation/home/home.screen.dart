@@ -1,4 +1,5 @@
 
+import 'package:barbee_hive_app/presentation/sign_up_view/views/select_role_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -43,8 +44,8 @@ class HomeScreen extends GetView<HomeController> {
                 borderWidth: 1.0.w,
                 onPressed: (){
                   //Get.to(SignUpViewScreen());
-                  //Get.to(() => SignUpViewScreen());
-                  Get.toNamed(Routes.SIGN_UP_VIEW);
+                  Get.to(() => SelectRoleView());
+                 // Get.toNamed(Routes.SIGN_UP_VIEW);
                 },
               ),
               CustomBtn(

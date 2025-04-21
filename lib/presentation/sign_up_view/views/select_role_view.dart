@@ -35,7 +35,7 @@ class SelectRoleView extends StatelessWidget {
           children: [
             // BarBee Logo
             Image.asset(
-              AppImages.logo, // Your BarBee logo with hexagonal border
+              AppAssets.logo, // Your BarBee logo with hexagonal border
               width: 200.w,
               //height: 120.h,
             ),

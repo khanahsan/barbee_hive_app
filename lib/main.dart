@@ -34,6 +34,8 @@ class Main extends StatelessWidget {
         initialRoute: initialRoute,
         getPages: Nav.routes,
         initialBinding: InitialBindings(),
+        transitionDuration: const Duration(milliseconds: 500),
+
       ),
     );
   }

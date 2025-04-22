@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color primary = Color(0xffFF8600);
   static const Color grey = Color(0xff8a8a8a);
+  static const Color boxBorder = Color(0xff2A2424);
+  static const Color boxBackground = Color(0xff171717);
   static const Color categoryLabel = Color(0xFF868889);
   static const Color filterBGColor = Color(0xFFF9F9F9);
   static const Color customBoxBorderColor = Color(0xFF95989A);

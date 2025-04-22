@@ -10,9 +10,11 @@ class AppAssets {
 
   static String menuIcon = '$iconPath/menu_icon.svg';
 
-  static const String logo = 'assets/images/barbee_logo.png';
-  static const String appleLogo = 'assets/images/apple_logo.png';
-  static const String googleLogo = 'assets/images/google_logo.png';
+  static String logo = '$imagesPath/barbee_logo.png';
+  static String appleLogo = '$imagesPath/apple_logo.png';
+  static String googleLogo = '$imagesPath/google_logo.png';
+  static String employerLogo = '$imagesPath/employer_logo.png';
+  static String employeeLogo = '$imagesPath/employee_logo.png';
 
   static const String whiteLogoSvg = 'assets/svg/white_logo.svg';
   static const String colorLogoSvg = 'assets/svg/color_logo.svg';

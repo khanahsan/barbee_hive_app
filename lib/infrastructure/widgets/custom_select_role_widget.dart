@@ -7,8 +7,9 @@ import 'custom_button.dart';
 
 class CustomSelectRoleWidget extends StatelessWidget {
   final String? iconPath;
+  final String? btnText;
   final VoidCallback onTap;
-  const CustomSelectRoleWidget({super.key,required this.iconPath, required this.onTap});
+  const CustomSelectRoleWidget({super.key,required this.iconPath, required this.onTap, required this.btnText});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class CustomSelectRoleWidget extends StatelessWidget {
                 width: 70.w,
                 height: 70.h,
               ),
-              CustomButton(btnTitle: 'Employee', onPressed: (){}, width: 95.0.w, height: 22.0.h, borderRadius: 4.0.r,)
+              CustomButton(btnTitle: btnText!, onPressed: (){}, width: 95.0.w, height: 22.0.h, borderRadius: 4.0.r,)
             ],
           ),
         ),

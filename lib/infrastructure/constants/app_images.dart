@@ -17,6 +17,19 @@ class AppAssets {
   static String googleLogo = '$imagesPath/google_logo.png';
   static String employerLogo = '$imagesPath/employer_logo.png';
   static String employeeLogo = '$imagesPath/employee_logo.png';
+  static String calenderLogo = '$imagesPath/calender_logo.png';
+  static String cameraLogo = '$imagesPath/camera_logo.png';
+  static String emailLogo = '$imagesPath/email_logo.png';
+  static String experienceLogo = '$imagesPath/experience_logo.png';
+  static String genderLogo = '$imagesPath/gender_logo.png';
+  static String heightLogo = '$imagesPath/height_logo.png';
+  static String passwordLogo = '$imagesPath/password_logo.png';
+  static String userLogo = '$imagesPath/user_logo.png';
+  static String nameLogo = '$imagesPath/name_logo.png';
+
+  static String profileImage = '$imagesPath/profile_image.jpg';
+  static String sampleImage = '$imagesPath/sample_image.jpg';
+  static String sampleImage2 = '$imagesPath/sample_image2.jpg';
 
   static const String whiteLogoSvg = 'assets/svg/white_logo.svg';
   static const String colorLogoSvg = 'assets/svg/color_logo.svg';

@@ -37,7 +37,7 @@ dependencies:
   get: ^4.7.2
   my_responsive_ui: ^1.0.3+4
   flutter_svg: ^2.1.0
-  carousel_slider: ^5.0.0
+  dotted_border: ^2.1.0
 
 dev_dependencies:
   flutter_test:

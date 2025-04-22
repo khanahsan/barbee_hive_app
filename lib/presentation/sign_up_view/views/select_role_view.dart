@@ -75,9 +75,15 @@ class SelectRoleView extends StatelessWidget {
                             CustomSelectRoleWidget(iconPath: AppAssets.employeeLogo,
                               onTap: (){
                               Get.toNamed(Routes.SIGN_UP_VIEW);
-                              },
+                              }, btnText: 'Employee',
                             ),
-                            CustomSelectRoleWidget(iconPath: AppAssets.employerLogo, onTap: (){}),
+                            CustomSelectRoleWidget(
+                              iconPath: AppAssets.employerLogo,
+                              onTap: (){
+                                Get.toNamed(Routes.SIGN_UP_EMPLOYER);
+                              },
+                              btnText: 'Employer',
+                            ),
                           ],
                         )
                       ],

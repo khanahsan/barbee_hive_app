@@ -23,6 +23,7 @@ class Main extends StatelessWidget {
       baseHeight: 956,
       baseWidth: 440,
       child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: 'Inter',
           textTheme: TextTheme(

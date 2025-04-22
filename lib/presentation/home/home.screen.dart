@@ -10,8 +10,6 @@ import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/navigation/routes.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
-import '../../infrastructure/widgets/custom_text_btn.dart';
-import '../sign_up_view/sign_up_view.screen.dart';
 import 'controllers/home.controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
@@ -45,7 +43,7 @@ class HomeScreen extends GetView<HomeController> {
                 onPressed: (){
                   //Get.to(SignUpViewScreen());
                   Get.to(() => SelectRoleView());
-                 // Get.toNamed(Routes.SIGN_UP_VIEW);
+                 // Get.toNamed(Routes.SELECT_ROLE_VIEW);
                 },
               ),
               CustomBtn(

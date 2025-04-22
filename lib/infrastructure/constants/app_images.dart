@@ -11,6 +11,10 @@ class AppAssets {
   static String menuIcon = '$iconPath/menu_icon.svg';
   static String bellIcon = '$iconPath/bell_icon.svg';
   static String filterIcon = '$iconPath/filter_icon.svg';
+  static String beeIcon = '$iconPath/bee_icon.svg';
+  static String chatIcon = '$iconPath/chat_icon.svg';
+  static String findIcon = '$iconPath/find_icon.svg';
+  static String crownIcon = '$iconPath/crown_icon.svg';
 
   static String logo = '$imagesPath/barbee_logo.png';
   static String appleLogo = '$imagesPath/apple_logo.png';

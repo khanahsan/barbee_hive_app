@@ -1,7 +1,7 @@
 class Routes {
   static Future<String> get initialRoute async {
     // TODO: implement method
-    return DASHBOARD;
+    return MAIN;
   }
 
   static const AUTH = '/auth';
@@ -11,4 +11,5 @@ class Routes {
   static const SELECT_ROLE_VIEW = '/select_role_view';
   static const DASHBOARD = '/dashboard';
   static const SIGN_UP_EMPLOYER = '/sign_up_employer';
+  static const MAIN = '/main';
 }

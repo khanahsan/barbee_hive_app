@@ -1,5 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_binding.dart';
 import 'package:barbee_hive_app/presentation/dashboard/dashboard_screen.dart';
+import 'package:barbee_hive_app/presentation/main_screen.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/sign_up_employer_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -59,6 +60,11 @@ class Nav {
     GetPage(
       name: Routes.SIGN_UP_EMPLOYER,
       page: () => const SignUpEmployerScreen(),
+      binding: InitialBindings(),
+    ),
+    GetPage(
+      name: Routes.MAIN,
+      page: () => const MainScreen(),
       binding: InitialBindings(),
     ),
   ];

@@ -6,13 +6,20 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
+import '../../infrastructure/widgets/cutom_bottom_nav_bar.dart';
 import '../../infrastructure/widgets/hexagon_clipper.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
   @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
   Widget build(BuildContext context) {
+
 
     final List<String> imagePaths = [
       AppAssets.sampleImage,
@@ -21,18 +28,21 @@ class DashboardScreen extends StatelessWidget {
       AppAssets.sampleImage2,
     ];
 
+
     return Scaffold(
       appBar: appBarSection(context),
       backgroundColor: AppColors.black,
 
-      body: Column(
-        spacing: 30.h,
-        children: [
-          FadingImageCarousel(imagePaths: imagePaths),
-          B2BSection(context),
-          hiveSection(context),
-        ],
-      ).paddingSymmetric(horizontal: 15.w),
+      body: SingleChildScrollView(
+        child: Column(
+          spacing: 30.h,
+          children: [
+            FadingImageCarousel(imagePaths: imagePaths),
+            B2BSection(context),
+            hiveSection(context),
+          ],
+        ).paddingSymmetric(horizontal: 15.w, vertical: 20.h),
+      ),
     );
   }
 
@@ -53,7 +63,7 @@ class DashboardScreen extends StatelessWidget {
         spacing: 5.h,
         children: [
           Text(
-            'Hive',
+            'HIVE',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               color: AppColors.white,
               fontSize: 30.sp,
@@ -99,7 +109,74 @@ class DashboardScreen extends StatelessWidget {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 5.w,
+            spacing: 8.w,
+            children: [
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 85.w,
+                height: 95.h,
+                borderColor: AppColors.white,
+                name: "Brew House",
+                totalMl: ".6Ml",
+              ),
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 85.w,
+                height: 95.h,
+                borderColor: AppColors.primary,
+                name: "Keithston’s",
+                totalMl: ".4Ml",
+              ),
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 85.w,
+                height: 95.h,
+                borderColor: AppColors.white,
+                name: "Alex",
+                totalMl: ".8Ml",
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 85.w,
+                height: 95.h,
+                borderColor: AppColors.white,
+                name: "Brew House",
+                totalMl: ".6Ml",
+              ),
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 85.w,
+                height: 95.h,
+                borderColor: AppColors.primary,
+                name: "Keithston’s",
+                totalMl: ".4Ml",
+              ),
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 85.w,
+                height: 95.h,
+                borderColor: AppColors.white,
+                name: "Alex",
+                totalMl: ".8Ml",
+              ),
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 85.w,
+                height: 95.h,
+                borderColor: AppColors.primary,
+                name: "Zach",
+                totalMl: ".8Ml",
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 8.w,
             children: [
               HexagonAvatar(
                 imagePath: AppAssets.profileImage,

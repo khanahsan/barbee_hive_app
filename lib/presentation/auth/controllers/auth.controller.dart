@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   //TODO: Implement AuthController
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  final count = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -16,8 +19,10 @@ class AuthController extends GetxController {
 
   @override
   void onClose() {
+    nameController.dispose();
+    passwordController.dispose();
     super.onClose();
   }
 
-  void increment() => count.value++;
+
 }

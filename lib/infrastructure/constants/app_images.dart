@@ -30,6 +30,7 @@ class AppAssets {
   static String profileImage = '$imagesPath/profile_image.jpg';
   static String sampleImage = '$imagesPath/sample_image.jpg';
   static String sampleImage2 = '$imagesPath/sample_image2.jpg';
+  static String backgroundLogo = '$imagesPath/background_logo.png';
 
   static const String whiteLogoSvg = 'assets/svg/white_logo.svg';
   static const String colorLogoSvg = 'assets/svg/color_logo.svg';

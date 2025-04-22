@@ -20,10 +20,6 @@ class SignUpViewController extends GetxController {
   final isPasswordVisible = false.obs;
   final isConfirmPasswordVisible = false.obs;
 
-  final count = 0.obs;
-
-  final String name = 'ahsan';
-  final String lastName = 'ahsan';
 
   @override
   void onInit() {
@@ -46,7 +42,6 @@ class SignUpViewController extends GetxController {
     super.onClose();
   }
 
-  void increment() => count.value++;
 
   void toggleCheckbox() {
     isChecked.value = !isChecked.value;

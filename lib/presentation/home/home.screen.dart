@@ -1,4 +1,5 @@
 
+import 'package:barbee_hive_app/presentation/auth/views/sign_in_view.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/views/select_role_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,9 @@ class HomeScreen extends GetView<HomeController> {
               ),
               CustomBtn(
                   btnTitle: 'Sign in',
-                  onPressed: (){},
+                  onPressed: (){
+                    Get.toNamed(Routes.SIGN_IN_VIEW);
+                  },
               ),
               CustomBtn(
                 btnBackgroundColor: Colors.black,

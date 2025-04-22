@@ -15,6 +15,7 @@ class AppColors {
   static const Color expiredBannerColor = Color(0x99FF3C3C);
   static const Color completedBannerColor = Color(0x993B93E6);
   static const Color transparentColor = Color(0x00000000);
+  static const Color color101010 = Color(0xff101010);
 
 
 }

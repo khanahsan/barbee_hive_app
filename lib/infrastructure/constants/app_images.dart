@@ -9,6 +9,8 @@ class AppAssets {
 
 
   static String menuIcon = '$iconPath/menu_icon.svg';
+  static String bellIcon = '$iconPath/bell_icon.svg';
+  static String filterIcon = '$iconPath/filter_icon.svg';
 
   static const String logo = 'assets/images/barbee_logo.png';
   static const String appleLogo = 'assets/images/apple_logo.png';

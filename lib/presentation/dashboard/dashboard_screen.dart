@@ -11,8 +11,25 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.color151515,
+        backgroundColor: AppColors.color101010,
+        toolbarHeight: 80.h,
         centerTitle: true,
+        actionsPadding: EdgeInsets.symmetric(horizontal: 15.w),
+        actions: [
+          SvgPicture.asset(
+            AppAssets.bellIcon,
+            fit: BoxFit.scaleDown,
+            height: 26.h,
+            width: 26.w,
+          ),
+          SizedBox(width: 10.w),
+          SvgPicture.asset(
+            AppAssets.filterIcon,
+            fit: BoxFit.scaleDown,
+            height: 26.h,
+            width: 26.w,
+          ),
+        ],
         title: Text(
           'Dashboard',
           style: Theme.of(context).textTheme.titleSmall?.copyWith(

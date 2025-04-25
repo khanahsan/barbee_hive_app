@@ -1,5 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_binding.dart';
 import 'package:barbee_hive_app/nav.dart';
+import 'package:barbee_hive_app/presentation/auth/views/sign_in_view.dart';
 import 'package:barbee_hive_app/presentation/dashboard/dashboard_screen.dart';
 import 'package:barbee_hive_app/presentation/main_screen.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/sign_up_employer_screen.dart';
@@ -66,6 +67,11 @@ class Nav {
     GetPage(
       name: Routes.MAIN,
       page: () => const MainDrawer(),
+      binding: InitialBindings(),
+    ),
+    GetPage(
+      name: Routes.SIGN_IN_VIEW,
+      page: () => const SignInView(),
       binding: InitialBindings(),
     ),
   ];

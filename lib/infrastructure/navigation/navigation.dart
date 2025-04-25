@@ -1,4 +1,5 @@
 import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_binding.dart';
+import 'package:barbee_hive_app/nav.dart';
 import 'package:barbee_hive_app/presentation/dashboard/dashboard_screen.dart';
 import 'package:barbee_hive_app/presentation/main_screen.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/sign_up_employer_screen.dart';
@@ -64,7 +65,7 @@ class Nav {
     ),
     GetPage(
       name: Routes.MAIN,
-      page: () => const MainScreen(),
+      page: () => const MainDrawer(),
       binding: InitialBindings(),
     ),
   ];

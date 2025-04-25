@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import '../../infrastructure/widgets/cutom_bottom_nav_bar.dart';
+
 import '../../infrastructure/widgets/hexagon_clipper.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 
     return Scaffold(
-      appBar: appBarSection(context),
+      // appBar: appBarSection(context),
       backgroundColor: AppColors.black,
 
       body: SingleChildScrollView(
@@ -174,9 +174,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
             spacing: 8.w,
+            runSpacing: 8.h,
             children: [
               HexagonAvatar(
                 imagePath: AppAssets.profileImage,

@@ -38,6 +38,8 @@ dependencies:
   my_responsive_ui: ^1.0.3+4
   flutter_svg: ^2.1.0
   dotted_border: ^2.1.0
+  awesome_drawer_bar: ^1.2.1
+  flutter_advanced_drawer: ^1.3.7
 
 dev_dependencies:
   flutter_test:

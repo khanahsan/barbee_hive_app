@@ -15,6 +15,10 @@ class AppAssets {
   static String chatIcon = '$iconPath/chat_icon.svg';
   static String findIcon = '$iconPath/find_icon.svg';
   static String crownIcon = '$iconPath/crown_icon.svg';
+  static String editIcon = '$iconPath/edit_icon.svg';
+  static String jobIcon = '$iconPath/job_icon.svg';
+  static String settingIcon = '$iconPath/setting_icon.svg';
+  static String exitIcon = '$iconPath/exit_icon.svg';
 
   static String logo = '$imagesPath/barbee_logo.png';
   static String appleLogo = '$imagesPath/apple_logo.png';

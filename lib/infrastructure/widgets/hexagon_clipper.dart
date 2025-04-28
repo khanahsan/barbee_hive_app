@@ -104,7 +104,7 @@ class HexagonAvatar extends StatelessWidget {
                                   Theme.of(
                                     context,
                                   ).textTheme.titleSmall?.copyWith(
-                                    fontSize: 13.sp,
+                                    fontSize: 10.sp,
                                     color: AppColors.white,
                                   ),
                             ),
@@ -116,7 +116,7 @@ class HexagonAvatar extends StatelessWidget {
                                   Theme.of(
                                     context,
                                   ).textTheme.titleSmall?.copyWith(
-                                    fontSize: 10.sp,
+                                    fontSize: 9.sp,
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.w600,
                                   ),

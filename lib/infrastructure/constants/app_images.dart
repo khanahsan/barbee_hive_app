@@ -19,6 +19,7 @@ class AppAssets {
   static String jobIcon = '$iconPath/job_icon.svg';
   static String settingIcon = '$iconPath/setting_icon.svg';
   static String exitIcon = '$iconPath/exit_icon.svg';
+  static String arrowForwardIcon = '$iconPath/arrow_forward_icon.svg';
 
   static String logo = '$imagesPath/barbee_logo.png';
   static String appleLogo = '$imagesPath/apple_logo.png';

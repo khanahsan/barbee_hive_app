@@ -1,5 +1,6 @@
 import 'package:barbee_hive_app/nav.dart';
 import 'package:barbee_hive_app/presentation/dashboard/dashboard_screen.dart';
+import 'package:barbee_hive_app/presentation/find_job_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/cutom_bottom_nav_bar.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,10 +23,26 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int currentBottomIndex = 0;
 
+  String _getAppBarTitle(int index) {
+    switch (index) {
+      case 0:
+        return "Dashboard";
+      case 1:
+        return "Messages";
+      case 2:
+        return "Find Jobs";
+      case 3:
+        return "Bakery";
+      default:
+        return "";
+    }
+  }
+
+
   final List<Widget> screens = [
     DashboardScreen(),
     MessageScreen(),
-    Center(child: Text("Menu Screen", style: TextStyle(color: Colors.white))),
+    FindJobScreen(),
     Center(child: Text("Bakery Screen", style: TextStyle(color: Colors.white))),
   ];
 
@@ -71,68 +88,33 @@ class _MainScreenState extends State<MainScreen> {
 
           title: Row(
             children: [
-              if (currentBottomIndex == 1) ...[
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      onTap: onMenuPressed,
-                      child: _buildSvgPicture(
-                        iconPath: AppAssets.menuIcon,
-                        iconHeight: 18.h,
-                        iconWidth: 18.w,
-                      ),
-                    ),
-                    SizedBox(width: 10.w),
-                    HexagonAvatar(
-                      imagePath: AppAssets.profileImage,
-                      width: 55.w,
-                      height: 65.h,
-                    ),
-                  ],
+              GestureDetector(
+                onTap: onMenuPressed,
+                child: _buildSvgPicture(
+                  iconPath: AppAssets.menuIcon,
+                  iconHeight: 18.h,
+                  iconWidth: 18.w,
                 ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      "Messages",
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: AppColors.white,
-                        fontSize: 25.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
+              ),
+              SizedBox(width: 10.w),
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 55.w,
+                height: 65.h,
+              ),
+              Expanded(
+                child: Center(
+                  child: Text(
+                    _getAppBarTitle(currentBottomIndex),
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: AppColors.white,
+                      fontSize: 25.sp,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-              ] else ...[
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      onTap: onMenuPressed,
-                      child: _buildSvgPicture(
-                        iconPath: AppAssets.menuIcon,
-                        iconHeight: 18.h,
-                        iconWidth: 18.w,
-                      ),
-                    ),
-                    SizedBox(width: 10.w),
-                    HexagonAvatar(
-                      imagePath: AppAssets.profileImage,
-                      width: 55.w,
-                      height: 65.h,
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Text(
-                  "Dashboard",
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: AppColors.white,
-                    fontSize: 25.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Spacer(),
+              ),
+              if (currentBottomIndex != 1) // Hide icons on message screen
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -149,9 +131,9 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                   ],
                 ),
-              ],
             ],
           ),
+
 
 
           // title: Row(

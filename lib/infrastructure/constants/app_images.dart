@@ -20,6 +20,11 @@ class AppAssets {
   static String settingIcon = '$iconPath/setting_icon.svg';
   static String exitIcon = '$iconPath/exit_icon.svg';
   static String arrowForwardIcon = '$iconPath/arrow_forward_icon.svg';
+  static String containerIcon = '$iconPath/container_icon.svg';
+  static String locationIcon = '$iconPath/location_icon.svg';
+  static String bagIcon = '$iconPath/bag_icon.svg';
+  static String searchIcon = '$iconPath/search_icon.svg';
+  static String searchFilterIcon = '$iconPath/search_filter_icon.svg';
 
   static String logo = '$imagesPath/barbee_logo.png';
   static String appleLogo = '$imagesPath/apple_logo.png';
@@ -65,7 +70,6 @@ class AppAssets {
   static const String homeVector = 'assets/images/vector.png';
   static const String girlPlaceHolder = 'assets/images/girl.jpeg';
   static const String callImg = 'assets/images/call.png';
-  static const String locationIcon = 'assets/images/location_image.png';
   static const String ladyDone = 'assets/images/lady_done.png';
   static const String globeIcon = 'assets/images/globe.png';
   static const String cafePlaceHolderImg =

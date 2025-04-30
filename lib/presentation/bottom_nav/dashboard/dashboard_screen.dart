@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-
-
-import '../../infrastructure/widgets/hexagon_clipper.dart';
+import '../../../infrastructure/widgets/hexagon_clipper.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -19,15 +17,12 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
-
-
     final List<String> imagePaths = [
       AppAssets.sampleImage,
       AppAssets.sampleImage2,
       AppAssets.sampleImage,
       AppAssets.sampleImage2,
     ];
-
 
     return Scaffold(
       // appBar: appBarSection(context),
@@ -53,10 +48,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: AppColors.boxBorder,
-          width: 3.w,
-        ),
+        border: Border.all(color: AppColors.boxBorder, width: 3.w),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -211,68 +203,65 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget B2BSection(BuildContext context) {
     return Container(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-          alignment: Alignment.center,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20.r),
-            border: Border.all(
-              color: AppColors.boxBorder,
-              width: 3.w,
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+      alignment: Alignment.center,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: AppColors.boxBorder, width: 3.w),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 5.h,
+        children: [
+          Text(
+            'B2B',
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              color: AppColors.white,
+              fontSize: 30.sp,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            spacing: 5.h,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'B2B',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: AppColors.white,
-                  fontSize: 30.sp,
-                  fontWeight: FontWeight.w600,
-                ),
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 85.w,
+                height: 95.h,
+                borderColor: AppColors.white,
+                name: "Brew House",
+                totalMl: ".6Ml",
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  HexagonAvatar(
-                    imagePath: AppAssets.profileImage,
-                    width: 85.w,
-                    height: 95.h,
-                    borderColor: AppColors.white,
-                    name: "Brew House",
-                    totalMl: ".6Ml",
-                  ),
-                  HexagonAvatar(
-                    imagePath: AppAssets.profileImage,
-                    width: 85.w,
-                    height: 95.h,
-                    borderColor: AppColors.primary,
-                    name: "Keithston’s",
-                    totalMl: ".4Ml",
-                  ),
-                  HexagonAvatar(
-                    imagePath: AppAssets.profileImage,
-                    width: 85.w,
-                    height: 95.h,
-                    borderColor: AppColors.white,
-                    name: "Alex",
-                    totalMl: ".8Ml",
-                  ),
-                  HexagonAvatar(
-                    imagePath: AppAssets.profileImage,
-                    width: 85.w,
-                    height: 95.h,
-                    borderColor: AppColors.primary,
-                    name: "Zach",
-                    totalMl: ".8Ml",
-                  ),
-                ],
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 85.w,
+                height: 95.h,
+                borderColor: AppColors.primary,
+                name: "Keithston’s",
+                totalMl: ".4Ml",
+              ),
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 85.w,
+                height: 95.h,
+                borderColor: AppColors.white,
+                name: "Alex",
+                totalMl: ".8Ml",
+              ),
+              HexagonAvatar(
+                imagePath: AppAssets.profileImage,
+                width: 85.w,
+                height: 95.h,
+                borderColor: AppColors.primary,
+                name: "Zach",
+                totalMl: ".8Ml",
               ),
             ],
           ),
-        );
+        ],
+      ),
+    );
   }
 
   PreferredSize appBarSection(BuildContext context) {

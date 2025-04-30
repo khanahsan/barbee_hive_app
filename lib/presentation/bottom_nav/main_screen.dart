@@ -1,15 +1,13 @@
-import 'package:barbee_hive_app/nav.dart';
-import 'package:barbee_hive_app/presentation/dashboard/dashboard_screen.dart';
-import 'package:barbee_hive_app/presentation/find_job_screen.dart';
-import 'package:flutter/material.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/cutom_bottom_nav_bar.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/find_job/find_job_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-
-import '../infrastructure/constants/app_colors.dart';
-import '../infrastructure/constants/app_images.dart';
-import '../infrastructure/widgets/hexagon_clipper.dart';
-import 'message_screen.dart'; // Check spelling: "cutom" -> maybe should be "custom"?
+import '../../infrastructure/constants/app_colors.dart';
+import '../../infrastructure/constants/app_images.dart';
+import '../../infrastructure/widgets/hexagon_clipper.dart';
+import 'dashboard/dashboard_screen.dart';
+import 'message/message_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.onMenuPressed});
@@ -37,7 +35,6 @@ class _MainScreenState extends State<MainScreen> {
         return "";
     }
   }
-
 
   final List<Widget> screens = [
     DashboardScreen(),
@@ -133,8 +130,6 @@ class _MainScreenState extends State<MainScreen> {
                 ),
             ],
           ),
-
-
 
           // title: Row(
           //   mainAxisAlignment: currentBottomIndex == 1 ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,

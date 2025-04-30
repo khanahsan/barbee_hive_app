@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-
-import '../infrastructure/constants/app_colors.dart';
-import '../infrastructure/constants/app_images.dart';
-import '../infrastructure/widgets/custom_btn.dart';
+import '../../../infrastructure/constants/app_colors.dart';
+import '../../../infrastructure/constants/app_images.dart';
+import '../../../infrastructure/widgets/custom_btn.dart';
 
 class JobCard extends StatefulWidget {
   const JobCard({super.key});

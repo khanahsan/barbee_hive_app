@@ -1,19 +1,19 @@
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
-import 'package:barbee_hive_app/presentation/main_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-import 'infrastructure/constants/app_colors.dart';
-import 'infrastructure/constants/app_images.dart';
+import '../constants/app_colors.dart';
+import '../constants/app_images.dart';
 
-class MainDrawer extends StatefulWidget {
-  const MainDrawer({super.key});
+class CustomDrawer extends StatefulWidget {
+  const CustomDrawer({super.key});
 
   @override
-  State<MainDrawer> createState() => _MainDrawerState();
+  State<CustomDrawer> createState() => _CustomDrawerState();
 }
 
-class _MainDrawerState extends State<MainDrawer>
+class _CustomDrawerState extends State<CustomDrawer>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;

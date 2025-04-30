@@ -2,9 +2,11 @@ import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_images.dart';
+import '../navigation/routes.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
@@ -125,28 +127,33 @@ class _CustomDrawerState extends State<CustomDrawer>
                               ),
                             ),
                             SizedBox(height: 60.h),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 12.w,
-                              children: [
-                                SvgPicture.asset(
-                                  AppAssets.editIcon,
-                                  width: 22.w,
-                                  height: 22.h,
-                                  fit: BoxFit.cover,
-                                ),
-                                Text(
-                                  "Edit Profile",
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleSmall?.copyWith(
-                                    fontSize: 20.sp,
-                                    color: AppColors.white,
-                                    fontWeight: FontWeight.w600,
+                            InkWell(
+                              onTap: (){
+                                Get.toNamed(Routes.PROFILE_SCREEN);
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: 12.w,
+                                children: [
+                                  SvgPicture.asset(
+                                    AppAssets.editIcon,
+                                    width: 22.w,
+                                    height: 22.h,
+                                    fit: BoxFit.cover,
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    "Edit Profile",
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleSmall?.copyWith(
+                                      fontSize: 20.sp,
+                                      color: AppColors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(height: 30.h),
                             Row(

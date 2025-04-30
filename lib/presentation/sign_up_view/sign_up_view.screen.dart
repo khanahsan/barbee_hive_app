@@ -1,12 +1,8 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
-import 'package:barbee_hive_app/presentation/sign_up_view/views/select_role_view.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
 import 'controllers/sign_up_view.controller.dart';
@@ -140,19 +136,51 @@ class SignUpViewScreen extends GetView<SignUpViewController> {
                         ),
                       ),
                       SizedBox(height: 20.h),
-                      _buildTextField(context, 'Name', AppAssets.nameLogo, controller.nameController),
+                      _buildTextField(
+                        context,
+                        'Name',
+                        AppAssets.nameLogo,
+                        controller.nameController,
+                      ),
                       SizedBox(height: 15.h),
-                      _buildTextField(context, 'Email Address', AppAssets.emailLogo, controller.emailController),
+                      _buildTextField(
+                        context,
+                        'Email Address',
+                        AppAssets.emailLogo,
+                        controller.emailController,
+                      ),
                       SizedBox(height: 15.h),
-                      _buildTextField(context, 'Password', AppAssets.passwordLogo, controller.passwordController,
-                          isPassword: true, isPasswordField: true),
+                      _buildTextField(
+                        context,
+                        'Password',
+                        AppAssets.passwordLogo,
+                        controller.passwordController,
+                        isPassword: true,
+                        isPasswordField: true,
+                      ),
                       SizedBox(height: 15.h),
-                      _buildTextField(context, 'Confirm Password', AppAssets.passwordLogo, controller.confirmPasswordController,
-                          isPassword: true, isConfirmPasswordField: true),
+                      _buildTextField(
+                        context,
+                        'Confirm Password',
+                        AppAssets.passwordLogo,
+                        controller.confirmPasswordController,
+                        isPassword: true,
+                        isConfirmPasswordField: true,
+                      ),
                       SizedBox(height: 15.h),
-                      _buildTextField(context, 'Experience', AppAssets.experienceLogo, controller.experienceController),
+                      _buildTextField(
+                        context,
+                        'Experience',
+                        AppAssets.experienceLogo,
+                        controller.experienceController,
+                      ),
                       SizedBox(height: 15.h),
-                      _buildTextField(context, 'MM/DD/YYYY', AppAssets.calenderLogo, controller.dateController),
+                      _buildTextField(
+                        context,
+                        'MM/DD/YYYY',
+                        AppAssets.calenderLogo,
+                        controller.dateController,
+                      ),
                       SizedBox(height: 15.h),
                       Row(
                         children: [
@@ -223,7 +251,7 @@ class SignUpViewScreen extends GetView<SignUpViewController> {
                       ),
                       SizedBox(height: 15.h),
                       Obx(
-                            () => Row(
+                        () => Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             GestureDetector(
@@ -239,15 +267,19 @@ class SignUpViewScreen extends GetView<SignUpViewController> {
                                     color: AppColors.grey,
                                     width: 2.w,
                                   ),
-                                  color: controller.isChecked.value ? AppColors.primary : Colors.transparent,
+                                  color:
+                                      controller.isChecked.value
+                                          ? AppColors.primary
+                                          : Colors.transparent,
                                 ),
-                                child: controller.isChecked.value
-                                    ? Icon(
-                                  Icons.check,
-                                  size: 15.sp,
-                                  color: Colors.white,
-                                )
-                                    : null,
+                                child:
+                                    controller.isChecked.value
+                                        ? Icon(
+                                          Icons.check,
+                                          size: 15.sp,
+                                          color: Colors.white,
+                                        )
+                                        : null,
                               ),
                             ),
                             SizedBox(width: 10.w),
@@ -266,15 +298,16 @@ class SignUpViewScreen extends GetView<SignUpViewController> {
                         btnTitle: 'Create Account',
                         btnBackgroundColor: AppColors.primary,
                         btnTxtColor: Colors.white,
-                        width: double.infinity,
-                        onPressed: controller.isChecked.value
-                            ? () {
-                          // Add your sign-up logic here
-                          print("Create Account button pressed");
-                        }
-                            : () {
-                          print("Please agree to the Terms of Service");
-                        },
+                        buttonWidth: double.infinity,
+                        onPressed:
+                            controller.isChecked.value
+                                ? () {
+                                  // Add your sign-up logic here
+                                  print("Create Account button pressed");
+                                }
+                                : () {
+                                  print("Please agree to the Terms of Service");
+                                },
                       ),
                       SizedBox(height: 20.h),
                     ],
@@ -289,71 +322,84 @@ class SignUpViewScreen extends GetView<SignUpViewController> {
   }
 
   Widget _buildTextField(
-      BuildContext context,
-      String hint,
-      String icon,
-      TextEditingController textController, {
-        bool isPassword = false,
-        bool isPasswordField = false,
-        bool isConfirmPasswordField = false,
-      }) {
+    BuildContext context,
+    String hint,
+    String icon,
+    TextEditingController textController, {
+    bool isPassword = false,
+    bool isPasswordField = false,
+    bool isConfirmPasswordField = false,
+  }) {
     return GetBuilder<SignUpViewController>(
-      builder: (controller) => TextField(
-        controller: textController,
-        obscureText: isPassword
-            ? (isPasswordField
-            ? !controller.isPasswordVisible.value // Text hidden when isPasswordVisible is false
-            : isConfirmPasswordField
-            ? !controller.isConfirmPasswordVisible.value // Text hidden when isConfirmPasswordVisible is false
-            : false)
-            : false,
-        style: const TextStyle(color: AppColors.textFieldTextColor),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: const TextStyle(color: AppColors.textFieldTextColor),
-          prefixIcon: Image.asset(
-            icon,
-            color: AppColors.textFieldTextColor,
-            scale: 4.0.h,
-          ),
-          suffixIcon: isPassword
-              ? Obx(
-                () => IconButton(
-              icon: Icon(
-                (isPasswordField && controller.isPasswordVisible.value) ||
-                    (isConfirmPasswordField && controller.isConfirmPasswordVisible.value)
-                    ? Icons.visibility_off_outlined // Show when text is visible
-                    : Icons.visibility_outlined, // Show when text is hidden
+      builder:
+          (controller) => TextField(
+            controller: textController,
+            obscureText:
+                isPassword
+                    ? (isPasswordField
+                        ? !controller
+                            .isPasswordVisible
+                            .value // Text hidden when isPasswordVisible is false
+                        : isConfirmPasswordField
+                        ? !controller
+                            .isConfirmPasswordVisible
+                            .value // Text hidden when isConfirmPasswordVisible is false
+                        : false)
+                    : false,
+            style: const TextStyle(color: AppColors.textFieldTextColor),
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: const TextStyle(color: AppColors.textFieldTextColor),
+              prefixIcon: Image.asset(
+                icon,
                 color: AppColors.textFieldTextColor,
+                scale: 4.0.h,
               ),
-              onPressed: () {
-                if (isPasswordField) {
-                  controller.togglePasswordVisibility();
-                } else if (isConfirmPasswordField) {
-                  controller.toggleConfirmPasswordVisibility();
-                }
-              },
+              suffixIcon:
+                  isPassword
+                      ? Obx(
+                        () => IconButton(
+                          icon: Icon(
+                            (isPasswordField &&
+                                        controller.isPasswordVisible.value) ||
+                                    (isConfirmPasswordField &&
+                                        controller
+                                            .isConfirmPasswordVisible
+                                            .value)
+                                ? Icons
+                                    .visibility_off_outlined // Show when text is visible
+                                : Icons.visibility_outlined,
+                            // Show when text is hidden
+                            color: AppColors.textFieldTextColor,
+                          ),
+                          onPressed: () {
+                            if (isPasswordField) {
+                              controller.togglePasswordVisibility();
+                            } else if (isConfirmPasswordField) {
+                              controller.toggleConfirmPasswordVisibility();
+                            }
+                          },
+                        ),
+                      )
+                      : null,
+              filled: true,
+              fillColor: AppColors.textFieldBackground,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide.none,
+              ),
             ),
-          )
-              : null,
-          filled: true,
-          fillColor: AppColors.textFieldBackground,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.r),
-            borderSide: BorderSide.none,
           ),
-        ),
-      ),
     );
   }
 
   Widget _buildDropdownField(
-      BuildContext context,
-      String hint,
-      String iconPath,
-      RxString selectedValue,
-      Function(String?) onChanged,
-      ) {
+    BuildContext context,
+    String hint,
+    String iconPath,
+    RxString selectedValue,
+    Function(String?) onChanged,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 4.h),
       decoration: BoxDecoration(
@@ -373,7 +419,7 @@ class SignUpViewScreen extends GetView<SignUpViewController> {
           ),
           Expanded(
             child: Obx(
-                  () => DropdownButtonHideUnderline(
+              () => DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   isExpanded: true,
                   dropdownColor: Colors.grey[900],
@@ -402,7 +448,8 @@ class SignUpViewScreen extends GetView<SignUpViewController> {
                     ),
                   ],
                   onChanged: onChanged,
-                  value: selectedValue.value.isEmpty ? null : selectedValue.value,
+                  value:
+                      selectedValue.value.isEmpty ? null : selectedValue.value,
                 ),
               ),
             ),
@@ -411,5 +458,4 @@ class SignUpViewScreen extends GetView<SignUpViewController> {
       ),
     );
   }
-
 }

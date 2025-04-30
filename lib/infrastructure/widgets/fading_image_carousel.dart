@@ -1,9 +1,8 @@
 import 'dart:async';
+
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-
-import '../constants/app_images.dart';
 
 class FadingImageCarousel extends StatefulWidget {
   const FadingImageCarousel({super.key, required this.imagePaths});
@@ -15,8 +14,6 @@ class FadingImageCarousel extends StatefulWidget {
 }
 
 class _FadingImageCarouselState extends State<FadingImageCarousel> {
-
-
   int _currentIndex = 0;
   late Timer _timer;
 

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
+import '../../../infrastructure/navigation/routes.dart';
 import '../../../infrastructure/widgets/custom_btn.dart';
 
 class JobCard extends StatefulWidget {
@@ -109,7 +112,13 @@ class _JobCardState extends State<JobCard> with SingleTickerProviderStateMixin {
                 ),
               CustomBtn(
                 btnTitle: isExpanded ? "Apply Now" : "View Detail",
-                onPressed: toggleExpanded,
+                onPressed: (){
+                  if(isExpanded){
+                    Get.toNamed(Routes.APPLY_VIEW);
+                  }else{
+                    toggleExpanded();
+                  }
+                },
                 btnBackgroundColor: AppColors.color101010,
                 borderColor: AppColors.primary,
               ),

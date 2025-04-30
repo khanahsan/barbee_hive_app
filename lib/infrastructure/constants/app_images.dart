@@ -25,6 +25,10 @@ class AppAssets {
   static String bagIcon = '$iconPath/bag_icon.svg';
   static String searchIcon = '$iconPath/search_icon.svg';
   static String searchFilterIcon = '$iconPath/search_filter_icon.svg';
+  static String bagTwoIcon = '$iconPath/bag_two_icon.svg';
+  static String calenderIcon = '$iconPath/calender_icon.svg';
+  static String cashIcon = '$iconPath/cash_icon.svg';
+  static String jobTypeIcon = '$iconPath/job_type_icon.svg';
 
   static String logo = '$imagesPath/barbee_logo.png';
   static String appleLogo = '$imagesPath/apple_logo.png';
@@ -43,6 +47,7 @@ class AppAssets {
 
   static String profileImage = '$imagesPath/profile_image.jpg';
   static String sampleImage = '$imagesPath/sample_image.jpg';
+  static String sampleCoverImage = '$imagesPath/sample_cover_image.png';
   static String sampleImage2 = '$imagesPath/sample_image2.jpg';
   static String backgroundLogo = '$imagesPath/background_logo.png';
 

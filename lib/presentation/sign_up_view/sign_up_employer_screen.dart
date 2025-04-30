@@ -169,7 +169,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                         btnTitle: 'Create Account',
                         btnBackgroundColor: Colors.orange,
                         btnTxtColor: Colors.white,
-                        width: double.infinity,
+                        buttonWidth: double.infinity,
                         onPressed: controller.isChecked.value
                             ? () {
                           // Add your sign-up logic here

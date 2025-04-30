@@ -1,12 +1,7 @@
-
-import 'package:barbee_hive_app/presentation/auth/views/sign_in_view.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/views/select_role_view.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/navigation/routes.dart';
@@ -15,13 +10,14 @@ import 'controllers/home.controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
   const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.black,
       body: Center(
-        child:  Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 12.w),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 15.0.h,
@@ -33,20 +29,20 @@ class HomeScreen extends GetView<HomeController> {
                 width: 178.w,
               ),
               CustomBtn(
-                  btnTitle: 'Sign in',
-                  onPressed: (){
-                    Get.toNamed(Routes.SIGN_IN_VIEW);
-                  },
+                btnTitle: 'Sign in',
+                onPressed: () {
+                  Get.toNamed(Routes.SIGN_IN_VIEW);
+                },
               ),
               CustomBtn(
                 btnBackgroundColor: Colors.black,
                 btnTitle: 'New To BarBee?',
                 borderColor: Colors.white,
                 borderWidth: 1.0.w,
-                onPressed: (){
+                onPressed: () {
                   //Get.to(SignUpViewScreen());
                   Get.to(() => SelectRoleView());
-                 // Get.toNamed(Routes.SELECT_ROLE_VIEW);
+                  // Get.toNamed(Routes.SELECT_ROLE_VIEW);
                 },
               ),
               CustomBtn(
@@ -54,7 +50,7 @@ class HomeScreen extends GetView<HomeController> {
                 btnTitle: 'Continue with Google',
                 borderColor: Colors.grey.shade900,
                 borderWidth: 1.0.w,
-                onPressed: (){},
+                onPressed: () {},
                 iconPath: AppAssets.googleLogo,
               ),
               CustomBtn(
@@ -62,7 +58,7 @@ class HomeScreen extends GetView<HomeController> {
                 btnTitle: 'Continue with Apple',
                 borderColor: Colors.grey.shade900,
                 borderWidth: 1.0.w,
-                onPressed: (){},
+                onPressed: () {},
                 iconPath: AppAssets.appleLogo,
               ),
             ],

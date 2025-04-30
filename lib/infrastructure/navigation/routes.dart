@@ -14,4 +14,5 @@ class Routes {
   static const SIGN_UP_EMPLOYER = '/sign_up_employer';
   static const MAIN = '/main';
   static const CUSTOMDRAWER = '/custom_drawer';
+  static const APPLY_VIEW = '/apply_view';
 }

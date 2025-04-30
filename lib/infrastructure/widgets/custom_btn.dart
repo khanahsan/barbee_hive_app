@@ -15,7 +15,8 @@ class CustomBtn extends StatelessWidget {
     this.btnTxtColor = AppColors.white,
     this.fontSize = 16,
     this.fontWeight = FontWeight.w700,
-    this.width = double.infinity,
+    this.buttonWidth = double.infinity,
+    this.buttonHeight = 45,
     this.titlePadding = EdgeInsets.zero,
     this.borderColor = Colors.transparent,
     this.borderWidth = 0.0,
@@ -29,7 +30,9 @@ class CustomBtn extends StatelessWidget {
   final FontWeight fontWeight;
   final Color btnTxtColor;
   final Color btnBackgroundColor;
-  final double? fontSize, width;
+  final double? fontSize;
+  final double? buttonWidth;
+  final double? buttonHeight;
   final bool isLoading;
   final EdgeInsets titlePadding;
   final String? iconPath; // Optional image path
@@ -40,7 +43,7 @@ class CustomBtn extends StatelessWidget {
       onPressed: isLoading ? null : onPressed,
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
-        minimumSize: Size(width!.w, 45.h),
+        minimumSize: Size(buttonWidth!.w, buttonHeight ?? 45.h),
         backgroundColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.r),
@@ -51,7 +54,7 @@ class CustomBtn extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         padding: titlePadding,
-        width: width!.w,
+        width: buttonWidth!.w,
         height: 50.h,
         decoration: BoxDecoration(
             color: btnBackgroundColor,
@@ -89,7 +92,7 @@ class CustomBtn extends StatelessWidget {
           CustomText(
             title: btnTitle,
             color: btnTxtColor,
-            fontSize: AppFontSize.small,
+            fontSize: fontSize ?? AppFontSize.small,
             fontWeight: fontWeight,
           ),
         ],

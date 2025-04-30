@@ -1,10 +1,7 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as Math;
-
+import 'package:flutter/material.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-
 import '../constants/app_colors.dart';
-import '../constants/app_images.dart';
 
 class HexagonClipper extends CustomClipper<Path> {
   final double scale;
@@ -112,7 +109,7 @@ class HexagonAvatar extends StatelessWidget {
                               totalMl!,
                               textAlign: TextAlign.center,
                               style:
-                              textStyle ??
+                                  textStyle ??
                                   Theme.of(
                                     context,
                                   ).textTheme.titleSmall?.copyWith(

@@ -9,7 +9,7 @@ class CustomTextField extends StatefulWidget {
   final Widget? prefixIcon;
   final String? defaultText;
   final FocusNode? focusNode;
-  bool obscureText;
+  final bool obscureText;
   final TextEditingController? controller;
   final Function? functionValidate;
   final String? parametersValidate;
@@ -37,7 +37,7 @@ class CustomTextField extends StatefulWidget {
 
   // final SpellCheckConfiguration? spellCheckConfiguration;
 
-  CustomTextField({
+  const CustomTextField({
     this.hintText,
     this.focusNode,
     this.textInputType,
@@ -144,8 +144,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   width: 2.0),
               borderRadius: BorderRadius.circular(10),
             ),
-            hintStyle: const TextStyle(
-              color: Colors.grey,
+            hintStyle: TextStyle(
+              color: widget.fontColor ?? Colors.grey,
             ),
             errorStyle: const TextStyle(
               color: Colors.red,

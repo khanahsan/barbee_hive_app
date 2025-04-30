@@ -1,13 +1,14 @@
 import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_binding.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_drawer.dart';
 import 'package:barbee_hive_app/presentation/auth/views/sign_in_view.dart';
+import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/find_job/apply_view.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/sign_up_employer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../config.dart';
 import '../../presentation/auth/auth.screen.dart';
+import '../../presentation/auth/views/forgot_password_view.dart';
 import '../../presentation/bottom_nav/dashboard/dashboard_screen.dart';
 import '../../presentation/home/home.screen.dart';
 import '../../presentation/sign_up_view/sign_up_view.screen.dart';
@@ -51,6 +52,11 @@ class Nav {
       binding: InitialBindings(),
     ),
     GetPage(
+      name: Routes.FORGOT_PASSWORD,
+      page: () => const ForgotPasswordView(),
+      binding: InitialBindings(),
+    ),
+    GetPage(
       name: Routes.SIGN_UP_VIEW,
       page: () => const SignUpViewScreen(),
       binding: InitialBindings(),
@@ -78,6 +84,11 @@ class Nav {
     GetPage(
       name: Routes.APPLY_VIEW,
       page: () => const ApplyView(),
+      binding: InitialBindings(),
+    ),
+    GetPage(
+      name: Routes.PROFILE_SCREEN,
+      page: () => const ProfileScreen(),
       binding: InitialBindings(),
     ),
   ];

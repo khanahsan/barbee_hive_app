@@ -8,6 +8,7 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
+import '../../infrastructure/widgets/custom_text_field.dart';
 import 'controllers/sign_up_employer_controller.dart';
 
 class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
@@ -112,12 +113,38 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                           ],
                         ),
                       ),
-                      _buildTextField(context, 'Name', AppAssets.nameLogo, controller.nameController),
-                      _buildTextField(context, 'Email Address', AppAssets.emailLogo, controller.emailController),
-                      _buildTextField(context, 'Password', AppAssets.passwordLogo, controller.passwordController,
-                          isPassword: true, isPasswordField: true),
-                      _buildTextField(context, 'Confirm Password', AppAssets.passwordLogo, controller.confirmPasswordController,
-                          isPassword: true, isConfirmPasswordField: true),
+                     // _buildTextField(context, 'Name', AppAssets.nameLogo, controller.nameController),
+                      CustomTextField(
+                        hint: 'Name',
+                        icon: AppAssets.nameLogo,
+                        controller: controller.nameController,
+                      ),
+                     // _buildTextField(context, 'Email Address', AppAssets.emailLogo, controller.emailController),
+                      CustomTextField(
+                        hint: 'Email Address',
+                        icon: AppAssets.emailLogo,
+                        controller: controller.emailController,
+                      ),
+                      /*_buildTextField(context, 'Password', AppAssets.passwordLogo, controller.passwordController,
+                          isPassword: true, isPasswordField: true),*/
+                      Obx(() => CustomTextField(
+                        hint: 'Confirm Password',
+                        icon: AppAssets.passwordLogo,
+                        controller: controller.passwordController,
+                        isPassword: true,
+                        isObscured: !controller.isPasswordVisible.value,
+                        onToggleVisibility: controller.togglePasswordVisibility,
+                      )),
+                      /*_buildTextField(context, 'Confirm Password', AppAssets.passwordLogo, controller.confirmPasswordController,
+                          isPassword: true, isConfirmPasswordField: true),*/
+                      Obx(() => CustomTextField(
+                        hint: 'Confirm Password',
+                        icon: AppAssets.passwordLogo,
+                        controller: controller.confirmPasswordController,
+                        isPassword: true,
+                        isObscured: !controller.isConfirmPasswordVisible.value,
+                        onToggleVisibility: controller.toggleConfirmPasswordVisibility,
+                      )),
                       _buildDropdownField(
                         context,
                         'Position Seeking',
@@ -185,65 +212,6 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                 ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(
-      BuildContext context,
-      String hint,
-      String icon,
-      TextEditingController textController, {
-        bool isPassword = false,
-        bool isPasswordField = false,
-        bool isConfirmPasswordField = false,
-      }) {
-    return GetBuilder<SignUpEmployerController>(
-      builder: (controller) => TextField(
-        controller: textController,
-        obscureText: isPassword
-            ? (isPasswordField
-            ? !controller.isPasswordVisible.value // Text hidden when isPasswordVisible is false
-            : isConfirmPasswordField
-            ? !controller.isConfirmPasswordVisible.value // Text hidden when isConfirmPasswordVisible is false
-            : false)
-            : false,
-        style: const TextStyle(color: AppColors.textFieldTextColor),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: const TextStyle(color: AppColors.textFieldTextColor),
-          prefixIcon: Image.asset(
-            icon,
-            color: AppColors.textFieldTextColor,
-            scale: 4.0.h,
-          ),
-          suffixIcon: isPassword
-              ? Obx(
-                () => IconButton(
-              icon: Icon(
-                (isPasswordField && controller.isPasswordVisible.value) ||
-                    (isConfirmPasswordField && controller.isConfirmPasswordVisible.value)
-                    ? Icons.visibility_off_outlined // Show when text is visible
-                    : Icons.visibility_outlined, // Show when text is hidden
-                color: AppColors.textFieldTextColor,
-              ),
-              onPressed: () {
-                if (isPasswordField) {
-                  controller.togglePasswordVisibility();
-                } else if (isConfirmPasswordField) {
-                  controller.toggleConfirmPasswordVisibility();
-                }
-              },
-            ),
-          )
-              : null,
-          filled: true,
-          fillColor: AppColors.textFieldBackground,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.r),
-            borderSide: BorderSide.none,
           ),
         ),
       ),

@@ -99,6 +99,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               }),
             )),
         child: TextFormField(
+          autofocus: false,
           textCapitalization:
           widget.textCapitalization ?? TextCapitalization.none,
           onChanged: widget.onChanged,

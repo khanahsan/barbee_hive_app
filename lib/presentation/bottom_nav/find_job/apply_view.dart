@@ -150,9 +150,23 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/widgets/custom_btn.dart';
+import '../../../infrastructure/widgets/custom_dialog.dart';
 
 class ApplyView extends StatelessWidget {
   const ApplyView({super.key});
+
+  void applyDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (BuildContext context) {
+        return CustomDialog(
+          title: "Congratulations",
+          subTitle: "Your Job Application has been submitted",
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -341,7 +355,9 @@ class ApplyView extends StatelessWidget {
                       btnBackgroundColor: AppColors.primary,
                       btnTxtColor: Colors.white,
                       buttonWidth: double.infinity,
-                      onPressed: () {},
+                      onPressed: (){
+                        applyDialog(context);
+                      },
                     ),
                     SizedBox(height: 20.h),
                   ],

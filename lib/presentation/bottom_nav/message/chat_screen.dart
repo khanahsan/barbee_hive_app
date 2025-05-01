@@ -1,38 +1,5 @@
-// import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-//
-// import '../../../infrastructure/widgets/custom_appbar.dart';
-//
-//
-// class ChatScreen extends StatelessWidget {
-//   const ChatScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: customAppbar(
-//         context: context,
-//         leadingTapFunction: () {
-//           Get.back();
-//           ScaffoldMessenger.of(context).showSnackBar(
-//             SnackBar(content: Text('Menu pressed')),
-//           );
-//         },
-//         currentBottomIndex: 1, // Assuming 1 is for chat/messages
-//         title: "Kyle Crane",
-//         showActions: false,
-//         leadingIconPath: AppAssets.backIcon,
-//       ),
-//       body: Center(
-//         child: Text("Chat screen content goes here"),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_text_field.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_textfield.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,14 +13,12 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
       appBar: customAppbar(
         context: context,
         leadingTapFunction: () {
           Get.back();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Menu pressed')));
         },
         currentBottomIndex: 1,
         title: "Kyle Crane",
@@ -67,19 +32,34 @@ class ChatScreen extends StatelessWidget {
           const SizedBox(height: 10),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
               children: [
                 _buildSenderBubble(
                   message: 'Hey, what time are we meeting today?',
                   time: '16:20',
                   context: context,
                 ),
+                SizedBox(height: 20.h),
                 _buildReceiverBubble(
                   name: 'Kyle Crane',
                   message: 'Around 6 PM, does that work for you?',
                   time: '16:20',
                   context: context,
                 ),
+                SizedBox(height: 20.h),
+                _buildSenderBubble(
+                  message: 'Cool, I’ll text you when I get there.',
+                  time: '16:20',
+                  context: context,
+                ),
+                SizedBox(height: 20.h),
+                _buildReceiverBubble(
+                  name: 'Kyle Crane',
+                  message: 'Around 6 PM, does that work for you?',
+                  time: '16:20',
+                  context: context,
+                ),
+                SizedBox(height: 20.h),
                 _buildSenderBubble(
                   message: 'Cool, I’ll text you when I get there.',
                   time: '16:20',
@@ -103,7 +83,7 @@ class ChatScreen extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: Container(
         width: 280.w,
-        margin: const EdgeInsets.only(top: 8),
+        // margin: const EdgeInsets.only(top: 8),
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: AppColors.primary,
@@ -156,7 +136,7 @@ class ChatScreen extends StatelessWidget {
           ),
           Container(
             width: 280.w,
-            margin: const EdgeInsets.only(top: 8),
+            // margin: const EdgeInsets.only(top: 8),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: AppColors.color27272A,
@@ -202,43 +182,18 @@ class ChatScreen extends StatelessWidget {
 
   Widget _buildInputField() {
     return CustomTextField(
-      hint: "Send Message",
-      icon: AppAssets.bagTwoIcon,
-      controller: TextEditingController(),
-    );
+      maxLines: 3,
+      enabledBorderColor: AppColors.color545458,
+      hintText: "Send Message",
+      suffixIcon: Container(
+        margin: EdgeInsets.symmetric(horizontal: 7.w, vertical: 7.h),
+        // padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 3.h),
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          shape: BoxShape.circle,
+        ),
+        child: Icon(Icons.arrow_forward, color: AppColors.white),
+      ),
+    ).paddingSymmetric(horizontal: 15.w);
   }
-
-  // Widget _buildInputField() {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-  //     color: Colors.black,
-  //     child: Row(
-  //       children: [
-  //         Expanded(
-  //           child: Container(
-  //             padding: const EdgeInsets.symmetric(horizontal: 12),
-  //             decoration: BoxDecoration(
-  //               color: Colors.grey.shade900,
-  //               borderRadius: BorderRadius.circular(12),
-  //             ),
-  //             child: const TextField(
-  //               style: TextStyle(color: Colors.white),
-  //               decoration: InputDecoration(
-  //                 border: InputBorder.none,
-  //                 hintText: 'That works great for me. See you then!',
-  //                 hintStyle: TextStyle(color: Colors.white70),
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //         const SizedBox(width: 8),
-  //         CircleAvatar(
-  //           radius: 18,
-  //           backgroundColor: Colors.orange,
-  //           child: Icon(Icons.arrow_upward, color: Colors.white),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }

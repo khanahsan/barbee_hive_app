@@ -1,4 +1,3 @@
-import 'package:barbee_hive_app/infrastructure/widgets/custom_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:flutter/gestures.dart';
@@ -9,7 +8,7 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
-import '../../infrastructure/navigation/routes.dart';
+import '../../infrastructure/widgets/custom_appbar.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
 import '../../infrastructure/widgets/custom_icon_button.dart';
 
@@ -32,9 +31,7 @@ class ProfileScreen extends GetView<ProfileController> {
       );
     }
 
-    PreferredSize appBarSection({
-      required BuildContext context,
-    }) {
+    PreferredSize appBarSection({required BuildContext context}) {
       return PreferredSize(
         preferredSize: Size.fromHeight(100.h),
         child: ClipRRect(
@@ -49,7 +46,7 @@ class ProfileScreen extends GetView<ProfileController> {
 
             title: Row(
               children: [
-               /* GestureDetector(
+                /* GestureDetector(
                   onTap: onMenuPressed,
                   child: _buildSvgPicture(
                     iconPath: AppAssets.menuIcon,
@@ -86,10 +83,27 @@ class ProfileScreen extends GetView<ProfileController> {
         ),
       );
     }
-    return Scaffold(
-      appBar: appBarSection(
-        context: context,
 
+    return Scaffold(
+      // appBar: appBarSection(context: context),
+      appBar: customAppbar(
+        context: context,
+        leadingTapFunction: () {
+          Get.back();
+        },
+        currentBottomIndex: 1,
+        title: "Profile",
+        showActions: true,
+        leadingIconPath: AppAssets.backIcon,
+        actions: [
+          SvgPicture.asset(
+            AppAssets.settingIcon,
+            fit: BoxFit.cover,
+            height: 23.h,
+            width: 23.w,
+            color: AppColors.white,
+          ),
+        ],
       ),
       backgroundColor: Colors.black,
       body: Stack(
@@ -109,40 +123,27 @@ class ProfileScreen extends GetView<ProfileController> {
             right: 0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-
-              spacing: 15.h,
+              spacing: 8.h,
               children: [
-
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomProfileButton(
-                      text: 'Profile image',
-                      icon: Icons.beach_access,
-                      onPressed: () {
-                        // Define your on-press action here
-                        print('Button pressed!');
-                      },
+                    profileButton(
+                      context: context,
+                      buttonText: "Profile image",
+                      buttonIconPath: AppAssets.bagIcon,
                     ),
 
-                    CustomProfileButton(
-                      text: 'Profile image',
-                      icon: Icons.beach_access,
-                      onPressed: () {
-                        // Define your on-press action here
-                        print('Button pressed!');
-                      },
+                    profileButton(
+                      context: context,
+                      buttonText: "Cover Photo",
+                      buttonIconPath: AppAssets.bagIcon,
                     ),
-
-                    profileButton(),
-
-                    profileButton()
                   ],
-                ),
+                ).paddingSymmetric(horizontal: 20.w),
 
                 Container(
                   height: 532.h,
-                  margin: EdgeInsets.only(top: 20.h),
                   padding: EdgeInsets.only(top: 3.h),
                   decoration: BoxDecoration(
                     color: AppColors.primary,
@@ -160,56 +161,57 @@ class ProfileScreen extends GetView<ProfileController> {
                         topLeft: Radius.circular(18.0),
                       ),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        //crossAxisAlignment: CrossAxisAlignment.end,
-                        spacing: 10.h,
-                        children: [
-
-
-                          SizedBox(height: 120.h),
-                          CustomBtn(
-                            btnTitle: 'Sign In',
-                            btnBackgroundColor: AppColors.primary,
-                            btnTxtColor: Colors.white,
-                            // width: double.infinity,
-                            onPressed: () {},
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      //crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          "John William",
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleMedium?.copyWith(
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.white,
                           ),
-                          RichText(
-                            text: TextSpan(
-                              style: TextStyle(fontSize: 12, color: AppColors.white),
-                              children: [
-                                TextSpan(
-                                  text: "Dont't have an account?",
-                                  style: TextStyle(
-                                    color: AppColors.white,
-                                    fontSize: 13.0.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                        ),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Experience",
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleMedium?.copyWith(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primary,
                                 ),
-                                TextSpan(
-                                  text: 'Sign Up',
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 13.0.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  recognizer:
-                                  TapGestureRecognizer()
-                                    ..onTap = () {
-                                      /*// Open YouTube URL
-                              const url = 'https://www.youtube.com';
-                              launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);*/
-                                    },
+                              ),
+                              TextSpan(text: "  "),
+                              TextSpan(
+                                text: "Bartender",
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleMedium?.copyWith(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.white,
                                 ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 30.h),
+                        CustomBtn(
+                          btnTitle: 'Edit Profile',
+                          btnBackgroundColor: AppColors.primary,
+                          btnTxtColor: Colors.white,
+                          // width: double.infinity,
+                          onPressed: () {},
+                        ),
+                      ],
+                    ).paddingSymmetric(horizontal: 20.w, vertical: 20.h),
                   ),
                 ),
               ],
@@ -221,35 +223,77 @@ class ProfileScreen extends GetView<ProfileController> {
   }
 }
 
-Widget profileButton() {
-  return ElevatedButton(
-    onPressed: () {},
-    style: ButtonStyle(
-      backgroundColor: WidgetStateProperty.resolveWith<Color?>(
-            (Set<WidgetState> states) {
-          if (states.contains(WidgetState.pressed)) {
-            return Colors.grey; // Color when pressed
-          }
-          return Colors.black; // Default color
-        },
+Widget profileButton({
+  required String buttonText,
+  required buttonIconPath,
+  required BuildContext context,
+}) {
+  return InkWell(
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: AppColors.color101010,
+        border: Border.all(color: AppColors.boxBorder, width: 2.sp),
+        borderRadius: BorderRadius.circular(10.r),
       ),
-      shape: WidgetStateProperty.all(
-         RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)), // Square, no rounded corners
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 8.w,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            buttonIconPath,
+            height: 22.h,
+            width: 22.w,
+            fit: BoxFit.cover,
+          ),
+          Text(
+            buttonText,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontSize: 14.sp,
+              color: AppColors.white,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
-      minimumSize: WidgetStateProperty.all(const Size(150, 50)), // Rectangular size
-    ),
-    child: const Row(
-      mainAxisSize: MainAxisSize.min, // Fit content
-      children: [
-        Icon(Icons.beach_access, color: Colors.white), // Icon
-        SizedBox(width: 8), // Space between icon and text
-        Text(
-          'Profile image',
-          style: TextStyle(color: Colors.white), // Text color
-        ),
-      ],
     ),
   );
 }
+
+// Widget profileButton({required String buttonText, required buttonIconPath}) {
+//   return ElevatedButton(
+//     onPressed: () {},
+//     style: ButtonStyle(
+//       backgroundColor: WidgetStateProperty.resolveWith<Color?>((
+//         Set<WidgetState> states,
+//       ) {
+//         if (states.contains(WidgetState.pressed)) {
+//           return Colors.grey; // Color when pressed
+//         }
+//         return Colors.black; // Default color
+//       }),
+//       shape: WidgetStateProperty.all(
+//         RoundedRectangleBorder(
+//           borderRadius: BorderRadius.all(
+//             Radius.circular(10.0),
+//           ), // Square, no rounded corners
+//         ),
+//       ),
+//       minimumSize: WidgetStateProperty.all(
+//         const Size(150, 50),
+//       ), // Rectangular size
+//     ),
+//     child: const Row(
+//       mainAxisSize: MainAxisSize.min, // Fit content
+//       children: [
+//         Icon(Icons.beach_access, color: Colors.white), // Icon
+//         SizedBox(width: 8), // Space between icon and text
+//         Text(
+//           'Profile image',
+//           style: TextStyle(color: Colors.white), // Text color
+//         ),
+//       ],
+//     ),
+//   );
+// }

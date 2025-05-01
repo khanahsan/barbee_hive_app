@@ -13,6 +13,7 @@ PreferredSizeWidget customAppbar({
   required String title,
   String? leadingIconPath,
   bool? showActions,
+  List<Widget>? actions,
 }) {
   return PreferredSize(
     preferredSize: Size.fromHeight(100.h),
@@ -56,22 +57,23 @@ PreferredSizeWidget customAppbar({
       ),
       centerTitle: true,
       actionsPadding: EdgeInsets.symmetric(horizontal: 15.w),
-      actions:
-          showActions == true
-              ? [
-                _buildSvgPicture(
-                  iconPath: AppAssets.bellIcon,
-                  iconHeight: 24.h,
-                  iconWidth: 24.w,
-                ),
-                SizedBox(width: 10.w),
-                _buildSvgPicture(
-                  iconPath: AppAssets.filterIcon,
-                  iconHeight: 24.h,
-                  iconWidth: 24.w,
-                ),
-              ]
-              : null,
+      actions: actions,
+      // actions:
+      //     showActions == true
+      //         ? [
+      //           _buildSvgPicture(
+      //             iconPath: AppAssets.bellIcon,
+      //             iconHeight: 24.h,
+      //             iconWidth: 24.w,
+      //           ),
+      //           SizedBox(width: 10.w),
+      //           _buildSvgPicture(
+      //             iconPath: AppAssets.filterIcon,
+      //             iconHeight: 24.h,
+      //             iconWidth: 24.w,
+      //           ),
+      //         ]
+      //         : null,
     ),
   );
 }

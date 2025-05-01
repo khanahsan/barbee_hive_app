@@ -29,6 +29,7 @@ class AppAssets {
   static String calenderIcon = '$iconPath/calender_icon.svg';
   static String cashIcon = '$iconPath/cash_icon.svg';
   static String jobTypeIcon = '$iconPath/job_type_icon.svg';
+  static String backIcon = '$iconPath/back_icon.svg';
 
   static String logo = '$imagesPath/barbee_logo.png';
   static String appleLogo = '$imagesPath/apple_logo.png';

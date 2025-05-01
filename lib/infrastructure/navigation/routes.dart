@@ -17,4 +17,5 @@ class Routes {
   static const CUSTOMDRAWER = '/custom_drawer';
   static const APPLY_VIEW = '/apply_view';
   static const PROFILE_SCREEN = '/profile_screen';
+  static const chatScreen = '/chat_screen';
 }

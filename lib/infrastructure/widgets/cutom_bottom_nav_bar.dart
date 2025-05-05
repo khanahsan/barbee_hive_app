@@ -79,14 +79,14 @@ class CustomBottomNavBar extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: SvgPicture.asset(
-                AppAssets.crownIcon,
-                colorFilter: ColorFilter.mode(
-                  currentIndex == 3 ? AppColors.primary : Colors.white,
-                  BlendMode.srcIn,
-                ),
-                height: 20.h,
-                width: 20.w,
-                fit: BoxFit.cover,
+                currentIndex == 3 ? AppAssets.premiumActiveIcon : AppAssets.premiumIcon,
+                // colorFilter: ColorFilter.mode(
+                //   currentIndex == 3 ? AppColors.primary : Colors.white,
+                //   BlendMode.srcIn,
+                // ),
+                height: 45.h,
+                width: 45.w,
+                fit: BoxFit.fill,
               ),
               label: "",
             ),

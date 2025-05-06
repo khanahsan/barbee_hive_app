@@ -30,7 +30,7 @@ class PricingPlansScreen extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [AppColors.primary, AppColors.black], // Adjust as needed
+          colors: [AppColors.primary, AppColors.black],
         ),
         borderRadius: BorderRadius.circular(15.r),
       ),

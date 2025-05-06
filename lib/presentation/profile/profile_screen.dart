@@ -91,7 +91,7 @@ class ProfileScreen extends GetView<ProfileController> {
         leadingTapFunction: () {
           Get.back();
         },
-        currentBottomIndex: 1,
+        // currentBottomIndex: 1,
         title: "Profile",
         showActions: true,
         leadingIconPath: AppAssets.backIcon,

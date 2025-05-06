@@ -57,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
         leadingTapFunction: () {
           widget.onMenuPressed();
         },
-        currentBottomIndex: 1,
+        // currentBottomIndex: 1,
         title: _getAppBarTitle(currentBottomIndex),
         showActions: true,
         leadingIconPath: AppAssets.menuIcon,

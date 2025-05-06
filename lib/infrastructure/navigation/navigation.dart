@@ -4,6 +4,7 @@ import 'package:barbee_hive_app/presentation/auth/views/sign_in_view.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/find_job/apply_view.dart';
+import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/sign_up_employer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -95,6 +96,11 @@ class Nav {
     GetPage(
       name: Routes.chatScreen,
       page: () => const ChatScreen(),
+      binding: InitialBindings(),
+    ),
+    GetPage(
+      name: Routes.settingsScreen,
+      page: () => const SettingsScreen(),
       binding: InitialBindings(),
     ),
   ];

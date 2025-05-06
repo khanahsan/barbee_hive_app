@@ -20,7 +20,7 @@ class ChatScreen extends StatelessWidget {
         leadingTapFunction: () {
           Get.back();
         },
-        currentBottomIndex: 1,
+        // currentBottomIndex: 1,
         title: "Kyle Crane",
         showActions: false,
         leadingIconPath: AppAssets.backIcon,

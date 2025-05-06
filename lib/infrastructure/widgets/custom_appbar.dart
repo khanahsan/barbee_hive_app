@@ -9,19 +9,20 @@ import 'hexagon_clipper.dart';
 PreferredSizeWidget customAppbar({
   required BuildContext context,
   required VoidCallback leadingTapFunction,
-  required int currentBottomIndex,
+  // required int currentBottomIndex,
   required String title,
   String? leadingIconPath,
   bool? showActions,
   List<Widget>? actions,
+  bool? showHexagon = true,
 }) {
   return PreferredSize(
-    preferredSize: Size.fromHeight(100.h),
+    preferredSize: Size.fromHeight(90.h),
     child: AppBar(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(25.r),
-          bottomRight: Radius.circular(25.r),
+          bottomLeft: Radius.circular(30.r),
+          bottomRight: Radius.circular(30.r),
         ),
       ),
       backgroundColor: AppColors.color101010,
@@ -39,6 +40,7 @@ PreferredSizeWidget customAppbar({
               iconWidth: 18.w,
             ),
           ),
+          if(showHexagon == true)
           HexagonAvatar(
             imagePath: AppAssets.profileImage,
             width: 50.w,

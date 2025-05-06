@@ -180,28 +180,33 @@ class _CustomDrawerState extends State<CustomDrawer>
                               ],
                             ),
                             SizedBox(height: 30.h),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 12.w,
-                              children: [
-                                SvgPicture.asset(
-                                  AppAssets.settingIcon,
-                                  width: 22.w,
-                                  height: 22.h,
-                                  fit: BoxFit.cover,
-                                ),
-                                Text(
-                                  "Setting",
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleSmall?.copyWith(
-                                    fontSize: 20.sp,
-                                    color: AppColors.white,
-                                    fontWeight: FontWeight.w600,
+                            InkWell(
+                              onTap: (){
+                                Get.toNamed(Routes.settingsScreen);
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: 12.w,
+                                children: [
+                                  SvgPicture.asset(
+                                    AppAssets.settingIcon,
+                                    width: 22.w,
+                                    height: 22.h,
+                                    fit: BoxFit.cover,
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    "Setting",
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleSmall?.copyWith(
+                                      fontSize: 20.sp,
+                                      color: AppColors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             SizedBox(height: 30.h),
                             Row(

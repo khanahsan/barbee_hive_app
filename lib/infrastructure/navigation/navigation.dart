@@ -3,15 +3,16 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_drawer.dart';
 import 'package:barbee_hive_app/presentation/auth/views/sign_in_view.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/find_job/apply_view.dart';
 import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/sign_up_employer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../../config.dart';
 import '../../presentation/auth/auth.screen.dart';
 import '../../presentation/auth/views/forgot_password_view.dart';
 import '../../presentation/bottom_nav/dashboard/dashboard_screen.dart';
+import '../../presentation/bottom_nav/job/employee/apply_screen.dart';
 import '../../presentation/home/home.screen.dart';
 import '../../presentation/sign_up_view/sign_up_view.screen.dart';
 import '../../presentation/splash/splash.screen.dart';
@@ -85,7 +86,7 @@ class Nav {
     ),
     GetPage(
       name: Routes.APPLY_VIEW,
-      page: () => const ApplyView(),
+      page: () => const ApplyScreen(),
       binding: InitialBindings(),
     ),
     GetPage(

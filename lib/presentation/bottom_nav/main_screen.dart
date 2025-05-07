@@ -1,15 +1,14 @@
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/cutom_bottom_nav_bar.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/find_job/find_job_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/widgets/custom_appbar.dart';
 import 'dashboard/dashboard_screen.dart';
+import 'job/job_screen.dart';
 import 'message/message_screen.dart';
 import 'pricing_plans/pricing_plans_screen.dart';
 
@@ -95,7 +94,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> screens = [
     DashboardScreen(),
     MessageScreen(),
-    FindJobScreen(),
+    JobScreen(),
     PricingPlansScreen(),
   ];
 

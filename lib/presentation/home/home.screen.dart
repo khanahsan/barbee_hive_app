@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:barbee_hive_app/presentation/sign_up_view/views/select_role_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,12 +31,14 @@ class HomeScreen extends GetView<HomeController> {
                 width: 178.w,
               ),
               CustomBtn(
+                buttonHeight: 50,
                 btnTitle: 'Sign in',
                 onPressed: () {
                   Get.toNamed(Routes.SIGN_IN_VIEW);
                 },
               ),
               CustomBtn(
+                buttonHeight: 50,
                 btnBackgroundColor: Colors.black,
                 btnTitle: 'New To BarBee?',
                 borderColor: Colors.white,
@@ -45,21 +49,24 @@ class HomeScreen extends GetView<HomeController> {
                   // Get.toNamed(Routes.SELECT_ROLE_VIEW);
                 },
               ),
+
+              Platform.isIOS ?
               CustomBtn(
-                btnBackgroundColor: Colors.black,
-                btnTitle: 'Continue with Google',
-                borderColor: Colors.grey.shade900,
-                borderWidth: 1.0.w,
-                onPressed: () {},
-                iconPath: AppAssets.googleLogo,
-              ),
-              CustomBtn(
+                buttonHeight: 50,
                 btnBackgroundColor: Colors.black,
                 btnTitle: 'Continue with Apple',
                 borderColor: Colors.grey.shade900,
                 borderWidth: 1.0.w,
                 onPressed: () {},
                 iconPath: AppAssets.appleLogo,
+              ):CustomBtn(
+                buttonHeight: 50,
+                btnBackgroundColor: Colors.black,
+                btnTitle: 'Continue with Google',
+                borderColor: Colors.grey.shade900,
+                borderWidth: 1.0.w,
+                onPressed: () {},
+                iconPath: AppAssets.googleLogo,
               ),
             ],
           ),

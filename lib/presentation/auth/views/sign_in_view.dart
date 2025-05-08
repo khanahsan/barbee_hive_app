@@ -1,8 +1,8 @@
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/navigation/routes.dart';
@@ -120,11 +120,21 @@ class SignInView extends GetView<AuthController> {
                             icon: AppAssets.nameLogo,
                             controller: controller.nameController,
                           ),
-                          CustomTextField(
+                          /*CustomTextField(
+                            isPassword: true,
+                            isObscured: true,
                             hint: 'Password',
                             icon: AppAssets.nameLogo,
                             controller: controller.passwordController,
-                          ),
+                          ),*/
+                          Obx(() => CustomTextField(
+                            isPassword: true,
+                            isObscured: controller.isObscured.value, // Reactive state
+                            hint: 'Password',
+                            icon: AppAssets.nameLogo,
+                            controller: controller.passwordController,
+                            onToggleVisibility: controller.togglePasswordVisibility, // Toggle callback
+                          )),
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton(
@@ -142,19 +152,27 @@ class SignInView extends GetView<AuthController> {
                           ),
 
                           SizedBox(height: 120.h),
-                          CustomBtn(
+
+                          /*CustomBtn(
+                            buttonHeight: 50,
                             btnTitle: 'Sign In',
                             btnBackgroundColor: AppColors.primary,
                             btnTxtColor: Colors.white,
-                            // width: double.infinity,
-                            onPressed: () {},
+                            onPressed: () => controller.login(),
+                          ),*/
+                          Obx(
+                                () => CustomBtn(
+                              buttonHeight: 50,
+                              btnTitle: 'Sign In',
+                              btnBackgroundColor: AppColors.primary,
+                              btnTxtColor: AppColors.white,
+                              onPressed: () => controller.login(),
+                              isLoading: controller.isLoading.value, // Pass reactive isLoading value
+                            ),
                           ),
                           RichText(
                             text: TextSpan(
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.white,
-                              ),
+                              style: TextStyle(fontSize: 12, color: AppColors.white),
                               children: [
                                 TextSpan(
                                   text: "Dont't have an account?",
@@ -172,16 +190,13 @@ class SignInView extends GetView<AuthController> {
                                     fontWeight: FontWeight.w400,
                                   ),
                                   recognizer:
-                                      TapGestureRecognizer()
-                                        ..onTap = () {
-                                          /*// Open YouTube URL
-                              const url = 'https://www.youtube.com';
-                              launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);*/
-                                        },
+                                  TapGestureRecognizer()
+                                    ..onTap = () {
+                                    },
                                 ),
                               ],
                             ),
-                          ),
+                          )
                         ],
                       ),
                     ),

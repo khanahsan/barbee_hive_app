@@ -20,6 +20,7 @@ class AppAssets {
   static String settingIcon = '$iconPath/setting_icon.svg';
   static String exitIcon = '$iconPath/exit_icon.svg';
   static String arrowForwardIcon = '$iconPath/arrow_forward_icon.svg';
+  static String arrowForwardBIcon = '$iconPath/arrow_forwardB_icon.svg';
   static String containerIcon = '$iconPath/container_icon.svg';
   static String locationIcon = '$iconPath/location_icon.svg';
   static String bagIcon = '$iconPath/bag_icon.svg';

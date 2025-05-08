@@ -101,11 +101,13 @@
 //   }
 // }
 
+import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-// ignore: must_be_immutable
 class CustomButton extends StatelessWidget {
-  CustomButton({
+  const CustomButton({
     this.onTap,
     required this.buttonText,
     this.buttonHeight,
@@ -122,25 +124,29 @@ class CustomButton extends StatelessWidget {
     this.buttonTextWeight,
     this.buttonBorderWidth,
     this.textStyle,
+    this.iconPath,
+    this.iconSize,
     super.key,
   });
 
   final VoidCallback? onTap;
-  Color? buttonColor;
-  double? borderRadius;
-  Color? textColor;
-  String buttonText;
-  Color? borderColor;
-  IconData? icon;
-  bool? isIcon;
-  Color? iconColor;
-  double? buttonHeight;
-  double buttonWidth;
-  String? fontFamily;
-  double? buttonTextSize;
-  FontWeight? buttonTextWeight;
-  double? buttonBorderWidth;
-  TextStyle? textStyle;
+  final Color? buttonColor;
+  final double? borderRadius;
+  final Color? textColor;
+  final String buttonText;
+  final Color? borderColor;
+  final double? buttonHeight;
+  final double buttonWidth;
+  final String? fontFamily;
+  final double? buttonTextSize;
+  final FontWeight? buttonTextWeight;
+  final double? buttonBorderWidth;
+  final TextStyle? textStyle;
+  final String? iconPath;
+  final IconData? icon;
+  final bool? isIcon;
+  final Color? iconColor;
+  final double? iconSize;
 
   @override
   Widget build(BuildContext context) {
@@ -151,43 +157,54 @@ class CustomButton extends StatelessWidget {
         color: buttonColor ?? Colors.black,
         borderRadius: BorderRadius.circular(borderRadius ?? 10),
         border: Border.all(
-            color: borderColor ?? Colors.transparent,
-            width: buttonBorderWidth ?? 1),
+          color: borderColor ?? Colors.transparent,
+          width: buttonBorderWidth ?? 1,
+        ),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
           child: Center(
-            child: isIcon == false
-                ? Text(
-              buttonText,
-              overflow: TextOverflow.ellipsis,
-              style: textStyle ?? TextStyle(
-                color: textColor ?? Colors.white,
-                fontSize: buttonTextSize ?? 14,
-                fontWeight: buttonTextWeight ?? FontWeight.normal,
-              ),
-            )
-                : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  color: iconColor,
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  buttonText,
-                  overflow: TextOverflow.ellipsis,
-                  style: textStyle ?? TextStyle(
-                      color: textColor ?? Colors.white,
-                      fontSize: buttonTextSize ?? 14,
-                      fontWeight:
-                      buttonTextWeight ?? FontWeight.normal),
-                )
-              ],
-            ),
+            child:
+                isIcon == false
+                    ? Text(
+                      buttonText,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          textStyle ??
+                          TextStyle(
+                            color: textColor ?? Colors.white,
+                            fontSize: buttonTextSize ?? 14,
+                            fontWeight: buttonTextWeight ?? FontWeight.normal,
+                          ),
+                    )
+                    : Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          buttonText,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              textStyle ??
+                              TextStyle(
+                                color: textColor ?? Colors.white,
+                                fontSize: buttonTextSize ?? 14,
+                                fontWeight:
+                                    buttonTextWeight ?? FontWeight.normal,
+                              ),
+                        ),
+                        SizedBox(width: 10.w),
+                        SvgPicture.asset(
+                          iconPath ?? "",
+                          height: iconSize ?? 15.h,
+                          width: iconSize ?? 15.w,
+                          fit: BoxFit.cover,
+                          color: iconColor ?? AppColors.white,
+                        ),
+                      ],
+                    ),
           ),
         ),
       ),

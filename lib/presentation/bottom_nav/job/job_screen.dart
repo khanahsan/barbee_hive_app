@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
+import '../../../infrastructure/navigation/routes.dart';
 import '../../../infrastructure/widgets/custom_textfield.dart';
 import 'employee/find_job_card.dart';
 
@@ -15,7 +16,7 @@ class JobScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isEmployer = false;
+    bool isEmployer = true;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -70,7 +71,7 @@ class JobScreen extends StatelessWidget {
             buttonTextSize: 16.sp,
             buttonHeight: 60.h,
             onTap: () {
-              // Add your logic here
+              Get.toNamed(Routes.createJobScreen);
               print("Post a Job clicked");
             },
           ).paddingOnly(bottom: 20.h),

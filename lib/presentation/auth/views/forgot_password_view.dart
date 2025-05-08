@@ -1,16 +1,11 @@
-import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
-import '../../../infrastructure/navigation/routes.dart';
 import '../../../infrastructure/widgets/custom_btn.dart';
-import '../../../infrastructure/widgets/custom_select_role_widget.dart';
-import '../../../infrastructure/widgets/custom_text_field.dart';
 import '../../../infrastructure/widgets/custom_dialog.dart';
+import '../../../infrastructure/widgets/custom_text_field.dart';
 import '../controllers/auth.controller.dart';
 
 class ForgotPasswordView extends GetView<AuthController> {

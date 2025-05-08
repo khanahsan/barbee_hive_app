@@ -1,8 +1,8 @@
-import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
+
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/navigation/routes.dart';
@@ -146,12 +146,15 @@ class SignInView extends GetView<AuthController> {
                             btnTitle: 'Sign In',
                             btnBackgroundColor: AppColors.primary,
                             btnTxtColor: Colors.white,
-                           // width: double.infinity,
+                            // width: double.infinity,
                             onPressed: () {},
                           ),
                           RichText(
                             text: TextSpan(
-                              style: TextStyle(fontSize: 12, color: AppColors.white),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.white,
+                              ),
                               children: [
                                 TextSpan(
                                   text: "Dont't have an account?",
@@ -169,16 +172,16 @@ class SignInView extends GetView<AuthController> {
                                     fontWeight: FontWeight.w400,
                                   ),
                                   recognizer:
-                                  TapGestureRecognizer()
-                                    ..onTap = () {
-                                      /*// Open YouTube URL
+                                      TapGestureRecognizer()
+                                        ..onTap = () {
+                                          /*// Open YouTube URL
                               const url = 'https://www.youtube.com';
                               launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);*/
-                                    },
+                                        },
                                 ),
                               ],
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),

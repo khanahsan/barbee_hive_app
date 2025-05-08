@@ -32,6 +32,7 @@ class AppAssets {
   static String backIcon = '$iconPath/back_icon.svg';
   static String premiumIcon = '$iconPath/premium_icon.svg';
   static String premiumActiveIcon = '$iconPath/premium_active_icon.svg';
+  static String clockIcon = '$iconPath/clock_icon.svg';
 
   static String logo = '$imagesPath/barbee_logo.png';
   static String appleLogo = '$imagesPath/apple_logo.png';

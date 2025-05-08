@@ -1,21 +1,22 @@
+import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-import '../../../infrastructure/constants/app_colors.dart';
-import '../../../infrastructure/constants/app_images.dart';
-import '../../../infrastructure/navigation/routes.dart';
-import '../../../infrastructure/widgets/custom_btn.dart';
 
-class JobCard extends StatefulWidget {
-  const JobCard({super.key});
+import '../../../../infrastructure/constants/app_colors.dart';
+import '../../../../infrastructure/constants/app_images.dart';
+import '../../../../infrastructure/navigation/routes.dart';
+
+class FindJobCard extends StatefulWidget {
+  const FindJobCard({super.key});
 
   @override
-  State<JobCard> createState() => _JobCardState();
+  State<FindJobCard> createState() => _FindJobCardState();
 }
 
-class _JobCardState extends State<JobCard> with SingleTickerProviderStateMixin {
+class _FindJobCardState extends State<FindJobCard> with SingleTickerProviderStateMixin {
   bool isExpanded = false;
 
   void toggleExpanded() {
@@ -31,7 +32,7 @@ class _JobCardState extends State<JobCard> with SingleTickerProviderStateMixin {
         if (isExpanded) toggleExpanded();
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
         decoration: BoxDecoration(
           color: AppColors.color101010,
           borderRadius: BorderRadius.circular(10.r),
@@ -42,8 +43,45 @@ class _JobCardState extends State<JobCard> with SingleTickerProviderStateMixin {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 15.h,
+            spacing: 14.h,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                spacing: 8.w,
+                children: [
+                  HexagonAvatar(
+                    imagePath: AppAssets.profileImage,
+                    width: 70.w,
+                    height: 80.h,
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Job Posted By",
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      Text(
+                        "Keithon's Kitchen & Bar",
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Divider(
+                color: AppColors.textFieldBackground,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -110,17 +148,19 @@ class _JobCardState extends State<JobCard> with SingleTickerProviderStateMixin {
                     ),
                   ],
                 ),
-              CustomBtn(
-                btnTitle: isExpanded ? "Apply Now" : "View Detail",
-                onPressed: (){
-                  if(isExpanded){
+              CustomButton(
+                buttonHeight: 60.h,
+                buttonText: isExpanded ? "Apply Now" : "View Detail",
+                buttonWidth: double.infinity,
+                buttonColor: AppColors.color101010,
+                borderColor: AppColors.primary,
+                onTap: () {
+                  if (isExpanded) {
                     Get.toNamed(Routes.APPLY_VIEW);
-                  }else{
+                  } else {
                     toggleExpanded();
                   }
                 },
-                btnBackgroundColor: AppColors.color101010,
-                borderColor: AppColors.primary,
               ),
             ],
           ),

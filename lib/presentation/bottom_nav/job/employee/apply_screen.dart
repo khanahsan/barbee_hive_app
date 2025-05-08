@@ -1,15 +1,15 @@
+import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import '../../../infrastructure/constants/app_colors.dart';
-import '../../../infrastructure/constants/app_images.dart';
-import '../../../infrastructure/widgets/custom_btn.dart';
-import '../../../infrastructure/widgets/custom_dialog.dart';
+import '../../../../infrastructure/constants/app_colors.dart';
+import '../../../../infrastructure/constants/app_images.dart';
+import '../../../../infrastructure/widgets/custom_dialog.dart';
 
-class ApplyView extends StatelessWidget {
-  const ApplyView({super.key});
+class ApplyScreen extends StatelessWidget {
+  const ApplyScreen({super.key});
 
   void applyDialog(BuildContext context) {
     showDialog(
@@ -205,16 +205,15 @@ class ApplyView extends StatelessWidget {
                       },
                     ),
 
-                    CustomBtn(
-                      btnTitle: 'Submit Now',
-                      fontSize: 20.sp,
-                      btnBackgroundColor: AppColors.primary,
-                      btnTxtColor: Colors.white,
+                    CustomButton(
+                      buttonText: 'Submit Now',
                       buttonWidth: double.infinity,
-                      onPressed: (){
-                        applyDialog(context);
-                      },
+                      textColor: Colors.white,
+                      buttonTextSize: 18.sp,
+                      buttonColor: AppColors.primary,
+                      buttonHeight: 65.h,
                     ),
+
                     SizedBox(height: 20.h),
                   ],
                 ),

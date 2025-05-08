@@ -34,10 +34,10 @@ class CustomSelectRoleWidget extends StatelessWidget {
             children: [
               Image.asset(iconPath!, width: 70.w, height: 70.h),
               CustomButton(
-                btnTitle: btnText!,
-                onPressed: () {},
-                width: 95.0.w,
-                height: 22.0.h,
+                buttonText: btnText!,
+                onTap: () {},
+                buttonWidth: 95.0.w,
+                buttonHeight: 22.0.h,
                 borderRadius: 4.0.r,
               ),
             ],

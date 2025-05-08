@@ -16,7 +16,7 @@ class CustomBtn extends StatelessWidget {
     this.fontSize = 16,
     this.fontWeight = FontWeight.w700,
     this.buttonWidth = double.infinity,
-    this.buttonHeight = 45,
+    this.buttonHeight = 80,
     this.titlePadding = EdgeInsets.zero,
     this.borderColor = Colors.transparent,
     this.borderWidth = 0.0,
@@ -43,7 +43,7 @@ class CustomBtn extends StatelessWidget {
       onPressed: isLoading ? null : onPressed,
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
-        minimumSize: Size(buttonWidth!.w, buttonHeight ?? 45.h),
+        // minimumSize: Size(buttonWidth!.w, buttonHeight ?? 45.h),
         backgroundColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.r),
@@ -55,7 +55,7 @@ class CustomBtn extends StatelessWidget {
         alignment: Alignment.center,
         padding: titlePadding,
         width: buttonWidth!.w,
-        height: 50.h,
+        height: buttonHeight ?? 80.h,
         decoration: BoxDecoration(
             color: btnBackgroundColor,
           border: Border.all(width: borderWidth, color: borderColor),

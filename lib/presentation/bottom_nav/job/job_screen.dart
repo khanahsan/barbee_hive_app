@@ -15,7 +15,7 @@ class JobScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isEmployer = false;
+    bool isEmployer = true;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

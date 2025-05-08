@@ -19,7 +19,7 @@ class CustomBottomNavBar extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(30.r),
       child: Container(
-        height: 90.h,
+        height: 110.h,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.black, AppColors.boxBorder, AppColors.black],

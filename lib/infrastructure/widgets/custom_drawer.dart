@@ -1,4 +1,5 @@
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
+import 'package:barbee_hive_app/presentation/auth/controllers/auth.controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -209,28 +210,34 @@ class _CustomDrawerState extends State<CustomDrawer>
                               ),
                             ),
                             SizedBox(height: 30.h),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 12.w,
-                              children: [
-                                SvgPicture.asset(
-                                  AppAssets.exitIcon,
-                                  width: 22.w,
-                                  height: 22.h,
-                                  fit: BoxFit.cover,
-                                ),
-                                Text(
-                                  "Logout",
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleSmall?.copyWith(
-                                    fontSize: 20.sp,
-                                    color: AppColors.white,
-                                    fontWeight: FontWeight.w600,
+                            InkWell(
+                              onTap: (){
+                                print('Logout tap');
+                                Get.find<AuthController>().logout(); // Call logout method
+                              },
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: 12.w,
+                                children: [
+                                  SvgPicture.asset(
+                                    AppAssets.exitIcon,
+                                    width: 22.w,
+                                    height: 22.h,
+                                    fit: BoxFit.cover,
                                   ),
-                                ),
-                              ],
+                                  Text(
+                                    "Logout",
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleSmall?.copyWith(
+                                      fontSize: 20.sp,
+                                      color: AppColors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

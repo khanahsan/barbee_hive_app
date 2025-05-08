@@ -1,8 +1,12 @@
+import 'package:barbee_hive_app/data/api/api_service.dart';
+
 class Routes {
-  static Future<String> get initialRoute async {
-    // TODO: implement method
-    return CUSTOMDRAWER;
-  }
+static Future<String> get initialRoute async {
+  await ApiService.initToken();
+  final token = ApiService.getToken();
+  print('Token: $token, Route: ${token != null && token.isNotEmpty ? CUSTOMDRAWER : HOME}');
+  return token != null && token.isNotEmpty ? CUSTOMDRAWER : HOME;
+}
 
   static const AUTH = '/auth';
   static const HOME = '/home';

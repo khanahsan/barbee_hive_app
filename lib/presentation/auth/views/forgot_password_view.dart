@@ -76,7 +76,7 @@ class ForgotPasswordView extends GetView<AuthController> {
                         CustomTextField(
                           hint: 'Email address',
                           icon: AppAssets.nameLogo,
-                          controller: controller.nameController,
+                          controller: controller.fEmailController,
                         ),
                         RichText(
                           text: TextSpan(
@@ -98,14 +98,25 @@ class ForgotPasswordView extends GetView<AuthController> {
                         ),
 
                         SizedBox(height: 60.h),
-                        CustomBtn(
+                        /*CustomBtn(
+                          buttonHeight: 50,
                           btnTitle: 'Send Code',
                           btnBackgroundColor: AppColors.primary,
                           btnTxtColor: Colors.white,
                           // width: double.infinity,
                           onPressed: () {
-                            showResetPasswordDialog(context, 'abc@gmail.com');
+                            //showResetPasswordDialog(context, 'abc@gmail.com');
                           },
+                        ),*/
+                        Obx(
+                              () => CustomBtn(
+                            buttonHeight: 50,
+                            btnTitle: 'Send Code',
+                            btnBackgroundColor: AppColors.primary,
+                            btnTxtColor: AppColors.white,
+                            onPressed: () => controller.forgotPassword(),
+                            isLoading: controller.fPasswordIsLoading.value,
+                          ),
                         ),
                       ],
                     ),

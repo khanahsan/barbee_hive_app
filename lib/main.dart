@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
+import 'data/api/api_service.dart';
 import 'infrastructure/navigation/navigation.dart';
 import 'infrastructure/navigation/routes.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   var initialRoute = await Routes.initialRoute;
+  await ApiService.initToken();
+
   runApp(Main(initialRoute));
 }
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../../infrastructure/constants/app_colors.dart';
 import '../../../../infrastructure/constants/app_images.dart';
+import '../../../../infrastructure/navigation/routes.dart';
 import '../../../../infrastructure/widgets/custom_button.dart';
 
 class JobApplicationCard extends StatelessWidget {
@@ -86,6 +88,9 @@ class JobApplicationCard extends StatelessWidget {
           //Info Tile
           _buildRow(context: context, title: "Job Role", value: "Bartender"),
           CustomButton(
+            onTap: () {
+              Get.toNamed(Routes.applicationsScreen);
+            },
             buttonText: "View Applications",
             buttonWidth: double.infinity,
             buttonColor: AppColors.color101010,

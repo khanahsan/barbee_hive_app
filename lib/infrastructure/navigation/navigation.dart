@@ -1,6 +1,7 @@
 import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_binding.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_drawer.dart';
 import 'package:barbee_hive_app/presentation/auth/views/sign_in_view.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/create%20job%20_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
@@ -109,6 +110,11 @@ class Nav {
     GetPage(
       name: Routes.createJobScreen,
       page: () => const CreateJobScreen(),
+      binding: InitialBindings(),
+    ),
+    GetPage(
+      name: Routes.applicationsScreen,
+      page: () => const ApplicationsScreen(),
       binding: InitialBindings(),
     ),
   ];

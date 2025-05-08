@@ -1,5 +1,5 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -84,7 +84,14 @@ class PricingPlansScreen extends StatelessWidget {
               "Boost button available for \$0.99 (3-hour boost)",
             ].map((text) => _buildBulletPoint(context, text)),
             SizedBox(height: 20.h),
-            CustomBtn(btnTitle: "Get Started", onPressed: () {}),
+
+            CustomButton(
+              buttonText: "Get Started",
+              buttonWidth: double.infinity,
+              buttonHeight: 60.h,
+              buttonTextSize: 16.sp,
+              buttonColor: AppColors.primary,
+            ),
           ],
         ),
       ),

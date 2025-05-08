@@ -20,4 +20,5 @@ class Routes {
   static const chatScreen = '/chat_screen';
   static const settingsScreen = '/settings_screen';
   static const createJobScreen = '/create_job_screen';
+  static const applicationsScreen = '/applications_screen';
 }

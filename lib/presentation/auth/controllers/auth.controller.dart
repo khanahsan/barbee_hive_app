@@ -12,14 +12,12 @@ import '../../../infrastructure/helpers/shared_preference_helper.dart';
 class AuthController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
   final TextEditingController fEmailController = TextEditingController();
 
 
 
   final isLoading = false.obs;
   final fPasswordIsLoading = false.obs;
-
   final RxBool isObscured = true.obs;
 
   void togglePasswordVisibility() {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "545979703872",
+    "project_id": "barbee-hive-67829",
+    "storage_bucket": "barbee-hive-67829.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545979703872:android:756f6980c1700bce7db5a5",
+        "android_client_info": {
+          "package_name": "com.example.barbee_hive_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxM2cUz_nFmqdyVn0xlS0_sJ1KVpf5z2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

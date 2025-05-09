@@ -96,10 +96,18 @@ class Nav {
       page: () => const ProfileScreen(),
       binding: InitialBindings(),
     ),
+    /*GetPage(
+      name: Routes.chatScreen,
+      page: () => ChatScreen(),
+      binding: InitialBindings(),
+    ),*/
     GetPage(
       name: Routes.chatScreen,
-      page: () => const ChatScreen(),
-      binding: InitialBindings(),
+      page: () => ChatScreen(
+        chatID: Get.arguments['chatID'],
+        otherUserID: Get.arguments['otherUserID'],
+        currentUserID: Get.arguments['currentUserID'],
+      ),
     ),
     GetPage(
       name: Routes.settingsScreen,

@@ -9,14 +9,12 @@ import 'package:get/get.dart';
 class AuthController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
   final TextEditingController fEmailController = TextEditingController();
 
 
 
   final isLoading = false.obs;
   final fPasswordIsLoading = false.obs;
-
   final RxBool isObscured = true.obs;
 
   void togglePasswordVisibility() {
@@ -43,8 +41,10 @@ class AuthController extends GetxController {
     try {
       print('Attempting login with email: $email');
       final response = await AuthProvider.login(email, password);
-      print('Login Response: $response');
+      print('Login Response: status=${response.status}, user=${response.user.email}, role=${response.user.role}');
       TokenStorage.saveToken(response.token);
+      TokenStorage.saveUserId(response.user.id); // Save user ID
+      TokenStorage.saveRole(response.user.role);
       ApiService.setToken(response.token);
 
       Get.snackbar("Success", response.message);

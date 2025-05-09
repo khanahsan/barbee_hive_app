@@ -1,3 +1,4 @@
+import 'package:barbee_hive_app/data/firebase/firebase_chat_service.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
@@ -8,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-class MessageScreen extends StatelessWidget {
+/*class MessageScreen extends StatelessWidget {
   const MessageScreen({super.key});
 
   @override
@@ -85,5 +86,77 @@ class MessageScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}*/
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'chat_screen.dart';
+
+class MessageScreen extends StatelessWidget {
+  final String currentUserID;
+  final int role; // 'employee' or 'employer'
+
+  MessageScreen({required this.currentUserID, required this.role});
+
+  final ChatService _chatService = ChatService();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Chats'),
+        backgroundColor: Colors.blue,
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _chatService.getChatRooms(currentUserID),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          var chats = snapshot.data!.docs;
+
+          if (chats.isEmpty) {
+            return Center(child: Text('No chats yet.'));
+          }
+
+          return ListView.builder(
+            itemCount: chats.length,
+            itemBuilder: (context, index) {
+              var chat = chats[index];
+              String otherUserID = chat['participants']
+                  .firstWhere((id) => id != currentUserID);
+
+              return ListTile(
+                title: Text(otherUserID),
+                subtitle: Text(chat['lastMessage'] ?? 'No messages yet'),
+                trailing: Text(
+                  _formatTimestamp(chat['lastMessageTime']),
+                  style: TextStyle(fontSize: 12.sp),
+                ),
+                onTap: () async {
+                  String chatID = await _chatService.getChatRoomID(currentUserID, otherUserID);
+                  Get.to(() => ChatScreen(
+                    chatID: chatID,
+                    otherUserID: otherUserID,
+                    currentUserID: currentUserID,
+                  ));
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  String _formatTimestamp(Timestamp? timestamp) {
+    if (timestamp == null) return '';
+    DateTime date = timestamp.toDate();
+    return '${date.hour}:${date.minute} ${date.day}/${date.month}';
   }
 }

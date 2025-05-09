@@ -1,4 +1,6 @@
+import 'package:barbee_hive_app/firebase_options.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_binding.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -10,6 +12,9 @@ import 'infrastructure/navigation/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
   var initialRoute = await Routes.initialRoute;
   await ApiService.initToken();
 

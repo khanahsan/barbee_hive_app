@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/widgets/custom_btn.dart';
 import '../../../infrastructure/widgets/custom_dialog.dart';
-import '../../../infrastructure/widgets/custom_text_field.dart';
+import '../../../infrastructure/widgets/custom_textfield.dart';
 import '../controllers/auth.controller.dart';
 
 class ForgotPasswordView extends GetView<AuthController> {
@@ -29,6 +30,7 @@ class ForgotPasswordView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Center(
@@ -52,6 +54,7 @@ class ForgotPasswordView extends GetView<AuthController> {
                   ),
                 ),
                 child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 30.h),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: AppColors.black,
@@ -60,62 +63,56 @@ class ForgotPasswordView extends GetView<AuthController> {
                       topLeft: Radius.circular(18.0),
                     ),
                   ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      //crossAxisAlignment: CrossAxisAlignment.end,
-                      spacing: 10.h,
-                      children: [
-                        SizedBox(height: 10.h),
-                        CustomTextField(
-                          hint: 'Email address',
-                          icon: AppAssets.nameLogo,
-                          controller: controller.fEmailController,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    // spacing: 10.h,
+                    children: [
+                      CustomTextField(
+                        hintText: 'Email Address',
+                        prefixIcon: SvgPicture.asset(
+                          AppAssets.envelopeIcon,
+                          fit: BoxFit.scaleDown,
                         ),
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              const TextSpan(
-                                text: '* ',
-                                style: TextStyle(color: Colors.red),
+                        controller: controller.fEmailController,
+                        fillColor: AppColors.color101010,
+                        filled: true,
+                        enabledBorderColor: Colors.transparent,
+                        fontColor: AppColors.color4C4C4C,
+                      ),
+                      SizedBox(height: 20.h),
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            const TextSpan(
+                              text: '* ',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                            TextSpan(
+                              text:
+                                  'We Will send you a message to set or reset your\n\t\t\tnew password',
+                              style: TextStyle(
+                                color: AppColors.textFieldTextColor,
+                                fontSize: 15.sp, // Match CustomText style
                               ),
-                              TextSpan(
-                                text:
-                                    'We Will send you a message to set or reset your new password',
-                                style: TextStyle(
-                                  color: AppColors.textFieldTextColor,
-                                  fontSize: 14.0.sp, // Match CustomText style
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
+                      ),
 
-                        SizedBox(height: 60.h),
-                        /*CustomBtn(
-                          buttonHeight: 50,
+                      SizedBox(height: 40.h),
+                      Obx(
+                        () => CustomBtn(
+                          buttonHeight: 55.h,
                           btnTitle: 'Send Code',
                           btnBackgroundColor: AppColors.primary,
-                          btnTxtColor: Colors.white,
-                          // width: double.infinity,
-                          onPressed: () {
-                            //showResetPasswordDialog(context, 'abc@gmail.com');
-                          },
-                        ),*/
-                        Obx(
-                              () => CustomBtn(
-                            buttonHeight: 50,
-                            btnTitle: 'Send Code',
-                            btnBackgroundColor: AppColors.primary,
-                            btnTxtColor: AppColors.white,
-                            onPressed: () => controller.forgotPassword(),
-                            isLoading: controller.fPasswordIsLoading.value,
-                          ),
+                          btnTxtColor: AppColors.white,
+                          onPressed: () => controller.forgotPassword(),
+                          isLoading: controller.fPasswordIsLoading.value,
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    ],
+                  ).paddingSymmetric(horizontal: 20.w),
                 ),
               ),
             ],

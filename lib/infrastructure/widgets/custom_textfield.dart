@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 
 class CustomTextField extends StatefulWidget {
@@ -32,6 +33,7 @@ class CustomTextField extends StatefulWidget {
   final TextCapitalization? textCapitalization;
   final Color? cursorColor;
   final Color? fontColor;
+  final double? fontSize;
   final Color? enabledBorderColor;
   final Color? focusedBorderColor;
 
@@ -67,6 +69,7 @@ class CustomTextField extends StatefulWidget {
     this.textCapitalization,
     this.cursorColor,
     this.fontColor,
+    this.fontSize,
     this.enabledBorderColor,
     this.focusedBorderColor,
   });
@@ -117,8 +120,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
           focusNode: widget.focusNode,
           readOnly: widget.readonly ?? false,
 
-          style:
-          TextStyle(color: widget.fontColor ?? Colors.black, fontSize: 14),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            color: widget.fontColor,
+            fontSize: widget.fontSize ?? 16.sp,
+          ),
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
             labelText: widget.label,
@@ -145,8 +150,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   width: 2.0),
               borderRadius: BorderRadius.circular(10),
             ),
-            hintStyle: TextStyle(
-              color: widget.fontColor ?? Colors.grey,
+            hintStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
+              color: widget.fontColor,
+              fontSize: widget.fontSize ?? 16.sp,
             ),
             errorStyle: const TextStyle(
               color: Colors.red,

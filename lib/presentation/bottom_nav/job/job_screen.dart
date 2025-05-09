@@ -7,17 +7,37 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
+import '../../../infrastructure/constants/shared_pref_keys.dart';
+import '../../../infrastructure/helpers/shared_preference_helper.dart';
 import '../../../infrastructure/navigation/routes.dart';
 import '../../../infrastructure/widgets/custom_textfield.dart';
 import 'employee/find_job_card.dart';
 
-class JobScreen extends StatelessWidget {
+class JobScreen extends StatefulWidget {
   const JobScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    bool isEmployer = true;
+  State<JobScreen> createState() => _JobScreenState();
+}
 
+class _JobScreenState extends State<JobScreen> {
+  bool isEmployer = true;
+
+  Future<void> loadRole() async {
+    final role = SharedPreferenceHelper.getInt(SharedPrefKeys.userRole);
+    setState(() {
+      isEmployer = role == 2;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadRole();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       spacing: isEmployer == true ? 0.h : 25.h,

@@ -1,9 +1,12 @@
 import 'package:barbee_hive_app/data/api/api_service.dart';
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/data/api/token_storage.dart';
+import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../infrastructure/helpers/shared_preference_helper.dart';
 
 
 class AuthController extends GetxController {
@@ -45,6 +48,9 @@ class AuthController extends GetxController {
       final response = await AuthProvider.login(email, password);
       print('Login Response: $response');
       TokenStorage.saveToken(response.token);
+
+      await SharedPreferenceHelper.saveInt(SharedPrefKeys.userRole, response.user.role);
+
       ApiService.setToken(response.token);
 
       Get.snackbar("Success", response.message);

@@ -1,3 +1,4 @@
+import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/cutom_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,23 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int currentBottomIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  // User data
+  int? currentUserID;
+  int? role;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  // Load user data from SharedPreferences
+  Future<void> _loadUserData() async {
+    currentUserID = await TokenStorage.getUserId();
+    role = await TokenStorage.getRole();
+    setState(() {}); // Update UI after loading data
+  }
 
   String? selectedJob;
   final List<String> jobList = ['All Jobs', 'Part Time', 'Full Time', 'Remote'];
@@ -91,12 +109,24 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  final List<Widget> screens = [
+ /* final List<Widget> screens = [
     DashboardScreen(),
     MessageScreen(),
     JobScreen(),
     PricingPlansScreen(),
-  ];
+  ];*/
+
+  // Getter for screens list
+  List<Widget> get screens {
+    return [
+      DashboardScreen(),
+      currentUserID != null && role != null
+          ? MessageScreen(currentUserID: currentUserID.toString(), role: role!)
+          : Center(child: CircularProgressIndicator()), // Fallback while loading
+      JobScreen(),
+      PricingPlansScreen(),
+    ];
+  }
 
   void onItemTapped(int index) {
     setState(() {

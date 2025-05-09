@@ -175,7 +175,7 @@ class SignInView extends GetView<AuthController> {
 
                         Obx(
                           () => CustomBtn(
-                            buttonHeight: 50,
+                            buttonHeight: 55.h,
                             btnTitle: 'Sign In',
                             btnBackgroundColor: AppColors.primary,
                             btnTxtColor: AppColors.white,

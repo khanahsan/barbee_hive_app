@@ -1,4 +1,5 @@
 
+import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/controllers/sign_up_employer_controller.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,7 @@ class InitialBindings implements Bindings{
     Get.lazyPut<SplashController>(() => SplashController());
     Get.lazyPut<SignUpEmployerController>(() => SignUpEmployerController());
     Get.lazyPut<ProfileController>(() => ProfileController());
+    Get.lazyPut<JobController>(() => JobController());
   }
 
 }

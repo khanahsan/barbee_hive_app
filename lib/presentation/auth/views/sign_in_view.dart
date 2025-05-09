@@ -1,13 +1,14 @@
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/navigation/routes.dart';
 import '../../../infrastructure/widgets/custom_btn.dart';
-import '../../../infrastructure/widgets/custom_text_field.dart';
+import '../../../infrastructure/widgets/custom_textfield.dart';
 import '../controllers/auth.controller.dart';
 
 class SignInView extends GetView<AuthController> {
@@ -16,6 +17,7 @@ class SignInView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
       body: Stack(
         children: [
@@ -37,55 +39,49 @@ class SignInView extends GetView<AuthController> {
 
               spacing: 15.h,
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-                  child: Text(
-                    'Login to\nBarBee Hive',
-                    style: TextStyle(fontSize: 36, color: AppColors.white),
+                Text(
+                  'Login to\nBarBee Hive',
+                  style: TextStyle(fontSize: 36, color: AppColors.white),
+                ).paddingSymmetric(horizontal: 20.w),
+                RichText(
+                  text: TextSpan(
+                    style: TextStyle(fontSize: 12, color: AppColors.white),
+                    children: [
+                      TextSpan(
+                        text: 'Welcome back to  ',
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 20.0.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Barbee Hive,',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 20.0.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        recognizer:
+                            TapGestureRecognizer()
+                              ..onTap = () {
+                                /*// Open YouTube URL
+                            const url = 'https://www.youtube.com';
+                            launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);*/
+                              },
+                      ),
+                      TextSpan(
+                        text:
+                            ' Find the Hottest Bars. Join the Coolest Crowds.',
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 20.0.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-                  child: RichText(
-                    text: TextSpan(
-                      style: TextStyle(fontSize: 12, color: AppColors.white),
-                      children: [
-                        TextSpan(
-                          text: 'Welcome back to  ',
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontSize: 20.0.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'Barbee Hive,',
-                          style: TextStyle(
-                            color: AppColors.primary,
-                            fontSize: 20.0.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          recognizer:
-                              TapGestureRecognizer()
-                                ..onTap = () {
-                                  /*// Open YouTube URL
-                              const url = 'https://www.youtube.com';
-                              launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);*/
-                                },
-                        ),
-                        TextSpan(
-                          text:
-                              ' Find the Hottest Bars. Join the Coolest Crowds.',
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontSize: 20.0.sp,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                ).paddingSymmetric(horizontal: 20.w),
 
                 Container(
                   height: 532.h,
@@ -99,6 +95,10 @@ class SignInView extends GetView<AuthController> {
                     ),
                   ),
                   child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 15.w,
+                      vertical: 30.h,
+                    ),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: AppColors.black,
@@ -107,98 +107,118 @@ class SignInView extends GetView<AuthController> {
                         topLeft: Radius.circular(18.0),
                       ),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        //crossAxisAlignment: CrossAxisAlignment.end,
-                        spacing: 10.h,
-                        children: [
-                          SizedBox(height: 10.h),
-                          CustomTextField(
-                            hint: 'Username or Email',
-                            icon: AppAssets.nameLogo,
-                            controller: controller.nameController,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      //crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        CustomTextField(
+                          fontColor: AppColors.color4C4C4C,
+                          filled: true,
+                          fillColor: AppColors.color101010,
+                          enabledBorderColor: Colors.transparent,
+                          hintText: 'Username or Email',
+                          prefixIcon: SvgPicture.asset(
+                            AppAssets.personIcon,
+                            fit: BoxFit.scaleDown,
+                            color: AppColors.color4C4C4C,
                           ),
-                          /*CustomTextField(
-                            isPassword: true,
-                            isObscured: true,
-                            hint: 'Password',
-                            icon: AppAssets.nameLogo,
+                          // icon: AppAssets.nameLogo,
+                          controller: controller.nameController,
+                        ),
+
+                        SizedBox(height: 20.h),
+                        Obx(
+                          () => CustomTextField(
+                            fontColor: AppColors.color4C4C4C,
+                            filled: true,
+                            fillColor: AppColors.color101010,
+                            enabledBorderColor: Colors.transparent,
+                            obscureText: controller.isObscured.value,
+                            hintText: 'Password',
+                            prefixIcon: SvgPicture.asset(
+                              AppAssets.lockIcon,
+                              fit: BoxFit.scaleDown,
+                            ),
+                            suffixIcon: GestureDetector(
+                              onTap: controller.togglePasswordVisibility,
+                              child: Icon(
+                                controller.isObscured.value
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
+                                size: 25.sp,
+                                color: AppColors.color4C4C4C,
+                              ),
+                            ),
                             controller: controller.passwordController,
-                          ),*/
-                          Obx(() => CustomTextField(
-                            isPassword: true,
-                            isObscured: controller.isObscured.value, // Reactive state
-                            hint: 'Password',
-                            icon: AppAssets.nameLogo,
-                            controller: controller.passwordController,
-                            onToggleVisibility: controller.togglePasswordVisibility, // Toggle callback
-                          )),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () {
-                                Get.toNamed(Routes.FORGOT_PASSWORD);
-                              },
-                              child: Text(
-                                'Forgot Password?',
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  color: AppColors.primary,
-                                ),
+                          ),
+                        ),
+                        SizedBox(height: 20.h),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.toNamed(Routes.FORGOT_PASSWORD);
+                            },
+                            child: Text(
+                              'Forgot Password?',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.titleMedium?.copyWith(
+                                fontSize: 15.sp,
+                                color: AppColors.primary,
                               ),
                             ),
                           ),
+                        ),
 
-                          SizedBox(height: 120.h),
+                        SizedBox(height: 120.h),
 
-                          /*CustomBtn(
+                        Obx(
+                          () => CustomBtn(
                             buttonHeight: 50,
                             btnTitle: 'Sign In',
                             btnBackgroundColor: AppColors.primary,
-                            btnTxtColor: Colors.white,
+                            btnTxtColor: AppColors.white,
                             onPressed: () => controller.login(),
-                          ),*/
-                          Obx(
-                                () => CustomBtn(
-                              buttonHeight: 50,
-                              btnTitle: 'Sign In',
-                              btnBackgroundColor: AppColors.primary,
-                              btnTxtColor: AppColors.white,
-                              onPressed: () => controller.login(),
-                              isLoading: controller.isLoading.value, // Pass reactive isLoading value
-                            ),
+                            isLoading:
+                                controller
+                                    .isLoading
+                                    .value, // Pass reactive isLoading value
                           ),
-                          RichText(
-                            text: TextSpan(
-                              style: TextStyle(fontSize: 12, color: AppColors.white),
-                              children: [
-                                TextSpan(
-                                  text: "Dont't have an account?",
-                                  style: TextStyle(
-                                    color: AppColors.white,
-                                    fontSize: 13.0.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: 'Sign Up',
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 13.0.sp,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                  recognizer:
-                                  TapGestureRecognizer()
-                                    ..onTap = () {
-                                    },
-                                ),
-                              ],
+                        ),
+                        SizedBox(height: 20.h),
+                        RichText(
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.white,
                             ),
-                          )
-                        ],
-                      ),
+                            children: [
+                              TextSpan(
+                                text: "Dont't have an account?",
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleMedium?.copyWith(
+                                  fontSize: 15.sp,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                              TextSpan(text: " "),
+                              TextSpan(
+                                text: 'Sign Up',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.titleMedium?.copyWith(
+                                  fontSize: 15.sp,
+                                  color: AppColors.primary,
+                                ),
+                                recognizer:
+                                    TapGestureRecognizer()..onTap = () {},
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

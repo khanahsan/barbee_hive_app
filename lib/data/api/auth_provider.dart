@@ -1,6 +1,7 @@
 
 
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
+import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/data/model/login_response.dart';
 
 import 'api_service.dart';
@@ -34,5 +35,13 @@ class AuthProvider {
       'status': response['status'] ?? false,
       'message': response['message'] ?? 'Request processed',
     };
+  }
+
+  static Future<DashboardResponse> getDashboardUsers() async {
+    final data = await ApiService.get(
+      Endpoints.dashboardUsers,
+      auth: true, // Requires token
+    );
+    return DashboardResponse.fromJson(data);
   }
 }

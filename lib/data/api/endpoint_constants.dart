@@ -4,5 +4,6 @@ class Endpoints {
   static const String login = 'login';
   static const String logout = 'logout';
   static const String forgotPassword = 'forgot-password';
+  static const String dashboardUsers = 'dashboard/nearest-users';
 }
 

@@ -277,7 +277,7 @@ class HexagonAvatar extends StatelessWidget {
     return ClipPath(
       clipper: HexagonClipper(),
       child: Container(
-        padding: const EdgeInsets.all(2),
+        padding: const EdgeInsets.all(1),
         width: resolvedWidth,
         height: resolvedHeight,
         color: borderColor ?? AppColors.primary,

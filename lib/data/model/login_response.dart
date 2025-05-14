@@ -151,6 +151,38 @@ class User {
   }
 }
 
+// class Employee {
+//   final String name;
+//   final String experienceYears;
+//   final String country;
+//   final String state;
+//   final String city;
+//   final String dob;
+//   final int isAvailable;
+//
+//   Employee({
+//     required this.name,
+//     required this.experienceYears,
+//     required this.country,
+//     required this.state,
+//     required this.city,
+//     required this.dob,
+//     required this.isAvailable,
+//   });
+//
+//   factory Employee.fromJson(Map<String, dynamic> json) {
+//     return Employee(
+//       name: json['name'] ?? '',
+//       experienceYears: json['experience_years'] ?? '',
+//       country: json['country'] ?? '',
+//       state: json['state'] ?? '',
+//       city: json['city'] ?? '',
+//       dob: json['dob'] ?? '',
+//       isAvailable: json['is_available'] ?? 0,
+//     );
+//   }
+// }
+
 class Employee {
   final String name;
   final String experienceYears;
@@ -158,7 +190,13 @@ class Employee {
   final String state;
   final String city;
   final String dob;
-  final int isAvailable;
+  final String gender;
+  final int height;
+  final EyeColor? eyeColor;
+  final HairColor? hairColor;
+  final String? resumePath;
+  final bool isAvailable;
+  final Skill? skill;
 
   Employee({
     required this.name,
@@ -167,7 +205,13 @@ class Employee {
     required this.state,
     required this.city,
     required this.dob,
+    required this.gender,
+    required this.height,
+    this.eyeColor,
+    this.hairColor,
+    this.resumePath,
     required this.isAvailable,
+    this.skill,
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) {
@@ -178,10 +222,59 @@ class Employee {
       state: json['state'] ?? '',
       city: json['city'] ?? '',
       dob: json['dob'] ?? '',
-      isAvailable: json['is_available'] ?? 0,
+      gender: json['gender'] ?? '',
+      height: json['height'] ?? 0,
+      eyeColor: json['eye_color'] != null ? EyeColor.fromJson(json['eye_color']) : null,
+      hairColor: json['hair_color'] != null ? HairColor.fromJson(json['hair_color']) : null,
+      resumePath: json['resume_path'],
+      isAvailable: json['is_available'] ?? false,
+      skill: json['skill'] != null ? Skill.fromJson(json['skill']) : null,
     );
   }
 }
+
+class EyeColor {
+  final int id;
+  final String name;
+
+  EyeColor({required this.id, required this.name});
+
+  factory EyeColor.fromJson(Map<String, dynamic> json) {
+    return EyeColor(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+    );
+  }
+}
+
+class HairColor {
+  final int id;
+  final String name;
+
+  HairColor({required this.id, required this.name});
+
+  factory HairColor.fromJson(Map<String, dynamic> json) {
+    return HairColor(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+    );
+  }
+}
+
+class Skill {
+  final int id;
+  final String name;
+
+  Skill({required this.id, required this.name});
+
+  factory Skill.fromJson(Map<String, dynamic> json) {
+    return Skill(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+    );
+  }
+}
+
 
 class Employer {
   final String businessName;

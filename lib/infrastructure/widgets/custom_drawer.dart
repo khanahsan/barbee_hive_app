@@ -272,7 +272,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                           height: 500.h,
                           width: 250.w,
                           decoration: BoxDecoration(
-                            color: Colors.blue,
+                            color: AppColors.color151515,
                             borderRadius: BorderRadius.circular(30.r),
                           ),
                         ),
@@ -283,7 +283,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                           height: 600.h,
                           width: 250.w,
                           decoration: BoxDecoration(
-                            color: Colors.brown,
+                            color: AppColors.color1F1F1F,
                             borderRadius: BorderRadius.circular(30.r),
                           ),
                         ),

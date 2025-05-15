@@ -1,11 +1,13 @@
-import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../../data/model/dashboard_response.dart';
 import '../../../../infrastructure/constants/app_colors.dart';
+import '../../../../infrastructure/constants/app_images.dart';
+import '../../../../infrastructure/widgets/custom_appbar.dart';
+import '../../../../infrastructure/widgets/custom_pdf_view.dart';
 import '../b2b/b2b_fading_carousel.dart';
 
 class HiveProfileScreen extends StatelessWidget {
@@ -19,9 +21,7 @@ class HiveProfileScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: customAppbar(
         context: context,
-        leadingTapFunction: () {
-          Get.back();
-        },
+        leadingTapFunction: Get.back,
         title: "Profile",
         showHexagon: false,
         leadingIconPath: AppAssets.backIcon,
@@ -34,11 +34,7 @@ class HiveProfileScreen extends StatelessWidget {
             right: 0,
             child: CustomFadingCarousel(
               showIndicators: false,
-              imagePaths: [
-                AppAssets.profileImage,
-                AppAssets.profileImage,
-                AppAssets.profileImage,
-              ],
+              imagePaths: List.filled(3, AppAssets.profileImage),
             ),
           ),
 
@@ -61,6 +57,10 @@ class HiveProfileScreen extends StatelessWidget {
                     ),
                   ),
                   child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 15.w,
+                      vertical: 15.h,
+                    ),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: AppColors.black,
@@ -74,7 +74,7 @@ class HiveProfileScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          currentUser.employer?.businessName ?? "",
+                          currentUser.employee?.name ?? "",
                           style: Theme.of(
                             context,
                           ).textTheme.titleMedium?.copyWith(
@@ -93,148 +93,46 @@ class HiveProfileScreen extends StatelessWidget {
                             color: AppColors.primary,
                           ),
                         ),
-                        SizedBox(height: 20.h),
-
+                        SizedBox(height: 25.h),
                         Column(
                           mainAxisSize: MainAxisSize.min,
-                          spacing: 1.h,
+                          spacing: 1.5.h,
                           children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 2.w,
-                              children: [
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: "Experience",
-                                    titleColor: AppColors.white,
-                                    isLeftAlign: false,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: currentUser.employer?.positionSeeking?.name ?? "",
-                                    titleColor: AppColors.color5E5E5E,
-                                    isLeftAlign: true,
-                                  ),
-                                ),
-                              ],
+                            _infoRow(
+                              context,
+                              "Experience",
+                              currentUser.employee?.skill?.name ?? "",
                             ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 2.w,
-                              children: [
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: "Age",
-                                    titleColor: AppColors.white,
-                                    isLeftAlign: false,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: "28 Yr",
-                                    titleColor: AppColors.color5E5E5E,
-                                    isLeftAlign: true,
-                                  ),
-                                ),
-                              ],
+                            _infoRow(context, "Age", "28 Yr"),
+                            _infoRow(
+                              context,
+                              "Gender",
+                              currentUser.employee?.gender ?? "",
                             ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 2.w,
-                              children: [
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: "Gender",
-                                    titleColor: AppColors.white,
-                                    isLeftAlign: false,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: "Male",
-                                    titleColor: AppColors.color5E5E5E,
-                                    isLeftAlign: true,
-                                  ),
-                                ),
-                              ],
+                            _infoRow(
+                              context,
+                              "Eye Color",
+                              currentUser.employee?.eyeColor?.name ?? "",
                             ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 2.w,
-                              children: [
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: "Eye Color",
-                                    titleColor: AppColors.white,
-                                    isLeftAlign: false,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: "Brown",
-                                    titleColor: AppColors.color5E5E5E,
-                                    isLeftAlign: true,
-                                  ),
-                                ),
-                              ],
+                            _infoRow(
+                              context,
+                              "Hair Color",
+                              currentUser.employee?.hairColor?.name ?? "",
                             ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 2.w,
-                              children: [
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: "Hair Color",
-                                    titleColor: AppColors.white,
-                                    isLeftAlign: false,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: "Black",
-                                    titleColor: AppColors.color5E5E5E,
-                                    isLeftAlign: true,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 2.w,
-                              children: [
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: "Resume/Certification",
-                                    titleColor: AppColors.white,
-                                    isLeftAlign: false,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: _seekingTabs(
-                                    context: context,
-                                    tabTitle: "Black",
-                                    titleColor: AppColors.color5E5E5E,
-                                    isLeftAlign: true,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            _resumeRow(context),
                           ],
                         ),
+                        SizedBox(height: 20.h),
+                        CustomButton(
+                          buttonText: "Send Message",
+                          buttonWidth: double.infinity,
+                          buttonColor: AppColors.primary,
+                          textColor: AppColors.white,
+                          buttonHeight: 55.h,
+                          buttonTextSize: 16.sp,
+                        ),
                       ],
-                    ).paddingSymmetric(horizontal: 20.w, vertical: 20.h),
+                    ),
                   ),
                 ),
               ],
@@ -245,28 +143,74 @@ class HiveProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _seekingTabs({
-    required BuildContext context,
-    required String tabTitle,
-    required Color titleColor,
-    required bool isLeftAlign,
-  }) {
-    return Container(
-      padding: EdgeInsets.only(
-        left: isLeftAlign ? 35.w : 0.w,
-        right: isLeftAlign ? 0.w : 35.w,
-      ),
+  Widget _infoRow(BuildContext context, String label, String value) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 1.5.w,
+      children: [
+        Expanded(child: _infoTile(context, label, AppColors.white, false)),
+        Expanded(child: _infoTile(context, value, AppColors.color5E5E5E, true)),
+      ],
+    );
+  }
 
-      alignment: isLeftAlign ? Alignment.centerLeft : Alignment.centerRight,
-      width: double.infinity,
+  Widget _resumeRow(BuildContext context) {
+    final resumePath = currentUser.employee?.resumePath;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 1.5.w,
+      children: [
+        Expanded(
+          child: _infoTile(
+            context,
+            "Resume/Certification",
+            AppColors.white,
+            false,
+          ),
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              if (resumePath != null && resumePath.isNotEmpty) {
+                Get.to(() => CustomPdfView(pdfUrl: resumePath));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('No resume available')),
+                );
+              }
+            },
+            child: _infoTile(
+              context,
+              "Click View",
+              AppColors.color8690FF,
+              true,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _infoTile(
+    BuildContext context,
+    String text,
+    Color color,
+    bool isLeftAligned,
+  ) {
+    return Container(
+      alignment: isLeftAligned ? Alignment.centerLeft : Alignment.centerRight,
+      padding: EdgeInsets.only(
+        left: isLeftAligned ? 35.w : 0,
+        right: isLeftAligned ? 0 : 35.w,
+      ),
       height: 50.h,
       color: AppColors.color111111,
       child: Text(
-        tabTitle,
+        text,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
           fontSize: 14.sp,
           fontWeight: FontWeight.w600,
-          color: titleColor,
+          color: color,
         ),
       ),
     );

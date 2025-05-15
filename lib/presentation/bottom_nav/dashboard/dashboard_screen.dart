@@ -429,9 +429,9 @@ class DashboardScreen extends GetView<DashboardController> {
                               final name =
                                   user.employer?.businessName ??
                                   user.email.split('@').first;
-                              print(
-                                'B2B User ID: ${user.id}, Role: ${user.role}, Name: $name, Employer: ${user.employer != null}, Position Seeking: ${user.employer?.positionSeeking ?? 'null'}',
-                              );
+                              // print(
+                              //   'B2B User ID: ${user.id}, Role: ${user.role}, Name: $name, Employer: ${user.employer != null}, Position Seeking: ${user.employer?.positionSeeking ?? 'null'}',
+                              // );
                               return GestureDetector(
                                 onTap:
                                     () => Get.toNamed(

@@ -8,13 +8,10 @@ import 'package:get/get.dart';
 
 import '../../../infrastructure/helpers/shared_preference_helper.dart';
 
-
 class AuthController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController fEmailController = TextEditingController();
-
-
 
   final isLoading = false.obs;
   final fPasswordIsLoading = false.obs;
@@ -29,13 +26,21 @@ class AuthController extends GetxController {
     final password = passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      Get.snackbar("Error", "Email and password required", backgroundColor: Colors.red);
+      Get.snackbar(
+        "Error",
+        "Email and password required",
+        backgroundColor: Colors.red,
+      );
       return;
     }
 
     // Validate email format
     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      Get.snackbar("Error", "Please enter a valid email address", backgroundColor: Colors.red);
+      Get.snackbar(
+        "Error",
+        "Please enter a valid email address",
+        backgroundColor: Colors.red,
+      );
       return;
     }
 
@@ -47,17 +52,31 @@ class AuthController extends GetxController {
       print('Login Response: $response');
       TokenStorage.saveToken(response.token);
 
-      await SharedPreferenceHelper.saveInt(SharedPrefKeys.userRole, response.user.role);
+      await SharedPreferenceHelper.saveInt(
+        SharedPrefKeys.userRole,
+        response.user.role,
+      );
+
+      await SharedPreferenceHelper.saveString(
+        SharedPrefKeys.userName,
+        response.user.role == 3
+            ? response.user.employee?.name ?? ""
+            : response.user.employer?.businessName ?? "",
+      );
 
       ApiService.setToken(response.token);
 
       Get.snackbar("Success", response.message);
       Get.offAllNamed(Routes.CUSTOMDRAWER);
     } catch (e) {
-      String errorMessage = e.toString().replaceFirst('Exception: POST request error: Exception: ', '');
-      errorMessage = errorMessage.startsWith('Exception: ')
-          ? errorMessage.replaceFirst('Exception: ', '')
-          : errorMessage;
+      String errorMessage = e.toString().replaceFirst(
+        'Exception: POST request error: Exception: ',
+        '',
+      );
+      errorMessage =
+          errorMessage.startsWith('Exception: ')
+              ? errorMessage.replaceFirst('Exception: ', '')
+              : errorMessage;
       Get.snackbar("Login Failed", errorMessage, backgroundColor: Colors.red);
     } finally {
       isLoading.value = false;
@@ -74,10 +93,14 @@ class AuthController extends GetxController {
       Get.snackbar("Success", "Logged out successfully");
       Get.offAllNamed(Routes.HOME);
     } catch (e) {
-      String errorMessage = e.toString().replaceFirst('Exception: POST request error: Exception: ', '');
-      errorMessage = errorMessage.startsWith('Exception: ')
-          ? errorMessage.replaceFirst('Exception: ', '')
-          : errorMessage;
+      String errorMessage = e.toString().replaceFirst(
+        'Exception: POST request error: Exception: ',
+        '',
+      );
+      errorMessage =
+          errorMessage.startsWith('Exception: ')
+              ? errorMessage.replaceFirst('Exception: ', '')
+              : errorMessage;
       Get.snackbar("Logout Failed", errorMessage, backgroundColor: Colors.red);
     } finally {
       isLoading.value = false;
@@ -93,7 +116,11 @@ class AuthController extends GetxController {
     }
 
     if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      Get.snackbar("Error", "Please enter a valid email address", backgroundColor: Colors.red);
+      Get.snackbar(
+        "Error",
+        "Please enter a valid email address",
+        backgroundColor: Colors.red,
+      );
       return;
     }
 
@@ -116,14 +143,20 @@ class AuthController extends GetxController {
       );
 
       if (status) {
-        Get.offNamed(Routes.SIGN_IN_VIEW); // Navigate to SIGN_IN_VIEW on success
+        Get.offNamed(
+          Routes.SIGN_IN_VIEW,
+        ); // Navigate to SIGN_IN_VIEW on success
       }
     } catch (e) {
       print('Forgot Password Error: $e');
-      String errorMessage = e.toString().replaceFirst('Exception: POST request error: Exception: ', '');
-      errorMessage = errorMessage.startsWith('Exception: ')
-          ? errorMessage.replaceFirst('Exception: ', '')
-          : errorMessage;
+      String errorMessage = e.toString().replaceFirst(
+        'Exception: POST request error: Exception: ',
+        '',
+      );
+      errorMessage =
+          errorMessage.startsWith('Exception: ')
+              ? errorMessage.replaceFirst('Exception: ', '')
+              : errorMessage;
       Get.snackbar(
         "Forgot Password Failed",
         errorMessage,

@@ -1,3 +1,5 @@
+import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
+import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:barbee_hive_app/presentation/auth/controllers/auth.controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/main_screen.dart';
@@ -26,6 +28,8 @@ class _CustomDrawerState extends State<CustomDrawer>
 
   bool _isDrawerOpen = false;
   int selectedIndex = 0;
+
+  String userName = '';
 
   void toggleDrawer() {
     if (_isDrawerOpen) {
@@ -65,7 +69,17 @@ class _CustomDrawerState extends State<CustomDrawer>
       begin: 0.9,
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    _loadUserName();
   }
+
+  void _loadUserName() async {
+    final currentUserName = await SharedPreferenceHelper.getString(SharedPrefKeys.userName);
+    setState(() {
+      userName = currentUserName ?? "";
+    });
+  }
+
 
   void onItemTapped(int index) {
     setState(() {
@@ -118,7 +132,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                               ),
                             ),
                             Text(
-                              "John William",
+                              userName,
                               style: Theme.of(
                                 context,
                               ).textTheme.titleSmall?.copyWith(

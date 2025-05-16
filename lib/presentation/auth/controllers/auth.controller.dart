@@ -2,6 +2,7 @@ import 'package:barbee_hive_app/data/api/api_service.dart';
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
+import 'package:barbee_hive_app/infrastructure/helpers/location_service.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,13 @@ class AuthController extends GetxController {
   final isLoading = false.obs;
   final fPasswordIsLoading = false.obs;
   final RxBool isObscured = true.obs;
+
+  @override
+  void onInit() async {
+    super.onInit();
+    // fetchDashboardUsers();
+    await LocationService.determinePosition();
+  }
 
   void togglePasswordVisibility() {
     isObscured.value = !isObscured.value;

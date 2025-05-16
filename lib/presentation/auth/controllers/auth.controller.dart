@@ -59,6 +59,7 @@ class AuthController extends GetxController {
           ? errorMessage.replaceFirst('Exception: ', '')
           : errorMessage;
       Get.snackbar("Login Failed", errorMessage, backgroundColor: Colors.red);
+      print(errorMessage);
     } finally {
       isLoading.value = false;
     }

@@ -39,6 +39,10 @@ class AppAssets {
   static String personIcon = '$iconPath/person_icon.svg';
   static String lockIcon = '$iconPath/lock_icon.svg';
 
+  static String countryIcon = '$iconPath/country_icon.png';
+  static String cityIcon = '$iconPath/city_icon.png';
+  static String stateIcon = '$iconPath/state_icon.png';
+
   static String logo = '$imagesPath/barbee_logo.png';
   static String appleLogo = '$imagesPath/apple_logo.png';
   static String googleLogo = '$imagesPath/google_logo.png';

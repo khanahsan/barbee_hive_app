@@ -1,9 +1,13 @@
 
 
+import 'dart:io';
+
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
+import 'package:barbee_hive_app/data/model/color_response.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/data/model/login_response.dart';
 
+import '../model/employee_register_response.dart';
 import 'api_service.dart';
 class AuthProvider {
   static Future<LoginResponse> login(String email, String password) async {
@@ -43,5 +47,124 @@ class AuthProvider {
       auth: true, // Requires token
     );
     return DashboardResponse.fromJson(data);
+  }
+
+  static Future<EyeColorResponse> getEyeColors() async {
+    final data = await ApiService.get(
+      Endpoints.eyeColors,
+      auth: false, // Assuming authentication is required; set to false if public
+    );
+    return EyeColorResponse.fromJson(data);
+  }
+
+  static Future<HairColorResponse> getHairColors() async {
+    final data = await ApiService.get(
+      Endpoints.hairColors,
+      auth: false, // Set to false if public
+    );
+    return HairColorResponse.fromJson(data);
+  }
+
+  static Future<SkillsResponse> getSkills() async {
+    final data = await ApiService.get(
+      Endpoints.getSkills,
+      auth: false, // Set to false if public
+    );
+    return SkillsResponse.fromJson(data);
+  }
+
+ /* static Future<RegisterResponse> register({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+    required int role,
+    String? experienceYears,
+    required String country,
+    required String state,
+    required String city,
+    String? dob,
+    String? gender,
+    int? eyeColorId,
+    int? hairColorId,
+    int? height,
+    File? resume,
+    int? skillId,
+  }) async {
+    final fields = {
+      'name': name,
+      'email': email,
+      'password': password,
+      'password_confirmation': passwordConfirmation,
+      'role': role.toString(),
+      'experience_years': experienceYears,
+      'country': country,
+      'state': state,
+      'city': city,
+      'dob': dob,
+      'gender': gender,
+      'eye_color_id': eyeColorId.toString(),
+      'hair_color_id': hairColorId.toString(),
+      'height': height.toString(),
+      'skill_id': skillId.toString(),
+    };
+    print('Register Payload: $fields, Resume: ${resume?.path}');
+    final data = await ApiService.multipartPost(
+      Endpoints.registerEmployee,
+      fields: fields,
+      file: resume,
+      fileField: 'resume',
+      auth: false, // Register typically doesn't require auth
+    );
+
+    return RegisterResponse.fromJson(data);
+  }*/
+
+  static Future<RegisterResponse> register({
+    required String name,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+    required int role,
+    required String country,
+    required String state,
+    required String city,
+    String? dob,
+    String? gender,
+    int? eyeColorId,
+    int? hairColorId,
+    int? height,
+    File? resume,
+    int? skillId,
+  }) async {
+    final fields = <String, String>{
+      'name': name,
+      'email': email,
+      'password': password,
+      'password_confirmation': passwordConfirmation,
+      'role': role.toString(),
+      'country': country,
+      'state': state,
+      'city': city,
+    };
+
+    // Add nullable fields only if they are not null
+    if (dob != null) fields['dob'] = dob;
+    if (gender != null) fields['gender'] = gender;
+    if (eyeColorId != null) fields['eye_color_id'] = eyeColorId.toString();
+    if (hairColorId != null) fields['hair_color_id'] = hairColorId.toString();
+    if (height != null) fields['height'] = height.toString();
+    if (skillId != null) fields['skill_id'] = skillId.toString();
+
+    print('Register Payload: $fields, Resume: ${resume?.path}');
+    final data = await ApiService.multipartPost(
+      Endpoints.registerEmployee,
+      fields: fields,
+      file: resume,
+      fileField: 'resume',
+      auth: false,
+    );
+
+    return RegisterResponse.fromJson(data);
   }
 }

@@ -18,7 +18,7 @@ import '../../presentation/auth/views/forgot_password_view.dart';
 import '../../presentation/bottom_nav/dashboard/dashboard_screen.dart';
 import '../../presentation/bottom_nav/job/employee/apply_screen.dart';
 import '../../presentation/home/home.screen.dart';
-import '../../presentation/sign_up_view/sign_up_view.screen.dart';
+import '../../presentation/sign_up_view/sign_up_employee_screen.dart';
 import '../../presentation/splash/splash.screen.dart';
 import 'routes.dart';
 
@@ -65,7 +65,7 @@ class Nav {
     ),
     GetPage(
       name: Routes.SIGN_UP_VIEW,
-      page: () => const SignUpViewScreen(),
+      page: () => const SignUpEmployeeScreen(),
       binding: InitialBindings(),
     ),
     GetPage(

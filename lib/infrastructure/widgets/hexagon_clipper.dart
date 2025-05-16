@@ -228,7 +228,10 @@ class HexagonClipper extends CustomClipper<Path> {
     final double centerX = w / 2;
     final double centerY = h / 2;
 
-    final double radius = w / 2 * scale;
+    // final double radius = w / 2 * scale;
+
+    final double radius = (w / 2) / Math.cos(Math.pi / 7) * scale;
+
 
     for (int i = 0; i < 6; i++) {
       final angle = (60 * i - 30) * 3.1415926535897932 / 180;

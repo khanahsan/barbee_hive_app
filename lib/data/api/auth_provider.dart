@@ -1,49 +1,46 @@
-
-
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/model/color_response.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/data/model/login_response.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../model/employee_register_response.dart';
 import 'api_service.dart';
+
 class AuthProvider {
   static Future<LoginResponse> login(String email, String password) async {
-    final data = await ApiService.post(
-      Endpoints.login,
-      {
-        'email': email,
-        'password': password,
-      },
-    );
+    final data = await ApiService.post(Endpoints.login, {
+      'email': email,
+      'password': password,
+    });
     return LoginResponse.fromJson(data);
   }
 
   static Future<void> logout() async {
-    await ApiService.post(
-      Endpoints.logout,
-      {},
-      auth: true,
-    );
+    await ApiService.post(Endpoints.logout, {}, auth: true);
   }
 
   static Future<Map<String, dynamic>> forgotPassword(String email) async {
-    final response = await ApiService.post(
-      Endpoints.forgotPassword,
-      {'email': email},
-      auth: false,
-    );
+    final response = await ApiService.post(Endpoints.forgotPassword, {
+      'email': email,
+    }, auth: false);
     return {
       'status': response['status'] ?? false,
       'message': response['message'] ?? 'Request processed',
     };
   }
 
-  static Future<DashboardResponse> getDashboardUsers() async {
-    final data = await ApiService.get(
+  static Future<DashboardResponse> getDashboardUsers({
+    required String currentLatitude,
+    required String currentLongitude,
+  }) async {
+
+    debugPrint("CURRENT LAT $currentLatitude CURRENT LONG $currentLongitude");
+    final data = await ApiService.post(
       Endpoints.dashboardUsers,
+      {"latitude": currentLatitude, "longitude": currentLongitude},
       auth: true, // Requires token
     );
     return DashboardResponse.fromJson(data);
@@ -52,7 +49,8 @@ class AuthProvider {
   static Future<EyeColorResponse> getEyeColors() async {
     final data = await ApiService.get(
       Endpoints.eyeColors,
-      auth: false, // Assuming authentication is required; set to false if public
+      auth:
+          false, // Assuming authentication is required; set to false if public
     );
     return EyeColorResponse.fromJson(data);
   }
@@ -73,7 +71,7 @@ class AuthProvider {
     return SkillsResponse.fromJson(data);
   }
 
- /* static Future<RegisterResponse> register({
+  /* static Future<RegisterResponse> register({
     required String name,
     required String email,
     required String password,

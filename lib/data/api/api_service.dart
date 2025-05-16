@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:http/http.dart' as http;
@@ -60,6 +61,43 @@ class ApiService {
       throw Exception('POST request error: $e');
     }
   }
+
+  static Future<dynamic> multipartPost(
+      String endpoint, {
+        required Map<String, String> fields,
+        File? file,
+        String fileField = 'file',
+        bool auth = true,
+      }) async {
+    try {
+      final uri = Uri.parse('${Endpoints.baseUrl}$endpoint');
+      print('Multipart POST Request URL: $uri');
+      final request = http.MultipartRequest('POST', uri);
+
+      // Add headers
+      if (auth && _token != null) {
+        request.headers['Authorization'] = 'Bearer $_token';
+      }
+      request.headers['Accept'] = 'application/json';
+
+      // Add text fields
+      request.fields.addAll(fields);
+
+      // Add file if provided
+      if (file != null) {
+        request.files.add(await http.MultipartFile.fromPath(fileField, file.path));
+      }
+
+      // Send request
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      return _handleResponse(response);
+    } catch (e) {
+      throw Exception('Multipart POST request error: $e');
+    }
+  }
+
 
   static Future<http.Response> _safeRequest(
       String method,

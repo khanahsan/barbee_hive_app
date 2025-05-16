@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 import '../../../presentation/auth/controllers/auth.controller.dart';
 import '../../../presentation/home/controllers/home.controller.dart';
-import '../../../presentation/sign_up_view/controllers/sign_up_view.controller.dart';
+import '../../../presentation/sign_up_view/controllers/sign_up_employee_controller.dart';
 import '../../../presentation/splash/controllers/splash.controller.dart';
 
 class InitialBindings implements Bindings{
@@ -17,7 +17,7 @@ class InitialBindings implements Bindings{
 
     Get.lazyPut<HomeController>(() => HomeController());
     Get.lazyPut<AuthController>(() => AuthController());
-    Get.lazyPut<SignUpViewController>(() => SignUpViewController());
+    Get.lazyPut<SignUpEmployeeController>(() => SignUpEmployeeController());
     Get.lazyPut<SplashController>(() => SplashController());
     Get.lazyPut<SignUpEmployerController>(() => SignUpEmployerController());
     Get.lazyPut<ProfileController>(() => ProfileController());

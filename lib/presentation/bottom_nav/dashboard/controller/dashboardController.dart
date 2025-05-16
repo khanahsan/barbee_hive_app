@@ -56,17 +56,45 @@ import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../infrastructure/helpers/location_service.dart';
+
 class DashboardController extends GetxController {
   final RxList<User> employees = <User>[].obs; // Role 3 (Hive)
   final RxList<User> employers = <User>[].obs; // Role 2 (B2B)
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
 
+  RxDouble currentLatitude = 0.0.obs;
+  RxDouble currentLongitude = 0.0.obs;
+
   @override
   void onInit() {
     super.onInit();
-    fetchDashboardUsers();
+    // fetchDashboardUsers();
+    getUserLocationAndFetchDashboard();
   }
+
+  void getUserLocationAndFetchDashboard() async {
+    try {
+      final position = await LocationService.determinePosition();
+
+      currentLatitude.value = position.latitude;
+      currentLongitude.value = position.longitude;
+
+      print('Lat: ${position.latitude}, Lng: ${position.longitude}');
+
+      await fetchDashboardUsers(); // ✅ Fetch users after getting location
+    } catch (e) {
+      print('Location error: $e');
+      Get.snackbar(
+        "Location Error",
+        "Could not get current location.",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
 
   Future<void> fetchDashboardUsers() async {
     isLoading.value = true;
@@ -74,23 +102,29 @@ class DashboardController extends GetxController {
 
     try {
       print('Fetching dashboard users');
-      final response = await AuthProvider.getDashboardUsers();
-      print('Dashboard Response: status=${response.status}, message=${response.message}');
-
+      final response = await AuthProvider.getDashboardUsers(
+        currentLatitude: currentLatitude.value.toString(),
+        currentLongitude: currentLongitude.value.toString()
+      );
+      print(
+        'Dashboard Response: status=${response.status}, message=${response.message}',
+      );
 
       debugPrint("EMPLOYERS ${response.data.employers}");
       debugPrint("EMPLOYEES ${response.data.employees}");
 
       employees.assignAll(response.data.employees); // Role 3 (Hive)
       employers.assignAll(response.data.employers); // Role 2 (B2B)
-
-
     } catch (e) {
       print('Dashboard Error: $e');
-      errorMessage.value = e.toString().replaceFirst('Exception: GET request error: Exception: ', '');
-      errorMessage.value = errorMessage.value.startsWith('Exception: ')
-          ? errorMessage.value.replaceFirst('Exception: ', '')
-          : errorMessage.value;
+      errorMessage.value = e.toString().replaceFirst(
+        'Exception: GET request error: Exception: ',
+        '',
+      );
+      errorMessage.value =
+          errorMessage.value.startsWith('Exception: ')
+              ? errorMessage.value.replaceFirst('Exception: ', '')
+              : errorMessage.value;
       Get.snackbar(
         "Error",
         errorMessage.value,

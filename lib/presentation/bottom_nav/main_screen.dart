@@ -97,7 +97,7 @@ class _MainScreenState extends State<MainScreen> {
   String _getAppBarTitle(int index) {
     switch (index) {
       case 0:
-        return "Dashboard";
+        return "Home";
       case 1:
         return "Messages";
       case 2:

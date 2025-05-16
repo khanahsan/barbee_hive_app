@@ -7,7 +7,8 @@ class LocationService {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      await Geolocator.openLocationSettings();
+      throw Exception('Location services are disabled.');
     }
 
     permission = await Geolocator.checkPermission();
@@ -19,7 +20,8 @@ class LocationService {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied.');
+      await Geolocator.openAppSettings();
+      throw Exception('Location permissions are permanently denied.');
     }
 
     return await Geolocator.getCurrentPosition(

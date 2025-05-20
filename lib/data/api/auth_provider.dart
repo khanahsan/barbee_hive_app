@@ -7,6 +7,7 @@ import 'package:barbee_hive_app/data/model/login_response.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../model/employee_register_response.dart';
+import '../model/user_profile_response.dart';
 import 'api_service.dart';
 
 class AuthProvider {
@@ -164,5 +165,13 @@ class AuthProvider {
     );
 
     return RegisterResponse.fromJson(data);
+  }
+
+  static Future<UserProfileResponse> getUserProfile(int userId) async {
+    final data = await ApiService.get(
+      '${Endpoints.userProfile}/$userId',
+      auth: true,
+    );
+    return UserProfileResponse.fromJson(data);
   }
 }

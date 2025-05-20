@@ -9,5 +9,6 @@ class Endpoints {
   static const String hairColors = 'dashboard/hair-colors';
   static const String getSkills = 'dashboard/skills';
   static const String registerEmployee = 'register';
+  static const String jobStore = 'jobs/store';
 }
 

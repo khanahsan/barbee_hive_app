@@ -1,3 +1,5 @@
+import 'package:barbee_hive_app/infrastructure/widgets/custom_textfield.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,230 +16,411 @@ class ProfileScreen extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    int currentBottomIndex = 0;
-    Widget _buildSvgPicture({
-      required String iconPath,
-      required double iconHeight,
-      required double iconWidth,
-    }) {
-      return SvgPicture.asset(
-        iconPath,
-        fit: BoxFit.cover,
-        height: iconHeight,
-        width: iconWidth,
-      );
-    }
+
+    final screenHeight = MediaQuery.of(context).size.height;
+    final topOffset = 120.h;
+    final fullHeight = screenHeight - topOffset;
 
     return Scaffold(
-      // appBar: appBarSection(context: context),
-      appBar: customAppbar(
-        context: context,
-        leadingTapFunction: () {
-          Get.back();
-        },
-        // currentBottomIndex: 1,
-        title: "Profile",
-        showActions: true,
-        leadingIconPath: AppAssets.backIcon,
-        actions: [
-          SvgPicture.asset(
-            AppAssets.settingIcon,
-            fit: BoxFit.cover,
-            height: 23.h,
-            width: 23.w,
-            color: AppColors.white,
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: Obx(
+          () => customAppbar(
+            context: context,
+            leadingTapFunction: () {
+              Get.back();
+            },
+            title: controller.isEditing.value ? "Edit Profile" : "Profile",
+            showActions: true,
+            leadingIconPath: AppAssets.backIcon,
+            showHexagon: false,
+            actions: [
+              SvgPicture.asset(
+                AppAssets.settingIcon,
+                fit: BoxFit.cover,
+                height: 23.h,
+                width: 23.w,
+                color: AppColors.white,
+              ),
+            ],
           ),
-        ],
+        ),
       ),
+
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 0,
-            child: Container(
-              //height: 200.h,
-              child: Image.asset(AppAssets.backgroundLogo, fit: BoxFit.cover),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 8.h,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Obx(
+        () =>
+            controller.isLoading.value
+                ? Center(child: CircularProgressIndicator())
+                : Stack(
+                  alignment: Alignment.topCenter,
                   children: [
-                    profileButton(
-                      context: context,
-                      buttonText: "Profile image",
-                      buttonIconPath: AppAssets.bagIcon,
-                    ),
-
-                    profileButton(
-                      context: context,
-                      buttonText: "Cover Photo",
-                      buttonIconPath: AppAssets.bagIcon,
-                    ),
-                  ],
-                ).paddingSymmetric(horizontal: 20.w),
-
-                Container(
-                  height: 532.h,
-                  padding: EdgeInsets.only(top: 3.h),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0.r),
-                      topRight: Radius.circular(20.0.r),
-                    ),
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColors.black,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(18.0),
-                        topLeft: Radius.circular(18.0),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        // height: 200.h,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30.r),
+                          child: Image.asset(
+                            AppAssets.profileImage,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      //crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "John William",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium?.copyWith(
-                            fontSize: 22.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.white,
-                          ),
-                        ),
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "Experience",
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.titleMedium?.copyWith(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primary,
+
+
+                    Positioned(
+                      top: topOffset,
+                      // 50.h
+                      left: 0,
+                      right: 0,
+                      child: Stack(
+                        alignment: Alignment.topCenter,
+                        clipBehavior: Clip.none,
+                        children: [
+                          Container(
+                            height: controller.isEditing.value ? null : fullHeight,
+                            padding: EdgeInsets.only(top: 3.h),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20.0.r),
+                                topRight: Radius.circular(20.0.r),
+                              ),
+                            ),
+                            child: Container(
+                              padding: EdgeInsets.only(
+                                left: 15.w,
+                                right: 15.w,
+                                top: 70.h,
+                              ),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: AppColors.black,
+                                borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(18.0),
+                                  topLeft: Radius.circular(18.0),
                                 ),
                               ),
-                              TextSpan(text: "  "),
-                              TextSpan(
-                                text: "Bartender",
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.titleMedium?.copyWith(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.white,
-                                ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    controller
+                                            .userProfile
+                                            .value
+                                            ?.data
+                                            .employee
+                                            .name ??
+                                        "",
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleMedium?.copyWith(
+                                      fontSize: 24.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                                  RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "Experience",
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleMedium?.copyWith(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.primary,
+                                          ),
+                                        ),
+                                        TextSpan(text: "  "),
+                                        TextSpan(
+                                          text:
+                                              controller
+                                                  .userProfile
+                                                  .value
+                                                  ?.data
+                                                  .employee
+                                                  .skill
+                                                  .name ??
+                                              "",
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.titleMedium?.copyWith(
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 50.h),
+                                  if (controller.isEditing.value) ...[
+                                    SizedBox(
+                                      height: 400.h,
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          spacing: 15.h,
+                                          children: [
+                                            _buildCustomTextField(
+                                              hintText: "Name",
+                                              controller:
+                                                  controller.nameController,
+                                              prefixIconPath:
+                                                  AppAssets.editIcon,
+                                            ),
+                                            _buildCustomTextField(
+                                              hintText: "Email Address",
+                                              controller:
+                                                  controller.emailController,
+                                              prefixIconPath:
+                                                  AppAssets.envelopeIcon,
+                                            ),
+                                            _buildCustomTextField(
+                                              hintText: "Password",
+                                              controller:
+                                                  controller.nameController,
+                                              prefixIconPath:
+                                                  AppAssets.lockIcon,
+                                            ),
+                                            _buildCustomTextField(
+                                              hintText: "Confirm Password",
+                                              controller:
+                                                  controller.nameController,
+                                              prefixIconPath:
+                                                  AppAssets.lockIcon,
+                                            ),
+                                            _buildDropdown(
+                                              context: context,
+                                              value:
+                                                  controller
+                                                      .selectedExperience
+                                                      .value,
+                                              hintText: "Experience",
+                                              items: controller.experienceList,
+                                              onChanged: (val) {
+                                                controller
+                                                    .selectedExperience
+                                                    .value = val ?? '';
+                                              },
+                                            ),
+                                            _buildCustomTextField(
+                                              hintText: "MM/DD/YYYY",
+                                              controller:
+                                                  controller.nameController,
+                                              prefixIconPath:
+                                                  AppAssets.lockIcon,
+                                            ),
+
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              spacing: 20.w,
+                                              children: [
+                                                Expanded(
+                                                  child: _buildDropdown(
+                                                    context: context,
+                                                    value:
+                                                        controller
+                                                            .selectedExperience
+                                                            .value,
+                                                    hintText: "Gender",
+                                                    items:
+                                                        controller
+                                                            .experienceList,
+                                                    onChanged: (val) {
+                                                      controller
+                                                          .selectedExperience
+                                                          .value = val ?? '';
+                                                    },
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: _buildDropdown(
+                                                    context: context,
+                                                    value:
+                                                        controller
+                                                            .selectedExperience
+                                                            .value,
+                                                    hintText: "Height",
+                                                    items:
+                                                        controller
+                                                            .experienceList,
+                                                    onChanged: (val) {
+                                                      controller
+                                                          .selectedExperience
+                                                          .value = val ?? '';
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              spacing: 20.w,
+                                              children: [
+                                                Expanded(
+                                                  child: _buildDropdown(
+                                                    context: context,
+                                                    value:
+                                                        controller
+                                                            .selectedExperience
+                                                            .value,
+                                                    hintText: "Eye Color",
+                                                    items:
+                                                        controller
+                                                            .experienceList,
+                                                    onChanged: (val) {
+                                                      controller
+                                                          .selectedExperience
+                                                          .value = val ?? '';
+                                                    },
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: _buildDropdown(
+                                                    context: context,
+                                                    value:
+                                                        controller
+                                                            .selectedExperience
+                                                            .value,
+                                                    hintText: "Hair Color",
+                                                    items:
+                                                        controller
+                                                            .experienceList,
+                                                    onChanged: (val) {
+                                                      controller
+                                                          .selectedExperience
+                                                          .value = val ?? '';
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+                                            // _buildCustomDropdown(
+                                            //   hintText: "Experience",
+                                            //   prefixIconPath: AppAssets.experienceIcon, // Replace with your icon
+                                            //   selectedValue: controller.selectedExperience,
+                                            //   items: controller.experienceList,
+                                            // ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20.h),
+                                  ],
+                                  CustomBtn(
+                                    buttonHeight: 55.h,
+                                    btnTitle: 'Edit Profile',
+                                    btnBackgroundColor: AppColors.primary,
+                                    btnTxtColor: Colors.white,
+                                    // width: double.infinity,
+                                    onPressed: () {
+                                      controller.toggleEditing();
+                                    },
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 30.h),
-                        CustomBtn(
-                          btnTitle: 'Edit Profile',
-                          btnBackgroundColor: AppColors.primary,
-                          btnTxtColor: Colors.white,
-                          // width: double.infinity,
-                          onPressed: () {},
-                        ),
-                      ],
-                    ).paddingSymmetric(horizontal: 20.w, vertical: 20.h),
+
+                          Positioned(
+                            top: -80.h,
+                            child: HexagonAvatar(
+                              imagePath: AppAssets.profileImage,
+                              width: 140.w,
+                              height: 150.h,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ).paddingOnly(top: 25.h),
+      ),
+    );
+  }
+
+  Widget _buildCustomTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required String prefixIconPath,
+  }) {
+    return CustomTextField(
+      fontColor: AppColors.color4C4C4C,
+      controller: controller,
+      filled: true,
+      fillColor: AppColors.textFieldBackground,
+      enabledBorderColor: Colors.transparent,
+      hintText: hintText,
+      prefixIcon: SvgPicture.asset(
+        prefixIconPath,
+        fit: BoxFit.scaleDown,
+        color: AppColors.color4C4C4C,
+      ),
+    );
+  }
+
+  Widget _buildDropdown({
+    required String? value,
+    required String hintText,
+    required List<String> items,
+    required ValueChanged<String?> onChanged,
+    required BuildContext context,
+    String? prefixIconPath,
+  }) {
+    final safeValue = (value != null && items.contains(value)) ? value : null;
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      decoration: BoxDecoration(
+        color: AppColors.textFieldBackground,
+        // border: Border.all(color: AppColors.colorA3A3A3),
+        borderRadius: BorderRadius.circular(14.r),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          if (prefixIconPath == null) ...[
+            SvgPicture.asset(AppAssets.lockIcon),
+            SizedBox(width: 30.w),
+          ],
+          Expanded(
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                isExpanded: true,
+                value: safeValue,
+                hint: Text(
+                  hintText,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: AppColors.color4C4C4C,
+                    fontSize: 16.sp,
                   ),
                 ),
-              ],
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(color: AppColors.color4C4C4C),
+                items:
+                    items.toSet().map((String val) {
+                      return DropdownMenuItem<String>(
+                        value: val,
+                        child: Text(val),
+                      );
+                    }).toList(),
+                onChanged: onChanged,
+              ),
             ),
           ),
         ],
       ),
     );
   }
+
 }
 
-Widget profileButton({
-  required String buttonText,
-  required buttonIconPath,
-  required BuildContext context,
-}) {
-  return InkWell(
-    child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        color: AppColors.color101010,
-        border: Border.all(color: AppColors.boxBorder, width: 2.sp),
-        borderRadius: BorderRadius.circular(10.r),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 8.w,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            buttonIconPath,
-            height: 22.h,
-            width: 22.w,
-            fit: BoxFit.cover,
-          ),
-          Text(
-            buttonText,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontSize: 14.sp,
-              color: AppColors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-// Widget profileButton({required String buttonText, required buttonIconPath}) {
-//   return ElevatedButton(
-//     onPressed: () {},
-//     style: ButtonStyle(
-//       backgroundColor: WidgetStateProperty.resolveWith<Color?>((
-//         Set<WidgetState> states,
-//       ) {
-//         if (states.contains(WidgetState.pressed)) {
-//           return Colors.grey; // Color when pressed
-//         }
-//         return Colors.black; // Default color
-//       }),
-//       shape: WidgetStateProperty.all(
-//         RoundedRectangleBorder(
-//           borderRadius: BorderRadius.all(
-//             Radius.circular(10.0),
-//           ), // Square, no rounded corners
-//         ),
-//       ),
-//       minimumSize: WidgetStateProperty.all(
-//         const Size(150, 50),
-//       ), // Rectangular size
-//     ),
-//     child: const Row(
-//       mainAxisSize: MainAxisSize.min, // Fit content
-//       children: [
-//         Icon(Icons.beach_access, color: Colors.white), // Icon
-//         SizedBox(width: 8), // Space between icon and text
-//         Text(
-//           'Profile image',
-//           style: TextStyle(color: Colors.white), // Text color
-//         ),
-//       ],
-//     ),
-//   );
-// }

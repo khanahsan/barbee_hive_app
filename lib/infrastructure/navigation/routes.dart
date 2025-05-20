@@ -27,4 +27,5 @@ static Future<String> get initialRoute async {
   static const applicationsScreen = '/applications_screen';
   static const b2bScreen = '/b2b_screen';
   static const hiveProfileScreen = '/hive_profile_screen';
+  static const jobPostingScreen = '/job_posting_screen';
 }

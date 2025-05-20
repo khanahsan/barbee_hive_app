@@ -282,6 +282,7 @@ class HexagonClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => true;
 }
 
+
 class HexagonAvatar extends StatelessWidget {
   const HexagonAvatar({
     super.key,
@@ -422,6 +423,63 @@ class HexagonAvatar extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class HoneycombLayoutDelegate extends MultiChildLayoutDelegate {
+  final double itemWidth;
+  final double itemHeight;
+  final List<dynamic> users;
+  final List<int> pattern;
+
+  HoneycombLayoutDelegate({
+    required this.itemWidth,
+    required this.itemHeight,
+    required this.users,
+    required this.pattern,
+  });
+
+  @override
+  Size getSize(BoxConstraints constraints) {
+    final int totalItemsInPattern = pattern.reduce((a, b) => a + b);
+    final int rowCount = (users.length / totalItemsInPattern).ceil() + (users.length % totalItemsInPattern > 0 ? 1 : 0);
+    final double totalHeight = rowCount * itemHeight * 0.75; // Height based on number of rows
+    return Size(constraints.maxWidth, totalHeight);
+  }
+
+  @override
+  void performLayout(Size size) {
+    int index = 0;
+    double y = 0;
+    int patternIndex = 0;
+
+    while (index < users.length) {
+      final int itemsInRow = pattern[patternIndex % pattern.length];
+      double x = (patternIndex % 2 == 0) ? 0 : itemWidth / 2;
+
+      for (int col = 0; col < itemsInRow && index < users.length; col++) {
+        if (hasChild(index)) {
+          layoutChild(
+            index,
+            BoxConstraints.tightFor(width: itemWidth, height: itemHeight),
+          );
+          positionChild(index, Offset(x, y));
+        }
+        x += itemWidth;
+        index++;
+      }
+
+      y += itemHeight * 0.75;
+      patternIndex++;
+    }
+  }
+
+  @override
+  bool shouldRelayout(covariant HoneycombLayoutDelegate oldDelegate) {
+    return itemWidth != oldDelegate.itemWidth ||
+        itemHeight != oldDelegate.itemHeight ||
+        users != oldDelegate.users ||
+        pattern != oldDelegate.pattern;
   }
 }
 

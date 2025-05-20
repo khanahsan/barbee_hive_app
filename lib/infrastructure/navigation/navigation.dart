@@ -6,6 +6,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/hive/hive_prof
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/create%20job%20_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
+import 'package:barbee_hive_app/presentation/employer/job_posting/job_posting_screen.dart';
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
 import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/sign_up_employer_screen.dart';
@@ -139,6 +140,11 @@ class Nav {
       page: () => HiveProfileScreen(
         currentUser: Get.arguments["currentUser"],
       ),
+      binding: InitialBindings(),
+    ),
+    GetPage(
+      name: Routes.jobPostingScreen,
+      page: () => const JobPostingScreen(),
       binding: InitialBindings(),
     ),
   ];

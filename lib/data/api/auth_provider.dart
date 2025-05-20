@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/model/color_response.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
+import 'package:barbee_hive_app/data/model/job_posting_model.dart';
 import 'package:barbee_hive_app/data/model/login_response.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -173,5 +174,44 @@ class AuthProvider {
       auth: true,
     );
     return UserProfileResponse.fromJson(data);
+  }
+
+
+
+  static Future<JobPostResponse> postJob({
+    required String title,
+    required String description,
+    required String experienceLevel,
+    required String minSalary,
+    required String maxSalary,
+    required String jobType,
+    required String country,
+    required String state,
+    required String city,
+    required String recruiterName,
+    required int noOfDays,
+  }) async {
+    final fields = {
+      'title': title,
+      'description': description,
+      'experience_level': experienceLevel,
+      'min_salary': minSalary,
+      'max_salary': maxSalary,
+      'job_type': jobType,
+      'country': country,
+      'state': state,
+      'city': city,
+      'recruiter_name': recruiterName,
+      'no_of_days': noOfDays.toString(),
+    };
+
+    print('Job Post Payload: $fields');
+    final data = await ApiService.post(
+      Endpoints.jobStore,
+      fields,
+      auth: true, // Requires authentication
+    );
+
+    return JobPostResponse.fromJson(data);
   }
 }

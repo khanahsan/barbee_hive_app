@@ -1,6 +1,7 @@
 
 import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
+import 'package:barbee_hive_app/presentation/employer/job_posting/controller/job_posting_controller.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/controllers/sign_up_employer_controller.dart';
 import 'package:get/get.dart';
@@ -23,6 +24,7 @@ class InitialBindings implements Bindings{
     Get.lazyPut<ProfileController>(() => ProfileController());
     Get.lazyPut<JobController>(() => JobController());
     Get.lazyPut<DashboardController>(() => DashboardController());
+    Get.lazyPut<JobPostingController>(() => JobPostingController());
   }
 
 }

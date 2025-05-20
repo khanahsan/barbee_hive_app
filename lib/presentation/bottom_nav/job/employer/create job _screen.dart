@@ -1,5 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
+import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +88,9 @@ class CreateJobScreen extends StatelessWidget {
 
           SizedBox(height: 20.h),
           _buildActionButton(
-            onTap: () {},
+            onTap: () {
+              Get.toNamed(Routes.jobPostingScreen);
+            },
             text: "Continue",
             buttonColor: AppColors.primary,
           ),

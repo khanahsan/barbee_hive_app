@@ -10,5 +10,6 @@ class Endpoints {
   static const String getSkills = 'dashboard/skills';
   static const String registerEmployee = 'register';
   static const String userProfile = 'profiles';
+  static const String jobStore = 'jobs/store';
 }
 

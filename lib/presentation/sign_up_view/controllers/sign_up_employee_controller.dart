@@ -6,99 +6,6 @@ import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-
-
-/*
-class SignUpEmployeeController extends GetxController {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
-  final TextEditingController experienceController = TextEditingController();
-  final TextEditingController dateController = TextEditingController();
-
-  final RxString selectedGender = ''.obs;
-  final RxString selectedHeight = ''.obs;
-  final RxString selectedEyeColor = ''.obs;
-  final RxString selectedHairColor = ''.obs;
-
-  final isChecked = false.obs;
-  final isPasswordVisible = false.obs;
-  final isConfirmPasswordVisible = false.obs;
-
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    experienceController.dispose();
-    dateController.dispose();
-    super.onClose();
-  }
-
-
-  void toggleCheckbox() {
-    isChecked.value = !isChecked.value;
-  }
-
-  void togglePasswordVisibility() {
-    isPasswordVisible.value = !isPasswordVisible.value;
-    update(); // Notify GetBuilder to rebuild
-  }
-
-  void toggleConfirmPasswordVisibility() {
-    isConfirmPasswordVisible.value = !isConfirmPasswordVisible.value;
-    update(); // Notify GetBuilder to rebuild
-  }
-
-  void updateGender(String? value) {
-    if (value != null) {
-      selectedGender.value = value;
-    }
-  }
-
-  void updateHeight(String? value) {
-    if (value != null) {
-      selectedHeight.value = value;
-    }
-  }
-
-  void updateEyeColor(String? value) {
-    if (value != null) {
-      selectedEyeColor.value = value;
-    }
-  }
-
-  void updateHairColor(String? value) {
-    if (value != null) {
-      selectedHairColor.value = value;
-    }
-  }
-}
-*/
-
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../data/model/color_response.dart';
@@ -108,7 +15,6 @@ class SignUpEmployeeController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
-  //final TextEditingController experienceController = TextEditingController();
   final TextEditingController countryController = TextEditingController();
   final TextEditingController stateController = TextEditingController();
   final TextEditingController cityController = TextEditingController();

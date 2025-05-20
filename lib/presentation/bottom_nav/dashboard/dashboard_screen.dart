@@ -276,7 +276,7 @@ class DashboardScreen extends GetView<DashboardController> {
     return Scaffold(
       // appBar: appBarSection(context),
       backgroundColor: AppColors.black,
-      body: Obx(
+     /* body: Obx(
         () =>
             controller.isLoading.value
                 ? Center(child: CircularProgressIndicator())
@@ -310,20 +310,58 @@ class DashboardScreen extends GetView<DashboardController> {
                     ],
                   ).paddingSymmetric(horizontal: 15.w, vertical: 20.h),
                 ),
-      ),
+      ),*/
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return Center(child: CircularProgressIndicator());
+          } else if (controller.errorMessage.value.isNotEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    controller.errorMessage.value,
+                    style: TextStyle(color: Colors.red, fontSize: 16.sp),
+                  ),
+                  SizedBox(height: 10.h),
+                  CustomBtn(
+                    btnTitle: 'Retry',
+                    onPressed: () => controller.fetchDashboardUsers(),
+                    buttonHeight: 50,
+                    btnBackgroundColor: AppColors.primary,
+                    btnTxtColor: AppColors.white,
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  b2bSection(context),
+                  FadingImageCarousel(imagePaths: imagePaths),
+                  hiveSection(context),
+                ],
+              ),
+            );
+          }
+        })
     );
   }
 
-  Widget hiveSection(BuildContext context) {
+/*  Widget hiveSection(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+      padding: EdgeInsets.only(left: 15.w, bottom: 5000.h, top: 15.h, right: 15.w),
       alignment: Alignment.center,
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: AppColors.boxBorder, width: 3.w),
       ),
-      child: Column(
+      child: */
+
+  /*Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
@@ -365,13 +403,16 @@ class DashboardScreen extends GetView<DashboardController> {
                         Routes.hiveProfileScreen,
                         arguments: {'currentUser': user},
                       ),
-                      child: HexagonAvatar(
-                        imagePath: AppAssets.profileImage,
-                        width: 88.w,
-                        height: 98.h,
-                        borderColor: entry.key % 2 == 0 ? AppColors.white : AppColors.primary,
-                        name: name.isNotEmpty ? name : 'Unknown Employee',
-                        totalMl: user.employee?.experienceYears ?? 'N/A',
+                      child: ColoredBox(
+                        color: Colors.red,
+                        child: HexagonAvatar(
+                          imagePath: AppAssets.profileImage,
+                          width: 88.w,
+                          height: 98.h,
+                          borderColor: entry.key % 2 == 0 ? AppColors.white : AppColors.primary,
+                          name: name.isNotEmpty ? name : 'Unknown Employee',
+                          totalMl: user.employee?.experienceYears ?? 'N/A',
+                        ),
                       ),
                     );
                   }).toList(),
@@ -385,11 +426,280 @@ class DashboardScreen extends GetView<DashboardController> {
             );
           }),
         ],
-      ),
+      ),*//*
+
+
+      *//*Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          'HIVE',
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            color: AppColors.white,
+            fontSize: 25.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Obx(() {
+          if (controller.employees.isEmpty) {
+            return Text(
+              'No Hive users found',
+              style: TextStyle(color: AppColors.white, fontSize: 16.sp),
+            );
+          }
+
+          final users = controller.employees;
+          final double itemWidth = 88.w;
+          final double itemHeight = 98.h;
+
+          // Define the desired pattern based on the number of users
+          final List<int> pattern = _getPattern(users.length);
+          final int totalItemsInPattern = pattern.reduce((a, b) => a + b);
+          final int rowCount = (users.length / totalItemsInPattern).ceil() + (users.length % totalItemsInPattern > 0 ? 1 : 0);
+          final double totalHeight = rowCount * itemHeight * 0.75;
+
+          return SizedBox(
+            width: double.infinity,
+            height: totalHeight,
+            child: CustomMultiChildLayout(
+              delegate: HoneycombLayoutDelegate(
+                itemWidth: itemWidth,
+                itemHeight: itemHeight,
+                users: users,
+                pattern: pattern,
+              ),
+              children: List.generate(users.length, (index) {
+                final user = users[index];
+                final name = user.employee?.name ?? user.email.split('@').first;
+                return LayoutId(
+                  id: index,
+                  child: GestureDetector(
+                    onTap: () => Get.toNamed(
+                      Routes.hiveProfileScreen,
+                      arguments: {'currentUser': user},
+                    ),
+                    child: HexagonAvatar(
+                      imagePath: AppAssets.profileImage,
+                      width: itemWidth,
+                      height: itemHeight,
+                      borderColor: index % 2 == 0 ? AppColors.white : AppColors.primary,
+                      name: name.isNotEmpty ? name : 'Unknown Employee',
+                      totalMl: user.employee?.experienceYears ?? 'N/A',
+                    ),
+                  ),
+                );
+              }),
+            ),
+          );
+        }),
+      ],
+    ),*//*
+      Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          'HIVE',
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            color: AppColors.white,
+            fontSize: 25.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Obx(() {
+          if (controller.employees.isEmpty) {
+            return Text(
+              'No Hive users found',
+              style: TextStyle(color: AppColors.white, fontSize: 16.sp),
+            );
+          }
+
+          final users = controller.employees;
+          final double itemWidth = 88.w;
+          final double itemHeight = 98.h;
+
+          // Define the desired pattern based on the number of users
+          final List<int> pattern = _getPattern(users.length);
+          final int totalItemsInPattern = pattern.reduce((a, b) => a + b);
+          final int rowCount = (users.length / totalItemsInPattern).ceil() + (users.length % totalItemsInPattern > 0 ? 1 : 0);
+          final double totalHeight = rowCount * itemHeight * 0.75;
+
+          return SingleChildScrollView(
+            child: SizedBox(
+              width: double.infinity,
+              height: totalHeight,
+              child: CustomMultiChildLayout(
+                delegate: HoneycombLayoutDelegate(
+                  itemWidth: itemWidth,
+                  itemHeight: itemHeight,
+                  users: users,
+                  pattern: pattern,
+                ),
+                children: [
+                  for (int index = 0; index < users.length; index++)
+                    LayoutId(
+                      id: index,
+                      child: GestureDetector(
+                        onTap: () => Get.toNamed(
+                          Routes.hiveProfileScreen,
+                          arguments: {'currentUser': users[index]},
+                        ),
+                        child: HexagonAvatar(
+                          imagePath: AppAssets.profileImage,
+                          width: itemWidth,
+                          height: itemHeight,
+                          borderColor: index % 2 == 0 ? AppColors.white : AppColors.primary,
+                          name: (users[index].employee?.name ?? users[index].email.split('@').first).isNotEmpty
+                              ? (users[index].employee?.name ?? users[index].email.split('@').first)
+                              : 'Unknown Employee',
+                          totalMl: users[index].employee?.experienceYears ?? 'N/A',
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          );
+        }),
+      ],
+    ),
     );
+  }*/
+
+
+  Widget hiveSection(BuildContext context) {
+    return Obx(() {
+      final users = controller.employees;
+      final double itemWidth = 88.w;
+      final double itemHeight = 98.h;
+      final List<int> pattern = _getPattern(users.length);
+      final maxHeight = MediaQuery.of(context).size.height * 0.6;
+
+      if (users.isEmpty) {
+        return Container(
+          padding: EdgeInsets.all(15.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.r),
+            border: Border.all(color: AppColors.boxBorder, width: 3.w),
+          ),
+          child: Center(
+            child: Text(
+              'No Hive users found',
+              style: TextStyle(color: AppColors.white, fontSize: 16.sp),
+            ),
+          ),
+        );
+      }
+
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+        padding: EdgeInsets.all(15.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.r),
+          color: Colors.red,
+          border: Border.all(color: AppColors.boxBorder, width: 3.w),
+        ),
+        child: ColoredBox(
+          color: Colors.yellow,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+             mainAxisSize: MainAxisSize.max,
+            children: [
+              Text(
+                'HIVE',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: AppColors.white,
+                  fontSize: 25.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: 15.h),
+              ColoredBox(
+                color: Colors.green,
+                child: CustomMultiChildLayout(
+                      delegate: HoneycombLayoutDelegate(
+                        itemWidth: itemWidth,
+                        itemHeight: itemHeight,
+                        users: users,
+                        pattern: pattern,
+                      ),
+                      children: [
+                        for (int index = 0; index < users.length; index++)
+                          LayoutId(
+                            id: index,
+                            child: GestureDetector(
+                              onTap: () => Get.toNamed(
+                                Routes.hiveProfileScreen,
+                                arguments: {'currentUser': users[index]},
+                              ),
+                              child: HexagonAvatar(
+                                imagePath: AppAssets.profileImage,
+                                width: itemWidth,
+                                height: itemHeight,
+                                borderColor: index % 2 == 0
+                                    ? AppColors.white
+                                    : AppColors.primary,
+                                name: (users[index].employee?.name ??
+                                    users[index].email.split('@').first)
+                                    .isNotEmpty
+                                    ? (users[index].employee?.name ??
+                                    users[index].email.split('@').first)
+                                    : 'Unknown Employee',
+                                totalMl: users[index].employee?.experienceYears ?? 'N/A',
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+              )
+            ],
+          ),
+        ),
+      );
+    });
   }
+  /*List<int> _getPattern(int userCount) {
+    if (userCount <= 4) return [userCount]; // Single row if less than or equal to 4
+    if (userCount <= 7) return [4, 3]; // 4-3 pattern
+    if (userCount <= 11) return [4, 3, 4]; // 4-3-4 pattern
+    if (userCount <= 15) return [4, 3, 4, 3]; // 4-3-4-3 pattern
+    // For 15 or more, use 4-3-4-3-1 pattern and adjust for remaining items
+    final basePattern = [4, 3, 4, 3];
+    final remaining = userCount % 10; // 10 is the sum of 4+3+4+3
+    if (remaining > 0) {
+      return [...basePattern, remaining];
+    }
+    return basePattern;
+  }*/
+  List<int> _getPattern(int userCount) {
+    if (userCount <= 0) return []; // Return empty list for invalid input
+    if (userCount <= 4) return [userCount]; // Single row for 4 or fewer users
 
+    final List<int> basePattern = [4, 3]; // Base repeating pattern
+    final int patternSum = basePattern.reduce((a, b) => a + b); // Sum of base pattern (7)
+    final int fullCycles = userCount ~/ patternSum; // Number of complete 4-3 cycles
+    int remaining = userCount % patternSum; // Remaining items after full cycles
 
+    List<int> pattern = [];
+    // Add full cycles of [4, 3]
+    for (int i = 0; i < fullCycles; i++) {
+      pattern.addAll(basePattern);
+    }
+
+    // Handle remaining items
+    if (remaining > 0) {
+      int index = 0;
+      while (remaining > 0) {
+        final int itemsToAdd = remaining >= basePattern[index % basePattern.length]
+            ? basePattern[index % basePattern.length]
+            : remaining;
+        pattern.add(itemsToAdd);
+        remaining -= itemsToAdd;
+        index++;
+      }
+    }
+
+    return pattern;
+  }
   // Widget hiveSection(BuildContext context) {
   //   return Container(
   //     padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),

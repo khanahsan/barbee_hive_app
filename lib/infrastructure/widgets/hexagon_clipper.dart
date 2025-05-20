@@ -252,6 +252,7 @@ class HexagonClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => true;
 }
 
+/*
 class HexagonAvatar extends StatelessWidget {
   const HexagonAvatar({
     super.key,
@@ -334,6 +335,135 @@ class HexagonAvatar extends StatelessWidget {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}*/
+
+class HoneycombLayoutDelegate extends MultiChildLayoutDelegate {
+  final double itemWidth;
+  final double itemHeight;
+  final List<dynamic> users;
+  final List<int> pattern;
+
+  HoneycombLayoutDelegate({
+    required this.itemWidth,
+    required this.itemHeight,
+    required this.users,
+    required this.pattern,
+  });
+
+  @override
+  Size getSize(BoxConstraints constraints) {
+    final int totalItemsInPattern = pattern.reduce((a, b) => a + b);
+    final int rowCount = (users.length / totalItemsInPattern).ceil() + (users.length % totalItemsInPattern > 0 ? 1 : 0);
+    final double totalHeight = rowCount * itemHeight * 0.75; // Height based on number of rows
+    return Size(constraints.maxWidth, totalHeight);
+  }
+
+  @override
+  void performLayout(Size size) {
+    int index = 0;
+    double y = 0;
+    int patternIndex = 0;
+
+    while (index < users.length) {
+      final int itemsInRow = pattern[patternIndex % pattern.length];
+      double x = (patternIndex % 2 == 0) ? 0 : itemWidth / 2;
+
+      for (int col = 0; col < itemsInRow && index < users.length; col++) {
+        if (hasChild(index)) {
+          layoutChild(
+            index,
+            BoxConstraints.tightFor(width: itemWidth, height: itemHeight),
+          );
+          positionChild(index, Offset(x, y));
+        }
+        x += itemWidth;
+        index++;
+      }
+
+      y += itemHeight * 0.75;
+      patternIndex++;
+    }
+  }
+
+  @override
+  bool shouldRelayout(covariant HoneycombLayoutDelegate oldDelegate) {
+    return itemWidth != oldDelegate.itemWidth ||
+        itemHeight != oldDelegate.itemHeight ||
+        users != oldDelegate.users ||
+        pattern != oldDelegate.pattern;
+  }
+}
+class HexagonAvatar extends StatelessWidget {
+  const HexagonAvatar({
+    super.key,
+    this.height,
+    this.width,
+    this.borderColor,
+    required this.imagePath,
+    this.name,
+    this.totalMl,
+    this.textStyle,
+  });
+
+  final double? height;
+  final double? width;
+  final Color? borderColor;
+  final String imagePath;
+  final String? name;
+  final String? totalMl;
+  final TextStyle? textStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final double resolvedWidth = width ?? 80.w;
+    final double resolvedHeight = height ?? resolvedWidth * 0.866;
+
+    return ClipPath(
+      clipper: HexagonClipper(),
+      child: Container(
+        width: resolvedWidth,
+        height: resolvedHeight,
+        decoration: BoxDecoration(
+          border: Border.all(color: borderColor ?? AppColors.primary, width: 1),
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          alignment: Alignment.center,
+          children: [
+            Image.asset(imagePath, fit: BoxFit.cover),
+            if (name != null && totalMl != null)
+              Positioned(
+                bottom: 15.h,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      name!,
+                      textAlign: TextAlign.center,
+                      style: textStyle ??
+                          Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontSize: 10.sp,
+                            color: AppColors.white,
+                          ),
+                    ),
+                    Text(
+                      totalMl!,
+                      textAlign: TextAlign.center,
+                      style: textStyle ??
+                          Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontSize: 9.sp,
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
         ),
       ),
     );

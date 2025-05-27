@@ -11,5 +11,6 @@ class Endpoints {
   static const String registerEmployee = 'register';
   static const String userProfile = 'profiles';
   static const String jobStore = 'jobs/store';
+  static const String updateProfile = 'profiles/update';
 }
 

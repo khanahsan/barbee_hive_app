@@ -214,4 +214,48 @@ class AuthProvider {
 
     return JobPostResponse.fromJson(data);
   }
+
+  static Future<UserProfileResponse> updateUserProfile({
+    required String name,
+    required String email,
+    required String country,
+    required String state,
+    required String city,
+    String? dob,
+    String? gender,
+    int? eyeColorId,
+    int? hairColorId,
+    int? height,
+    int? skillId,
+    File? resume,
+  }) async {
+    final fields = <String, String>{
+      'name': name,
+      'email': email,
+      'country': country,
+      'state': state,
+      'city': city,
+    };
+
+    // Add optional fields if they are not null
+    if (dob != null) fields['dob'] = dob;
+    if (gender != null) fields['gender'] = gender;
+    if (eyeColorId != null) fields['eye_color_id'] = eyeColorId.toString();
+    if (hairColorId != null) fields['hair_color_id'] = hairColorId.toString();
+    if (height != null) fields['height'] = height.toString();
+    if (skillId != null) fields['skill_id'] = skillId.toString();
+
+    debugPrint('Update Profile Payload: $fields, Resume: ${resume?.path}');
+
+    final data = await ApiService.multipartPost(
+      Endpoints.updateProfile,
+      fields: fields,
+      file: resume,
+      fileField: 'resume',
+      auth: true, // Auth required to update profile
+    );
+
+    return UserProfileResponse.fromJson(data);
+  }
+
 }

@@ -1369,11 +1369,14 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                         SizedBox(height: 15.h),
                         Obx(
                               () => DottedBorder(
-                            color: AppColors.textFieldTextColor,
-                            strokeWidth: 2,
-                            borderType: BorderType.RRect,
-                            radius: const Radius.circular(12),
-                            dashPattern: const [5, 5],
+                                options: RectDottedBorderOptions(
+                                  dashPattern: [6, 3],
+                                ),
+                            // color: AppColors.textFieldTextColor,
+                            // strokeWidth: 2,
+                            // borderType: BorderType.RRect,
+                            // radius: const Radius.circular(12),
+                            // dashPattern: const [5, 5],
                             child: GestureDetector(
                               onTap: controller.pickResume,
                               child: Container(

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/api/token_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -39,14 +40,22 @@ class ApiService {
     try {
       final uri = Uri.parse('${Endpoints.baseUrl}$endpoint');
       print('GET Request URL: $uri');
-      final response = await _safeRequest('GET', uri, headers: _headers(includeAuth: auth));
+      final response = await _safeRequest(
+        'GET',
+        uri,
+        headers: _headers(includeAuth: auth),
+      );
       return _handleResponse(response);
     } catch (e) {
       throw Exception('GET request error: $e');
     }
   }
 
-  static Future<dynamic> post(String endpoint, Map<String, dynamic> data, {bool auth = true}) async {
+  static Future<dynamic> post(
+    String endpoint,
+    Map<String, dynamic> data, {
+    bool auth = true,
+  }) async {
     try {
       final uri = Uri.parse('${Endpoints.baseUrl}$endpoint');
       print('POST Request URL: $uri');
@@ -63,29 +72,37 @@ class ApiService {
   }
 
   static Future<dynamic> multipartPost(
-      String endpoint, {
-        required Map<String, String> fields,
-        File? file,
-        String fileField = 'file',
-        bool auth = true,
-      }) async {
+    String endpoint, {
+    required Map<String, String> fields,
+    File? file,
+    String fileField = 'file',
+    bool auth = true,
+  }) async {
     try {
       final uri = Uri.parse('${Endpoints.baseUrl}$endpoint');
       print('Multipart POST Request URL: $uri');
+      print('fields: $fields');
+      print('file: $file');
+      print('_token: $_token');
       final request = http.MultipartRequest('POST', uri);
 
       // Add headers
       if (auth && _token != null) {
         request.headers['Authorization'] = 'Bearer $_token';
       }
-      request.headers['Accept'] = 'application/json';
+      // request.headers['Accept'] = 'application/json';
+      request.headers['Content-Type'] = 'multipart/form-data';
+
+      debugPrint("request.headers.toString() ${request.headers.toString()}");
 
       // Add text fields
       request.fields.addAll(fields);
 
       // Add file if provided
       if (file != null) {
-        request.files.add(await http.MultipartFile.fromPath(fileField, file.path));
+        request.files.add(
+          await http.MultipartFile.fromPath(fileField, file.path),
+        );
       }
 
       // Send request
@@ -98,26 +115,28 @@ class ApiService {
     }
   }
 
-
   static Future<http.Response> _safeRequest(
-      String method,
-      Uri uri, {
-        required Map<String, String> headers,
-        String? body,
-        int maxRedirects = 5,
-      }) async {
+    String method,
+    Uri uri, {
+    required Map<String, String> headers,
+    String? body,
+    int maxRedirects = 5,
+  }) async {
     final client = http.Client();
     try {
       var currentUri = uri;
       var redirects = 0;
 
       while (redirects < maxRedirects) {
-        final request = http.Request(method, currentUri)..headers.addAll(headers);
+        final request = http.Request(method, currentUri)
+          ..headers.addAll(headers);
         if (body != null) request.body = body;
         final streamedResponse = await client.send(request);
         final response = await http.Response.fromStream(streamedResponse);
 
-        if (response.statusCode >= 300 && response.statusCode < 400 && response.headers['location'] != null) {
+        if (response.statusCode >= 300 &&
+            response.statusCode < 400 &&
+            response.headers['location'] != null) {
           currentUri = Uri.parse(response.headers['location']!);
           redirects++;
           continue;
@@ -146,8 +165,13 @@ class ApiService {
 
     if (statusCode >= 200 && statusCode < 300) {
       return body;
-    } else if (statusCode == 301 || statusCode == 302 || statusCode == 307 || statusCode == 308) {
-      throw Exception('Redirect detected: ${response.headers['location'] ?? 'Unknown location'}');
+    } else if (statusCode == 301 ||
+        statusCode == 302 ||
+        statusCode == 307 ||
+        statusCode == 308) {
+      throw Exception(
+        'Redirect detected: ${response.headers['location'] ?? 'Unknown location'}',
+      );
     } else if (statusCode == 401) {
       throw Exception(body?['message'] ?? 'Unauthorized request');
     } else if (statusCode == 403) {
@@ -156,9 +180,10 @@ class ApiService {
       throw Exception(body?['message'] ?? 'Resource not found');
     } else if (statusCode == 422) {
       final errors = body?['errors'] ?? {};
-      final firstError = errors.isNotEmpty
-          ? errors.values.first[0]
-          : body?['message'] ?? 'Validation failed';
+      final firstError =
+          errors.isNotEmpty
+              ? errors.values.first[0]
+              : body?['message'] ?? 'Validation failed';
       throw Exception(firstError);
     } else if (statusCode == 500) {
       throw Exception(body?['message'] ?? 'Internal server error');
@@ -167,10 +192,3 @@ class ApiService {
     }
   }
 }
-
-
-
-
-
-
-

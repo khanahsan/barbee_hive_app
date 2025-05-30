@@ -1,15 +1,19 @@
+
+import 'package:barbee_hive_app/data/model/job_list_response.dart';
+import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
+import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
+import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import '../../../../infrastructure/constants/app_colors.dart';
-import '../../../../infrastructure/constants/app_images.dart';
-import '../../../../infrastructure/navigation/routes.dart';
-import '../../../../infrastructure/widgets/custom_button.dart';
+class EmployerCard extends StatelessWidget {
+  final JobData job;
 
-class JobApplicationCard extends StatelessWidget {
-  const JobApplicationCard({super.key});
+  const EmployerCard({required this.job, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +26,8 @@ class JobApplicationCard extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        spacing: 20.h,
         children: [
-          //Hours Deign Tile
+          // Hours Design Tile
           Container(
             padding: EdgeInsets.only(
               left: 2.w,
@@ -38,7 +41,6 @@ class JobApplicationCard extends StatelessWidget {
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              spacing: 5.w,
               children: [
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
@@ -51,8 +53,6 @@ class JobApplicationCard extends StatelessWidget {
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    spacing: 2.w,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SvgPicture.asset(
                         AppAssets.clockIcon,
@@ -60,8 +60,9 @@ class JobApplicationCard extends StatelessWidget {
                         width: 16.w,
                         fit: BoxFit.cover,
                       ),
+                      SizedBox(width: 2.w),
                       Text(
-                        "20hrs",
+                        "${job.remainingHours}hrs",
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w600,
@@ -71,6 +72,7 @@ class JobApplicationCard extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(width: 5.w),
                 Text(
                   "Renew Job in \$1.99",
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -84,19 +86,40 @@ class JobApplicationCard extends StatelessWidget {
               ],
             ),
           ),
+          SizedBox(height: 20.h),
+          // Info Tile
+          _buildRow(context: context),
+          SizedBox(height: 20.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomButton(
+                onTap: () {
+                  LogUtil.logError('job.id ${job.id}');
+                  Get.toNamed(Routes.applicationsScreen, arguments: {
+                    'jobId': job.id
+                  });
+                },
+                buttonText: "View Applications",
+                buttonWidth: 185.w,
+                buttonColor: AppColors.color101010,
+                borderColor: AppColors.primary,
+                buttonHeight: 50.h,
+                buttonTextSize: 15.sp,
+              ),
+              CustomButton(
+                onTap: () {
+                  //Get.toNamed(Routes.editJobScreen, arguments: job);
 
-          //Info Tile
-          _buildRow(context: context, title: "Job Role", value: "Bartender"),
-          CustomButton(
-            onTap: () {
-              Get.toNamed(Routes.applicationsScreen);
-            },
-            buttonText: "View Applications",
-            buttonWidth: double.infinity,
-            buttonColor: AppColors.color101010,
-            borderColor: AppColors.primary,
-            buttonHeight: 60.h,
-            buttonTextSize: 15.sp,
+                },
+                buttonText: "Edit Profile",
+                buttonWidth: 185.w,
+                buttonColor: AppColors.color101010,
+                borderColor: AppColors.primary,
+                buttonHeight: 50.h,
+                buttonTextSize: 15.sp,
+              ),
+            ],
           ),
         ],
       ),
@@ -105,17 +128,13 @@ class JobApplicationCard extends StatelessWidget {
 
   Widget _buildRow({
     required BuildContext context,
-    required String title,
-    required String value,
   }) {
     return Row(
-      mainAxisSize: MainAxisSize.min,
-      spacing: 25.w,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
-          spacing: 15.h,
           children: [
             Text(
               "Job Role",
@@ -125,14 +144,16 @@ class JobApplicationCard extends StatelessWidget {
                 color: AppColors.white,
               ),
             ),
+            SizedBox(height: 15.h),
             Text(
-              "Year of Experience",
+              "Skills",
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.white,
               ),
             ),
+            SizedBox(height: 15.h),
             Text(
               "Salary",
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -141,6 +162,7 @@ class JobApplicationCard extends StatelessWidget {
                 color: AppColors.white,
               ),
             ),
+            SizedBox(height: 15.h),
             Text(
               "Experience Level",
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -149,6 +171,7 @@ class JobApplicationCard extends StatelessWidget {
                 color: AppColors.white,
               ),
             ),
+            SizedBox(height: 15.h),
             Text(
               "Location",
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -159,52 +182,59 @@ class JobApplicationCard extends StatelessWidget {
             ),
           ],
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          spacing: 15.h,
-          children: [
-            Text(
-              "Bartender",
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.white.withOpacity(0.5),
+        SizedBox(width: 25.w),
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                job.title,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.grey,
+                ),
               ),
-            ),
-            Text(
-              "2 Years",
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.white.withOpacity(0.5),
+              SizedBox(height: 15.h),
+              Text(
+                job.skills?.map((skill) => skill.name).join(', ') ?? 'N/A',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.grey,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
-            Text(
-              "300\$",
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.white.withOpacity(0.5),
+              SizedBox(height: 15.h),
+              Text(
+                '\$${job.salaryRange.min}-\$${job.salaryRange.max}',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.grey,
+                ),
               ),
-            ),
-            Text(
-              "Bartender",
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.white.withOpacity(0.5),
+              SizedBox(height: 15.h),
+              Text(
+                job.experienceLevel,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.grey,
+                ),
               ),
-            ),
-            Text(
-              "USA, Oklahoma,Pasadena",
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.white.withOpacity(0.5),
+              SizedBox(height: 15.h),
+              Text(
+                '${job.country}, ${job.state}, ${job.city}',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.grey,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

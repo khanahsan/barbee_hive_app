@@ -1,3 +1,4 @@
+import 'package:barbee_hive_app/data/model/job_list_response.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:flutter/material.dart';
@@ -5,18 +6,19 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import '../../../../infrastructure/constants/app_colors.dart';
-import '../../../../infrastructure/constants/app_images.dart';
-import '../../../../infrastructure/navigation/routes.dart';
+import '../../../../../infrastructure/constants/app_colors.dart';
+import '../../../../../infrastructure/constants/app_images.dart';
+import '../../../../../infrastructure/navigation/routes.dart';
 
-class FindJobCard extends StatefulWidget {
-  const FindJobCard({super.key});
+class EmployeeCard extends StatefulWidget {
+  final JobData job;
+  const EmployeeCard({required this.job, super.key});
 
   @override
-  State<FindJobCard> createState() => _FindJobCardState();
+  State<EmployeeCard> createState() => _EmployeeCardState();
 }
 
-class _FindJobCardState extends State<FindJobCard> with SingleTickerProviderStateMixin {
+class _EmployeeCardState extends State<EmployeeCard> with SingleTickerProviderStateMixin {
   bool isExpanded = false;
 
   void toggleExpanded() {
@@ -50,8 +52,14 @@ class _FindJobCardState extends State<FindJobCard> with SingleTickerProviderStat
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 8.w,
                 children: [
-                  HexagonAvatar(
+                  /*HexagonAvatar(
                     imagePath: AppAssets.profileImage,
+                    width: 70.w,
+                    height: 80.h,
+                  ),*/
+                  HexagonAvatar(
+                    imagePath: widget.job.employer.profileImage ?? '', // Pass empty string if null
+                    name: widget.job.recruiterName, // Pass recruiterName for fallback initial
                     width: 70.w,
                     height: 80.h,
                   ),
@@ -68,7 +76,7 @@ class _FindJobCardState extends State<FindJobCard> with SingleTickerProviderStat
                         ),
                       ),
                       Text(
-                        "Keithon's Kitchen & Bar",
+                        widget.job.recruiterName,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.w500,
@@ -85,12 +93,24 @@ class _FindJobCardState extends State<FindJobCard> with SingleTickerProviderStat
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Bartender",
+                  /*Text(
+              widget.job.skills?.map((skill) => skill.name).join(', ') ?? 'N/A',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.white,
+                    ),
+                  ),*/
+                  Expanded(
+                    child: Text(
+                      widget.job.skills?.map((skill) => skill.name).join(', ') ?? 'N/A',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.white,
+                      ),
+                      overflow: TextOverflow.ellipsis, // Truncate long text
+                      maxLines: 1, // Limit to one line
                     ),
                   ),
                   Container(
@@ -103,7 +123,7 @@ class _FindJobCardState extends State<FindJobCard> with SingleTickerProviderStat
                       borderRadius: BorderRadius.circular(5.r),
                     ),
                     child: Text(
-                      "Full Time",
+                      widget.job.jobType,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
@@ -115,15 +135,16 @@ class _FindJobCardState extends State<FindJobCard> with SingleTickerProviderStat
               ),
               infoRow(
                 iconPath: AppAssets.containerIcon,
-                rowTitle: "\$3000-3500 per month",
+                rowTitle: "\$${widget.job.salaryRange.min}-${widget.job.salaryRange.max} per month",
               ),
 
               infoRow(
                 iconPath: AppAssets.locationIcon,
-                rowTitle: "Pasadena Oklahoma",
+                rowTitle: widget.job.city,
               ),
 
-              infoRow(iconPath: AppAssets.bagIcon, rowTitle: "5-6 years"),
+              // infoRow(iconPath: AppAssets.bagIcon, rowTitle: "5-6 years"),
+              infoRow(iconPath: AppAssets.bagIcon, rowTitle: widget.job.experienceLevel),
 
               if (isExpanded)
                 Column(
@@ -140,7 +161,7 @@ class _FindJobCardState extends State<FindJobCard> with SingleTickerProviderStat
                       ),
                     ),
                     Text(
-                      "This is a detailed job description for the bartender role. Candidates must have at least 5 years of experience in a similar position and excellent customer service skills.",
+                      widget.job.description,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontSize: 14.sp,
                         color: AppColors.color5E5E5E,
@@ -156,7 +177,13 @@ class _FindJobCardState extends State<FindJobCard> with SingleTickerProviderStat
                 borderColor: AppColors.primary,
                 onTap: () {
                   if (isExpanded) {
-                    Get.toNamed(Routes.APPLY_VIEW);
+                    Get.toNamed(
+                      Routes.APPLY_VIEW,
+                      arguments: {
+                        'jobId': widget.job.id,
+                        'profileImage': widget.job.image,
+                      },
+                    );
                   } else {
                     toggleExpanded();
                   }

@@ -36,6 +36,7 @@ class CustomTextField extends StatefulWidget {
   final double? fontSize;
   final Color? enabledBorderColor;
   final Color? focusedBorderColor;
+  final Color? hintColor;
 
   // final SpellCheckConfiguration? spellCheckConfiguration;
 
@@ -72,6 +73,7 @@ class CustomTextField extends StatefulWidget {
     this.fontSize,
     this.enabledBorderColor,
     this.focusedBorderColor,
+    this.hintColor,
   });
 
   @override
@@ -130,6 +132,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             suffixIcon: widget.suffixIcon,
             prefixIcon: widget.prefixIcon,
             hintText: widget.hintText,
+
             labelStyle: const TextStyle(color: Colors.black),
             fillColor: widget.fillColor ?? Colors.grey.shade100,
             filled: widget.filled,
@@ -151,7 +154,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               borderRadius: BorderRadius.circular(10),
             ),
             hintStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: widget.fontColor,
+              color: widget.hintColor ?? widget.fontColor,
               fontSize: widget.fontSize ?? 16.sp,
             ),
             errorStyle: const TextStyle(

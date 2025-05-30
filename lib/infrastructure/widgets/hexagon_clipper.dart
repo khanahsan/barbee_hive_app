@@ -282,8 +282,7 @@ class HexagonClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => true;
 }
 
-
-class HexagonAvatar extends StatelessWidget {
+/*class HexagonAvatar extends StatelessWidget {
   const HexagonAvatar({
     super.key,
     this.height,
@@ -424,6 +423,189 @@ class HexagonAvatar extends StatelessWidget {
       ],
     );
   }
+}*/
+
+class HexagonAvatar extends StatelessWidget {
+  const HexagonAvatar({
+    super.key,
+    this.height,
+    this.width,
+    this.borderColor,
+    required this.imagePath,
+    this.showOption = false,
+    this.name,
+    this.totalMl,
+    this.textStyle,
+  });
+
+  final double? height;
+  final double? width;
+  final Color? borderColor;
+  final String imagePath;
+  final bool? showOption;
+  final String? name;
+  final String? totalMl;
+  final TextStyle? textStyle;
+
+  bool _isNetworkImage(String path) {
+    return path.isNotEmpty &&
+        (path.startsWith('http://') || path.startsWith('https://'));
+  }
+
+  bool _isValidAssetImage(String path) {
+    return path.isNotEmpty && path.endsWith('.png') ||
+        path.endsWith('.jpg') ||
+        path.endsWith('.jpeg');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double resolvedWidth = width ?? 80;
+    final double resolvedHeight = height ?? resolvedWidth * 0.866;
+
+    // Determine if we should show the initial
+    final bool showInitial =
+        imagePath.isEmpty ||
+        (!_isNetworkImage(imagePath) && !_isValidAssetImage(imagePath));
+
+
+
+    return Stack(
+      children: [
+        ClipPath(
+          clipper: HexagonClipper(),
+          child: Container(
+            padding: const EdgeInsets.all(1),
+            width: resolvedWidth,
+            height: resolvedHeight,
+            color: borderColor ?? AppColors.primary,
+            child: ClipPath(
+              clipper: HexagonClipper(),
+              child: Container(
+                padding: const EdgeInsets.all(3.5),
+                width: resolvedWidth,
+                height: resolvedHeight,
+                color: AppColors.black,
+                child: ClipPath(
+                  clipper: HexagonClipper(),
+                  child: SizedBox(
+                    width: resolvedWidth,
+                    height: resolvedHeight,
+                    child: Stack(
+                      fit: StackFit.expand,
+                      alignment: Alignment.center,
+                      children: [
+                        if (!showInitial)
+                          _isNetworkImage(imagePath)
+                              ? Image.network(
+                                imagePath,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) =>
+                                        _buildInitial(context),
+                              )
+                              : Image.asset(
+                                imagePath,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) =>
+                                        _buildInitial(context),
+                              )
+                        else
+                          _buildInitial(context),
+                        /*if (name != null && totalMl != null)
+                          Positioned(
+                            bottom: 15.h,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  name!,
+                                  textAlign: TextAlign.center,
+                                  style:
+                                      textStyle ??
+                                      Theme.of(
+                                        context,
+                                      ).textTheme.titleSmall?.copyWith(
+                                        fontSize: 10.sp,
+                                        color: AppColors.white,
+                                      ),
+                                ),
+                                Text(
+                                  totalMl!,
+                                  textAlign: TextAlign.center,
+                                  style:
+                                      textStyle ??
+                                      Theme.of(
+                                        context,
+                                      ).textTheme.titleSmall?.copyWith(
+                                        fontSize: 9.sp,
+                                        color: AppColors.primary,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),*/
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        if (showOption ?? false)
+          Positioned(
+            bottom: 4.h,
+            left: 22.w,
+            child: ClipPath(
+              clipper: HexagonClipper(),
+              child: Container(
+                padding: const EdgeInsets.all(1),
+                width: 35.w,
+                height: 45.h,
+                color: borderColor ?? AppColors.primary,
+                child: ClipPath(
+                  clipper: HexagonClipper(),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: 40.w,
+                    height: 45.h,
+                    color: AppColors.black,
+                    child: ClipPath(
+                      clipper: HexagonClipper(),
+                      child: SvgPicture.asset(
+                        AppAssets.editIcon,
+                        fit: BoxFit.scaleDown,
+                        height: 25.h,
+                        width: 25.w,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+      ],
+    );
+  }
+
+  Widget _buildInitial(BuildContext context) {
+    return Container(
+      color: AppColors.primary, // Background for initial
+      alignment: Alignment.center,
+      child: Text(
+        name != null && name!.isNotEmpty ? name![0].toUpperCase() : '?',
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+          fontSize: 24.sp,
+          fontWeight: FontWeight.bold,
+          color: AppColors.white,
+        ),
+      ),
+    );
+  }
 }
 
 class HoneycombLayoutDelegate extends MultiChildLayoutDelegate {
@@ -442,8 +624,11 @@ class HoneycombLayoutDelegate extends MultiChildLayoutDelegate {
   @override
   Size getSize(BoxConstraints constraints) {
     final int totalItemsInPattern = pattern.reduce((a, b) => a + b);
-    final int rowCount = (users.length / totalItemsInPattern).ceil() + (users.length % totalItemsInPattern > 0 ? 1 : 0);
-    final double totalHeight = rowCount * itemHeight * 0.75; // Height based on number of rows
+    final int rowCount =
+        (users.length / totalItemsInPattern).ceil() +
+        (users.length % totalItemsInPattern > 0 ? 1 : 0);
+    final double totalHeight =
+        rowCount * itemHeight * 0.75; // Height based on number of rows
     return Size(constraints.maxWidth, totalHeight);
   }
 
@@ -465,13 +650,19 @@ class HoneycombLayoutDelegate extends MultiChildLayoutDelegate {
           );
           positionChild(index, Offset(x, y));
         }
-        x += itemWidth;
+        x += itemWidth - 5;
         index++;
       }
 
-      y += itemHeight * 0.75;
+      // print("hello item $itemHeight");
+
+      y += itemHeight * 0.65;
+
+      print("$itemHeight item $y == ${patternIndex}");
+
       patternIndex++;
     }
+    print("----------------------------------");
   }
 
   @override

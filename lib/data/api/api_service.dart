@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/api/token_storage.dart';
+import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,8 +39,44 @@ class ApiService {
     return headers;
   }
 
+  static Future<bool> isInternetAvailable() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    try {
+      final List<ConnectivityResult> connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult.contains(ConnectivityResult.none)) {
+        Utilities.showToast(
+          toastMsg: 'No internet connection. Please check your WiFi or mobile data.',
+          isSuccess: false,
+        );
+        return false;
+      }
+      final response = await http.get(
+        Uri.parse('https://www.google.com/'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      if (response.statusCode == 200) {
+        return true;
+      }
+      Utilities.showToast(
+        toastMsg: 'Internet connection is not working. Please check your connection or try again later.',
+        isSuccess: false,
+      );
+      return false;
+    } catch (e) {
+      Utilities.showToast(
+        toastMsg: 'Internet connection is not working. Please check your connection or try again later.',
+        isSuccess: false,
+      );
+      LogUtil.logError('isInternetAvailable: $e');
+      return false;
+    }
+  }
+
   static Future<dynamic> get(String endpoint, {bool auth = true}) async {
     try {
+      if (!(await isInternetAvailable())) {
+        throw Exception('No internet connection');
+      }
       final uri = Uri.parse('${Endpoints.baseUrl}$endpoint');
       print('GET Request URL: $uri');
       final response = await _safeRequest(
@@ -47,7 +86,10 @@ class ApiService {
       );
       return _handleResponse(response);
     } catch (e) {
-      throw Exception('GET request error: $e');
+      print('GET Error: $e');
+      LogUtil.logError('GET $endpoint: $e');
+      //throw Exception('GET request error: $e');
+      rethrow;
     }
   }
 
@@ -57,6 +99,10 @@ class ApiService {
     bool auth = true,
   }) async {
     try {
+      if (!(await isInternetAvailable())) {
+        throw Exception('No internet connection');
+      }
+
       final uri = Uri.parse('${Endpoints.baseUrl}$endpoint');
       print('POST Request URL: $uri');
       final response = await _safeRequest(
@@ -67,11 +113,14 @@ class ApiService {
       );
       return _handleResponse(response);
     } catch (e) {
-      throw Exception('POST request error: $e');
+      print('POST Error: $e');
+      LogUtil.logError('POST $endpoint: $e');
+      //throw Exception('POST request error: $e');
+      rethrow;
     }
   }
 
-  static Future<dynamic> multipartPost(
+ /* static Future<dynamic> multipartPost(
     String endpoint, {
     required Map<String, String> fields,
     File? file,
@@ -79,39 +128,75 @@ class ApiService {
     bool auth = true,
   }) async {
     try {
+      if (!(await isInternetAvailable())) {
+        throw Exception('No internet connection');
+      }
+
       final uri = Uri.parse('${Endpoints.baseUrl}$endpoint');
-      print('Multipart POST Request URL: $uri');
-      print('fields: $fields');
-      print('file: $file');
-      print('_token: $_token');
+
       final request = http.MultipartRequest('POST', uri);
 
-      // Add headers
       if (auth && _token != null) {
         request.headers['Authorization'] = 'Bearer $_token';
       }
-      // request.headers['Accept'] = 'application/json';
       request.headers['Content-Type'] = 'multipart/form-data';
-
-      debugPrint("request.headers.toString() ${request.headers.toString()}");
-
-      // Add text fields
       request.fields.addAll(fields);
 
-      // Add file if provided
       if (file != null) {
         request.files.add(
           await http.MultipartFile.fromPath(fileField, file.path),
         );
       }
 
-      // Send request
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
       return _handleResponse(response);
     } catch (e) {
-      throw Exception('Multipart POST request error: $e');
+      print('Multipart POST Error: $e');
+      LogUtil.logError('Multipart POST $endpoint: $e');
+      //throw Exception('Multipart POST request error: $e');
+      rethrow;
+       }
+  }*/
+
+  static Future<dynamic> multipartPost(
+      String endpoint, {
+        required Map<String, String> fields,
+        Map<String, File>? files, // Changed to support multiple files
+        bool auth = true,
+      }) async {
+    try {
+      if (!(await isInternetAvailable())) {
+        throw Exception('No internet connection');
+      }
+
+      final uri = Uri.parse('${Endpoints.baseUrl}$endpoint');
+
+      final request = http.MultipartRequest('POST', uri);
+
+      if (auth && _token != null) {
+        request.headers['Authorization'] = 'Bearer $_token';
+      }
+      request.headers['Content-Type'] = 'multipart/form-data';
+      request.fields.addAll(fields);
+
+      if (files != null) {
+        for (var entry in files.entries) {
+          request.files.add(
+            await http.MultipartFile.fromPath(entry.key, entry.value.path),
+          );
+        }
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      return _handleResponse(response);
+    } catch (e) {
+      print('Multipart POST Error: $e');
+      LogUtil.logError('Multipart POST $endpoint: $e');
+      rethrow;
     }
   }
 

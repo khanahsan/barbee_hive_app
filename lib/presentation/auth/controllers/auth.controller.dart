@@ -4,6 +4,7 @@ import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/location_service.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,6 +28,22 @@ class AuthController extends GetxController {
 
   void togglePasswordVisibility() {
     isObscured.value = !isObscured.value;
+  }
+
+  // Method to show the dialog
+  Future<void> showResetPasswordDialog(BuildContext context, String email) async {
+    print('Showing reset password dialog for email: $email'); // Debug log
+    await showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (BuildContext context) {
+        return CustomDialog(
+          email: email,
+          title: "Reset Password",
+          subTitle: "A link to reset your password has been sent to",
+        );
+      },
+    );
   }
 
   Future<void> login() async {
@@ -63,6 +80,11 @@ class AuthController extends GetxController {
       await SharedPreferenceHelper.saveInt(
         SharedPrefKeys.userRole,
         response.user.role,
+      );
+
+      await SharedPreferenceHelper.saveInt(
+        SharedPrefKeys.userId,
+        response.user.id,
       );
 
       await SharedPreferenceHelper.saveInt(
@@ -121,7 +143,8 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> forgotPassword() async {
+/*
+  Future<void> forgotPassword(BuildContext context) async {
     final email = fEmailController.text.trim();
 
     if (email.isEmpty) {
@@ -147,14 +170,8 @@ class AuthController extends GetxController {
       final message = response['message'] as String;
       print('Forgot Password Response: status=$status, message=$message');
 
-      Get.snackbar(
-        "Forgot Password",
-        message,
-        backgroundColor: status ? Colors.green : Colors.red,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
-        duration: Duration(seconds: 3),
-      );
+
+      showResetPasswordDialog(context, email);
 
       if (status) {
         Get.offNamed(
@@ -183,6 +200,72 @@ class AuthController extends GetxController {
       fPasswordIsLoading.value = false;
     }
   }
+*/
+
+
+  Future<void> forgotPassword(BuildContext context) async {
+    final email = fEmailController.text.trim();
+
+    if (email.isEmpty) {
+      Get.snackbar("Error", "Email required", backgroundColor: Colors.red);
+      return; // Keep return to prevent API call
+    }
+
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      Get.snackbar(
+        "Error",
+        "Please enter a valid email address",
+        backgroundColor: Colors.red,
+      );
+      return;
+    }
+
+    fPasswordIsLoading.value = true;
+
+    try {
+      print('Attempting forgot password for email: $email');
+      final response = await AuthProvider.forgotPassword(email);
+      final status = response['status'] as bool; // Status is a boolean
+      final message = response['message'] as String;
+      print('Forgot Password Response: status=$status, message=$message');
+
+      if (status) {
+        print('Status is true, showing dialog');
+        await showResetPasswordDialog(context, email); // Wait for dialog to close
+        print('Dialog closed, navigating to SIGN_IN_VIEW');
+        Get.offNamed(Routes.SIGN_IN_VIEW); // Navigate after dialog is closed
+      } else {
+        Get.snackbar(
+          "Forgot Password Failed",
+          message,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 3),
+        );
+      }
+    } catch (e) {
+      print('Forgot Password Error: $e');
+      String errorMessage = e.toString().replaceFirst(
+        'Exception: POST request error: Exception: ',
+        '',
+      );
+      errorMessage = errorMessage.startsWith('Exception: ')
+          ? errorMessage.replaceFirst('Exception: ', '')
+          : errorMessage;
+      Get.snackbar(
+        "Forgot Password Failed",
+        errorMessage,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        duration: Duration(seconds: 3),
+      );
+    } finally {
+      fPasswordIsLoading.value = false;
+    }
+  }
+
 
   @override
   void onClose() {

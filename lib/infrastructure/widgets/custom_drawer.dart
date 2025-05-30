@@ -2,7 +2,7 @@ import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:barbee_hive_app/presentation/auth/controllers/auth.controller.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/main_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/bottom_nav_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -262,7 +262,7 @@ class _CustomDrawerState extends State<CustomDrawer>
               ),
             )
           else
-            MainScreen(onMenuPressed: toggleDrawer),
+            BottomNavScreen(onMenuPressed: toggleDrawer),
 
           // screens[selectedIndex],
 
@@ -313,7 +313,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(30.r),
-                            child: MainScreen(onMenuPressed: toggleDrawer),
+                            child: BottomNavScreen(onMenuPressed: toggleDrawer),
                           ),
                         ),
                       ),

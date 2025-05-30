@@ -1,16 +1,20 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
-import 'package:barbee_hive_app/presentation/employer/job_posting/controller/job_posting_controller.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import '../../../infrastructure/widgets/custom_btn.dart';
+import 'controller/job_posting_controller.dart';
 
-class JobPostingScreen extends GetView<JobPostingController> {
-  const JobPostingScreen({super.key});
+
+
+class JobPostingScreen extends StatelessWidget {
+   JobPostingScreen({super.key});
+
+  var controller = Get.put(JobPostingController());
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +51,7 @@ class JobPostingScreen extends GetView<JobPostingController> {
                       topRight: Radius.circular(20.0.r),
                     ),
                   ),
-                  child: Container(
+                  child:  Container(
                     padding: EdgeInsets.symmetric(horizontal: 10.0),
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -126,22 +130,44 @@ class JobPostingScreen extends GetView<JobPostingController> {
                             ),
                           ],
                         ),
+                        Obx(()=>
+                            _buildDropdownField(
+                              context,
+                              'Position Seeking',
+                              AppAssets.experienceLogo,
+                              controller.selectedSkill,
+                              controller.updateSkill,
+                              items: controller.skills
+                                  .asMap()
+                                  .entries
+                                  .where((entry) => !controller.skills
+                                  .sublist(0, entry.key)
+                                  .map((e) => e.name)
+                                  .contains(entry.value.name))
+                                  .map((entry) => DropdownMenuItem(
+                                value: entry.value.name,
+                                child: Text(
+                                  entry.value.name,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ))
+                                  .toList(),
+                            )
+                        ),
                         _buildTextField(
                           context,
                           'Job Description',
-                          controller.stateController,
+                          controller.jobDesController,
                           maxLine: 3,
                         ),
                         Obx(
                               () => DottedBorder(
-                                options: RectDottedBorderOptions(
-                                  dashPattern: [6, 3],
+                                options: RoundedRectDottedBorderOptions(
+                                    dashPattern: [6, 3],
+                                    color: AppColors.textFieldTextColor,
+                                    strokeWidth: 2,
+                                    radius: const Radius.circular(12)
                                 ),
-                            // color: AppColors.textFieldTextColor,
-                            // strokeWidth: 2,
-                            // borderType: BorderType.RRect,
-                            // radius: const Radius.circular(12),
-                            // dashPattern: const [5, 5],
                             child: GestureDetector(
                               onTap: controller.pickImage,
                               child: Container(
@@ -165,18 +191,21 @@ class JobPostingScreen extends GetView<JobPostingController> {
                         ),
 
                         SizedBox(height: 15.h),
+                      Obx(() =>
                         CustomBtn(
                           btnTitle: 'Submit Now',
                           buttonHeight: 50.h,
                           btnBackgroundColor: AppColors.primary,
                           btnTxtColor: Colors.white,
                           buttonWidth: double.infinity,
-                          onPressed: () {},
+                          onPressed: () => controller.postJob(context),
+                          isLoading: controller.isLoading.value, // Reactive loading state
                         ),
+                      ),
                         SizedBox(height: 20.h),
                       ],
                     )),
-                ),
+                  )
               ),
             ],
           ),

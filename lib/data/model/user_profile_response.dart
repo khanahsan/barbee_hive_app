@@ -66,6 +66,59 @@ class UserProfileData {
 }
 
 
+// class Employee {
+//   final String name;
+//   final String initials;
+//   final String experienceYears;
+//   final String country;
+//   final String state;
+//   final String city;
+//   final String dob;
+//   final String gender;
+//   final int height;
+//   final EyeColor eyeColor;
+//   final HairColor hairColor;
+//   final bool isAvailable;
+//   final Skill skill;
+//   final String? resumePath;
+//
+//   Employee({
+//     required this.name,
+//     required this.initials,
+//     required this.experienceYears,
+//     required this.country,
+//     required this.state,
+//     required this.city,
+//     required this.dob,
+//     required this.gender,
+//     required this.height,
+//     required this.eyeColor,
+//     required this.hairColor,
+//     required this.isAvailable,
+//     required this.skill,
+//     this.resumePath,
+//   });
+//
+//   factory Employee.fromJson(Map<String, dynamic> json) {
+//     return Employee(
+//       name: json['name'],
+//       initials: json['initials'],
+//       experienceYears: json['experience_years'],
+//       country: json['country'],
+//       state: json['state'],
+//       city: json['city'],
+//       dob: json['dob'],
+//       gender: json['gender'],
+//       height: json['height'],
+//       eyeColor: EyeColor.fromJson(json['eye_color']),
+//       hairColor: HairColor.fromJson(json['hair_color']),
+//       isAvailable: json['is_available'],
+//       skill: Skill.fromJson(json['skill']),
+//       resumePath: json['resume_path'],
+//     );
+//   }
+// }
+
 class Employee {
   final String name;
   final String initials;
@@ -74,10 +127,10 @@ class Employee {
   final String state;
   final String city;
   final String dob;
-  final String gender;
-  final int height;
-  final EyeColor eyeColor;
-  final HairColor hairColor;
+  final String? gender;
+  final int? height;
+  final EyeColor? eyeColor;
+  final HairColor? hairColor;
   final bool isAvailable;
   final Skill skill;
   final String? resumePath;
@@ -90,10 +143,10 @@ class Employee {
     required this.state,
     required this.city,
     required this.dob,
-    required this.gender,
-    required this.height,
-    required this.eyeColor,
-    required this.hairColor,
+    this.gender,
+    this.height,
+    this.eyeColor,
+    this.hairColor,
     required this.isAvailable,
     required this.skill,
     this.resumePath,
@@ -110,14 +163,15 @@ class Employee {
       dob: json['dob'],
       gender: json['gender'],
       height: json['height'],
-      eyeColor: EyeColor.fromJson(json['eye_color']),
-      hairColor: HairColor.fromJson(json['hair_color']),
+      eyeColor: json['eye_color'] != null ? EyeColor.fromJson(json['eye_color']) : null,
+      hairColor: json['hair_color'] != null ? HairColor.fromJson(json['hair_color']) : null,
       isAvailable: json['is_available'],
       skill: Skill.fromJson(json['skill']),
       resumePath: json['resume_path'],
     );
   }
 }
+
 
 class Employer {
   final String businessName;

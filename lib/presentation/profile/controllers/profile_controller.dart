@@ -106,6 +106,7 @@ class ProfileController extends GetxController {
 
       populateData();
     } catch (e) {
+      debugPrint('Error, Failed to fetch user profile: $e');
       Get.snackbar('Error', 'Failed to fetch user profile: $e');
     } finally {
       isLoading.value = false;
@@ -127,10 +128,10 @@ class ProfileController extends GetxController {
         nameController.text = data.employer?.businessName ?? '';
       } else {
         nameController.text = data.employee?.name ?? '';
-        currentEyeColorName.value = data.employee?.eyeColor.name ?? '';
-        currentEyeColorId.value = data.employee?.eyeColor.id ?? 0;
-        currentHairColorName.value = data.employee?.hairColor.name ?? '';
-        currentHairColorId.value = data.employee?.hairColor.id ?? 0;
+        currentEyeColorName.value = data.employee?.eyeColor?.name ?? '';
+        currentEyeColorId.value = data.employee?.eyeColor?.id ?? 0;
+        currentHairColorName.value = data.employee?.hairColor?.name ?? '';
+        currentHairColorId.value = data.employee?.hairColor?.id ?? 0;
         currentGender.value = (data.employee?.gender ?? '').capitalizeFirst ?? '';
         currentHeight.value = data.employee?.height ?? 0;
         currentSkillName.value = data.employee?.skill.name ?? '';

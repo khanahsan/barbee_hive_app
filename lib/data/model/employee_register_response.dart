@@ -47,6 +47,7 @@ class User {
   final String createdAt;
   final String updatedAt;
   final Employee employee;
+  final String? profileImage;
 
   User({
     required this.id,
@@ -57,6 +58,7 @@ class User {
     required this.createdAt,
     required this.updatedAt,
     required this.employee,
+    required this.profileImage,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -68,7 +70,9 @@ class User {
       isActive: json['is_active'],
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
-      employee: Employee.fromJson(json['employee'] ?? {}),
+      profileImage: json['profile_image'],
+      employee: Employee.fromJson(json['employee'] ?? {}
+      ),
     );
   }
 }

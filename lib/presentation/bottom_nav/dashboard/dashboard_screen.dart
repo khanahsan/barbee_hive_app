@@ -262,8 +262,10 @@ import '../../../infrastructure/widgets/fading_image_carousel.dart';
 import '../../../infrastructure/widgets/hexagon_clipper.dart';
 import 'controller/dashboardController.dart';
 
-class DashboardScreen extends GetView<DashboardController> {
-  const DashboardScreen({super.key});
+class DashboardScreen extends StatelessWidget {
+   DashboardScreen({super.key});
+  
+  var controller = Get.put(DashboardController());
 
   @override
   Widget build(BuildContext context) {
@@ -336,7 +338,6 @@ class DashboardScreen extends GetView<DashboardController> {
             );
           } else {
             return SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
                   b2bSection(context),
@@ -565,14 +566,16 @@ class DashboardScreen extends GetView<DashboardController> {
     );
   }*/
 
-
+  RxDouble hOfW = 0.0.obs;
   Widget hiveSection(BuildContext context) {
     return Obx(() {
       final users = controller.employees;
-      final double itemWidth = 88.w;
-      final double itemHeight = 98.h;
-      final List<int> pattern = _getPattern(users.length);
+      final double itemWidth = 78;
+      final double itemHeight = 90;
+      final List<int> pattern = _getPattern(users.length,itemHeight);
       final maxHeight = MediaQuery.of(context).size.height * 0.6;
+
+      //print(" hOfW.value :${ hOfW.value} == ${320 / 80}");
 
       if (users.isEmpty) {
         return Container(
@@ -613,66 +616,90 @@ class DashboardScreen extends GetView<DashboardController> {
                 ),
               ),
               SizedBox(height: 15.h),
-              ColoredBox(
-                color: Colors.green,
-                child: CustomMultiChildLayout(
-                      delegate: HoneycombLayoutDelegate(
-                        itemWidth: itemWidth,
-                        itemHeight: itemHeight,
-                        users: users,
-                        pattern: pattern,
-                      ),
-                      children: [
-                        for (int index = 0; index < users.length; index++)
-                          LayoutId(
-                            id: index,
-                            child: GestureDetector(
-                              onTap: () => Get.toNamed(
-                                Routes.hiveProfileScreen,
-                                arguments: {'currentUser': users[index]},
-                              ),
-                              child: HexagonAvatar(
-                                imagePath: AppAssets.profileImage,
-                                width: itemWidth,
-                                height: itemHeight,
-                                borderColor: index % 2 == 0
-                                    ? AppColors.white
-                                    : AppColors.primary,
-                                name: (users[index].employee?.name ??
-                                    users[index].email.split('@').first)
-                                    .isNotEmpty
-                                    ? (users[index].employee?.name ??
-                                    users[index].email.split('@').first)
-                                    : 'Unknown Employee',
-                                totalMl: users[index].employee?.experienceYears ?? 'N/A',
-                              ),
-                            ),
+
+
+
+          Container(
+            height: hOfW.value,
+            child: ColoredBox(
+              color: Colors.green,
+              child: CustomMultiChildLayout(
+
+                delegate: HoneycombLayoutDelegate(
+
+                  itemWidth: itemWidth,
+                  itemHeight: itemHeight,
+                  users: users,
+                  pattern: pattern,
+                ),
+                children: [
+                  for (int index = 0; index < users.length; index++)
+                    LayoutId(
+                      id: index,
+                      child: GestureDetector(
+                        onTap: () => Get.toNamed(
+                          Routes.hiveProfileScreen,
+                          arguments: {'currentUser': users[index]},
+                        ),
+                        child: SingleChildScrollView(
+                          child: /*HexagonAvatar(
+                                        ///imagePath: AppAssets.profileImage,
+                                        imagePath: users[index].profileImage.isNotEmpty == true
+                                            ? users[index].profileImage
+                                            : AppAssets.profileImage,
+                                        width: itemWidth,
+                                        height: itemHeight,
+                                        borderColor: index % 2 == 0
+                                            ? AppColors.white
+                                            : AppColors.primary,
+                                        name: (users[index].employee?.name ??
+                                            users[index].email.split('@').first)
+                                            .isNotEmpty
+                                            ? (users[index].employee?.name ??
+                                            users[index].email.split('@').first)
+                                            : 'Unknown Employee',
+                                        totalMl: users[index].employee?.experienceYears ?? 'N/A',
+                                      ),*/
+                          HexagonAvatar(
+                            imagePath: users[index].profileImage.isNotEmpty == true
+                                ? users[index].profileImage
+                                : '', // Set to null to trigger name-based avatar
+                            width: itemWidth,
+                            height: itemHeight,
+                            borderColor: index % 2 == 0
+                                ? AppColors.white
+                                : AppColors.primary,
+                            name: (users[index].employee?.name ??
+                                users[index].email.split('@').first)
+                                .isNotEmpty
+                                ? (users[index].employee?.name ??
+                                users[index].email.split('@').first)
+                                : 'Unknown Employee',
+                            totalMl: users[index].employee?.experienceYears ?? 'N/A',
                           ),
-                      ],
+                        ),
+                      ),
                     ),
-              )
+                ],
+              ),
+            ),
+          ),
+
             ],
           ),
         ),
       );
     });
   }
-  /*List<int> _getPattern(int userCount) {
-    if (userCount <= 4) return [userCount]; // Single row if less than or equal to 4
-    if (userCount <= 7) return [4, 3]; // 4-3 pattern
-    if (userCount <= 11) return [4, 3, 4]; // 4-3-4 pattern
-    if (userCount <= 15) return [4, 3, 4, 3]; // 4-3-4-3 pattern
-    // For 15 or more, use 4-3-4-3-1 pattern and adjust for remaining items
-    final basePattern = [4, 3, 4, 3];
-    final remaining = userCount % 10; // 10 is the sum of 4+3+4+3
-    if (remaining > 0) {
-      return [...basePattern, remaining];
-    }
-    return basePattern;
-  }*/
-  List<int> _getPattern(int userCount) {
+
+  List<int> _getPattern(int userCount,itemHeight) {
+    hOfW.value  = 0.0;
+    print("cehck :");
     if (userCount <= 0) return []; // Return empty list for invalid input
-    if (userCount <= 4) return [userCount]; // Single row for 4 or fewer users
+    if (userCount <= 4) {
+      hOfW.value = 90;
+      return [userCount];// Single row for 4 or fewer users
+    }
 
     final List<int> basePattern = [4, 3]; // Base repeating pattern
     final int patternSum = basePattern.reduce((a, b) => a + b); // Sum of base pattern (7)
@@ -685,18 +712,47 @@ class DashboardScreen extends GetView<DashboardController> {
       pattern.addAll(basePattern);
     }
 
+
+
     // Handle remaining items
     if (remaining > 0) {
       int index = 0;
       while (remaining > 0) {
+        print("remain $remaining");
         final int itemsToAdd = remaining >= basePattern[index % basePattern.length]
             ? basePattern[index % basePattern.length]
             : remaining;
+        print("items to add : $itemsToAdd");
         pattern.add(itemsToAdd);
         remaining -= itemsToAdd;
         index++;
       }
+
     }
+
+    hOfW.value = (pattern.length  * 90).toDouble();
+
+    print("HOW PSHLR : ${hOfW.value}");
+    //var val = (82 * 0.75);
+    // var val = (pattern.length - 1) * 20;
+    var val = 31.5;
+    // var result = (pattern.length - 1) * val;
+    //print("pattern.length * 0.75 :==  ${result / 2}");
+    var t = (pattern.length - 1) * val;
+    // print("ttt : $t");
+    // var res = t * val;
+     hOfW.value -= t;
+
+    print("HOW AFTER : ${hOfW.value}");
+
+    //y = 1783
+
+
+
+
+
+
+    print("------------------ ${pattern.length} == hOfW.value = ${hOfW.value}");
 
     return pattern;
   }

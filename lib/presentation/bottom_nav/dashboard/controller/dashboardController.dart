@@ -59,149 +59,20 @@ import 'package:get/get.dart';
 import '../../../../infrastructure/helpers/location_service.dart';
 
 class DashboardController extends GetxController {
-  ///final RxList<User> employees = <User>[].obs;// Role 3 (Hive)
+  //final RxList<User> employees = <User>[].obs;// Role 3 (Hive)
 
-
-  final RxList<User> employees = <User>[
-
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-    User(id: 1, email: 'email', role: 3, isVerified: true, isActive: true, createdAt: 'createdAt', updatedAt: 'updatedAt'),
-
-  ].obs;
+  final RxList<User> employees = List<User>.generate(4, (index) {
+    return User(
+      id: index + 1, // IDs from 1 to 200
+      email: 'email${index + 1}@example.com', // Unique email per user
+      role: 3,
+      isVerified: true,
+      isActive: true,
+      createdAt: 'createdAt',
+      updatedAt: 'updatedAt',
+      profileImage: '', // Empty (or set a default image)
+    );
+  }).obs; // .obs makes it reactive (RxList)
   final RxList<User> employers = <User>[].obs; // Role 2 (B2B)
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
@@ -243,6 +114,7 @@ class DashboardController extends GetxController {
     errorMessage.value = '';
 
     try {
+      employers.clear();
       print('Fetching dashboard users');
       final response = await AuthProvider.getDashboardUsers(
         currentLatitude: currentLatitude.value.toString(),
@@ -255,7 +127,7 @@ class DashboardController extends GetxController {
       debugPrint("EMPLOYERS ${response.data.employers}");
       debugPrint("EMPLOYEES ${response.data.employees}");
 
-      ///employees.assignAll(response.data.employees); // Role 3 (Hive)
+      //employees.assignAll(response.data.employees); // Role 3 (Hive)
       employers.assignAll(response.data.employers); // Role 2 (B2B)
     } catch (e) {
       print('Dashboard Error: $e');

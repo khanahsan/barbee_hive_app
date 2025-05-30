@@ -3,10 +3,11 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_drawer.dart';
 import 'package:barbee_hive_app/presentation/auth/views/sign_in_view.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/b2b/b2b_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/hive/hive_profile_screen.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applicant_profile/applicant_profile_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/applications_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/create%20job%20_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_posting/job_posting_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
-import 'package:barbee_hive_app/presentation/employer/job_posting/job_posting_screen.dart';
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
 import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/sign_up_employer_screen.dart';
@@ -71,7 +72,7 @@ class Nav {
     ),
     GetPage(
       name: Routes.DASHBOARD,
-      page: () => const DashboardScreen(),
+      page: () => DashboardScreen(),
       binding: InitialBindings(),
     ),
     GetPage(
@@ -91,7 +92,10 @@ class Nav {
     ),
     GetPage(
       name: Routes.APPLY_VIEW,
-      page: () => const ApplyScreen(),
+      page: () => ApplyScreen(
+        jobId: Get.arguments['jobId'],
+        profileImage: Get.arguments['profileImage'],
+      ),
       binding: InitialBindings(),
     ),
     GetPage(
@@ -125,7 +129,9 @@ class Nav {
     ),
     GetPage(
       name: Routes.applicationsScreen,
-      page: () => const ApplicationsScreen(),
+      page: () => ApplicationsScreen(
+        jobId: Get.arguments["jobId"],
+      ),
       binding: InitialBindings(),
     ),
     GetPage(
@@ -144,7 +150,12 @@ class Nav {
     ),
     GetPage(
       name: Routes.jobPostingScreen,
-      page: () => const JobPostingScreen(),
+      page: () =>  JobPostingScreen(),
+      binding: InitialBindings(),
+    ),
+    GetPage(
+      name: Routes.applicantProfile,
+      page: () =>  ApplicantProfileScreen(),
       binding: InitialBindings(),
     ),
   ];

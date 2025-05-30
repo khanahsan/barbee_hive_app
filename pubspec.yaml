@@ -48,6 +48,9 @@ dependencies:
   file_picker: ^10.1.9
   intl: ^0.20.2
   geolocator: ^14.0.0
+  connectivity_plus: ^6.1.4
+  fluttertoast: ^8.2.12
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,8 @@
 
 import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
-import 'package:barbee_hive_app/presentation/employer/job_posting/controller/job_posting_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/controller/apply_screen_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applicant_profile/controller/applicant_profile_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/controller/application_controller.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/controllers/sign_up_employer_controller.dart';
 import 'package:get/get.dart';
@@ -23,8 +24,9 @@ class InitialBindings implements Bindings{
     Get.lazyPut<SignUpEmployerController>(() => SignUpEmployerController());
     Get.lazyPut<ProfileController>(() => ProfileController());
     Get.lazyPut<JobController>(() => JobController());
-    Get.lazyPut<DashboardController>(() => DashboardController());
-    Get.lazyPut<JobPostingController>(() => JobPostingController());
+    Get.lazyPut<ApplyScreenController>(() => ApplyScreenController());
+    Get.lazyPut<ApplicationsController>(() => ApplicationsController());
+    Get.lazyPut<ApplicantProfileController>(() => ApplicantProfileController());
   }
 
 }

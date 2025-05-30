@@ -1,6 +1,8 @@
 import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/cutom_bottom_nav_bar.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -13,16 +15,16 @@ import 'job/job_screen.dart';
 import 'message/message_screen.dart';
 import 'pricing_plans/pricing_plans_screen.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key, required this.onMenuPressed});
+class BottomNavScreen extends StatefulWidget {
+  const BottomNavScreen({super.key, required this.onMenuPressed});
 
   final VoidCallback onMenuPressed;
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<BottomNavScreen> createState() => _BottomNavScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _BottomNavScreenState extends State<BottomNavScreen> {
   int currentBottomIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -109,13 +111,6 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
- /* final List<Widget> screens = [
-    DashboardScreen(),
-    MessageScreen(),
-    JobScreen(),
-    PricingPlansScreen(),
-  ];*/
-
   // Getter for screens list
   List<Widget> get screens {
     return [
@@ -132,6 +127,12 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       currentBottomIndex = index;
     });
+    if(currentBottomIndex == 0){
+       Get.find<DashboardController>().onInit();
+
+    }else if(currentBottomIndex == 2){
+      Get.find<JobController>().onInit();
+    }
   }
 
   @override

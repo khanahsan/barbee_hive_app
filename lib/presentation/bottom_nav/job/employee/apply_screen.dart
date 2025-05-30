@@ -1,15 +1,23 @@
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_textfield.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/controller/apply_screen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../../infrastructure/constants/app_colors.dart';
 import '../../../../infrastructure/constants/app_images.dart';
 import '../../../../infrastructure/widgets/custom_dialog.dart';
 
-class ApplyScreen extends StatelessWidget {
-  const ApplyScreen({super.key});
+class ApplyScreen extends GetView<ApplyScreenController> {
+  final int? jobId;
+  final String? profileImage;
+  const ApplyScreen({required this.jobId, required this.profileImage, super.key});
 
   void applyDialog(BuildContext context) {
     showDialog(
@@ -26,6 +34,8 @@ class ApplyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('jobId $jobId');
+    print('profileImage $profileImage');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
@@ -35,7 +45,8 @@ class ApplyScreen extends StatelessWidget {
             left: 0.w,
             right: 0.w,
             top: 25.h,
-            child: Image.asset(AppAssets.sampleCoverImage, fit: BoxFit.cover),
+           // child: Image.asset(AppAssets.sampleCoverImage, fit: BoxFit.cover),
+            child: Image.network(profileImage!, fit: BoxFit.cover),
           ),
 
           Positioned(
@@ -117,6 +128,7 @@ class ApplyScreen extends StatelessWidget {
                   spacing: 18.h,
                   children: [
                     CustomTextField(
+                      controller: controller.experienceLevel,
                       fontColor: AppColors.textFieldTextColor,
                       hintText: "Experience Level",
                       fillColor: AppColors.textFieldBackground,
@@ -130,6 +142,7 @@ class ApplyScreen extends StatelessWidget {
                       ),
                     ),
                     CustomTextField(
+                      controller: controller.yearsOfExperience,
                       fontColor: AppColors.textFieldTextColor,
                       hintText: "Years of Experience",
                       fillColor: AppColors.textFieldBackground,
@@ -143,6 +156,7 @@ class ApplyScreen extends StatelessWidget {
                       ),
                     ),
                     CustomTextField(
+                      controller: controller.expectedSalary,
                       fontColor: AppColors.textFieldTextColor,
                       hintText: "Expected Salary",
                       fillColor: AppColors.textFieldBackground,
@@ -155,67 +169,108 @@ class ApplyScreen extends StatelessWidget {
                         fit: BoxFit.scaleDown,
                       ),
                     ),
-
-                    DropdownButtonFormField<String>(
-                      dropdownColor: AppColors.textFieldBackground,
-                      decoration: InputDecoration(
-                        prefixIcon: SvgPicture.asset(
-                          AppAssets.jobTypeIcon,
-                          height: 15.h,
-                          width: 15.w,
-                          fit: BoxFit.scaleDown,
+                    _buildDropdownField(
+                      context,
+                      'Job Type',
+                      AppAssets.heightLogo,
+                      controller.selectedJobType,
+                      controller.updateJobType,
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'part-time',
+                          child: Text('Part Time', style: TextStyle(color: Colors.white)),
                         ),
-                        filled: true,
-                        fillColor: AppColors.textFieldBackground,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(10.r),
+                        DropdownMenuItem(
+                          value: 'full-time',
+                          child: Text('Full Time', style: TextStyle(color: Colors.white)),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: AppColors.primary),
-                          borderRadius: BorderRadius.circular(10.r),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 16.h,
-                          horizontal: 12.w,
-                        ),
-                      ),
-                      style: TextStyle(
-                        color: AppColors.textFieldTextColor,
-                        fontSize: 17.sp,
-                      ),
-                      hint: Text(
-                        "Job Type",
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontSize: 17.sp,
-                          color: AppColors.textFieldTextColor,
-                        ),
-                      ),
-                      items:
-                          ['Monthly', 'Yearly', 'Weekly']
-                              .map(
-                                (type) => DropdownMenuItem<String>(
-                                  value: type,
-                                  child: Text(type),
-                                ),
-                              )
-                              .toList(),
-                      onChanged: (value) {
-                        // Handle selection logic
-                      },
+                      ],
                     ),
 
-                    CustomButton(
+                   /* CustomButton(
                       buttonText: 'Submit Now',
                       buttonWidth: double.infinity,
                       textColor: Colors.white,
                       buttonTextSize: 18.sp,
                       buttonColor: AppColors.primary,
                       buttonHeight: 65.h,
+                    ),*/
+
+                    SizedBox(height: 18.h),
+                    Obx(
+                          () => CustomButton(
+                        buttonText: controller.isLoading.value ? 'Submitting...' : 'Submit Now',
+                        buttonWidth: double.infinity,
+                        textColor: Colors.white,
+                        buttonTextSize: 18.sp,
+                        buttonColor: AppColors.primary,
+                        buttonHeight: 65.h,
+                        onTap: controller.isLoading.value
+                            ? null
+                            : () {
+                          if (jobId != null) {
+                            controller.applyForJob(jobId!);
+                          } else {
+                            Get.snackbar('Error', 'Job ID is missing', backgroundColor: Colors.red, colorText: Colors.white);
+                          }
+                        },
+                      ),
                     ),
 
                     SizedBox(height: 20.h),
                   ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDropdownField(
+      BuildContext context,
+      String hint,
+      String iconPath,
+      RxString selectedValue,
+      Function(String?) onChanged, {
+        required List<DropdownMenuItem<String>> items,
+      }) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 4.h),
+      decoration: BoxDecoration(
+        color: AppColors.textFieldBackground,
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: Row(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            child: Image.asset(
+              iconPath,
+              color: AppColors.textFieldTextColor,
+              width: 16.w,
+              height: 16.h,
+            ),
+          ),
+          Expanded(
+            child: Obx(
+                  () => DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  dropdownColor: Colors.grey[900],
+                  hint: Text(
+                    selectedValue.value.isEmpty ? hint : selectedValue.value,
+                    style: TextStyle(
+                      color: AppColors.textFieldTextColor,
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                  iconEnabledColor: Colors.grey,
+                  items: items,
+                  onChanged: onChanged,
+                  value: selectedValue.value.isEmpty ? null : selectedValue.value,
+                  menuMaxHeight: 300.h,
                 ),
               ),
             ),

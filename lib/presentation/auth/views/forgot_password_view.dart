@@ -12,21 +12,6 @@ import '../controllers/auth.controller.dart';
 class ForgotPasswordView extends GetView<AuthController> {
   const ForgotPasswordView({super.key});
 
-  // Method to show the dialog
-  void showResetPasswordDialog(BuildContext context, String email) {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevent dismissing by tapping outside
-      builder: (BuildContext context) {
-        return CustomDialog(
-          email: email,
-          title: "Reset Password",
-          subTitle: "A link to reset your password has been send to",
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +92,7 @@ class ForgotPasswordView extends GetView<AuthController> {
                           btnTitle: 'Send Code',
                           btnBackgroundColor: AppColors.primary,
                           btnTxtColor: AppColors.white,
-                          onPressed: () => controller.forgotPassword(),
+                          onPressed: () => controller.forgotPassword(context),
                           isLoading: controller.fPasswordIsLoading.value,
                         ),
                       ),

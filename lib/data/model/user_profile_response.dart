@@ -18,46 +18,6 @@ class UserProfileResponse {
   }
 }
 
-// class UserProfileData {
-//   final int id;
-//   final String email;
-//   final int role;
-//   final bool isVerified;
-//   final bool isActive;
-//   final String? profileImage;
-//   final String? coverPhoto;
-//   final String createdAt;
-//   final String updatedAt;
-//   final Employee employee;
-//
-//   UserProfileData({
-//     required this.id,
-//     required this.email,
-//     required this.role,
-//     required this.isVerified,
-//     required this.isActive,
-//     this.profileImage,
-//     this.coverPhoto,
-//     required this.createdAt,
-//     required this.updatedAt,
-//     required this.employee,
-//   });
-//
-//   factory UserProfileData.fromJson(Map<String, dynamic> json) {
-//     return UserProfileData(
-//       id: json['id'],
-//       email: json['email'],
-//       role: json['role'],
-//       isVerified: json['is_verified'],
-//       isActive: json['is_active'],
-//       profileImage: json['profile_image'],
-//       coverPhoto: json['cover_photo'],
-//       createdAt: json['created_at'],
-//       updatedAt: json['updated_at'],
-//       employee: Employee.fromJson(json['employee']),
-//     );
-//   }
-// }
 
 class UserProfileData {
   final int id;
@@ -222,20 +182,6 @@ class HairColor {
   }
 }
 
-
-// class ColorInfo {
-//   final int id;
-//   final String name;
-//
-//   ColorInfo({required this.id, required this.name});
-//
-//   factory ColorInfo.fromJson(Map<String, dynamic> json) {
-//     return ColorInfo(
-//       id: json['id'],
-//       name: json['name'],
-//     );
-//   }
-// }
 
 class Skill {
   final int id;

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
+import 'component/hexagon_widget.dart';
 import 'controllers/sign_up_employee_controller.dart';
 /*
 class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
@@ -1052,6 +1053,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
 
   @override
   Widget build(BuildContext context) {
+    print('AppAssets.uploadImageIcon ${AppAssets.uploadImageIcon}');
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -1114,38 +1116,23 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              ClipPath(
-                                clipper: HexagonClipper(borderOffset: -2.w),
-                                child: Container(
-                                  width: 124.w,
-                                  height: 124.h,
-                                  color: AppColors.primary,
-                                ),
-                              ),
-                              ClipPath(
-                                clipper: HexagonClipper(),
-                                child: Container(
+
+                             /* HexagonAvatar(
+                                imagePath: AppAssets.cameraLogo,
+                                width: 100.w,
+                                height: 100.h,
+                              ),*/
+                              Obx(
+                                    () => HexagonAvatar(
+                                  iconPath: AppAssets.cameraIcon,
                                   width: 120.w,
                                   height: 120.h,
-                                  color: Colors.black,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        AppAssets.cameraLogo,
-                                        color: AppColors.grey,
-                                        height: 25.0.h,
-                                      ),
-                                      SizedBox(height: 5.h),
-                                      Text(
-                                        'Upload Photo',
-                                        style: TextStyle(
-                                          color: AppColors.grey,
-                                          fontSize: 14.sp,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+
+                                  selectedImage: controller.selectedImage.value,
+                                  imageUrl: controller.profileImageUrl.value.isNotEmpty
+                                      ? controller.profileImageUrl.value
+                                      : null,
+                                  onTap: controller.showImagePickerOptions,
                                 ),
                               ),
                             ],
@@ -1369,14 +1356,12 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                         SizedBox(height: 15.h),
                         Obx(
                               () => DottedBorder(
-                                options: RectDottedBorderOptions(
+                                options: RoundedRectDottedBorderOptions(
                                   dashPattern: [6, 3],
+                                  color: AppColors.textFieldTextColor,
+                                  strokeWidth: 2,
+                                    radius: const Radius.circular(12)
                                 ),
-                            // color: AppColors.textFieldTextColor,
-                            // strokeWidth: 2,
-                            // borderType: BorderType.RRect,
-                            // radius: const Radius.circular(12),
-                            // dashPattern: const [5, 5],
                             child: GestureDetector(
                               onTap: controller.pickResume,
                               child: Container(
@@ -1611,4 +1596,6 @@ class HexagonClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => true;
 }
+
+
 

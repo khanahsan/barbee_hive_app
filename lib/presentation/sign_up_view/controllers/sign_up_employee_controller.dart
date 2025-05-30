@@ -6,7 +6,9 @@ import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../data/model/color_response.dart';
 
@@ -31,6 +33,9 @@ class SignUpEmployeeController extends GetxController {
   final RxList<EyeColor> eyeColors = <EyeColor>[].obs;
   final RxList<HairColor> hairColors = <HairColor>[].obs;
   final RxList<Skill> skills = <Skill>[].obs;
+  final Rx<File?> selectedImage = Rx<File?>(null); // Added for image selection
+  final RxString profileImageUrl = ''.obs; // Added to store profile image URL
+
 
   final Rx<File?> selectedResume = Rx<File?>(null);
 
@@ -119,6 +124,66 @@ class SignUpEmployeeController extends GetxController {
       dateController.text = formattedDate; // Sync with TextEditingController
     }
   }
+
+  Future<void> pickImage(ImageSource source) async {
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(source: source);
+      if (pickedFile != null) {
+        selectedImage.value = File(pickedFile.path);
+        print('Selected image: ${selectedImage.value!.path}');
+      } else {
+        print('No image selected');
+      }
+    } catch (e) {
+      print('Image picker error: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to pick image: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> showImagePickerOptions() async {
+    await Get.bottomSheet(
+      Container(
+        padding: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+          color: Colors.black, // Replace with AppColors.black
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(Icons.camera_alt, color: Colors.white),
+              title: Text('Take Photo', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Get.back();
+                pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.photo_library, color: Colors.white),
+              title: Text('Choose from Gallery', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Get.back();
+                pickImage(ImageSource.gallery);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.cancel, color: Colors.white),
+              title: Text('Cancel', style: TextStyle(color: Colors.white)),
+              onTap: () => Get.back(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 
   Future<void> pickResume() async {
     try {
@@ -257,7 +322,8 @@ class SignUpEmployeeController extends GetxController {
 
     try {
       // Validate inputs
-      if (nameController.text.isEmpty ||
+      if (selectedImage.value == null||
+          nameController.text.isEmpty ||
           emailController.text.isEmpty ||
           passwordController.text.isEmpty ||
           confirmPasswordController.text.isEmpty ||
@@ -287,7 +353,7 @@ class SignUpEmployeeController extends GetxController {
 
       final userSkill = skills.firstWhere(
             (skill) => skill.name == selectedSkill.value,
-        orElse: () => throw Exception('Invalid eye color'),
+        orElse: () => throw Exception('Invalid Skill'),
       );
 
       // Find eye color ID
@@ -325,10 +391,14 @@ class SignUpEmployeeController extends GetxController {
         height: int.parse(selectedHeight.value),
         resume: selectedResume.value,
         skillId: userSkill.id,
+        profileImage: selectedImage.value,
       );
 
       if (response.status) {
         ApiService.setToken(response.data.token);
+        if (response.data.user.profileImage != null) {
+          profileImageUrl.value = response.data.user.profileImage!; // Store profile image URL
+        }
         Get.snackbar(
           'Success',
           response.message,

@@ -41,7 +41,6 @@ class AuthProvider {
     required String currentLatitude,
     required String currentLongitude,
   }) async {
-
     debugPrint("CURRENT LAT $currentLatitude CURRENT LONG $currentLongitude");
     final data = await ApiService.post(
       Endpoints.dashboardUsers,
@@ -113,12 +112,16 @@ class AuthProvider {
     if (height != null) fields['height'] = height.toString();
     if (skillId != null) fields['skill_id'] = skillId.toString();
 
-    print('Register Payload: $fields, Resume: ${resume?.path}, ProfileImage: ${profileImage?.path}');
+    print(
+      'Register Payload: $fields, Resume: ${resume?.path}, ProfileImage: ${profileImage?.path}',
+    );
 
     // Prepare files for multipart request
     final files = <String, File>{};
     if (resume != null) files['resume'] = resume;
-    if (profileImage != null) files['profile_image'] = profileImage; // Add profile image
+    if (profileImage != null) {
+      files['profile_image'] = profileImage; // Add profile image
+    }
 
     final data = await ApiService.multipartPost(
       Endpoints.registerEmployee,
@@ -137,8 +140,6 @@ class AuthProvider {
     );
     return UserProfileResponse.fromJson(data);
   }
-
-
 
   /*static Future<JobPostResponse> postJob({
     required String title,
@@ -214,7 +215,7 @@ class AuthProvider {
       Endpoints.jobStore,
       fields: fields,
       files: files.isNotEmpty ? files : null,
-     // fileField: 'image', // Matches API field
+      // fileField: 'image', // Matches API field
       auth: true, // Requires authentication
     );
 
@@ -227,13 +228,13 @@ class AuthProvider {
     required String country,
     required String state,
     required String city,
-    String? dob,
-    String? gender,
-    int? eyeColorId,
-    int? hairColorId,
-    int? height,
-    int? skillId,
-    File? resume,
+    required String? dob,
+    required String? gender,
+    required int? eyeColorId,
+    required int? hairColorId,
+    required int? height,
+    required int? skillId,
+    required File? resume,
   }) async {
     final fields = <String, String>{
       'name': name,
@@ -241,29 +242,75 @@ class AuthProvider {
       'country': country,
       'state': state,
       'city': city,
+      'dob': city,
+      'gender': gender ?? "",
+      'eyeColorId': eyeColorId.toString(),
+      'hairColorId': hairColorId.toString(),
+      'height': height.toString(),
+      'skillId': skillId.toString(),
     };
 
-    // Add optional fields if they are not null
-    if (dob != null) fields['dob'] = dob;
-    if (gender != null) fields['gender'] = gender;
-    if (eyeColorId != null) fields['eye_color_id'] = eyeColorId.toString();
-    if (hairColorId != null) fields['hair_color_id'] = hairColorId.toString();
-    if (height != null) fields['height'] = height.toString();
-    if (skillId != null) fields['skill_id'] = skillId.toString();
+    debugPrint("updateUserProfile Payload $fields");
 
-    debugPrint('Update Profile Payload: $fields, Resume: ${resume?.path}');
     final files = <String, File>{};
     if (resume != null) files['resume'] = resume;
+
+    debugPrint("updateUserProfile Files $files");
+
     final data = await ApiService.multipartPost(
       Endpoints.updateProfile,
       fields: fields,
       files: files.isNotEmpty ? files : null,
       //fileField: 'resume',
-      auth: true, // Auth required to update profile
+      auth: true,
     );
 
     return UserProfileResponse.fromJson(data);
   }
+
+  // static Future<UserProfileResponse> updateUserProfile({
+  //   required String name,
+  //   required String email,
+  //   required String country,
+  //   required String state,
+  //   required String city,
+  //   String? dob,
+  //   String? gender,
+  //   int? eyeColorId,
+  //   int? hairColorId,
+  //   int? height,
+  //   int? skillId,
+  //   File? resume,
+  // }) async {
+  //   final fields = <String, String>{
+  //     'name': name,
+  //     'email': email,
+  //     'country': country,
+  //     'state': state,
+  //     'city': city,
+  //   };
+  //
+  //   // Add optional fields if they are not null
+  //   if (dob != null) fields['dob'] = dob;
+  //   if (gender != null) fields['gender'] = gender;
+  //   if (eyeColorId != null) fields['eye_color_id'] = eyeColorId.toString();
+  //   if (hairColorId != null) fields['hair_color_id'] = hairColorId.toString();
+  //   if (height != null) fields['height'] = height.toString();
+  //   if (skillId != null) fields['skill_id'] = skillId.toString();
+  //
+  //   debugPrint('Update Profile Payload: $fields, Resume: ${resume?.path}');
+  //   final files = <String, File>{};
+  //   if (resume != null) files['resume'] = resume;
+  //   final data = await ApiService.multipartPost(
+  //     Endpoints.updateProfile,
+  //     fields: fields,
+  //     files: files.isNotEmpty ? files : null,
+  //     //fileField: 'resume',
+  //     auth: true,
+  //   );
+  //
+  //   return UserProfileResponse.fromJson(data);
+  // }
 
   static Future<JobListResponse> getJobs(int? userId) async {
     final data = await ApiService.get(
@@ -274,13 +321,9 @@ class AuthProvider {
   }
 
   static Future<JobListResponse> getEmployeeJobs() async {
-    final data = await ApiService.get(
-      Endpoints.jobs,
-      auth: true,
-    );
+    final data = await ApiService.get(Endpoints.jobs, auth: true);
     return JobListResponse.fromJson(data);
   }
-
 
   static Future<JobApplicationResponse> applyJob({
     required int jobId,
@@ -298,17 +341,12 @@ class AuthProvider {
     };
 
     print('Apply Job Payload: $fields');
-    final data = await ApiService.post(
-      Endpoints.applyJob,
-      fields,
-      auth: true,
-    );
+    final data = await ApiService.post(Endpoints.applyJob, fields, auth: true);
 
     return JobApplicationResponse.fromJson(data);
   }
 
-
-/*
+  /*
   static Future<JobApplicationResponse> getJobApplications(int jobId) async {
     try {
       print('GET Request URL: ${Endpoints.baseUrl}${Endpoints.jobApplications}/$jobId');
@@ -330,11 +368,16 @@ class AuthProvider {
   }
 */
 
-  static Future<JobApplicationResponse> getJobApplications(int jobId, {Map<String, dynamic>? filters}) async {
+  static Future<JobApplicationResponse> getJobApplications(
+    int jobId, {
+    Map<String, dynamic>? filters,
+  }) async {
     try {
       String endpoint = '${Endpoints.jobApplications}/$jobId';
       if (filters != null && filters.isNotEmpty) {
-        final queryParams = filters.entries.map((e) => '${e.key}=${e.value}').join('&');
+        final queryParams = filters.entries
+            .map((e) => '${e.key}=${e.value}')
+            .join('&');
         endpoint += '?$queryParams';
       }
       print('GET Request URL: ${Endpoints.baseUrl}$endpoint');

@@ -61,7 +61,7 @@ import '../../../../infrastructure/helpers/location_service.dart';
 class DashboardController extends GetxController {
   //final RxList<User> employees = <User>[].obs;// Role 3 (Hive)
 
-  final RxList<User> employees = List<User>.generate(4, (index) {
+  final RxList<User> employees = List<User>.generate(15, (index) {
     return User(
       id: index + 1, // IDs from 1 to 200
       email: 'email${index + 1}@example.com', // Unique email per user

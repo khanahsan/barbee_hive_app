@@ -321,24 +321,37 @@ class SignUpEmployeeController extends GetxController {
     errorMessage.value = '';
 
     try {
-      // Validate inputs
-      if (selectedImage.value == null||
+      // Debug: Check for any missing fields
+      if (selectedImage.value == null) print('❌ Missing: selectedImage');
+      if (nameController.text.isEmpty) print('❌ Missing: name');
+      if (emailController.text.isEmpty) print('❌ Missing: email');
+      if (passwordController.text.isEmpty) print('❌ Missing: password');
+      if (confirmPasswordController.text.isEmpty) print('❌ Missing: confirmPassword');
+      if (selectedSkill.value.isEmpty) print('❌ Missing: selectedSkill');
+      if (selectedDate.value.isEmpty) print('❌ Missing: selectedDate');
+      if (selectedGender.value.isEmpty) print('❌ Missing: selectedGender');
+      if (countryController.text.isEmpty) print('❌ Missing: country');
+      if (stateController.text.isEmpty) print('❌ Missing: state');
+      if (cityController.text.isEmpty) print('❌ Missing: city');
+      if (selectedHeight.value.isEmpty) print('❌ Missing: selectedHeight');
+      if (selectedEyeColor.value.isEmpty) print('❌ Missing: selectedEyeColor');
+      if (selectedHairColor.value.isEmpty) print('❌ Missing: selectedHairColor');
+
+      // Main validation
+      if (selectedImage.value == null ||
           nameController.text.isEmpty ||
           emailController.text.isEmpty ||
           passwordController.text.isEmpty ||
           confirmPasswordController.text.isEmpty ||
           selectedSkill.value.isEmpty ||
-          selectedDate.value.isEmpty || // Use selectedDate
+          selectedDate.value.isEmpty ||
           selectedGender.value.isEmpty ||
           countryController.text.isEmpty ||
-          stateController.text.isEmpty || // Use selectedDate
+          stateController.text.isEmpty ||
           cityController.text.isEmpty ||
           selectedHeight.value.isEmpty ||
           selectedEyeColor.value.isEmpty ||
-          selectedHairColor.value.isEmpty
-      /*||
-        selectedSkill.value.isEmpty*/
-      ) {
+          selectedHairColor.value.isEmpty) {
         throw Exception('All fields are required');
       }
 
@@ -346,7 +359,6 @@ class SignUpEmployeeController extends GetxController {
         throw Exception('Passwords do not match');
       }
 
-      // Validate DOB format
       if (!RegExp(r'^\d{2}-\d{2}-\d{4}$').hasMatch(selectedDate.value)) {
         throw Exception('DOB must be in MM-DD-YYYY format');
       }
@@ -356,23 +368,38 @@ class SignUpEmployeeController extends GetxController {
         orElse: () => throw Exception('Invalid Skill'),
       );
 
-      // Find eye color ID
       final eyeColor = eyeColors.firstWhere(
             (color) => color.name == selectedEyeColor.value,
         orElse: () => throw Exception('Invalid eye color'),
       );
 
-      // Find hair color ID
       final hairColor = hairColors.firstWhere(
             (color) => color.name == selectedHairColor.value,
         orElse: () => throw Exception('Invalid hair color'),
       );
 
-      // Find skill ID
-      /*final skill = skills.firstWhere(
-      (skill) => skill.name == selectedSkill.value,
-      orElse: () => throw Exception('Invalid skill'),
-    );*/
+      // Debug: Print all field values
+      print('--- Registration Fields ---');
+      print('Name: ${nameController.text}');
+      print('Email: ${emailController.text}');
+      print('Password: ${passwordController.text}');
+      print('Confirm Password: ${confirmPasswordController.text}');
+      print('Selected Skill: ${selectedSkill.value}');
+      print('Selected DOB: ${selectedDate.value}');
+      print('Selected Gender: ${selectedGender.value}');
+      print('Country: ${countryController.text}');
+      print('State: ${stateController.text}');
+      print('City: ${cityController.text}');
+      print('Selected Height: ${selectedHeight.value}');
+      print('Selected Eye Color: ${selectedEyeColor.value}');
+      print('Selected Hair Color: ${selectedHairColor.value}');
+      print('Selected Resume: ${selectedResume.value}');
+      print('Selected Image: ${selectedImage.value}');
+      print('Eye Color ID: ${eyeColor.id}');
+      print('Hair Color ID: ${hairColor.id}');
+      print('Skill ID: ${userSkill.id}');
+      print('Is Checked: ${isChecked.value}');
+      print('----------------------------');
 
       final response = await AuthProvider.register(
         name: nameController.text,
@@ -380,11 +407,10 @@ class SignUpEmployeeController extends GetxController {
         password: passwordController.text,
         passwordConfirmation: confirmPasswordController.text,
         role: 3,
-        //experienceYears: userSkill.id,
         country: countryController.text,
         state: stateController.text,
         city: cityController.text,
-        dob: selectedDate.value, // Use selectedDate
+        dob: selectedDate.value,
         gender: selectedGender.value.toLowerCase(),
         eyeColorId: eyeColor.id,
         hairColorId: hairColor.id,
@@ -397,7 +423,7 @@ class SignUpEmployeeController extends GetxController {
       if (response.status) {
         ApiService.setToken(response.data.token);
         if (response.data.user.profileImage != null) {
-          profileImageUrl.value = response.data.user.profileImage!; // Store profile image URL
+          profileImageUrl.value = response.data.user.profileImage!;
         }
         Get.snackbar(
           'Success',
@@ -422,6 +448,124 @@ class SignUpEmployeeController extends GetxController {
       isLoading.value = false;
     }
   }
+
+
+// Future<void> register() async {
+  //   if (!isChecked.value) {
+  //     Get.snackbar(
+  //       'Error',
+  //       'Please agree to the Terms of Service',
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //     );
+  //     return;
+  //   }
+  //
+  //   isLoading.value = true;
+  //   errorMessage.value = '';
+  //
+  //   try {
+  //     // Validate inputs
+  //     if (selectedImage.value == null||
+  //         nameController.text.isEmpty ||
+  //         emailController.text.isEmpty ||
+  //         passwordController.text.isEmpty ||
+  //         confirmPasswordController.text.isEmpty ||
+  //         selectedSkill.value.isEmpty ||
+  //         selectedDate.value.isEmpty || // Use selectedDate
+  //         selectedGender.value.isEmpty ||
+  //         countryController.text.isEmpty ||
+  //         stateController.text.isEmpty || // Use selectedDate
+  //         cityController.text.isEmpty ||
+  //         selectedHeight.value.isEmpty ||
+  //         selectedEyeColor.value.isEmpty ||
+  //         selectedHairColor.value.isEmpty
+  //     /*||
+  //       selectedSkill.value.isEmpty*/
+  //     ) {
+  //       throw Exception('All fields are required');
+  //     }
+  //
+  //     if (passwordController.text != confirmPasswordController.text) {
+  //       throw Exception('Passwords do not match');
+  //     }
+  //
+  //     // Validate DOB format
+  //     if (!RegExp(r'^\d{2}-\d{2}-\d{4}$').hasMatch(selectedDate.value)) {
+  //       throw Exception('DOB must be in MM-DD-YYYY format');
+  //     }
+  //
+  //     final userSkill = skills.firstWhere(
+  //           (skill) => skill.name == selectedSkill.value,
+  //       orElse: () => throw Exception('Invalid Skill'),
+  //     );
+  //
+  //     // Find eye color ID
+  //     final eyeColor = eyeColors.firstWhere(
+  //           (color) => color.name == selectedEyeColor.value,
+  //       orElse: () => throw Exception('Invalid eye color'),
+  //     );
+  //
+  //     // Find hair color ID
+  //     final hairColor = hairColors.firstWhere(
+  //           (color) => color.name == selectedHairColor.value,
+  //       orElse: () => throw Exception('Invalid hair color'),
+  //     );
+  //
+  //     // Find skill ID
+  //     /*final skill = skills.firstWhere(
+  //     (skill) => skill.name == selectedSkill.value,
+  //     orElse: () => throw Exception('Invalid skill'),
+  //   );*/
+  //
+  //     final response = await AuthProvider.register(
+  //       name: nameController.text,
+  //       email: emailController.text,
+  //       password: passwordController.text,
+  //       passwordConfirmation: confirmPasswordController.text,
+  //       role: 3,
+  //       //experienceYears: userSkill.id,
+  //       country: countryController.text,
+  //       state: stateController.text,
+  //       city: cityController.text,
+  //       dob: selectedDate.value, // Use selectedDate
+  //       gender: selectedGender.value.toLowerCase(),
+  //       eyeColorId: eyeColor.id,
+  //       hairColorId: hairColor.id,
+  //       height: int.parse(selectedHeight.value),
+  //       resume: selectedResume.value,
+  //       skillId: userSkill.id,
+  //       profileImage: selectedImage.value,
+  //     );
+  //
+  //     if (response.status) {
+  //       ApiService.setToken(response.data.token);
+  //       if (response.data.user.profileImage != null) {
+  //         profileImageUrl.value = response.data.user.profileImage!; // Store profile image URL
+  //       }
+  //       Get.snackbar(
+  //         'Success',
+  //         response.message,
+  //         backgroundColor: Colors.green,
+  //         colorText: Colors.white,
+  //       );
+  //       Get.offAllNamed(Routes.CUSTOMDRAWER);
+  //     } else {
+  //       throw Exception(response.message);
+  //     }
+  //   } catch (e) {
+  //     print('Registration Error: $e');
+  //     errorMessage.value = e.toString().replaceFirst('Exception: ', '');
+  //     Get.snackbar(
+  //       'Error',
+  //       errorMessage.value,
+  //       backgroundColor: Colors.red,
+  //       colorText: Colors.white,
+  //     );
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 }
 
 

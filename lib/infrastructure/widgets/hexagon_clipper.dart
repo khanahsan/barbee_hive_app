@@ -220,35 +220,6 @@ class HexagonClipper extends CustomClipper<Path> {
 
   HexagonClipper({this.scale = 1.0});
 
-  // @override
-  // Path getClip(Size size) {
-  //   final path = Path();
-  //   final w = size.width;
-  //   final h = size.height;
-  //
-  //   final double centerX = w / 2;
-  //   final double centerY = h / 2;
-  //
-  //   // final double radius = w / 2 * scale;
-  //
-  //   final double radius = (w / 2) / Math.cos(Math.pi / 7) * scale;
-  //
-  //
-  //   for (int i = 0; i < 6; i++) {
-  //     final angle = (60 * i - 30) * 3.1415926535897932 / 180;
-  //     final x = centerX + radius * Math.cos(angle);
-  //     final y = centerY + radius * Math.sin(angle);
-  //     if (i == 0) {
-  //       path.moveTo(x, y);
-  //     } else {
-  //       path.lineTo(x, y);
-  //     }
-  //   }
-  //
-  //   path.close();
-  //   return path;
-  // }
-
   @override
   Path getClip(Size size) {
     final path = Path();
@@ -258,13 +229,13 @@ class HexagonClipper extends CustomClipper<Path> {
     final double centerX = w / 2;
     final double centerY = h / 2;
 
-    // Calculate radius that fits within the height and width
-    // Max radius that fits in both width and height
-    final double radius =
-        Math.min(w / 2, h / (Math.sin(Math.pi / 3) * 1.5)) * scale;
+    // final double radius = w / 2 * scale;
+
+    final double radius = (w / 2) / Math.cos(Math.pi / 7) * scale;
+
 
     for (int i = 0; i < 6; i++) {
-      final angle = (60 * i - 30) * Math.pi / 180;
+      final angle = (60 * i - 30) * 3.1415926535897932 / 180;
       final x = centerX + radius * Math.cos(angle);
       final y = centerY + radius * Math.sin(angle);
       if (i == 0) {
@@ -277,6 +248,35 @@ class HexagonClipper extends CustomClipper<Path> {
     path.close();
     return path;
   }
+
+  // @override
+  // Path getClip(Size size) {
+  //   final path = Path();
+  //   final w = size.width;
+  //   final h = size.height;
+  //
+  //   final double centerX = w / 2;
+  //   final double centerY = h / 2;
+
+    // Calculate radius that fits within the height and width
+    // Max radius that fits in both width and height
+  //   final double radius =
+  //       Math.min(w / 2, h / (Math.sin(Math.pi / 3) * 1.5)) * scale;
+  //
+  //   for (int i = 0; i < 6; i++) {
+  //     final angle = (60 * i - 30) * Math.pi / 180;
+  //     final x = centerX + radius * Math.cos(angle);
+  //     final y = centerY + radius * Math.sin(angle);
+  //     if (i == 0) {
+  //       path.moveTo(x, y);
+  //     } else {
+  //       path.lineTo(x, y);
+  //     }
+  //   }
+  //
+  //   path.close();
+  //   return path;
+  // }
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => true;
@@ -624,13 +624,29 @@ class HoneycombLayoutDelegate extends MultiChildLayoutDelegate {
   @override
   Size getSize(BoxConstraints constraints) {
     final int totalItemsInPattern = pattern.reduce((a, b) => a + b);
-    final int rowCount =
-        (users.length / totalItemsInPattern).ceil() +
+    final int rowCount = (users.length / totalItemsInPattern).ceil() +
         (users.length % totalItemsInPattern > 0 ? 1 : 0);
-    final double totalHeight =
-        rowCount * itemHeight * 0.75; // Height based on number of rows
-    return Size(constraints.maxWidth, totalHeight);
+    final double totalHeight = rowCount * itemHeight * 0.75;
+
+    // Find max number of items in any row
+    final int maxItemsInRow = pattern.reduce((a, b) => a > b ? a : b);
+
+    // Effective width of the widest row
+    final double totalWidth = (maxItemsInRow * itemWidth) - ((maxItemsInRow - 1) * 1.5);
+
+    return Size(totalWidth, totalHeight);
   }
+
+  // @override
+  // Size getSize(BoxConstraints constraints) {
+  //   final int totalItemsInPattern = pattern.reduce((a, b) => a + b);
+  //   final int rowCount =
+  //       (users.length / totalItemsInPattern).ceil() +
+  //       (users.length % totalItemsInPattern > 0 ? 1 : 0);
+  //   final double totalHeight =
+  //       rowCount * itemHeight * 0.75; // Height based on number of rows
+  //   return Size(constraints.maxWidth, totalHeight);
+  // }
 
   @override
   void performLayout(Size size) {
@@ -650,13 +666,13 @@ class HoneycombLayoutDelegate extends MultiChildLayoutDelegate {
           );
           positionChild(index, Offset(x, y));
         }
-        x += itemWidth - 5;
+        x += itemWidth - 1.5;
         index++;
       }
 
       // print("hello item $itemHeight");
 
-      y += itemHeight * 0.65;
+      y += itemHeight * 0.74;
 
       print("$itemHeight item $y == ${patternIndex}");
 

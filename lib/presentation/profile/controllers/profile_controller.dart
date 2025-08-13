@@ -16,6 +16,7 @@ class ProfileController extends GetxController {
   RxBool isLoading = false.obs;
   RxInt currentUserId = 0.obs;
   RxInt currentUserRole = 0.obs;
+  RxString userProfileImage = ''.obs;
 
   RxBool isEditing = false.obs;
 
@@ -136,6 +137,7 @@ class ProfileController extends GetxController {
         currentHeight.value = data.employee?.height ?? 0;
         currentSkillName.value = data.employee?.skill.name ?? '';
         currentSkillId.value = data.employee?.skill.id ?? 0;
+        userProfileImage.value = data.profileImage ?? '';
         final rawDob = data.employee?.dob;
         if (rawDob != null && rawDob.isNotEmpty) {
           try {

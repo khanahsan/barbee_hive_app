@@ -1564,38 +1564,38 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
   }
 }
 
-class HexagonClipper extends CustomClipper<Path> {
-  final double borderOffset;
-
-  HexagonClipper({this.borderOffset = 0.0});
-
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    final width = size.width;
-    final height = size.height;
-    final centerX = width / 2;
-    final centerY = height / 2;
-    final radius = (width / 2) + borderOffset;
-
-    for (int i = 0; i < 6; i++) {
-      final angle = (60 * i - 30) * 3.1415926535897932 / 180;
-      final x = centerX + radius * cos(angle);
-      final y = centerY + radius * sin(angle);
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-    }
-
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => true;
-}
+// class HexagonClipper extends CustomClipper<Path> {
+//   final double borderOffset;
+//
+//   HexagonClipper({this.borderOffset = 0.0});
+//
+//   @override
+//   Path getClip(Size size) {
+//     final path = Path();
+//     final width = size.width;
+//     final height = size.height;
+//     final centerX = width / 2;
+//     final centerY = height / 2;
+//     final radius = (width / 2) + borderOffset;
+//
+//     for (int i = 0; i < 6; i++) {
+//       final angle = (60 * i - 30) * 3.1415926535897932 / 180;
+//       final x = centerX + radius * cos(angle);
+//       final y = centerY + radius * sin(angle);
+//       if (i == 0) {
+//         path.moveTo(x, y);
+//       } else {
+//         path.lineTo(x, y);
+//       }
+//     }
+//
+//     path.close();
+//     return path;
+//   }
+//
+//   @override
+//   bool shouldReclip(CustomClipper<Path> oldClipper) => true;
+// }
 
 
 

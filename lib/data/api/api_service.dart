@@ -77,7 +77,7 @@ class ApiService {
       if (!(await isInternetAvailable())) {
         throw Exception('No internet connection');
       }
-      final uri = Uri.parse('${Endpoints.baseUrl}$endpoint');
+      final uri = Uri.parse('${ApiEndPoints.baseUrl}$endpoint');
       print('GET Request URL: $uri');
       final response = await _safeRequest(
         'GET',
@@ -103,7 +103,7 @@ class ApiService {
         throw Exception('No internet connection');
       }
 
-      final uri = Uri.parse('${Endpoints.baseUrl}$endpoint');
+      final uri = Uri.parse('${ApiEndPoints.baseUrl}$endpoint');
       print('POST Request URL: $uri');
       final response = await _safeRequest(
         'POST',
@@ -171,7 +171,7 @@ class ApiService {
         throw Exception('No internet connection');
       }
 
-      final uri = Uri.parse('${Endpoints.baseUrl}$endpoint');
+      final uri = Uri.parse('${ApiEndPoints.baseUrl}$endpoint');
 
       final request = http.MultipartRequest('POST', uri);
 

@@ -30,6 +30,7 @@ class _CustomDrawerState extends State<CustomDrawer>
   int selectedIndex = 0;
 
   String userName = '';
+  String userProfileImage = '';
 
   void toggleDrawer() {
     if (_isDrawerOpen) {
@@ -70,13 +71,15 @@ class _CustomDrawerState extends State<CustomDrawer>
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    _loadUserName();
+    _loadUserData();
   }
 
-  void _loadUserName() async {
-    final currentUserName = await SharedPreferenceHelper.getString(SharedPrefKeys.userName);
+  void _loadUserData() async {
+    final currentUserName = SharedPreferenceHelper.getString(SharedPrefKeys.userName);
+    final currentProfileImage = SharedPreferenceHelper.getString(SharedPrefKeys.userProfileImage);
     setState(() {
       userName = currentUserName ?? "";
+      userProfileImage = currentProfileImage ?? "";
     });
   }
 
@@ -116,7 +119,7 @@ class _CustomDrawerState extends State<CustomDrawer>
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             HexagonAvatar(
-                              imagePath: AppAssets.profileImage,
+                              imagePath: userProfileImage,
                               width: 60.w,
                               height: 70.h,
                               borderColor: AppColors.primary,

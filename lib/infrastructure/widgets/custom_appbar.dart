@@ -11,6 +11,7 @@ PreferredSizeWidget customAppbar({
   required VoidCallback leadingTapFunction,
   // required int currentBottomIndex,
   required String title,
+  String? profileImagePath,
   String? leadingIconPath,
   bool? showActions,
   List<Widget>? actions,
@@ -42,9 +43,9 @@ PreferredSizeWidget customAppbar({
           ),
           if(showHexagon == true)
           HexagonAvatar(
-            imagePath: AppAssets.profileImage,
-            width: 50.w,
-            height: 60.h,
+            imagePath: profileImagePath ?? '',
+            width: 40.w,
+            height: 50.h,
           ),
         ],
       ).paddingSymmetric(horizontal: 15.w),
@@ -60,22 +61,6 @@ PreferredSizeWidget customAppbar({
       centerTitle: true,
       actionsPadding: EdgeInsets.symmetric(horizontal: 15.w),
       actions: actions,
-      // actions:
-      //     showActions == true
-      //         ? [
-      //           _buildSvgPicture(
-      //             iconPath: AppAssets.bellIcon,
-      //             iconHeight: 24.h,
-      //             iconWidth: 24.w,
-      //           ),
-      //           SizedBox(width: 10.w),
-      //           _buildSvgPicture(
-      //             iconPath: AppAssets.filterIcon,
-      //             iconHeight: 24.h,
-      //             iconWidth: 24.w,
-      //           ),
-      //         ]
-      //         : null,
     ),
   );
 }

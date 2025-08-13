@@ -1,4 +1,4 @@
-class Endpoints {
+class ApiEndPoints {
   static const String baseUrl = 'https://barbeehive.staging.pegasync.com/api/';
 
   static const String login = 'login';

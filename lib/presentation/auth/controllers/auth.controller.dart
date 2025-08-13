@@ -15,6 +15,8 @@ class AuthController extends GetxController {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController fEmailController = TextEditingController();
 
+  final formKey = GlobalKey<FormState>();
+
   final isLoading = false.obs;
   final fPasswordIsLoading = false.obs;
   final RxBool isObscured = true.obs;
@@ -31,7 +33,10 @@ class AuthController extends GetxController {
   }
 
   // Method to show the dialog
-  Future<void> showResetPasswordDialog(BuildContext context, String email) async {
+  Future<void> showResetPasswordDialog(
+    BuildContext context,
+    String email,
+  ) async {
     print('Showing reset password dialog for email: $email'); // Debug log
     await showDialog(
       context: context,
@@ -49,25 +54,6 @@ class AuthController extends GetxController {
   Future<void> login() async {
     final email = nameController.text.trim();
     final password = passwordController.text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      Get.snackbar(
-        "Error",
-        "Email and password required",
-        backgroundColor: Colors.red,
-      );
-      return;
-    }
-
-    // Validate email format
-    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      Get.snackbar(
-        "Error",
-        "Please enter a valid email address",
-        backgroundColor: Colors.red,
-      );
-      return;
-    }
 
     isLoading.value = true;
 
@@ -87,9 +73,9 @@ class AuthController extends GetxController {
         response.user.id,
       );
 
-      await SharedPreferenceHelper.saveInt(
-        SharedPrefKeys.userId,
-        response.user.id,
+      await SharedPreferenceHelper.saveString(
+        SharedPrefKeys.userProfileImage,
+        response.user.profileImage ?? '',
       );
 
       await SharedPreferenceHelper.saveString(
@@ -143,7 +129,7 @@ class AuthController extends GetxController {
     }
   }
 
-/*
+  /*
   Future<void> forgotPassword(BuildContext context) async {
     final email = fEmailController.text.trim();
 
@@ -202,7 +188,6 @@ class AuthController extends GetxController {
   }
 */
 
-
   Future<void> forgotPassword(BuildContext context) async {
     final email = fEmailController.text.trim();
 
@@ -231,7 +216,10 @@ class AuthController extends GetxController {
 
       if (status) {
         print('Status is true, showing dialog');
-        await showResetPasswordDialog(context, email); // Wait for dialog to close
+        await showResetPasswordDialog(
+          context,
+          email,
+        ); // Wait for dialog to close
         print('Dialog closed, navigating to SIGN_IN_VIEW');
         Get.offNamed(Routes.SIGN_IN_VIEW); // Navigate after dialog is closed
       } else {
@@ -250,9 +238,10 @@ class AuthController extends GetxController {
         'Exception: POST request error: Exception: ',
         '',
       );
-      errorMessage = errorMessage.startsWith('Exception: ')
-          ? errorMessage.replaceFirst('Exception: ', '')
-          : errorMessage;
+      errorMessage =
+          errorMessage.startsWith('Exception: ')
+              ? errorMessage.replaceFirst('Exception: ', '')
+              : errorMessage;
       Get.snackbar(
         "Forgot Password Failed",
         errorMessage,
@@ -265,7 +254,6 @@ class AuthController extends GetxController {
       fPasswordIsLoading.value = false;
     }
   }
-
 
   @override
   void onClose() {

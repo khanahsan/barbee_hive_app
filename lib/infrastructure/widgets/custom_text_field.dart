@@ -1,9 +1,6 @@
-
-
 import 'package:flutter/material.dart';
 
 import '../constants/app_colors.dart';
-
 
 class CustomTextField extends StatelessWidget {
   final String hint;
@@ -41,25 +38,28 @@ class CustomTextField extends StatelessWidget {
             color: AppColors.textFieldTextColor,
             scale: 4.0,
           ),
-          suffixIcon: isPassword
-              ? IconButton(
-            icon: Icon(
-              isObscured
-                  ? Icons.visibility_off_outlined
-                  : Icons.visibility_outlined,
-              color: AppColors.textFieldTextColor,
-            ),
-            onPressed: onToggleVisibility,
-          )
-              : null,
+          suffixIcon:
+              isPassword
+                  ? IconButton(
+                    icon: Icon(
+                      isObscured
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      color: AppColors.textFieldTextColor,
+                    ),
+                    onPressed: onToggleVisibility,
+                  )
+                  : null,
           filled: true,
           fillColor: AppColors.textFieldBackground,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide.none,
           ),
-          contentPadding:
-          const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 18,
+            horizontal: 12,
+          ),
         ),
       ),
     );

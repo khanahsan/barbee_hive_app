@@ -211,6 +211,8 @@ class User {
   final int role; // 3 for Employee, 2 for Employer
   final bool isVerified;
   final bool isActive;
+  final String? profileImage;
+  final String? coverPhoto;
   final String createdAt;
   final String updatedAt;
   final Employee? employee; // Nullable, present for Employees
@@ -222,6 +224,8 @@ class User {
     required this.role,
     required this.isVerified,
     required this.isActive,
+    this.profileImage,
+    this.coverPhoto,
     required this.createdAt,
     required this.updatedAt,
     this.employee,
@@ -235,6 +239,8 @@ class User {
       role: json['role'] ?? 0,
       isVerified: json['is_verified'] ?? false,
       isActive: json['is_active'] ?? false,
+      profileImage: json['profile_image'] ?? '',
+      coverPhoto: json['cover_photo'] ?? '',
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
       employee: json['employee'] != null ? Employee.fromJson(json['employee']) : null,

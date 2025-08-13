@@ -68,7 +68,7 @@ class ApplicantProfileController extends GetxController {
     errorMessage.value = '';
     try {
       print('Fetching profile for userId: $userId');
-      final endpoint = '${Endpoints.userProfile}/$userId';
+      final endpoint = '${ApiEndPoints.userProfile}/$userId';
       final data = await ApiService.get(endpoint, auth: true);
       print('GET Response: $data');
       final response = ApplicantProfileResponse.fromJson(data);

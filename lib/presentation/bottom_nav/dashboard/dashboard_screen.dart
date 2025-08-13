@@ -53,6 +53,8 @@ class DashboardScreen extends StatelessWidget {
           return SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 25.h),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 25.h,
               children: [
                 b2bSection(context),
                 FadingImageCarousel(imagePaths: imagePaths),
@@ -267,6 +269,8 @@ class DashboardScreen extends StatelessWidget {
                               final name =
                                   user.employer?.businessName ??
                                   user.email.split('@').first;
+
+
                               return GestureDetector(
                                 onTap:
                                     () => Get.toNamed(

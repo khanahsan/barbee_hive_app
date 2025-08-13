@@ -38,4 +38,5 @@ class AppColors {
   static const Color color8690FF = Color(0xff8690FF);
 
 
+
 }

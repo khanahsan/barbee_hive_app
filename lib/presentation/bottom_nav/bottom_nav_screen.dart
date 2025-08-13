@@ -1,4 +1,6 @@
 import 'package:barbee_hive_app/data/api/token_storage.dart';
+import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
+import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/cutom_bottom_nav_bar.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
@@ -31,6 +33,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   // User data
   int? currentUserID;
   int? role;
+  String? userProfileImage;
 
   @override
   void initState() {
@@ -42,6 +45,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   Future<void> _loadUserData() async {
     currentUserID = await TokenStorage.getUserId();
     role = await TokenStorage.getRole();
+
+    userProfileImage = SharedPreferenceHelper.getString(SharedPrefKeys.userProfileImage);
+
     setState(() {}); // Update UI after loading data
   }
 
@@ -115,9 +121,10 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   List<Widget> get screens {
     return [
       DashboardScreen(),
-      currentUserID != null && role != null
-          ? MessageScreen(currentUserID: currentUserID.toString(), role: role!)
-          : Center(child: CircularProgressIndicator()), // Fallback while loading
+      MessageScreen(),
+      // currentUserID != null && role != null
+      //     ? MessageScreen(currentUserID: currentUserID.toString(), role: role!)
+      //     : Center(child: CircularProgressIndicator()), // Fallback while loading
       JobScreen(),
       PricingPlansScreen(),
     ];
@@ -140,6 +147,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: customAppbar(
+        profileImagePath: userProfileImage,
         context: context,
         leadingTapFunction: () {
           widget.onMenuPressed();

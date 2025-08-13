@@ -16,7 +16,7 @@ import 'api_service.dart';
 
 class AuthProvider {
   static Future<LoginResponse> login(String email, String password) async {
-    final data = await ApiService.post(Endpoints.login, {
+    final data = await ApiService.post(ApiEndPoints.login, {
       'email': email,
       'password': password,
     });
@@ -24,11 +24,11 @@ class AuthProvider {
   }
 
   static Future<void> logout() async {
-    await ApiService.post(Endpoints.logout, {}, auth: true);
+    await ApiService.post(ApiEndPoints.logout, {}, auth: true);
   }
 
   static Future<Map<String, dynamic>> forgotPassword(String email) async {
-    final response = await ApiService.post(Endpoints.forgotPassword, {
+    final response = await ApiService.post(ApiEndPoints.forgotPassword, {
       'email': email,
     }, auth: false);
     return {
@@ -43,7 +43,7 @@ class AuthProvider {
   }) async {
     debugPrint("CURRENT LAT $currentLatitude CURRENT LONG $currentLongitude");
     final data = await ApiService.post(
-      Endpoints.dashboardUsers,
+      ApiEndPoints.dashboardUsers,
       {"latitude": currentLatitude, "longitude": currentLongitude},
       auth: true, // Requires token
     );
@@ -52,7 +52,7 @@ class AuthProvider {
 
   static Future<EyeColorResponse> getEyeColors() async {
     final data = await ApiService.get(
-      Endpoints.eyeColors,
+      ApiEndPoints.eyeColors,
       auth:
           false, // Assuming authentication is required; set to false if public
     );
@@ -61,7 +61,7 @@ class AuthProvider {
 
   static Future<HairColorResponse> getHairColors() async {
     final data = await ApiService.get(
-      Endpoints.hairColors,
+      ApiEndPoints.hairColors,
       auth: false, // Set to false if public
     );
     return HairColorResponse.fromJson(data);
@@ -69,7 +69,7 @@ class AuthProvider {
 
   static Future<SkillsResponse> getSkills() async {
     final data = await ApiService.get(
-      Endpoints.getSkills,
+      ApiEndPoints.getSkills,
       auth: false, // Set to false if public
     );
     return SkillsResponse.fromJson(data);
@@ -124,7 +124,7 @@ class AuthProvider {
     }
 
     final data = await ApiService.multipartPost(
-      Endpoints.registerEmployee,
+      ApiEndPoints.registerEmployee,
       fields: fields,
       files: files.isNotEmpty ? files : null,
       auth: false,
@@ -135,7 +135,7 @@ class AuthProvider {
 
   static Future<UserProfileResponse> getUserProfile(int userId) async {
     final data = await ApiService.get(
-      '${Endpoints.userProfile}/$userId',
+      '${ApiEndPoints.userProfile}/$userId',
       auth: true,
     );
     return UserProfileResponse.fromJson(data);
@@ -212,7 +212,7 @@ class AuthProvider {
     final files = <String, File>{};
     if (image != null) files['resume'] = image;
     final data = await ApiService.multipartPost(
-      Endpoints.jobStore,
+      ApiEndPoints.jobStore,
       fields: fields,
       files: files.isNotEmpty ? files : null,
       // fileField: 'image', // Matches API field
@@ -258,7 +258,7 @@ class AuthProvider {
     debugPrint("updateUserProfile Files $files");
 
     final data = await ApiService.multipartPost(
-      Endpoints.updateProfile,
+      ApiEndPoints.updateProfile,
       fields: fields,
       files: files.isNotEmpty ? files : null,
       //fileField: 'resume',
@@ -314,14 +314,14 @@ class AuthProvider {
 
   static Future<JobListResponse> getJobs(int? userId) async {
     final data = await ApiService.get(
-      '${Endpoints.jobs}?user_id=$userId',
+      '${ApiEndPoints.jobs}?user_id=$userId',
       auth: true,
     );
     return JobListResponse.fromJson(data);
   }
 
   static Future<JobListResponse> getEmployeeJobs() async {
-    final data = await ApiService.get(Endpoints.jobs, auth: true);
+    final data = await ApiService.get(ApiEndPoints.jobs, auth: true);
     return JobListResponse.fromJson(data);
   }
 
@@ -341,7 +341,7 @@ class AuthProvider {
     };
 
     print('Apply Job Payload: $fields');
-    final data = await ApiService.post(Endpoints.applyJob, fields, auth: true);
+    final data = await ApiService.post(ApiEndPoints.applyJob, fields, auth: true);
 
     return JobApplicationResponse.fromJson(data);
   }
@@ -373,14 +373,14 @@ class AuthProvider {
     Map<String, dynamic>? filters,
   }) async {
     try {
-      String endpoint = '${Endpoints.jobApplications}/$jobId';
+      String endpoint = '${ApiEndPoints.jobApplications}/$jobId';
       if (filters != null && filters.isNotEmpty) {
         final queryParams = filters.entries
             .map((e) => '${e.key}=${e.value}')
             .join('&');
         endpoint += '?$queryParams';
       }
-      print('GET Request URL: ${Endpoints.baseUrl}$endpoint');
+      print('GET Request URL: ${ApiEndPoints.baseUrl}$endpoint');
       final data = await ApiService.get(endpoint, auth: true);
       print('GET Response: $data');
       return JobApplicationResponse.fromJson(data);

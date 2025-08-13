@@ -180,9 +180,9 @@ class ProfileScreen extends GetView<ProfileController> {
                           Positioned(
                             top: -80.h,
                             child: HexagonAvatar(
-                              imagePath: AppAssets.profileImage,
-                              width: 140.w,
-                              height: 150.h,
+                              imagePath: controller.userProfileImage.value,
+                              width: 130.w,
+                              height: 140.h,
                               showOption: true,
                             ),
                           ),

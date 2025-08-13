@@ -1,9 +1,10 @@
-import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
+
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/navigation/routes.dart';
@@ -107,118 +108,131 @@ class SignInView extends GetView<AuthController> {
                         topLeft: Radius.circular(18.0),
                       ),
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      //crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        CustomTextField(
-                          fontColor: AppColors.color4C4C4C,
-                          filled: true,
-                          fillColor: AppColors.color101010,
-                          enabledBorderColor: Colors.transparent,
-                          hintText: 'Username or Email',
-                          prefixIcon: SvgPicture.asset(
-                            AppAssets.personIcon,
-                            fit: BoxFit.scaleDown,
-                            color: AppColors.color4C4C4C,
-                          ),
-                          // icon: AppAssets.nameLogo,
-                          controller: controller.nameController,
-                        ),
-
-                        SizedBox(height: 20.h),
-                        Obx(
-                          () => CustomTextField(
+                    child: Form(
+                      key: controller.formKey,
+                      child: Column(
+                        spacing: 15.h,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          //Email Field
+                          CustomTextField(
+                            validate: FormValidators.validateEmail,
                             fontColor: AppColors.color4C4C4C,
                             filled: true,
                             fillColor: AppColors.color101010,
                             enabledBorderColor: Colors.transparent,
-                            obscureText: controller.isObscured.value,
-                            hintText: 'Password',
+                            hintText: 'Username or Email',
                             prefixIcon: SvgPicture.asset(
-                              AppAssets.lockIcon,
+                              AppAssets.personIcon,
                               fit: BoxFit.scaleDown,
+                              color: AppColors.color4C4C4C,
                             ),
-                            suffixIcon: GestureDetector(
-                              onTap: controller.togglePasswordVisibility,
-                              child: Icon(
-                                controller.isObscured.value
-                                    ? Icons.visibility_off_outlined
-                                    : Icons.visibility_outlined,
-                                size: 25.sp,
-                                color: AppColors.color4C4C4C,
-                              ),
-                            ),
-                            controller: controller.passwordController,
+                            // icon: AppAssets.nameLogo,
+                            controller: controller.nameController,
                           ),
-                        ),
-                        SizedBox(height: 20.h),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: GestureDetector(
-                            onTap: () {
-                              Get.toNamed(Routes.FORGOT_PASSWORD);
-                            },
-                            child: Text(
-                              'Forgot Password?',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.titleMedium?.copyWith(
-                                fontSize: 15.sp,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ),
-                        ),
 
-                        SizedBox(height: 120.h),
-
-                        Obx(
-                          () => CustomBtn(
-                            buttonHeight: 55.h,
-                            btnTitle: 'Sign In',
-                            btnBackgroundColor: AppColors.primary,
-                            btnTxtColor: AppColors.white,
-                            onPressed: () => controller.login(),
-                            isLoading:
-                                controller
-                                    .isLoading
-                                    .value, // Pass reactive isLoading value
-                          ),
-                        ),
-                        SizedBox(height: 20.h),
-                        RichText(
-                          text: TextSpan(
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.white,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: "Dont't have an account?",
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.titleMedium?.copyWith(
-                                  fontSize: 15.sp,
-                                  color: AppColors.white,
+                          //Password Field
+                          Obx(
+                            () => CustomTextField(
+                              validate: FormValidators.validatePassword,
+                              fontColor: AppColors.color4C4C4C,
+                              filled: true,
+                              fillColor: AppColors.color101010,
+                              enabledBorderColor: Colors.transparent,
+                              obscureText: controller.isObscured.value,
+                              hintText: 'Password',
+                              prefixIcon: SvgPicture.asset(
+                                AppAssets.lockIcon,
+                                fit: BoxFit.scaleDown,
+                              ),
+                              suffixIcon: GestureDetector(
+                                onTap: controller.togglePasswordVisibility,
+                                child: Icon(
+                                  controller.isObscured.value
+                                      ? Icons.visibility_off_outlined
+                                      : Icons.visibility_outlined,
+                                  size: 25.sp,
+                                  color: AppColors.color4C4C4C,
                                 ),
                               ),
-                              TextSpan(text: " "),
-                              TextSpan(
-                                text: 'Sign Up',
+                              controller: controller.passwordController,
+                            ),
+                          ),
+
+                          //Forget Password Field
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: GestureDetector(
+                              onTap: () {
+                                Get.toNamed(Routes.FORGOT_PASSWORD);
+                              },
+                              child: Text(
+                                'Forgot Password?',
                                 style: Theme.of(
                                   context,
                                 ).textTheme.titleMedium?.copyWith(
                                   fontSize: 15.sp,
                                   color: AppColors.primary,
                                 ),
-                                recognizer:
-                                    TapGestureRecognizer()..onTap = () {},
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
+
+                          //Sign In Button
+                          SizedBox(height: 30.h),
+                          Obx(
+                            () => CustomBtn(
+                              buttonHeight: 55.h,
+                              btnTitle: 'Sign In',
+                              btnBackgroundColor: AppColors.primary,
+                              btnTxtColor: AppColors.white,
+                              onPressed: () {
+                                if (controller.formKey.currentState!
+                                    .validate()) {
+                                  controller.login();
+                                }
+                              },
+                              isLoading:
+                                  controller
+                                      .isLoading
+                                      .value, // Pass reactive isLoading value
+                            ),
+                          ),
+
+                          //Sign Up Option
+                          RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.white,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: "Don't have an account?",
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium?.copyWith(
+                                    fontSize: 15.sp,
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                                TextSpan(text: " "),
+                                TextSpan(
+                                  text: 'Sign Up',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium?.copyWith(
+                                    fontSize: 15.sp,
+                                    color: AppColors.primary,
+                                  ),
+                                  recognizer:
+                                      TapGestureRecognizer()..onTap = () {},
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

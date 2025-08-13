@@ -1,36 +1,93 @@
-import 'package:barbee_hive_app/data/firebase/firebase_chat_service.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-/*class MessageScreen extends StatelessWidget {
+class MessageScreen extends StatelessWidget {
   const MessageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
-      body: ListView.separated(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
-        separatorBuilder: (context, index) => SizedBox(height: 15.h),
-        itemCount: 3,
-        itemBuilder: (context, index) {
-          return messageTile(context);
+      body: StreamBuilder<QuerySnapshot>(
+        stream:
+        FirebaseFirestore.instance
+            .collection('chats')
+            .orderBy('updatedAt', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text(
+                "No messages yet",
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          }
+
+          final chats = snapshot.data!.docs;
+
+          return ListView.separated(
+            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+            separatorBuilder: (context, index) => SizedBox(height: 15.h),
+            itemCount: chats.length,
+            itemBuilder: (context, index) {
+              final chat = chats[index];
+              final messages = List<Map<String, dynamic>>.from(
+                chat['messages'] ?? [],
+              );
+              String lastMessage = '';
+              if (messages.isNotEmpty) {
+                lastMessage = messages.last['text'] ?? '';
+              }
+              final userName = chat['name'] ?? 'Unknown';
+              final profileImage =
+                  chat['profileImage'] ?? AppAssets.profileImage;
+
+              final senderID =
+                  chat['senderId'] ?? '';
+
+              final receiverID =
+                  chat['receiverId'] ?? '';
+
+              return messageTile(
+                context,
+                name: userName,
+                message: lastMessage,
+                profileImage: profileImage,
+                senderID: senderID,
+                receiverID: receiverID,
+              );
+            },
+          );
         },
       ),
     );
   }
 
-  Widget messageTile(BuildContext context) {
+  Widget messageTile(BuildContext context, {
+    required String name,
+    required String message,
+    required String profileImage,
+    required String senderID,
+    required String receiverID,
+  }) {
     return GestureDetector(
-      onTap: (){
-        Get.toNamed(Routes.chatScreen);
+      onTap: () {
+        Get.toNamed(Routes.chatScreen, arguments: {
+          'chatID': '$senderID-$receiverID',
+          'otherUserID': receiverID,
+          'currentUserID': senderID,
+        });
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
@@ -43,7 +100,7 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             HexagonAvatar(
-              imagePath: AppAssets.profileImage,
+              imagePath: profileImage,
               width: 80.w,
               height: 90.h,
               borderColor: AppColors.white,
@@ -55,16 +112,24 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
                 spacing: 3.h,
                 children: [
                   Text(
-                    "Kyle Crane",
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    name,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.white,
                     ),
                   ),
                   Text(
-                    "Hey, I saw your profile and found you suitable for this position",
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    message,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.grey.withOpacity(0.5),
@@ -87,76 +152,5 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
       ),
     );
   }
-}*/
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'chat_screen.dart';
-
-class MessageScreen extends StatelessWidget {
-  final String currentUserID;
-  final int role; // 'employee' or 'employer'
-
-  MessageScreen({required this.currentUserID, required this.role});
-
-  final ChatService _chatService = ChatService();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Chats'),
-        backgroundColor: Colors.blue,
-      ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _chatService.getChatRooms(currentUserID),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          var chats = snapshot.data!.docs;
-
-          if (chats.isEmpty) {
-            return Center(child: Text('No chats yet.'));
-          }
-
-          return ListView.builder(
-            itemCount: chats.length,
-            itemBuilder: (context, index) {
-              var chat = chats[index];
-              String otherUserID = chat['participants']
-                  .firstWhere((id) => id != currentUserID);
-
-              return ListTile(
-                title: Text(otherUserID),
-                subtitle: Text(chat['lastMessage'] ?? 'No messages yet'),
-                trailing: Text(
-                  _formatTimestamp(chat['lastMessageTime']),
-                  style: TextStyle(fontSize: 12.sp),
-                ),
-                onTap: () async {
-                  String chatID = await _chatService.getChatRoomID(currentUserID, otherUserID);
-                  Get.to(() => ChatScreen(
-                    chatID: chatID,
-                    otherUserID: otherUserID,
-                    currentUserID: currentUserID,
-                  ));
-                },
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  String _formatTimestamp(Timestamp? timestamp) {
-    if (timestamp == null) return '';
-    DateTime date = timestamp.toDate();
-    return '${date.hour}:${date.minute} ${date.day}/${date.month}';
-  }
 }
+

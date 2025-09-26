@@ -1,94 +1,126 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
-import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 class MessageScreen extends StatelessWidget {
-  const MessageScreen({super.key});
+  final ChatController chatController = Get.put(ChatController());
+
+  MessageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.black,
-      body: StreamBuilder<QuerySnapshot>(
-        stream:
-        FirebaseFirestore.instance
-            .collection('chats')
-            .orderBy('updatedAt', descending: true)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(
-              child: Text(
-                "No messages yet",
-                style: TextStyle(color: Colors.white),
-              ),
-            );
-          }
-
-          final chats = snapshot.data!.docs;
-
-          return ListView.separated(
-            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
-            separatorBuilder: (context, index) => SizedBox(height: 15.h),
-            itemCount: chats.length,
-            itemBuilder: (context, index) {
-              final chat = chats[index];
-              final messages = List<Map<String, dynamic>>.from(
-                chat['messages'] ?? [],
-              );
-              String lastMessage = '';
-              if (messages.isNotEmpty) {
-                lastMessage = messages.last['text'] ?? '';
+      body: Obx(() {
+        if (chatController.isEmployer.value) {
+          // Employer sees list of employees first
+          return StreamBuilder(
+            stream: chatController.getAllEmployees(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
               }
-              final userName = chat['name'] ?? 'Unknown';
-              final profileImage =
-                  chat['profileImage'] ?? AppAssets.profileImage;
+              final employees = snapshot.data!.docs;
+              if (employees.isEmpty) {
+                return const Center(child: Text("No employees found"));
+              }
 
-              final senderID =
-                  chat['senderId'] ?? '';
+              return ListView.separated(
+                itemCount: employees.length,
+                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+                separatorBuilder: (context, index) => SizedBox(height: 15.h),
+                itemBuilder: (context, index) {
+                  final emp = employees[index].data() as Map<String, dynamic>;
+                  return messageTile(
+                    context,
+                    name: emp['name'] ?? "Unknown",
+                    message: emp['email'] ?? "",
+                    profileImage: emp['profileImage'],
+                    onTap: () async {
+                      // final chatId = await chatController.startChatWithEmployee(
+                      //   emp,
+                      // );
+                      // Get.to(
+                      //   () => ChatScreen(
+                      //     chatId: chatId,
+                      //     otherName: emp['name'],
+                      //     otherImage: emp['profileImage'] ?? "",
+                      //   ),
+                      // );
 
-              final receiverID =
-                  chat['receiverId'] ?? '';
-
-              return messageTile(
-                context,
-                name: userName,
-                message: lastMessage,
-                profileImage: profileImage,
-                senderID: senderID,
-                receiverID: receiverID,
+                      Get.to(
+                        () => ChatScreen(
+                          chatId: "${chatController.currentUserId.value}-${emp['uid']}", // Potential chatId
+                          otherName: emp['name'],
+                          otherImage: emp['profileImage'] ?? "",
+                          employeeData: emp,
+                        ),
+                      );
+                    },
+                  );
+                },
               );
             },
           );
-        },
-      ),
+        } else {
+          // Employee only sees chats where employer initiated
+          return StreamBuilder(
+            stream: chatController.getChatsStream(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final chats = snapshot.data!.docs;
+              if (chats.isEmpty) {
+                return const Center(child: Text("No chats yet"));
+              }
+
+              return ListView.separated(
+                itemCount: chats.length,
+                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+                separatorBuilder: (context, index) => SizedBox(height: 15.h),
+
+                itemBuilder: (context, index) {
+                  final chat = chats[index].data() as Map<String, dynamic>;
+                  return messageTile(
+                    context,
+                    name: chat['employerName'] ?? "Employer",
+                    message: chat['lastMessage'] ?? "",
+                    profileImage: chat['employerImage'],
+                    onTap: () {
+                      Get.to(
+                        () => ChatScreen(
+                          chatId: chat['chatId'],
+                          otherName: chat['employerName'],
+                          otherImage: chat['employerImage'],
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          );
+        }
+      }),
     );
   }
 
-  Widget messageTile(BuildContext context, {
+  Widget messageTile(
+    BuildContext context, {
     required String name,
     required String message,
     required String profileImage,
-    required String senderID,
-    required String receiverID,
+    VoidCallback? onTap,
   }) {
     return GestureDetector(
-      onTap: () {
-        Get.toNamed(Routes.chatScreen, arguments: {
-          'chatID': '$senderID-$receiverID',
-          'otherUserID': receiverID,
-          'currentUserID': senderID,
-        });
-      },
+      onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
         decoration: BoxDecoration(
@@ -113,11 +145,7 @@ class MessageScreen extends StatelessWidget {
                 children: [
                   Text(
                     name,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .titleSmall
-                        ?.copyWith(
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.white,
@@ -125,11 +153,7 @@ class MessageScreen extends StatelessWidget {
                   ),
                   Text(
                     message,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .titleSmall
-                        ?.copyWith(
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontSize: 13.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.grey.withOpacity(0.5),
@@ -153,4 +177,3 @@ class MessageScreen extends StatelessWidget {
     );
   }
 }
-

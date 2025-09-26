@@ -67,7 +67,6 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-
   RxDouble hOfW = 0.0.obs;
 
   Widget hiveSection(BuildContext context) {
@@ -146,16 +145,13 @@ class DashboardScreen extends StatelessWidget {
                                     : AppColors.primary,
                             name:
                                 (users[index].employee?.name ??
-                                            users[index].email
-                                                .split('@')
-                                                .first)
+                                            users[index].email.split('@').first)
                                         .isNotEmpty
                                     ? (users[index].employee?.name ??
                                         users[index].email.split('@').first)
                                     : 'Unknown Employee',
                             totalMl:
-                                users[index].employee?.experienceYears ??
-                                'N/A',
+                                users[index].employee?.experienceYears ?? 'N/A',
                           ),
                         ),
                       ),
@@ -269,7 +265,6 @@ class DashboardScreen extends StatelessWidget {
                               final name =
                                   user.employer?.businessName ??
                                   user.email.split('@').first;
-
 
                               return GestureDetector(
                                 onTap:

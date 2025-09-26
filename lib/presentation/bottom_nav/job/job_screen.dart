@@ -1,4 +1,3 @@
-
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
@@ -7,19 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_textfield.dart';
-
-
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import 'controller/job_controller.dart';
 import 'employee/component/employee_card.dart';
 import 'employer/component/employer_card.dart';
+
 class JobScreen extends GetView<JobController> {
   const JobScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return Obx(() {
       final isEmployer = controller.isEmployer.value;
       print('controller.isEmployer.value ${controller.isEmployer.value}');
@@ -48,42 +45,61 @@ class JobScreen extends GetView<JobController> {
             ),
           if (!isEmployer)
             Flexible(
-              child: Obx(() => controller.isLoadingEmployee.value
-                  ? Center(child: CircularProgressIndicator(color: AppColors.primary))
-                  : controller.employeeJobs.isEmpty
-                  ? const Center(
-                child: Text(
-                  'No jobs found',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-              )
-                  : ListView.separated(
-                separatorBuilder: (context, index) => SizedBox(height: 18.h),
-                itemCount: controller.employeeJobs.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) => EmployeeCard(job: controller.employeeJobs[index],),
-              ),
+              child: Obx(
+                () =>
+                    controller.isLoadingEmployee.value
+                        ? Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primary,
+                          ),
+                        )
+                        : controller.employeeJobs.isEmpty
+                        ? const Center(
+                          child: Text(
+                            'No jobs found',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        )
+                        : ListView.separated(
+                          separatorBuilder:
+                              (context, index) => SizedBox(height: 18.h),
+                          itemCount: controller.employeeJobs.length,
+                          shrinkWrap: true,
+                          itemBuilder:
+                              (context, index) => EmployeeCard(
+                                job: controller.employeeJobs[index],
+                              ),
+                        ),
               ),
             ),
           if (isEmployer)
             Flexible(
-              child: Obx(() => controller.isLoadingEmployer.value
-                  ? Center(child: CircularProgressIndicator(color: AppColors.primary))
-                  : controller.employerJobs.isEmpty
-                  ? const Center(
-                child: Text(
-                  'No jobs found',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-              )
-                  : ListView.separated(
-                separatorBuilder: (context, index) => SizedBox(height: 20.h),
-                itemCount: controller.employerJobs.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) => EmployerCard(
-                  job: controller.employerJobs[index],
-                ),
-              )),
+              child: Obx(
+                () =>
+                    controller.isLoadingEmployer.value
+                        ? Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.primary,
+                          ),
+                        )
+                        : controller.employerJobs.isEmpty
+                        ? const Center(
+                          child: Text(
+                            'No jobs found',
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
+                        )
+                        : ListView.separated(
+                          separatorBuilder:
+                              (context, index) => SizedBox(height: 20.h),
+                          itemCount: controller.employerJobs.length,
+                          shrinkWrap: true,
+                          itemBuilder:
+                              (context, index) => EmployerCard(
+                                job: controller.employerJobs[index],
+                              ),
+                        ),
+              ),
             ),
           if (isEmployer)
             CustomButton(

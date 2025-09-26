@@ -32,10 +32,11 @@ class HiveProfileScreen extends StatelessWidget {
             top: 100.h,
             left: 0,
             right: 0,
-            child: CustomFadingCarousel(
-              showIndicators: false,
-              imagePaths: List.filled(3, AppAssets.profileImage),
-            ),
+            child: Image.network(currentUser.profileImage),
+            // child: CustomFadingCarousel
+            //   showIndicators: false,
+            //   imagePaths: List.filled(3, AppAssets.profileImage),
+            // ),
           ),
 
           Positioned(

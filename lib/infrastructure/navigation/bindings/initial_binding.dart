@@ -1,8 +1,8 @@
-
 import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/controller/apply_screen_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applicant_profile/controller/applicant_profile_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/controller/application_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/controllers/sign_up_employer_controller.dart';
 import 'package:get/get.dart';
@@ -12,7 +12,7 @@ import '../../../presentation/home/controllers/home.controller.dart';
 import '../../../presentation/sign_up_view/controllers/sign_up_employee_controller.dart';
 import '../../../presentation/splash/controllers/splash.controller.dart';
 
-class InitialBindings implements Bindings{
+class InitialBindings implements Bindings {
   @override
   void dependencies() {
     // TODO: implement dependencies
@@ -27,6 +27,6 @@ class InitialBindings implements Bindings{
     Get.lazyPut<ApplyScreenController>(() => ApplyScreenController());
     Get.lazyPut<ApplicationsController>(() => ApplicationsController());
     Get.lazyPut<ApplicantProfileController>(() => ApplicantProfileController());
+    Get.lazyPut<ChatController>(() => ChatController());
   }
-
 }

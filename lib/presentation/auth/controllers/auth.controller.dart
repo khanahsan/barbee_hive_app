@@ -86,6 +86,17 @@ class AuthController extends GetxController {
       );
 
       ApiService.setToken(response.token);
+      await AuthProvider.syncUserWithFirebase(
+        apiUserId: response.user.id,
+        email: response.user.email,
+        password: password,
+        name:
+            response.user.role == 3
+                ? response.user.employee?.name ?? ""
+                : response.user.employer?.businessName ?? "",
+        role: response.user.role == 3 ? "employee" : "employer",
+        profileImage: response.user.profileImage,
+      );
 
       Get.snackbar("Success", response.message);
       Get.offAllNamed(Routes.CUSTOMDRAWER);

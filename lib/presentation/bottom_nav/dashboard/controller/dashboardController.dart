@@ -59,20 +59,20 @@ import 'package:get/get.dart';
 import '../../../../infrastructure/helpers/location_service.dart';
 
 class DashboardController extends GetxController {
-  //final RxList<User> employees = <User>[].obs;// Role 3 (Hive)
+  final RxList<User> employees = <User>[].obs; // Role 3 (Hive)
 
-  final RxList<User> employees = List<User>.generate(15, (index) {
-    return User(
-      id: index + 1, // IDs from 1 to 200
-      email: 'email${index + 1}@example.com', // Unique email per user
-      role: 3,
-      isVerified: true,
-      isActive: true,
-      createdAt: 'createdAt',
-      updatedAt: 'updatedAt',
-      profileImage: '', // Empty (or set a default image)
-    );
-  }).obs; // .obs makes it reactive (RxList)
+  // final RxList<User> employees = List<User>.generate(15, (index) {
+  //   return User(
+  //     id: index + 1, // IDs from 1 to 200
+  //     email: 'email${index + 1}@example.com', // Unique email per user
+  //     role: 3,
+  //     isVerified: true,
+  //     isActive: true,
+  //     createdAt: 'createdAt',
+  //     updatedAt: 'updatedAt',
+  //     profileImage: '', // Empty (or set a default image)
+  //   );
+  // }).obs;
   final RxList<User> employers = <User>[].obs; // Role 2 (B2B)
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
@@ -108,8 +108,6 @@ class DashboardController extends GetxController {
     }
   }
 
-
-
   Future<void> fetchDashboardUsers() async {
     isLoading.value = true;
     errorMessage.value = '';
@@ -119,7 +117,7 @@ class DashboardController extends GetxController {
       print('Fetching dashboard users');
       final response = await AuthProvider.getDashboardUsers(
         currentLatitude: currentLatitude.value.toString(),
-        currentLongitude: currentLongitude.value.toString()
+        currentLongitude: currentLongitude.value.toString(),
       );
       print(
         'Dashboard Response: status=${response.status}, message=${response.message}',
@@ -128,7 +126,7 @@ class DashboardController extends GetxController {
       debugPrint("EMPLOYERS ${response.data.employers}");
       debugPrint("EMPLOYEES ${response.data.employees}");
 
-      //employees.assignAll(response.data.employees); // Role 3 (Hive)
+      employees.assignAll(response.data.employees); // Role 3 (Hive)
       employers.assignAll(response.data.employers); // Role 2 (B2B)
     } catch (e) {
       print('Dashboard Error: $e');

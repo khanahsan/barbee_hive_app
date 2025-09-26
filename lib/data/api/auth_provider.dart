@@ -8,6 +8,8 @@ import 'package:barbee_hive_app/data/model/job_list_response.dart';
 import 'package:barbee_hive_app/data/model/job_posting_model.dart';
 import 'package:barbee_hive_app/data/model/login_response.dart';
 import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../model/employee_register_response.dart';
@@ -15,6 +17,44 @@ import '../model/user_profile_response.dart';
 import 'api_service.dart';
 
 class AuthProvider {
+  static Future<void> syncUserWithFirebase({
+    required int apiUserId,
+    required String email,
+    required String password,
+    required String name,
+    required String role, // "employee" | "employer"
+    String? profileImage,
+  }) async {
+    print('email: $email, password: $password, name: $name, role: $role');
+    try {
+      // Try sign in
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      print("✅ User already exists in Firebase");
+    } catch (e) {
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      final uid = userCredential.user!.uid;
+      print("✅ User created in Firebase with UID: $uid");
+
+      // Save Firestore doc
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'uid': uid,
+        'apiUserId': apiUserId,
+        'name': name,
+        'email': email,
+        'role': role,
+        'profileImage': profileImage ?? '',
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      print("✅ User registered in Firebase & Firestore");
+    }
+  }
+
   static Future<LoginResponse> login(String email, String password) async {
     final data = await ApiService.post(ApiEndPoints.login, {
       'email': email,
@@ -341,7 +381,11 @@ class AuthProvider {
     };
 
     print('Apply Job Payload: $fields');
-    final data = await ApiService.post(ApiEndPoints.applyJob, fields, auth: true);
+    final data = await ApiService.post(
+      ApiEndPoints.applyJob,
+      fields,
+      auth: true,
+    );
 
     return JobApplicationResponse.fromJson(data);
   }

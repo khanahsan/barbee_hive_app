@@ -51,6 +51,7 @@ dependencies:
   connectivity_plus: ^6.1.4
   fluttertoast: ^8.2.12
   image_picker: ^1.1.2
+  firebase_auth: ^5.7.0
 
 dev_dependencies:
   flutter_test:

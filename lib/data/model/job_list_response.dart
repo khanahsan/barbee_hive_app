@@ -15,9 +15,11 @@ class JobListResponse {
     return JobListResponse(
       status: json['status'] ?? false,
       message: json['message'] ?? '',
-      data: (json['data'] as List<dynamic>?)
-          ?.map((item) => JobData.fromJson(item))
-          .toList() ?? [],
+      data:
+          (json['data'] as List<dynamic>?)
+              ?.map((item) => JobData.fromJson(item))
+              .toList() ??
+          [],
       meta: Meta.fromJson(json['meta']),
     );
   }
@@ -41,7 +43,8 @@ class JobData {
   final Employer employer;
   final String createdAt;
   final String updatedAt;
-  final List<Skill>? skills;
+  final Skill? skills;
+  //final List<Skill>? skills;
 
   JobData({
     required this.id,
@@ -83,9 +86,12 @@ class JobData {
       employer: Employer.fromJson(json['employer']),
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
-      skills: (json['skills'] as List<dynamic>?)
-          ?.map((item) => Skill.fromJson(item))
-          .toList(),
+      skills:
+          json['skills'] != null ? Skill.fromJson(json['skills']) : null, // ✅
+      // skills:
+      //     (json['skills'] as List<dynamic>?)
+      //         ?.map((item) => Skill.fromJson(item))
+      //         .toList(),
     );
   }
 }
@@ -94,16 +100,10 @@ class SalaryRange {
   final String min;
   final String max;
 
-  SalaryRange({
-    required this.min,
-    required this.max,
-  });
+  SalaryRange({required this.min, required this.max});
 
   factory SalaryRange.fromJson(Map<String, dynamic> json) {
-    return SalaryRange(
-      min: json['min'] ?? '0.00',
-      max: json['max'] ?? '0.00',
-    );
+    return SalaryRange(min: json['min'] ?? '0.00', max: json['max'] ?? '0.00');
   }
 }
 
@@ -144,11 +144,7 @@ class Skill {
   final String name;
   final int isRequired;
 
-  Skill({
-    required this.id,
-    required this.name,
-    required this.isRequired,
-  });
+  Skill({required this.id, required this.name, required this.isRequired});
 
   factory Skill.fromJson(Map<String, dynamic> json) {
     return Skill(

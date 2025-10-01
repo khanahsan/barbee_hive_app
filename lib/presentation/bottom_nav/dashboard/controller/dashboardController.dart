@@ -53,8 +53,10 @@
 
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
+import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../../../infrastructure/helpers/location_service.dart';
 
@@ -80,11 +82,28 @@ class DashboardController extends GetxController {
   RxDouble currentLatitude = 0.0.obs;
   RxDouble currentLongitude = 0.0.obs;
 
+  var isBannerLoaded = false.obs;
+  BannerAd? bannerAd;
+
   @override
   void onInit() {
     super.onInit();
     // fetchDashboardUsers();
     getUserLocationAndFetchDashboard();
+    loadBannerAd();
+    AdsHelper().loadInterstitialAd();
+  }
+
+  void loadBannerAd() {
+    AdsHelper().loadBannerAd(
+      onAdLoaded: (ad) {
+        bannerAd = ad;
+        isBannerLoaded.value = true;
+      },
+      onAdFailed: () {
+        isBannerLoaded.value = false;
+      },
+    );
   }
 
   void getUserLocationAndFetchDashboard() async {
@@ -147,5 +166,15 @@ class DashboardController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void trackProfileView() {
+    AdsHelper().trackProfileView();
+  }
+
+  @override
+  void onClose() {
+    bannerAd?.dispose();
+    super.onClose();
   }
 }

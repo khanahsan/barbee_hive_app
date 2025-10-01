@@ -1,4 +1,3 @@
-
 import 'package:barbee_hive_app/data/model/job_list_response.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
@@ -90,15 +89,18 @@ class EmployerCard extends StatelessWidget {
           // Info Tile
           _buildRow(context: context),
           SizedBox(height: 20.h),
+
+          //Buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomButton(
                 onTap: () {
                   LogUtil.logError('job.id ${job.id}');
-                  Get.toNamed(Routes.applicationsScreen, arguments: {
-                    'jobId': job.id
-                  });
+                  Get.toNamed(
+                    Routes.applicationsScreen,
+                    arguments: {'jobId': job.id},
+                  );
                 },
                 buttonText: "View Applications",
                 buttonWidth: 185.w,
@@ -110,7 +112,6 @@ class EmployerCard extends StatelessWidget {
               CustomButton(
                 onTap: () {
                   //Get.toNamed(Routes.editJobScreen, arguments: job);
-
                 },
                 buttonText: "Edit Profile",
                 buttonWidth: 185.w,
@@ -126,11 +127,9 @@ class EmployerCard extends StatelessWidget {
     );
   }
 
-  Widget _buildRow({
-    required BuildContext context,
-  }) {
+  Widget _buildRow({required BuildContext context}) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -146,13 +145,21 @@ class EmployerCard extends StatelessWidget {
             ),
             SizedBox(height: 15.h),
             Text(
-              "Skills",
+              "Year of Experience",
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.white,
               ),
             ),
+            // Text(
+            //   "Skills",
+            //   style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            //     fontSize: 14.sp,
+            //     fontWeight: FontWeight.w600,
+            //     color: AppColors.white,
+            //   ),
+            // ),
             SizedBox(height: 15.h),
             Text(
               "Salary",
@@ -198,14 +205,14 @@ class EmployerCard extends StatelessWidget {
               ),
               SizedBox(height: 15.h),
               Text(
-                job.skills?.map((skill) => skill.name).join(', ') ?? 'N/A',
+                job.experienceLevel,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.grey,
                 ),
-                overflow: TextOverflow.ellipsis,
               ),
+
               SizedBox(height: 15.h),
               Text(
                 '\$${job.salaryRange.min}-\$${job.salaryRange.max}',
@@ -217,12 +224,14 @@ class EmployerCard extends StatelessWidget {
               ),
               SizedBox(height: 15.h),
               Text(
-                job.experienceLevel,
+                job.skills?.name ?? 'N/A',
+                //job.skills?.map((skill) => skill.name).join(', ') ?? 'N/A',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.grey,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
               SizedBox(height: 15.h),
               Text(

@@ -1,6 +1,10 @@
+import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../../data/model/dashboard_response.dart';
@@ -10,10 +14,23 @@ import '../../../../infrastructure/widgets/custom_appbar.dart';
 import '../../../../infrastructure/widgets/custom_pdf_view.dart';
 import '../b2b/b2b_fading_carousel.dart';
 
-class HiveProfileScreen extends StatelessWidget {
-  const HiveProfileScreen({super.key, required this.currentUser});
+class HiveProfileScreen extends StatefulWidget {
+  HiveProfileScreen({super.key, required this.currentUser});
 
   final User currentUser;
+
+  @override
+  State<HiveProfileScreen> createState() => _HiveProfileScreenState();
+}
+
+class _HiveProfileScreenState extends State<HiveProfileScreen> {
+  final ChatController chatController = Get.find();
+
+  @override
+  void initState() {
+    super.initState();
+    AdsHelper().trackProfileView(); // ✅ open hote hi count hoga
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +49,7 @@ class HiveProfileScreen extends StatelessWidget {
             top: 100.h,
             left: 0,
             right: 0,
-            child: Image.network(currentUser.profileImage),
+            child: Image.network(widget.currentUser.profileImage),
             // child: CustomFadingCarousel
             //   showIndicators: false,
             //   imagePaths: List.filled(3, AppAssets.profileImage),
@@ -75,7 +92,7 @@ class HiveProfileScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          currentUser.employee?.name ?? "",
+                          widget.currentUser.employee?.name ?? "",
                           style: Theme.of(
                             context,
                           ).textTheme.titleMedium?.copyWith(
@@ -102,29 +119,41 @@ class HiveProfileScreen extends StatelessWidget {
                             _infoRow(
                               context,
                               "Experience",
-                              currentUser.employee?.skill?.name ?? "",
+                              widget.currentUser.employee?.skill?.name ?? "",
                             ),
                             _infoRow(context, "Age", "28 Yr"),
                             _infoRow(
                               context,
                               "Gender",
-                              currentUser.employee?.gender ?? "",
+                              widget.currentUser.employee?.gender ?? "",
                             ),
                             _infoRow(
                               context,
                               "Eye Color",
-                              currentUser.employee?.eyeColor?.name ?? "",
+                              widget.currentUser.employee?.eyeColor?.name ?? "",
                             ),
                             _infoRow(
                               context,
                               "Hair Color",
-                              currentUser.employee?.hairColor?.name ?? "",
+                              widget.currentUser.employee?.hairColor?.name ??
+                                  "",
                             ),
                             _resumeRow(context),
                           ],
                         ),
                         SizedBox(height: 20.h),
                         CustomButton(
+                          onTap: () {
+                            Get.to(
+                              () => ChatScreen(
+                                chatId:
+                                    "${chatController.currentUserId.value}-iQgDp3TNTthrcHMCtLGkyjq3kOn2", // Potential chatId
+                                otherName:
+                                    widget.currentUser.employee?.name ?? "",
+                                otherImage: widget.currentUser.profileImage,
+                              ),
+                            );
+                          },
                           buttonText: "Send Message",
                           buttonWidth: double.infinity,
                           buttonColor: AppColors.primary,
@@ -156,7 +185,7 @@ class HiveProfileScreen extends StatelessWidget {
   }
 
   Widget _resumeRow(BuildContext context) {
-    final resumePath = currentUser.employee?.resumePath;
+    final resumePath = widget.currentUser.employee?.resumePath;
     return Row(
       mainAxisSize: MainAxisSize.min,
       spacing: 1.5.w,

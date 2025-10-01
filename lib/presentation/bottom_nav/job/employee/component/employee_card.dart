@@ -18,7 +18,8 @@ class EmployeeCard extends StatefulWidget {
   State<EmployeeCard> createState() => _EmployeeCardState();
 }
 
-class _EmployeeCardState extends State<EmployeeCard> with SingleTickerProviderStateMixin {
+class _EmployeeCardState extends State<EmployeeCard>
+    with SingleTickerProviderStateMixin {
   bool isExpanded = false;
 
   void toggleExpanded() {
@@ -58,8 +59,13 @@ class _EmployeeCardState extends State<EmployeeCard> with SingleTickerProviderSt
                     height: 80.h,
                   ),*/
                   HexagonAvatar(
-                    imagePath: widget.job.employer.profileImage ?? '', // Pass empty string if null
-                    name: widget.job.recruiterName, // Pass recruiterName for fallback initial
+                    imagePath:
+                        widget.job.employer.profileImage ??
+                        '', // Pass empty string if null
+                    name:
+                        widget
+                            .job
+                            .recruiterName, // Pass recruiterName for fallback initial
                     width: 70.w,
                     height: 80.h,
                   ),
@@ -87,9 +93,7 @@ class _EmployeeCardState extends State<EmployeeCard> with SingleTickerProviderSt
                   ),
                 ],
               ),
-              Divider(
-                color: AppColors.textFieldBackground,
-              ),
+              Divider(color: AppColors.textFieldBackground),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -103,7 +107,8 @@ class _EmployeeCardState extends State<EmployeeCard> with SingleTickerProviderSt
                   ),*/
                   Expanded(
                     child: Text(
-                      widget.job.skills?.map((skill) => skill.name).join(', ') ?? 'N/A',
+                      'JOB SKIllS Committed',
+                      //   widget.job.skills?.map((skill) => skill.name).join(', ') ?? 'N/A',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w600,
@@ -135,7 +140,8 @@ class _EmployeeCardState extends State<EmployeeCard> with SingleTickerProviderSt
               ),
               infoRow(
                 iconPath: AppAssets.containerIcon,
-                rowTitle: "\$${widget.job.salaryRange.min}-${widget.job.salaryRange.max} per month",
+                rowTitle:
+                    "\$${widget.job.salaryRange.min}-${widget.job.salaryRange.max} per month",
               ),
 
               infoRow(
@@ -144,7 +150,10 @@ class _EmployeeCardState extends State<EmployeeCard> with SingleTickerProviderSt
               ),
 
               // infoRow(iconPath: AppAssets.bagIcon, rowTitle: "5-6 years"),
-              infoRow(iconPath: AppAssets.bagIcon, rowTitle: widget.job.experienceLevel),
+              infoRow(
+                iconPath: AppAssets.bagIcon,
+                rowTitle: widget.job.experienceLevel,
+              ),
 
               if (isExpanded)
                 Column(

@@ -1,10 +1,10 @@
 import 'dart:async';
-
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-class FadingImageCarousel extends StatefulWidget {
+/* class FadingImageCarousel extends StatefulWidget {
   const FadingImageCarousel({super.key, required this.imagePaths});
 
   final List<String> imagePaths;
@@ -86,6 +86,93 @@ class _FadingImageCarouselState extends State<FadingImageCarousel> {
           ),
         ),
         SizedBox(height: 8.h),
+        _buildDotsIndicator(),
+      ],
+    );
+  }
+}
+  */
+class FadingImageCarousel extends StatefulWidget {
+  const FadingImageCarousel({
+    super.key,
+    required this.imagePaths,
+    this.bannerAd,
+    this.isAdLoaded = false,
+  });
+
+  final List<String> imagePaths;
+  final BannerAd? bannerAd;
+  final bool isAdLoaded;
+
+  @override
+  State<FadingImageCarousel> createState() => _FadingImageCarouselState();
+}
+
+class _FadingImageCarouselState extends State<FadingImageCarousel> {
+  int _currentIndex = 0;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startAutoPlay();
+  }
+
+  void _startAutoPlay() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      setState(() {
+        _currentIndex = (_currentIndex + 1) % widget.imagePaths.length;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  Widget _buildDotsIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(widget.imagePaths.length, (index) {
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.symmetric(horizontal: 2),
+          height: 8,
+          width: 8,
+          decoration: BoxDecoration(
+            color: _currentIndex == index ? Colors.white : Colors.grey,
+            shape: BoxShape.circle,
+          ),
+        );
+      }),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // ✅ Carousel image
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 600),
+          switchInCurve: Curves.easeIn,
+          switchOutCurve: Curves.easeOut,
+          child: ClipRRect(
+            key: ValueKey<int>(_currentIndex),
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              widget.imagePaths[_currentIndex],
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: 200,
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
         _buildDotsIndicator(),
       ],
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../infrastructure/constants/app_colors.dart';
@@ -57,7 +58,26 @@ class DashboardScreen extends StatelessWidget {
               spacing: 25.h,
               children: [
                 b2bSection(context),
-                FadingImageCarousel(imagePaths: imagePaths),
+
+                // FadingImageCarousel(
+                //   imagePaths: imagePaths,
+                //   bannerAd: controller.bannerAd,
+                //   isAdLoaded: controller.isAdLoaded.value,
+                // ),
+
+                //Ads
+                if (controller.isBannerLoaded.value &&
+                    controller.bannerAd != null)
+                  ClipRRect(
+                    borderRadius: BorderRadiusGeometry.circular(8.r),
+                    child: SizedBox(
+                      height: controller.bannerAd!.size.height.toDouble(),
+                      width: controller.bannerAd!.size.width.toDouble(),
+                      child: AdWidget(ad: controller.bannerAd!),
+                    ),
+                  ),
+
+                //Employee Hive
                 hiveSection(context),
               ],
             ),

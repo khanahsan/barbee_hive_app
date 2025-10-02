@@ -97,8 +97,6 @@ class DashboardScreen extends StatelessWidget {
       final List<int> pattern = _getPattern(users.length, itemHeight);
       final maxHeight = MediaQuery.of(context).size.height * 0.6;
 
-      //print(" hOfW.value :${ hOfW.value} == ${320 / 80}");
-
       if (users.isEmpty) {
         return Container(
           padding: EdgeInsets.all(15.w),
@@ -290,21 +288,25 @@ class DashboardScreen extends StatelessWidget {
                                 onTap:
                                     () => Get.toNamed(
                                       Routes.b2bScreen,
-                                      arguments: {'currentUser': entry.value},
+                                      arguments: {'currentUser': user},
                                     ),
 
                                 child: HexagonAvatar(
-                                  imagePath: AppAssets.profileImage,
+                                  imagePath:
+                                      user.profileImage.isNotEmpty == true
+                                          ? user.profileImage
+                                          : '',
                                   width: 90.w,
                                   height: 100.h,
                                   borderColor:
                                       index % 2 == 0
                                           ? AppColors.white
                                           : AppColors.primary,
-                                  name:
-                                      name.isNotEmpty
-                                          ? name
-                                          : 'Unknown Employer',
+                                  name: user.employer!.businessName,
+                                  // name:
+                                  //     name.isNotEmpty
+                                  //         ? name
+                                  //         : 'Unknown Employer',
                                   totalMl: "aa",
                                 ),
                               );

@@ -111,9 +111,9 @@ class EmployerCard extends StatelessWidget {
               ),
               CustomButton(
                 onTap: () {
-                  //Get.toNamed(Routes.editJobScreen, arguments: job);
+                  Get.toNamed(Routes.jobUpdateScreen, arguments: job);
                 },
-                buttonText: "Edit Profile",
+                buttonText: "Edit Job",
                 buttonWidth: 185.w,
                 buttonColor: AppColors.color101010,
                 borderColor: AppColors.primary,

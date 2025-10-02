@@ -18,7 +18,6 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
 
   @override
   Widget build(BuildContext context) {
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchApplications(jobId);
     });
@@ -119,35 +118,37 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                       ),
                     ),
 
-                    Obx(()=>
-                        _buildDropdownField(
-                          context,
-                          'Position',
-                          controller.selectedSkill,
-                          controller.updateSkill,
-                          items: controller.skills
-                              .asMap()
-                              .entries
-                              .where((entry) => !controller.skills
-                              .sublist(0, entry.key)
-                              .map((e) => e.name)
-                              .contains(entry.value.name))
-                              .map((entry) => DropdownMenuItem(
-                            value: entry.value.name,
-                            child: Text(
-                              entry.value.name,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ))
-                              .toList(),
-                        )
+                    Obx(
+                      () => _buildDropdownField(
+                        context,
+                        'Position',
+                        controller.selectedSkill,
+                        controller.updateSkill,
+                        items:
+                            controller.skills
+                                .asMap()
+                                .entries
+                                .where(
+                                  (entry) =>
+                                      !controller.skills
+                                          .sublist(0, entry.key)
+                                          .map((e) => e.name)
+                                          .contains(entry.value.name),
+                                )
+                                .map(
+                                  (entry) => DropdownMenuItem(
+                                    value: entry.value.name,
+                                    child: Text(
+                                      entry.value.name,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                      ),
                     ),
 
-                    _buildTextField(
-                      context,
-                      'Age',
-                      controller.ageController,
-                    ),
+                    _buildTextField(context, 'Age', controller.ageController),
 
                     _buildDropdownField(
                       context,
@@ -157,11 +158,17 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                       items: const [
                         DropdownMenuItem(
                           value: 'male',
-                          child: Text('Male', style: TextStyle(color: Colors.white)),
+                          child: Text(
+                            'Male',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: 'female',
-                          child: Text('Female', style: TextStyle(color: Colors.white)),
+                          child: Text(
+                            'Female',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ],
                     ),
@@ -178,8 +185,11 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                       buttonHeight: 55.h,
                       borderRadius: 10.r,
                       onTap: () {
-                        controller.filterApplicationsByText(controller.searchController.text); // Reapply filters
-                        Navigator.of(context).pop();                      },
+                        controller.filterApplicationsByText(
+                          controller.searchController.text,
+                        ); // Reapply filters
+                        Navigator.of(context).pop();
+                      },
                     ),
                   ],
                 ),
@@ -202,7 +212,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
         title: "Applications",
       ),
       body: Obx(
-            () => Column(
+        () => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomTextField(
@@ -226,7 +236,9 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
             ),
             SizedBox(height: 20.h),
             if (controller.isLoading.value)
-              const Center(child: CircularProgressIndicator(color: AppColors.primary))
+              const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              )
             else if (controller.errorMessage.isNotEmpty)
               Column(
                 children: [
@@ -247,28 +259,29 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                 ],
               )
             else if (controller.filteredApplications.isEmpty)
-                Text(
-                  'No applications found',
-                  style: TextStyle(color: AppColors.white, fontSize: 16.sp),
-                )
-              else
-                Flexible(
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) => SizedBox(height: 15.h),
-                    itemCount: controller.filteredApplications.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      print('Building card for index: $index'); // Debug
-                      return _applicationsCard(
-                        context: context,
-                        application: controller.filteredApplications[index],
-                      );
-                    },
-                  ),
+              Text(
+                'No applications found',
+                style: TextStyle(color: AppColors.white, fontSize: 16.sp),
+              )
+            else
+              Flexible(
+                child: ListView.separated(
+                  separatorBuilder: (context, index) => SizedBox(height: 15.h),
+                  itemCount: controller.filteredApplications.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    print('Building card for index: $index'); // Debug
+                    return _applicationsCard(
+                      context: context,
+                      application: controller.filteredApplications[index],
+                    );
+                  },
                 ),
+              ),
           ],
         ).paddingSymmetric(horizontal: 15.w, vertical: 15.h),
-      ),    );
+      ),
+    );
   }
 
   Widget _applicationsCard({
@@ -291,7 +304,9 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
             mainAxisSize: MainAxisSize.min,
             children: [
               HexagonAvatar(
-                imagePath: application.applicant.profileImage ?? AppAssets.profileImage,
+                imagePath:
+                    application.applicant.profileImage ??
+                    AppAssets.profileImage,
                 width: 80.w,
                 height: 90.h,
               ),
@@ -309,7 +324,10 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                      vertical: 2.h,
+                    ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4.r),
                       border: Border.all(color: AppColors.colorE0E0E0),
@@ -326,8 +344,10 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                         ),
                         SizedBox(width: 2.w),
                         Text(
-                          'Unknown', // Replace with applicant.location if available
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          application.applicant.country ?? 'Unknown',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleMedium?.copyWith(
                             fontSize: 10.sp,
                             color: AppColors.white,
                             fontWeight: FontWeight.w800,
@@ -447,10 +467,11 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     // Get.toNamed('/profile/${application.applicant.id}');
 
                   },*/
-                  onTap: () => Get.toNamed(
-                    Routes.applicantProfile,
-                    arguments: {'userId': application.applicant.id},
-                  ),
+                  onTap:
+                      () => Get.toNamed(
+                        Routes.applicantProfile,
+                        arguments: {'userId': application.applicant.id},
+                      ),
                 ),
               ),
               SizedBox(width: 8.w),
@@ -475,14 +496,14 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
   }
 
   Widget _buildDropdownField(
-      BuildContext context,
-      String hint,
-      RxString selectedValue,
-      Function(String?) onChanged, {
-        required List<DropdownMenuItem<String>> items,
-      }) {
+    BuildContext context,
+    String hint,
+    RxString selectedValue,
+    Function(String?) onChanged, {
+    required List<DropdownMenuItem<String>> items,
+  }) {
     return Obx(
-          () => DropdownButtonFormField<String>(
+      () => DropdownButtonFormField<String>(
         dropdownColor: AppColors.white,
         decoration: InputDecoration(
           filled: true,
@@ -512,19 +533,20 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
         ),
         iconEnabledColor: AppColors.colorA3A3A3,
         value: selectedValue.value.isEmpty ? null : selectedValue.value,
-        items: items.map((DropdownMenuItem<String> item) {
-          return DropdownMenuItem<String>(
-            value: item.value,
-            child: Text(
-              item.value!,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontSize: 15.sp,
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          );
-        }).toList(),
+        items:
+            items.map((DropdownMenuItem<String> item) {
+              return DropdownMenuItem<String>(
+                value: item.value,
+                child: Text(
+                  item.value!,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontSize: 15.sp,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              );
+            }).toList(),
         onChanged: onChanged,
         isExpanded: true,
         menuMaxHeight: 300.h,
@@ -533,49 +555,49 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
   }
 
   Widget _buildTextField(
-      BuildContext context,
-      String hint,
-      TextEditingController textController, {
-        String? icon,
-        bool readOnly = false,
-        void Function()? onTap,
-        int? maxLine,
-      }) {
+    BuildContext context,
+    String hint,
+    TextEditingController textController, {
+    String? icon,
+    bool readOnly = false,
+    void Function()? onTap,
+    int? maxLine,
+  }) {
     return GetBuilder<ApplicationsController>(
-      builder: (controller) => TextField(
-        maxLines: maxLine ?? 1,
-        controller: textController,
-        readOnly: readOnly,
-        onTap: onTap,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontSize: 15.sp,
-          color: AppColors.colorA3A3A3,
-          fontWeight: FontWeight.w500,
-        ),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontSize: 15.sp,
-            color: AppColors.colorA3A3A3,
-            fontWeight: FontWeight.w500,
+      builder:
+          (controller) => TextField(
+            maxLines: maxLine ?? 1,
+            controller: textController,
+            readOnly: readOnly,
+            onTap: onTap,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontSize: 15.sp,
+              color: AppColors.colorA3A3A3,
+              fontWeight: FontWeight.w500,
+            ),
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontSize: 15.sp,
+                color: AppColors.colorA3A3A3,
+                fontWeight: FontWeight.w500,
+              ),
+              filled: true,
+              fillColor: AppColors.white,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 10.w,
+                vertical: 8.h,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.r),
+                borderSide: BorderSide(color: AppColors.colorA3A3A3),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.r),
+                borderSide: BorderSide(color: AppColors.colorA3A3A3),
+              ),
+            ),
           ),
-          filled: true,
-          fillColor: AppColors.white,
-          contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(color: AppColors.colorA3A3A3),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(color: AppColors.colorA3A3A3),
-          ),
-        ),
-      ),
     );
   }
 }
-
-
-
-

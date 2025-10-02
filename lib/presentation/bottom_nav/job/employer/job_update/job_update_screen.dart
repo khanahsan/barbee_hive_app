@@ -1,18 +1,15 @@
+import 'package:barbee_hive_app/data/model/job_list_response.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/controller/job_update_controller.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import 'controller/job_posting_controller.dart';
-
-class JobPostingScreen extends StatelessWidget {
-  JobPostingScreen({super.key});
-
-  var controller = Get.put(JobPostingController());
+class JobUpdateScreen extends GetView<JobUpdateController> {
+  const JobUpdateScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +28,10 @@ class JobPostingScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Image.asset(
-                AppAssets.logo,
-                width: 200.w,
-                //height: 120.h,
-              ),
+              Image.asset(AppAssets.logo, width: 200.w),
               SizedBox(height: 10.h),
 
+              // Main Card Container
               Material(
                 color: Colors.transparent,
                 child: Container(
@@ -54,7 +48,7 @@ class JobPostingScreen extends StatelessWidget {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: AppColors.black,
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                         topRight: Radius.circular(18.0),
                         topLeft: Radius.circular(18.0),
                       ),
@@ -62,8 +56,10 @@ class JobPostingScreen extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       spacing: 15.h,
+
                       children: [
                         SizedBox(height: 20.h),
+
                         _buildTextField(
                           context,
                           'Job Role',
@@ -73,13 +69,13 @@ class JobPostingScreen extends StatelessWidget {
                         _buildTextField(
                           context,
                           'Experience Level',
-                          icon: AppAssets.emailLogo,
+                          icon: AppAssets.experienceLogo,
                           controller.experienceLevelController,
                         ),
                         _buildTextField(
                           context,
                           'Salary',
-                          icon: AppAssets.passwordLogo,
+                          icon: AppAssets.salaryLogo,
                           controller.salaryController,
                         ),
                         _buildTextField(
@@ -103,7 +99,7 @@ class JobPostingScreen extends StatelessWidget {
                               child: _buildTextField(
                                 context,
                                 'City',
-                                icon: AppAssets.cityIcon,
+                                icon: AppAssets.locationLogo,
                                 controller.cityController,
                               ),
                             ),
@@ -112,9 +108,11 @@ class JobPostingScreen extends StatelessWidget {
                         _buildTextField(
                           context,
                           'Recruiter',
-                          icon: AppAssets.countryIcon,
+                          icon: AppAssets.recruiterLogo,
                           controller.recruiterController,
                         ),
+
+                        // Job Type Dropdown
                         _buildDropdownField(
                           context,
                           'Job Type',
@@ -138,11 +136,13 @@ class JobPostingScreen extends StatelessWidget {
                             ),
                           ],
                         ),
+
+                        // Position Seeking Dropdown
                         Obx(
                           () => _buildDropdownField(
                             context,
                             'Position Seeking',
-                            AppAssets.experienceLogo,
+                            AppAssets.jobtyprLogo,
                             controller.selectedSkill,
                             controller.updateSkill,
                             items:
@@ -161,50 +161,56 @@ class JobPostingScreen extends StatelessWidget {
                                         value: entry.value.name,
                                         child: Text(
                                           entry.value.name,
-                                          style: TextStyle(color: Colors.white),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
                                     )
                                     .toList(),
                           ),
                         ),
+
                         _buildTextField(
                           context,
                           'Job Description',
                           controller.jobDesController,
                           maxLine: 3,
                         ),
-                        Obx(
-                          () => DottedBorder(
-                            options: RoundedRectDottedBorderOptions(
-                              dashPattern: [6, 3],
-                              color: AppColors.textFieldTextColor,
-                              strokeWidth: 2,
-                              radius: const Radius.circular(12),
-                            ),
-                            child: GestureDetector(
-                              onTap: controller.pickImage,
-                              child: Container(
-                                width: double.infinity,
-                                height: 55.h,
-                                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  controller.selectedImage.value == null
-                                      ? 'Upload Image'
-                                      : 'Selected: ${controller.selectedImage.value!.path.split('/').last}',
-                                  style: TextStyle(
-                                    color: AppColors.textFieldTextColor,
-                                    fontSize: 14.sp,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
 
+                        // Image Picker
+                        // Obx(
+                        //   () => DottedBorder(
+                        //     options: const RoundedRectDottedBorderOptions(
+                        //       dashPattern: [6, 3],
+                        //       color: AppColors.textFieldTextColor,
+                        //       strokeWidth: 2,
+                        //       radius: Radius.circular(12),
+                        //     ),
+                        //     child: GestureDetector(
+                        //       onTap: controller.pickImage,
+                        //       child: Container(
+                        //         width: double.infinity,
+                        //         height: 55.h,
+                        //         padding: EdgeInsets.symmetric(horizontal: 10.w),
+                        //         alignment: Alignment.center,
+                        //         child: Text(
+                        //           controller.selectedImage.value == null
+                        //               ? 'Upload Image'
+                        //               : 'Selected: ${controller.selectedImage.value!.path.split('/').last}',
+                        //           style: TextStyle(
+                        //             color: AppColors.textFieldTextColor,
+                        //             fontSize: 14.sp,
+                        //           ),
+                        //           overflow: TextOverflow.ellipsis,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                         SizedBox(height: 15.h),
+
+                        // Submit Button
                         Obx(
                           () => CustomBtn(
                             btnTitle: 'Submit Now',
@@ -212,11 +218,8 @@ class JobPostingScreen extends StatelessWidget {
                             btnBackgroundColor: AppColors.primary,
                             btnTxtColor: Colors.white,
                             buttonWidth: double.infinity,
-                            onPressed: () => controller.postJob(context),
-                            isLoading:
-                                controller
-                                    .isLoading
-                                    .value, // Reactive loading state
+                            onPressed: () => controller.updateJob(context),
+                            isLoading: controller.isLoading.value,
                           ),
                         ),
                         SizedBox(height: 20.h),
@@ -232,47 +235,44 @@ class JobPostingScreen extends StatelessWidget {
     );
   }
 
+  /// --- Text Field Builder ---
   Widget _buildTextField(
     BuildContext context,
     String hint,
     TextEditingController textController, {
     String? icon,
-    bool readOnly = false, // Added
-    void Function()? onTap, // Added
+    bool readOnly = false,
+    void Function()? onTap,
     int? maxLine,
   }) {
-    return GetBuilder<JobPostingController>(
-      builder:
-          (controller) => TextField(
-            maxLines: maxLine ?? 1,
-            controller: textController,
-            readOnly: readOnly, // Added
-            onTap: onTap, // Added
-            style: const TextStyle(color: AppColors.textFieldTextColor),
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: const TextStyle(color: AppColors.textFieldTextColor),
-              prefixIcon:
-                  icon != null &&
-                          icon
-                              .isNotEmpty // Check if icon is valid
-                      ? Image.asset(
-                        icon,
-                        color: AppColors.textFieldTextColor,
-                        scale: 4.0.h,
-                      )
-                      : null,
-              filled: true,
-              fillColor: AppColors.textFieldBackground,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.r),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
+    return TextField(
+      maxLines: maxLine ?? 1,
+      controller: textController,
+      readOnly: readOnly,
+      onTap: onTap,
+      style: const TextStyle(color: AppColors.textFieldTextColor),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: const TextStyle(color: AppColors.textFieldTextColor),
+        prefixIcon:
+            icon != null && icon.isNotEmpty
+                ? Image.asset(
+                  icon,
+                  color: AppColors.textFieldTextColor,
+                  scale: 4.0.h,
+                )
+                : null,
+        filled: true,
+        fillColor: AppColors.textFieldBackground,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide.none,
+        ),
+      ),
     );
   }
 
+  /// --- Dropdown Builder ---
   Widget _buildDropdownField(
     BuildContext context,
     String hint,
@@ -290,12 +290,12 @@ class JobPostingScreen extends StatelessWidget {
       child: Row(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            padding: EdgeInsets.symmetric(horizontal: 14.w),
             child: Image.asset(
               iconPath,
               color: AppColors.textFieldTextColor,
-              width: 16.w,
-              height: 16.h,
+              width: 24.w,
+              height: 24.h,
             ),
           ),
           Expanded(

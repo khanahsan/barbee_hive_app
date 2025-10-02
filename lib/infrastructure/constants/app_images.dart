@@ -9,6 +9,7 @@ class AppAssets {
 
 
   static String menuIcon = '$iconPath/menu_icon.svg';
+  static String closeIcon = '$iconPath/close_icon.svg';
   static String bellIcon = '$iconPath/bell_icon.svg';
   static String filterIcon = '$iconPath/filter_icon.svg';
   static String beeIcon = '$iconPath/bee_icon.svg';

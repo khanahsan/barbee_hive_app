@@ -11,9 +11,9 @@ class ApiEndPoints {
   static const String registerEmployee = 'register';
   static const String userProfile = 'profiles';
   static const String jobStore = 'jobs/store';
+  static const String jobUpdate = 'jobs/update';
   static const String updateProfile = 'profiles/update';
   static const String jobs = 'jobs';
   static const String applyJob = 'jobs/applications/store';
   static const String jobApplications = 'jobs/applications/show';
 }
-

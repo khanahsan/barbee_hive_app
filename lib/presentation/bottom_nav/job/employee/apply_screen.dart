@@ -17,7 +17,11 @@ import '../../../../infrastructure/widgets/custom_dialog.dart';
 class ApplyScreen extends GetView<ApplyScreenController> {
   final int? jobId;
   final String? profileImage;
-  const ApplyScreen({required this.jobId, required this.profileImage, super.key});
+  const ApplyScreen({
+    required this.jobId,
+    required this.profileImage,
+    super.key,
+  });
 
   void applyDialog(BuildContext context) {
     showDialog(
@@ -45,8 +49,10 @@ class ApplyScreen extends GetView<ApplyScreenController> {
             left: 0.w,
             right: 0.w,
             top: 25.h,
-           // child: Image.asset(AppAssets.sampleCoverImage, fit: BoxFit.cover),
-            child: Image.network(profileImage!, fit: BoxFit.cover),
+            child: Image.network(
+              profileImage ?? AppAssets.nullProfile,
+              fit: BoxFit.cover,
+            ),
           ),
 
           Positioned(
@@ -178,42 +184,48 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                       items: const [
                         DropdownMenuItem(
                           value: 'part-time',
-                          child: Text('Part Time', style: TextStyle(color: Colors.white)),
+                          child: Text(
+                            'Part Time',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                         DropdownMenuItem(
                           value: 'full-time',
-                          child: Text('Full Time', style: TextStyle(color: Colors.white)),
+                          child: Text(
+                            'Full Time',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ],
                     ),
 
-                   /* CustomButton(
-                      buttonText: 'Submit Now',
-                      buttonWidth: double.infinity,
-                      textColor: Colors.white,
-                      buttonTextSize: 18.sp,
-                      buttonColor: AppColors.primary,
-                      buttonHeight: 65.h,
-                    ),*/
-
                     SizedBox(height: 18.h),
                     Obx(
-                          () => CustomButton(
-                        buttonText: controller.isLoading.value ? 'Submitting...' : 'Submit Now',
+                      () => CustomButton(
+                        buttonText:
+                            controller.isLoading.value
+                                ? 'Submitting...'
+                                : 'Submit Now',
                         buttonWidth: double.infinity,
                         textColor: Colors.white,
                         buttonTextSize: 18.sp,
                         buttonColor: AppColors.primary,
                         buttonHeight: 65.h,
-                        onTap: controller.isLoading.value
-                            ? null
-                            : () {
-                          if (jobId != null) {
-                            controller.applyForJob(jobId!);
-                          } else {
-                            Get.snackbar('Error', 'Job ID is missing', backgroundColor: Colors.red, colorText: Colors.white);
-                          }
-                        },
+                        onTap:
+                            controller.isLoading.value
+                                ? null
+                                : () {
+                                  if (jobId != null) {
+                                    controller.applyForJob(jobId!);
+                                  } else {
+                                    Get.snackbar(
+                                      'Error',
+                                      'Job ID is missing',
+                                      backgroundColor: Colors.red,
+                                      colorText: Colors.white,
+                                    );
+                                  }
+                                },
                       ),
                     ),
 
@@ -229,13 +241,13 @@ class ApplyScreen extends GetView<ApplyScreenController> {
   }
 
   Widget _buildDropdownField(
-      BuildContext context,
-      String hint,
-      String iconPath,
-      RxString selectedValue,
-      Function(String?) onChanged, {
-        required List<DropdownMenuItem<String>> items,
-      }) {
+    BuildContext context,
+    String hint,
+    String iconPath,
+    RxString selectedValue,
+    Function(String?) onChanged, {
+    required List<DropdownMenuItem<String>> items,
+  }) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 4.h),
       decoration: BoxDecoration(
@@ -255,7 +267,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
           ),
           Expanded(
             child: Obx(
-                  () => DropdownButtonHideUnderline(
+              () => DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   isExpanded: true,
                   dropdownColor: Colors.grey[900],
@@ -269,7 +281,8 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                   iconEnabledColor: Colors.grey,
                   items: items,
                   onChanged: onChanged,
-                  value: selectedValue.value.isEmpty ? null : selectedValue.value,
+                  value:
+                      selectedValue.value.isEmpty ? null : selectedValue.value,
                   menuMaxHeight: 300.h,
                 ),
               ),

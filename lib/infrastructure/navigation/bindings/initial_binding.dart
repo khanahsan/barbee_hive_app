@@ -2,6 +2,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_contr
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/controller/apply_screen_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applicant_profile/controller/applicant_profile_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/controller/application_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/controller/job_update_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/controllers/sign_up_employer_controller.dart';
@@ -28,5 +29,6 @@ class InitialBindings implements Bindings {
     Get.lazyPut<ApplicationsController>(() => ApplicationsController());
     Get.lazyPut<ApplicantProfileController>(() => ApplicantProfileController());
     Get.lazyPut<ChatController>(() => ChatController());
+    Get.lazyPut<JobUpdateController>(() => JobUpdateController(), fenix: true);
   }
 }

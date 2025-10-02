@@ -32,13 +32,14 @@ class B2BScreen extends StatelessWidget {
             top: 100.h,
             left: 0,
             right: 0,
-            child: CustomFadingCarousel(
-              imagePaths: [
-                AppAssets.profileImage,
-                AppAssets.profileImage,
-                AppAssets.profileImage,
-              ],
-            ),
+            child: Image.network(currentUser.profileImage),
+            // child: CustomFadingCarousel(
+            //   imagePaths: [
+            //     AppAssets.profileImage,
+            //     AppAssets.profileImage,
+            //     AppAssets.profileImage,
+            //   ],
+            // ),
           ),
 
           Positioned(
@@ -73,7 +74,7 @@ class B2BScreen extends StatelessWidget {
                       //crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          "${currentUser.employee?.name}",
+                          "${currentUser.employer?.businessName ?? ""}",
                           style: Theme.of(
                             context,
                           ).textTheme.titleMedium?.copyWith(

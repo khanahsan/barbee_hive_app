@@ -97,18 +97,10 @@ class _EmployeeCardState extends State<EmployeeCard>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  /*Text(
-              widget.job.skills?.map((skill) => skill.name).join(', ') ?? 'N/A',
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.white,
-                    ),
-                  ),*/
                   Expanded(
                     child: Text(
-                      'JOB SKIllS Committed',
                       //   widget.job.skills?.map((skill) => skill.name).join(', ') ?? 'N/A',
+                      widget.job.skills?.name ?? 'N/A',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w600,
@@ -149,7 +141,6 @@ class _EmployeeCardState extends State<EmployeeCard>
                 rowTitle: widget.job.city,
               ),
 
-              // infoRow(iconPath: AppAssets.bagIcon, rowTitle: "5-6 years"),
               infoRow(
                 iconPath: AppAssets.bagIcon,
                 rowTitle: widget.job.experienceLevel,

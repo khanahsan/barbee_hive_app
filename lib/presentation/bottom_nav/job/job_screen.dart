@@ -43,35 +43,35 @@ class JobScreen extends GetView<JobController> {
                 fit: BoxFit.scaleDown,
               ),
             ),
-          if (!isEmployer)
-            Flexible(
-              child: Obx(
-                () =>
-                    controller.isLoadingEmployee.value
-                        ? Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.primary,
-                          ),
-                        )
-                        : controller.employeeJobs.isEmpty
-                        ? const Center(
-                          child: Text(
-                            'No jobs found',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
-                        )
-                        : ListView.separated(
-                          separatorBuilder:
-                              (context, index) => SizedBox(height: 18.h),
-                          itemCount: controller.employeeJobs.length,
-                          shrinkWrap: true,
-                          itemBuilder:
-                              (context, index) => EmployeeCard(
-                                job: controller.employeeJobs[index],
-                              ),
+          if (!isEmployer) 
+          Flexible(
+            child: Obx(
+              () =>
+                  controller.isLoadingEmployee.value
+                      ? Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
                         ),
-              ),
+                      )
+                      : controller.employeeJobs.isEmpty
+                      ? const Center(
+                        child: Text(
+                          'No jobs found',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      )
+                      : ListView.separated(
+                        separatorBuilder:
+                            (context, index) => SizedBox(height: 18.h),
+                        itemCount: controller.employeeJobs.length,
+                        shrinkWrap: true,
+                        itemBuilder:
+                            (context, index) => EmployeeCard(
+                              job: controller.employeeJobs[index],
+                            ),
+                      ),
             ),
+          ),
           if (isEmployer)
             Flexible(
               child: Obx(

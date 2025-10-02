@@ -1,3 +1,4 @@
+import 'package:barbee_hive_app/data/model/job_list_response.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_binding.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_drawer.dart';
 import 'package:barbee_hive_app/presentation/auth/views/sign_in_view.dart';
@@ -7,6 +8,8 @@ import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applicant_p
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/applications_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/create%20job%20_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_posting/job_posting_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/controller/job_update_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/job_update_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
 import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
@@ -92,10 +95,11 @@ class Nav {
     ),
     GetPage(
       name: Routes.APPLY_VIEW,
-      page: () => ApplyScreen(
-        jobId: Get.arguments['jobId'],
-        profileImage: Get.arguments['profileImage'],
-      ),
+      page:
+          () => ApplyScreen(
+            jobId: Get.arguments['jobId'],
+            profileImage: Get.arguments['profileImage'],
+          ),
       binding: InitialBindings(),
     ),
     GetPage(
@@ -129,33 +133,33 @@ class Nav {
     ),
     GetPage(
       name: Routes.applicationsScreen,
-      page: () => ApplicationsScreen(
-        jobId: Get.arguments["jobId"],
-      ),
+      page: () => ApplicationsScreen(jobId: Get.arguments["jobId"]),
       binding: InitialBindings(),
     ),
     GetPage(
       name: Routes.b2bScreen,
-      page: () => B2BScreen(
-        currentUser: Get.arguments["currentUser"],
-      ),
+      page: () => B2BScreen(currentUser: Get.arguments["currentUser"]),
       binding: InitialBindings(),
     ),
     GetPage(
       name: Routes.hiveProfileScreen,
-      page: () => HiveProfileScreen(
-        currentUser: Get.arguments["currentUser"],
-      ),
+      page: () => HiveProfileScreen(currentUser: Get.arguments["currentUser"]),
       binding: InitialBindings(),
     ),
     GetPage(
       name: Routes.jobPostingScreen,
-      page: () =>  JobPostingScreen(),
+      page: () => JobPostingScreen(),
       binding: InitialBindings(),
     ),
     GetPage(
+      name: Routes.jobUpdateScreen,
+     page: () => JobUpdateScreen(),
+      binding: InitialBindings(),
+    ),
+
+    GetPage(
       name: Routes.applicantProfile,
-      page: () =>  ApplicantProfileScreen(),
+      page: () => ApplicantProfileScreen(),
       binding: InitialBindings(),
     ),
   ];

@@ -43,10 +43,15 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 
   // Load user data from SharedPreferences
   Future<void> _loadUserData() async {
-    currentUserID = await TokenStorage.getUserId();
-    role = await TokenStorage.getRole();
+    currentUserID = SharedPreferenceHelper.getInt(SharedPrefKeys.userId);
+    role = SharedPreferenceHelper.getInt(SharedPrefKeys.userRole);
 
-    userProfileImage = SharedPreferenceHelper.getString(SharedPrefKeys.userProfileImage);
+    // currentUserID = await TokenStorage.getUserId();
+    // role = await TokenStorage.getRole();
+
+    userProfileImage = SharedPreferenceHelper.getString(
+      SharedPrefKeys.userProfileImage,
+    );
 
     setState(() {}); // Update UI after loading data
   }
@@ -109,7 +114,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       case 1:
         return "Messages";
       case 2:
-        return "Find Jobs";
+        return role == 2 ? "Applications" : "Jobs";
+      // return "Find Jobs";
       case 3:
         return "Pricing Plans";
       default:
@@ -134,16 +140,17 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     setState(() {
       currentBottomIndex = index;
     });
-    if(currentBottomIndex == 0){
-       Get.find<DashboardController>().onInit();
-
-    }else if(currentBottomIndex == 2){
+    if (currentBottomIndex == 0) {
+      Get.find<DashboardController>().onInit();
+    } else if (currentBottomIndex == 2) {
       Get.find<JobController>().onInit();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    print("currentUserID, $currentUserID");
+    print("role, $role");
     return Scaffold(
       key: _scaffoldKey,
       appBar: customAppbar(

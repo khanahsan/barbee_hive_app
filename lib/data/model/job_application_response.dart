@@ -13,9 +13,11 @@ class JobApplicationResponse {
     return JobApplicationResponse(
       status: json['status'] ?? false,
       message: json['message'] ?? '',
-      data: (json['data'] as List<dynamic>?)
-          ?.map((item) => JobApplicationData.fromJson(item))
-          .toList() ?? [],
+      data:
+          (json['data'] as List<dynamic>?)
+              ?.map((item) => JobApplicationData.fromJson(item))
+              .toList() ??
+          [],
     );
   }
 }
@@ -66,11 +68,7 @@ class JobSummary {
   final String title;
   final String company;
 
-  JobSummary({
-    required this.id,
-    required this.title,
-    required this.company,
-  });
+  JobSummary({required this.id, required this.title, required this.company});
 
   factory JobSummary.fromJson(Map<String, dynamic> json) {
     return JobSummary(
@@ -86,6 +84,9 @@ class Applicant {
   final String? name;
   final String email;
   final String? phone;
+  final String? country;
+  final String? state;
+  final String? city;
   final String? profileImage;
   final String? position;
   final int age;
@@ -98,6 +99,9 @@ class Applicant {
     this.name,
     required this.email,
     this.phone,
+    this.country,
+    this.state,
+    this.city,
     this.profileImage,
     this.position,
     required this.age,
@@ -112,6 +116,9 @@ class Applicant {
       name: json['name'],
       email: json['email'] ?? '',
       phone: json['phone'],
+      country: json['country'],
+      state: json['state'],
+      city: json['city'],
       profileImage: json['profile_image'],
       position: json['position'],
       age: json['age'] ?? 0,
@@ -126,15 +133,9 @@ class Skill {
   final int id;
   final String name;
 
-  Skill({
-    required this.id,
-    required this.name,
-  });
+  Skill({required this.id, required this.name});
 
   factory Skill.fromJson(Map<String, dynamic> json) {
-    return Skill(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-    );
+    return Skill(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }

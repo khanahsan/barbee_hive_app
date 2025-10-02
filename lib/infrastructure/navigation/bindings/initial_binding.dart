@@ -1,3 +1,4 @@
+import 'package:barbee_hive_app/infrastructure/widgets/customDrawer/controller/custom_drawer_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/controller/apply_screen_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applicant_profile/controller/applicant_profile_controller.dart';
@@ -18,6 +19,7 @@ class InitialBindings implements Bindings {
     // TODO: implement dependencies
 
     Get.lazyPut<HomeController>(() => HomeController());
+    Get.lazyPut<CustomDrawerController>(() => CustomDrawerController());
     Get.lazyPut<AuthController>(() => AuthController());
     Get.lazyPut<SignUpEmployeeController>(() => SignUpEmployeeController());
     Get.lazyPut<SplashController>(() => SplashController());

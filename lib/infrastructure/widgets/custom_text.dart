@@ -17,7 +17,7 @@ class CustomText extends StatelessWidget {
     this.wordSpacing = 0.0,
     this.height = 0.0,
     this.fontStyle = FontStyle.normal,
-    this.fontFamily = 'Poppins',
+    this.fontFamily = 'Inter',
     this.maxLines = 1,
     this.textOverflow,
     super.key,

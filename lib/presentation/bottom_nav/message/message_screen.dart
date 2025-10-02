@@ -43,20 +43,10 @@ class MessageScreen extends StatelessWidget {
                     message: emp['email'] ?? "",
                     profileImage: emp['profileImage'],
                     onTap: () async {
-                      // final chatId = await chatController.startChatWithEmployee(
-                      //   emp,
-                      // );
-                      // Get.to(
-                      //   () => ChatScreen(
-                      //     chatId: chatId,
-                      //     otherName: emp['name'],
-                      //     otherImage: emp['profileImage'] ?? "",
-                      //   ),
-                      // );
-
                       Get.to(
                         () => ChatScreen(
-                          chatId: "${chatController.currentUserId.value}-${emp['uid']}", // Potential chatId
+                          chatId:
+                              "${chatController.currentUserId.value}-${emp['uid']}", // Potential chatId
                           otherName: emp['name'],
                           otherImage: emp['profileImage'] ?? "",
                           employeeData: emp,

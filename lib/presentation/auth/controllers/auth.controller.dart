@@ -67,7 +67,6 @@ class AuthController extends GetxController {
         SharedPrefKeys.userRole,
         response.user.role,
       );
-
       await SharedPreferenceHelper.saveInt(
         SharedPrefKeys.userId,
         response.user.id,

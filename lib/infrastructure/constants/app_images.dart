@@ -1,12 +1,9 @@
 class AppAssets {
-
   //~~~~~~~~~~~~~~~~Base Urls~~~~~~~~~~~~~~~~~~~~~~~~~//
   static String imagesPath = "assets/images";
   static String iconPath = "assets/icons";
 
-
   //~~~~~~~~~~~~~~~~Icons~~~~~~~~~~~~~~~~~~~~~~~~~//
-
 
   static String menuIcon = '$iconPath/menu_icon.svg';
   static String closeIcon = '$iconPath/close_icon.svg';
@@ -42,6 +39,8 @@ class AppAssets {
   static String experienceIcon = '$iconPath/experience_icon.svg';
   static String uploadImageIcon = '$iconPath/upload_image_icon.svg';
   static String cameraIcon = '$iconPath/camera_icon.svg';
+  static String experienceLevel = '$iconPath/experience_level.svg';
+  static String salary = '$iconPath/salary.svg';
 
   static String countryIcon = '$iconPath/country_icon.png';
   static String cityIcon = '$iconPath/city_icon.png';
@@ -55,12 +54,17 @@ class AppAssets {
   static String calenderLogo = '$imagesPath/calender_logo.png';
   static String cameraLogo = '$imagesPath/camera_logo.png';
   static String emailLogo = '$imagesPath/email_logo.png';
-  static String experienceLogo = '$imagesPath/experience_logo.png';
   static String genderLogo = '$imagesPath/gender_logo.png';
   static String heightLogo = '$imagesPath/height_logo.png';
   static String passwordLogo = '$imagesPath/password_logo.png';
   static String userLogo = '$imagesPath/user_logo.png';
   static String nameLogo = '$imagesPath/name_logo.png';
+  static String salaryLogo = '$imagesPath/salary_logo.png';
+  static String locationLogo = '$imagesPath/location_logo.png';
+  static String experienceLogo = '$imagesPath/experience_logo.png';
+  static String recruiterLogo = '$imagesPath/recruiter_logo.png';
+  static String jobtyprLogo = '$imagesPath/jobtype_logo.png';
+  static String uploadimgLogo = '$imagesPath/uploadimg_logo.png';
 
   static String profileImage = '$imagesPath/profile_image.jpg';
   static String sampleImage = '$imagesPath/sample_image.jpg';
@@ -68,7 +72,6 @@ class AppAssets {
   static String sampleImage2 = '$imagesPath/sample_image2.jpg';
   static String backgroundLogo = '$imagesPath/background_logo.png';
 
-
-
-
-  }
+  static String nullProfile =
+      'https://cdna.artstation.com/p/assets/images/images/084/124/296/large/matthew-blank-profile-photo-1.jpg?1737590038';
+}

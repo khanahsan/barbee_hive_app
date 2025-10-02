@@ -262,6 +262,52 @@ class AuthProvider {
     return JobPostResponse.fromJson(data);
   }
 
+  static Future<JobPostResponse> updateJob({
+    required int id,
+    required String title,
+    required String description,
+    required String experienceLevel,
+    required String minSalary,
+    required String maxSalary,
+    required String jobType,
+    required String country,
+    required String state,
+    required String city,
+    required String recruiterName,
+    required int noOfDays,
+    required int skillId,
+    File? image, // Added image parameter
+  }) async {
+    final fields = <String, String>{
+      'id': id.toString(),
+      'title': title,
+      'description': description,
+      'experience_level': experienceLevel,
+      'min_salary': minSalary,
+      'max_salary': maxSalary,
+      'job_type': jobType,
+      'country': country,
+      'state': state,
+      'city': city,
+      'recruiter_name': recruiterName,
+      'no_of_days': noOfDays.toString(),
+      'skill_id': skillId.toString(),
+    };
+
+    print('Job Post Payload: $fields, Image: ${image?.path}');
+    final files = <String, File>{};
+    if (image != null) files['resume'] = image;
+    final data = await ApiService.multipartPost(
+      ApiEndPoints.jobUpdate,
+      fields: fields,
+      files: files.isNotEmpty ? files : null,
+      // fileField: 'image', // Matches API field
+      auth: true, // Requires authentication
+    );
+
+    return JobPostResponse.fromJson(data);
+  }
+
   static Future<UserProfileResponse> updateUserProfile({
     required String name,
     required String email,

@@ -49,7 +49,9 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
             top: 100.h,
             left: 0,
             right: 0,
-            child: Image.network(widget.currentUser.profileImage),
+            child: Image.network(
+              widget.currentUser.profileImage ?? AppAssets.nullProfile,
+            ),
             // child: CustomFadingCarousel
             //   showIndicators: false,
             //   imagePaths: List.filled(3, AppAssets.profileImage),
@@ -147,10 +149,16 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
                             Get.to(
                               () => ChatScreen(
                                 chatId:
-                                    "${chatController.currentUserId.value}-iQgDp3TNTthrcHMCtLGkyjq3kOn2", // Potential chatId
-                                otherName:
-                                    widget.currentUser.employee?.name ?? "",
-                                otherImage: widget.currentUser.profileImage,
+                                    "${chatController.currentUserId.value}-${widget.currentUser.uid}", // Potential chatId
+                                otherName: widget.currentUser.employee!.name,
+                                otherImage: widget.currentUser.profileImage!,
+                                employeeData: {
+                                  'uid': widget.currentUser.uid,
+                                  'name': widget.currentUser.employee!.name,
+
+                                  'profileImage':
+                                      widget.currentUser.profileImage,
+                                },
                               ),
                             );
                           },

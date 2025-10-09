@@ -7,6 +7,7 @@ import 'package:barbee_hive_app/data/model/job_application_response.dart';
 import 'package:barbee_hive_app/data/model/job_list_response.dart';
 import 'package:barbee_hive_app/data/model/job_posting_model.dart';
 import 'package:barbee_hive_app/data/model/login_response.dart';
+import 'package:barbee_hive_app/data/model/setting_response.dart';
 import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -116,6 +117,7 @@ class AuthProvider {
   }
 
   static Future<RegisterResponse> register({
+    required String uid,
     required String name,
     required String email,
     required String password,
@@ -134,6 +136,7 @@ class AuthProvider {
     File? profileImage,
   }) async {
     final fields = <String, String>{
+      'uid': uid,
       'name': name,
       'email': email,
       'password': password,
@@ -483,5 +486,10 @@ class AuthProvider {
       }
       throw e;
     }
+  }
+
+  static Future<SettingsResponse> getSetting() async {
+    final data = await ApiService.get(ApiEndPoints.setting);
+    return SettingsResponse.fromJson(data);
   }
 }

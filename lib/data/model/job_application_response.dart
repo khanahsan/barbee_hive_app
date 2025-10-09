@@ -81,6 +81,7 @@ class JobSummary {
 
 class Applicant {
   final int id;
+  final String uid;
   final String? name;
   final String email;
   final String? phone;
@@ -96,6 +97,7 @@ class Applicant {
 
   Applicant({
     required this.id,
+    required this.uid,
     this.name,
     required this.email,
     this.phone,
@@ -113,6 +115,7 @@ class Applicant {
   factory Applicant.fromJson(Map<String, dynamic> json) {
     return Applicant(
       id: json['id'] ?? 0,
+      uid: json['uid'] ?? '',
       name: json['name'],
       email: json['email'] ?? '',
       phone: json['phone'],

@@ -1,4 +1,3 @@
-
 class DashboardResponse {
   final bool status;
   final String message;
@@ -24,20 +23,19 @@ class DashboardData {
   final List<User> employees;
   final List<User> employers;
 
-  DashboardData({
-    required this.employees,
-    required this.employers,
-  });
+  DashboardData({required this.employees, required this.employers});
 
   factory DashboardData.fromJson(Map<String, dynamic> json) {
     return DashboardData(
-      employees: (json['employees'] as List<dynamic>?)
-          ?.map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toList() ??
+      employees:
+          (json['employees'] as List<dynamic>?)
+              ?.map((e) => User.fromJson(e as Map<String, dynamic>))
+              .toList() ??
           [],
-      employers: (json['employers'] as List<dynamic>?)
-          ?.map((e) => User.fromJson(e as Map<String, dynamic>))
-          .toList() ??
+      employers:
+          (json['employers'] as List<dynamic>?)
+              ?.map((e) => User.fromJson(e as Map<String, dynamic>))
+              .toList() ??
           [],
     );
   }
@@ -45,6 +43,7 @@ class DashboardData {
 
 class User {
   final int id;
+  final String uid;
   final String email;
   final int role;
   final bool isVerified;
@@ -53,10 +52,11 @@ class User {
   final String updatedAt;
   final Employee? employee;
   final Employer? employer;
-  final String profileImage;
+  final String? profileImage;
 
   User({
     required this.id,
+    required this.uid,
     required this.email,
     required this.role,
     required this.isVerified,
@@ -65,13 +65,14 @@ class User {
     required this.updatedAt,
     this.employee,
     this.employer,
-    required this.profileImage,
+    this.profileImage,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     print('User JSON: $json');
     return User(
       id: json['id'] ?? 0,
+      uid: json['uid'] ?? '',
       email: json['email'] ?? '',
       role: json['role'] ?? 0,
       isVerified: json['is_verified'] ?? false,
@@ -79,12 +80,14 @@ class User {
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
       profileImage: json['profile_image'] ?? '',
-      employee: json['employee'] != null && json['employee'] is Map
-          ? Employee.fromJson(json['employee'])
-          : null,
-      employer: json['employer'] != null && json['employer'] is Map
-          ? Employer.fromJson(json['employer'])
-          : null,
+      employee:
+          json['employee'] != null && json['employee'] is Map
+              ? Employee.fromJson(json['employee'])
+              : null,
+      employer:
+          json['employer'] != null && json['employer'] is Map
+              ? Employer.fromJson(json['employer'])
+              : null,
     );
   }
 }
@@ -130,8 +133,14 @@ class Employee {
       dob: json['dob'] ?? '',
       gender: json['gender'] ?? '',
       height: json['height'] ?? 0,
-      eyeColor: json['eye_color'] != null ? EyeColor.fromJson(json['eye_color']) : null,
-      hairColor: json['hair_color'] != null ? HairColor.fromJson(json['hair_color']) : null,
+      eyeColor:
+          json['eye_color'] != null
+              ? EyeColor.fromJson(json['eye_color'])
+              : null,
+      hairColor:
+          json['hair_color'] != null
+              ? HairColor.fromJson(json['hair_color'])
+              : null,
       resumePath: json['resume_path'],
       isAvailable: json['is_available'] ?? false,
       skill: json['skill'] != null ? Skill.fromJson(json['skill']) : null,
@@ -160,9 +169,10 @@ class Employer {
       country: json['country'] ?? '',
       state: json['state'] ?? '',
       city: json['city'] ?? '',
-      positionSeeking: json['position_seeking'] != null
-          ? PositionSeeking.fromJson(json['position_seeking'])
-          : null,
+      positionSeeking:
+          json['position_seeking'] != null
+              ? PositionSeeking.fromJson(json['position_seeking'])
+              : null,
     );
   }
 }
@@ -171,16 +181,10 @@ class EyeColor {
   final int id;
   final String name;
 
-  EyeColor({
-    required this.id,
-    required this.name,
-  });
+  EyeColor({required this.id, required this.name});
 
   factory EyeColor.fromJson(Map<String, dynamic> json) {
-    return EyeColor(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-    );
+    return EyeColor(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }
 
@@ -188,16 +192,10 @@ class HairColor {
   final int id;
   final String name;
 
-  HairColor({
-    required this.id,
-    required this.name,
-  });
+  HairColor({required this.id, required this.name});
 
   factory HairColor.fromJson(Map<String, dynamic> json) {
-    return HairColor(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-    );
+    return HairColor(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }
 
@@ -205,16 +203,10 @@ class Skill {
   final int id;
   final String name;
 
-  Skill({
-    required this.id,
-    required this.name,
-  });
+  Skill({required this.id, required this.name});
 
   factory Skill.fromJson(Map<String, dynamic> json) {
-    return Skill(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-    );
+    return Skill(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }
 
@@ -222,15 +214,9 @@ class PositionSeeking {
   final int id;
   final String name;
 
-  PositionSeeking({
-    required this.id,
-    required this.name,
-  });
+  PositionSeeking({required this.id, required this.name});
 
   factory PositionSeeking.fromJson(Map<String, dynamic> json) {
-    return PositionSeeking(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-    );
+    return PositionSeeking(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }

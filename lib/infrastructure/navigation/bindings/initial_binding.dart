@@ -30,7 +30,7 @@ class InitialBindings implements Bindings {
     Get.lazyPut<ApplyScreenController>(() => ApplyScreenController());
     Get.lazyPut<ApplicationsController>(() => ApplicationsController());
     Get.lazyPut<ApplicantProfileController>(() => ApplicantProfileController());
-    Get.lazyPut<ChatController>(() => ChatController());
+    Get.lazyPut<ChatController>(() => ChatController(), fenix: true);
     Get.lazyPut<JobUpdateController>(() => JobUpdateController(), fenix: true);
   }
 }

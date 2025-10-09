@@ -9,6 +9,9 @@ class ChatController extends GetxController {
   var currentUserId = "".obs;
   var currentUserName = "".obs;
   var currentUserImage = "".obs;
+  var currentUserRole = "".obs;
+  var chats = <QueryDocumentSnapshot>[].obs;
+  var isLoading = true.obs;
 
   @override
   void onInit() {
@@ -16,74 +19,76 @@ class ChatController extends GetxController {
     loadCurrentUser();
   }
 
+  /// Load current user details from Firebase + SharedPrefs
   Future<void> loadCurrentUser() async {
-    final role = SharedPreferenceHelper.getInt(SharedPrefKeys.userRole);
-    final uid = FirebaseAuth.instance.currentUser?.uid ?? "";
+    try {
+      isLoading.value = true;
+      final role = SharedPreferenceHelper.getInt(SharedPrefKeys.userRole);
+      final uid = FirebaseAuth.instance.currentUser?.uid ?? "";
+      currentUserId.value = uid;
+      isEmployer.value = role == 2;
 
-    currentUserId.value = uid;
-    isEmployer.value = role == 2; // 2 = employer
+      if (uid.isNotEmpty) {
+        final userDoc =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
+        if (userDoc.exists) {
+          currentUserName.value = userDoc['name'] ?? '';
+          currentUserImage.value = userDoc['profileImage'] ?? '';
+          currentUserRole.value = userDoc['role'] ?? '';
+        }
+        print("✅ Current User ID: ${currentUserId.value}");
+        print("✅ Role: ${isEmployer.value ? 'Employer' : 'Employee'}");
+        print("✅ Name: ${currentUserName.value}");
+        print("✅ Image: ${currentUserImage.value}");
 
-    final userDoc =
-        await FirebaseFirestore.instance.collection('users').doc(uid).get();
-
-    if (userDoc.exists) {
-      currentUserName.value = userDoc['name'] ?? '';
-      currentUserImage.value = userDoc['profileImage'] ?? '';
+        // ✅ Start listening to chats after user is loaded
+        listenToChats();
+      }
+    } finally {
+      isLoading.value = false;
     }
   }
 
-  /// Load all employees (for employer)
-  Stream<QuerySnapshot> getAllEmployees() {
+  void listenToChats() {
+    final uid = currentUserId.value;
+    if (uid.isEmpty) return;
+
+    FirebaseFirestore.instance
+        .collection('chats')
+        .where('userIds', arrayContains: uid) // ✅ use arrayContains
+        .orderBy('updatedAt', descending: true)
+        .snapshots()
+        .listen((snapshot) {
+          chats.value = snapshot.docs;
+        });
+  }
+
+  /// Helper: generate consistent chat ID for any user pair
+  String generateChatId(String uid1, String uid2, String chatType) {
+    if (chatType == 'employer_employee') {
+      // keep order as employer-employee
+      return "$uid1-$uid2";
+    } else {
+      // sort alphabetically for same-role chats
+      final ids = [uid1, uid2]..sort();
+      return ids.join('-');
+    }
+  }
+
+  /// Stream all chats for this user
+  Stream<QuerySnapshot>? getChatsStream() {
+    final uid = currentUserId.value;
+    if (uid.isEmpty) return null;
+
+    // ✅ Only fetch chats where the current user is one of the participants
     return FirebaseFirestore.instance
-        .collection('users')
-        .where('role', isEqualTo: 'employee')
+        .collection('chats')
+        .where('participants.$uid', isNotEqualTo: null)
+        .orderBy('updatedAt', descending: true)
         .snapshots();
   }
 
-  /// Get chats for employer or employee
-  Stream<QuerySnapshot> getChatsStream() {
-    if (isEmployer.value) {
-      return FirebaseFirestore.instance
-          .collection('chats')
-          .where('employerId', isEqualTo: currentUserId.value)
-          .orderBy('updatedAt', descending: true)
-          .snapshots();
-    } else {
-      return FirebaseFirestore.instance
-          .collection('chats')
-          .where('employeeId', isEqualTo: currentUserId.value)
-          .orderBy('updatedAt', descending: true)
-          .snapshots();
-    }
-  }
-
-  /// Start chat (Employer → Employee)
-  Future<String> startChatWithEmployee(
-    String chatId,
-    Map<String, dynamic> employee,
-  ) async {
-    final chatId = "${currentUserId.value}-${employee['uid']}";
-    final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
-
-    final chatDoc = await chatRef.get();
-    if (!chatDoc.exists) {
-      await chatRef.set({
-        'chatId': chatId,
-        'employerId': currentUserId.value,
-        'employeeId': employee['uid'],
-        'employerName': currentUserName.value,
-        'employerImage': currentUserImage.value,
-        'employeeName': employee['name'],
-        'employeeImage': employee['profileImage'] ?? '',
-        'lastMessage': '',
-        'blockedBy': null,
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-    }
-    return chatId;
-  }
-
-  /// Messages stream for a chat
+  /// Stream of messages for a chat
   Stream<QuerySnapshot> getMessagesStream(String chatId) {
     return FirebaseFirestore.instance
         .collection('chats')
@@ -93,7 +98,7 @@ class ChatController extends GetxController {
         .snapshots();
   }
 
-  /// Chat stream (to check block status + metadata)
+  /// Chat document stream (metadata)
   Stream<DocumentSnapshot> getChatStream(String chatId) {
     return FirebaseFirestore.instance
         .collection('chats')
@@ -101,32 +106,84 @@ class ChatController extends GetxController {
         .snapshots();
   }
 
-  /// Send message (blocked check handled in UI)
+  /// Start a chat (only creates if it doesn't exist)
+  Future<String> startChat(
+    Map<String, dynamic> otherUser, {
+    String chatType = 'employer_employee',
+  }) async {
+    if (currentUserName.value.isEmpty || currentUserImage.value.isEmpty) {
+      await loadCurrentUser();
+    }
+
+    final generatedChatId = generateChatId(
+      currentUserId.value,
+      otherUser['uid'],
+      chatType,
+    );
+
+    final chatRef = FirebaseFirestore.instance
+        .collection('chats')
+        .doc(generatedChatId);
+    final chatDoc = await chatRef.get();
+
+    if (!chatDoc.exists) {
+      final participants = {
+        currentUserId.value: {
+          'name': currentUserName.value,
+          'image': currentUserImage.value,
+        },
+        otherUser['uid']: {
+          'name': otherUser['name'],
+          'image': otherUser['profileImage'] ?? '',
+        },
+      };
+
+      await chatRef.set({
+        'chatId': generatedChatId,
+        'participants': participants,
+        'userIds': [currentUserId.value, otherUser['uid']],
+        'lastMessage': '',
+        'blockedBy': null,
+        'updatedAt': FieldValue.serverTimestamp(),
+        'chatType': chatType,
+      });
+    }
+
+    return generatedChatId;
+  }
+
+  /// Send a message (create chat if missing)
   Future<void> sendMessage(
     String chatId,
     String text,
-    Map<String, dynamic>? employeeData,
+    Map<String, dynamic>? otherUserData,
+    String chatType,
   ) async {
     if (text.trim().isEmpty) return;
 
-    // If employer and employeeData is provided, check/create chat
-    if (isEmployer.value && employeeData != null) {
-      await startChatWithEmployee(chatId, employeeData);
+    final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
+    final chatDoc = await chatRef.get();
+
+    // ✅ Only create chat if it doesn't exist
+    if (!chatDoc.exists && otherUserData != null) {
+      await startChat(otherUserData, chatType: chatType);
     }
 
-    final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
+    // 🟢 Add message
     await chatRef.collection('messages').add({
       'senderId': currentUserId.value,
       'text': text,
       'timestamp': FieldValue.serverTimestamp(),
     });
+
+    // 🟢 Update chat metadata
     await chatRef.update({
       'lastMessage': text,
       'updatedAt': FieldValue.serverTimestamp(),
     });
   }
 
-  /// Block employee (only employer)
+  /// Block employee (only if employer)
   Future<void> blockEmployee(String chatId) async {
     if (!isEmployer.value) return;
     await FirebaseFirestore.instance.collection('chats').doc(chatId).update({
@@ -134,7 +191,7 @@ class ChatController extends GetxController {
     });
   }
 
-  /// Unblock employee
+  /// Unblock employee (only if employer)
   Future<void> unblockEmployee(String chatId) async {
     if (!isEmployer.value) return;
     await FirebaseFirestore.instance.collection('chats').doc(chatId).update({
@@ -143,112 +200,150 @@ class ChatController extends GetxController {
   }
 }
 
- 
+//  class ChatController extends GetxController {
+// var isEmployer = false.obs;
+// var currentUserId = "".obs;
+// var currentUserName = "".obs;
+// var currentUserImage = "".obs;
 
-/* class ChatController extends GetxController {
-  var isEmployer = false.obs;
-  var currentUserId = "".obs;
-  var currentUserName = "".obs;
-  var currentUserImage = "".obs;
+// @override
+// void onInit() {
+//   loadCurrentUser();
+// }
 
-  @override
-  void onInit() {
-    super.onInit();
-    loadCurrentUser();
-  }
+// Future<void> loadCurrentUser() async {
+//   final role = SharedPreferenceHelper.getInt(SharedPrefKeys.userRole);
+//   final uid = FirebaseAuth.instance.currentUser?.uid ?? "";
 
-  Future<void> loadCurrentUser() async {
-    final role = SharedPreferenceHelper.getInt(SharedPrefKeys.userRole);
-    final uid = FirebaseAuth.instance.currentUser?.uid ?? "";
+//   currentUserId.value = uid;
+//   isEmployer.value = role == 2; // 2 = employer
 
-    currentUserId.value = uid;
-    isEmployer.value = role == 2; // 2 = employer
+//   final userDoc =
+//       await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
-    // fetch user info
-    final userDoc =
-        await FirebaseFirestore.instance.collection('users').doc(uid).get();
+//   print(userDoc.data());
 
-    if (userDoc.exists) {
-      currentUserName.value = userDoc['name'] ?? '';
-      currentUserImage.value = userDoc['profileImage'] ?? '';
-    }
-  }
+//   if (userDoc.exists) {
+//     currentUserName.value = userDoc['name'] ?? '';
+//     currentUserImage.value = userDoc['profileImage'] ?? '';
+//   }
 
-  /// Load all employees (only for employer)
-  Stream<QuerySnapshot> getAllEmployees() {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .where('role', isEqualTo: 'employee')
-        .snapshots();
-  }
+//   print(
+//     "Current User ID: $currentUserId, Role: ${isEmployer.value ? 'Employer' : 'Employee'}",
+//   );
+//   print("Current User Name: $currentUserName");
+//   print("Current User Image: $currentUserImage");
+// }
 
-  /// Get chats for employer or employee
-  Stream<QuerySnapshot> getChatsStream() {
-    if (isEmployer.value) {
-      return FirebaseFirestore.instance
-          .collection('chats')
-          .where('employerId', isEqualTo: currentUserId.value)
-          .orderBy('updatedAt', descending: true)
-          .snapshots();
-    } else {
-      return FirebaseFirestore.instance
-          .collection('chats')
-          .where('employeeId', isEqualTo: currentUserId.value)
-          .orderBy('updatedAt', descending: true)
-          .snapshots();
-    }
-  }
+// /// Load all employees (for employer)
+// Stream<QuerySnapshot> getAllEmployees() {
+//   return FirebaseFirestore.instance
+//       .collection('users')
+//       .where('role', isEqualTo: 'employee')
+//       .snapshots();
+// }
 
-  /// Start a chat (Employer → Employee)
-  Future<String> startChatWithEmployee(Map<String, dynamic> employee) async {
-    final chatId = "${currentUserId.value}-${employee['uid']}";
+// /// Get chats for employer or employee
+// Stream<QuerySnapshot> getChatsStream() {
+//   if (isEmployer.value) {
+//     return FirebaseFirestore.instance
+//         .collection('chats')
+//         .where('employerId', isEqualTo: currentUserId.value)
+//         .orderBy('updatedAt', descending: true)
+//         .snapshots();
+//   } else {
+//     return FirebaseFirestore.instance
+//         .collection('chats')
+//         .where('employeeId', isEqualTo: currentUserId.value)
+//         .orderBy('updatedAt', descending: true)
+//         .snapshots();
+//   }
+// }
 
-    final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
+// /// Start chat (Employer → Employee)
+// Future<String> startChatWithEmployee(
+//   String chatId,
+//   Map<String, dynamic> employee,
+// ) async {
+//   if (currentUserName.value.isEmpty || currentUserImage.value.isEmpty) {
+//     await loadCurrentUser();
+//   }
 
-    final chatDoc = await chatRef.get();
-    if (!chatDoc.exists) {
-      await chatRef.set({
-        'chatId': chatId,
-        'employerId': currentUserId.value,
-        'employeeId': employee['uid'],
-        'employerName': currentUserName.value,
-        'employerImage': currentUserImage.value,
-        'employeeName': employee['name'],
-        'employeeImage': employee['profileImage'] ?? '',
-        'lastMessage': '',
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-    }
+//   final generatedChatId = "${currentUserId.value}-${employee['uid']}";
+//   final chatRef = FirebaseFirestore.instance
+//       .collection('chats')
+//       .doc(generatedChatId);
 
-    return chatId;
-  }
+//   final chatDoc = await chatRef.get();
+//   if (!chatDoc.exists) {
+//     await chatRef.set({
+//       'chatId': generatedChatId,
+//       'employerId': currentUserId.value,
+//       'employeeId': employee['uid'],
+//       'employerName': currentUserName.value,
+//       'employerImage': currentUserImage.value,
+//       'employeeName': employee['name'],
+//       'employeeImage': employee['profileImage'] ?? '',
+//       'lastMessage': '',
+//       'blockedBy': null,
+//       'updatedAt': FieldValue.serverTimestamp(),
+//     });
+//   }
+//   return generatedChatId;
+// }
 
-  /// Messages stream for a chat
-  Stream<QuerySnapshot> getMessagesStream(String chatId) {
-    return FirebaseFirestore.instance
-        .collection('chats')
-        .doc(chatId)
-        .collection('messages')
-        .orderBy('timestamp', descending: true)
-        .snapshots();
-  }
+// /// Messages stream for a chat
+// Stream<QuerySnapshot> getMessagesStream(String chatId) {
+//   return FirebaseFirestore.instance
+//       .collection('chats')
+//       .doc(chatId)
+//       .collection('messages')
+//       .orderBy('timestamp', descending: true)
+//       .snapshots();
+// }
 
-  /// Send message
-  Future<void> sendMessage(String chatId, String text) async {
-    if (text.trim().isEmpty) return;
+// /// Chat stream (to check block status + metadata)
+// Stream<DocumentSnapshot> getChatStream(String chatId) {
+//   return FirebaseFirestore.instance.collection('chats').doc(chatId).snapshots();
+// }
 
-    final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
+// /// Send message (blocked check handled in UI)
+// Future<void> sendMessage(
+//   String chatId,
+//   String text,
+//   Map<String, dynamic>? employeeData,
+// ) async {
+//   if (text.trim().isEmpty) return;
 
-    await chatRef.collection('messages').add({
-      'senderId': currentUserId.value,
-      'text': text,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
+//   // If employer and employeeData is provided, check/create chat
+//   if (isEmployer.value && employeeData != null) {
+//     await startChatWithEmployee(chatId, employeeData);
+//   }
 
-    await chatRef.update({
-      'lastMessage': text,
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
-  }
-}
- */
+//   final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
+//   await chatRef.collection('messages').add({
+//     'senderId': currentUserId.value,
+//     'text': text,
+//     'timestamp': FieldValue.serverTimestamp(),
+//   });
+//   await chatRef.update({
+//     'lastMessage': text,
+//     'updatedAt': FieldValue.serverTimestamp(),
+//   });
+// }
+
+// /// Block employee (only employer)
+// Future<void> blockEmployee(String chatId) async {
+//   if (!isEmployer.value) return;
+//   await FirebaseFirestore.instance.collection('chats').doc(chatId).update({
+//     'blockedBy': currentUserId.value,
+//   });
+// }
+
+// /// Unblock employee
+// Future<void> unblockEmployee(String chatId) async {
+//   if (!isEmployer.value) return;
+//   await FirebaseFirestore.instance.collection('chats').doc(chatId).update({
+//     'blockedBy': null,
+//   });
+// }

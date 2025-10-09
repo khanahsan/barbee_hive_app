@@ -1,6 +1,9 @@
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -9,10 +12,10 @@ import '../../../../infrastructure/constants/app_colors.dart';
 import 'b2b_fading_carousel.dart';
 
 class B2BScreen extends StatelessWidget {
-  const B2BScreen({super.key, required this.currentUser});
+  B2BScreen({super.key, required this.currentUser});
 
   final User currentUser;
-
+  final ChatController chatController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +35,9 @@ class B2BScreen extends StatelessWidget {
             top: 100.h,
             left: 0,
             right: 0,
-            child: Image.network(currentUser.profileImage),
+            child: Image.network(
+              currentUser.profileImage ?? AppAssets.nullProfile,
+            ),
             // child: CustomFadingCarousel(
             //   imagePaths: [
             //     AppAssets.profileImage,
@@ -98,13 +103,31 @@ class B2BScreen extends StatelessWidget {
                         _seekingRow(context),
                         SizedBox(height: 30.h),
 
-                        // CustomBtn(
-                        //   btnTitle: 'Edit Profile',
-                        //   btnBackgroundColor: AppColors.primary,
-                        //   btnTxtColor: Colors.white,
-                        //   // width: double.infinity,
-                        //   onPressed: () {},
-                        // ),
+                        CustomButton(
+                          onTap: () {
+                            Get.to(
+                              () => ChatScreen(
+                                chatId:
+                                    "${chatController.currentUserId.value}-${currentUser.uid}",
+                                otherName: currentUser.employer!.businessName,
+                                otherImage: currentUser.profileImage ?? '',
+                                employeeData: {
+                                  'uid': currentUser.uid,
+                                  'name': currentUser.employer!.businessName,
+                                  'profileImage':
+                                      currentUser.profileImage ?? '',
+                                  'role': currentUser.role,
+                                },
+                              ),
+                            );
+                          },
+                          buttonText: "Send Message",
+                          buttonWidth: double.infinity,
+                          buttonColor: AppColors.primary,
+                          textColor: AppColors.white,
+                          buttonHeight: 55.h,
+                          buttonTextSize: 16.sp,
+                        ),
                       ],
                     ).paddingSymmetric(horizontal: 20.w, vertical: 20.h),
                   ),

@@ -195,7 +195,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                   btnBackgroundColor: AppColors.primary,
                                   btnTxtColor: Colors.white,
                                   buttonWidth: double.infinity,
-                                  onPressed: () => controller.register(),
+                                  onPressed: () => controller.syncUserWithFirebase(),
                                 ),
                               ],
                             ),

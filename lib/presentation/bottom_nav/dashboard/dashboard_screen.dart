@@ -151,8 +151,8 @@ class DashboardScreen extends StatelessWidget {
                         child: SingleChildScrollView(
                           child: HexagonAvatar(
                             imagePath:
-                                users[index].profileImage.isNotEmpty == true
-                                    ? users[index].profileImage
+                                users[index].profileImage!.isNotEmpty == true
+                                    ? users[index].profileImage!
                                     : '',
                             // Set to null to trigger name-based avatar
                             width: itemWidth,
@@ -293,8 +293,8 @@ class DashboardScreen extends StatelessWidget {
 
                                 child: HexagonAvatar(
                                   imagePath:
-                                      user.profileImage.isNotEmpty == true
-                                          ? user.profileImage
+                                      user.profileImage!.isNotEmpty == true
+                                          ? user.profileImage!
                                           : '',
                                   width: 90.w,
                                   height: 100.h,

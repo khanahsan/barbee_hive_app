@@ -1,22 +1,23 @@
 import 'package:barbee_hive_app/data/api/api_service.dart';
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart'
+    show FirebaseAuth, FirebaseAuthException;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../data/model/color_response.dart';
 
-
-
 class SignUpEmployerController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final TextEditingController countryController = TextEditingController();
   final TextEditingController stateController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
-
 
   //final RxString selectedPositionSeeking = ''.obs;
   final RxString selectedSkill = ''.obs;
@@ -29,13 +30,11 @@ class SignUpEmployerController extends GetxController {
 
   final RxList<Skill> skills = <Skill>[].obs;
 
-
   @override
   void onInit() {
     super.onInit();
     fetchSkills();
   }
-
 
   @override
   void onReady() {
@@ -53,7 +52,6 @@ class SignUpEmployerController extends GetxController {
     cityController.dispose();
     super.onClose();
   }
-
 
   void toggleCheckbox() {
     isChecked.value = !isChecked.value;
@@ -107,16 +105,70 @@ class SignUpEmployerController extends GetxController {
     }
   }
 
-  Future<void> register() async {
-    if (!isChecked.value) {
-      Get.snackbar(
-        'Error',
-        'Please agree to the Terms of Service',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      return;
+  Future<void> syncUserWithFirebase() async {
+    try {
+      print("🔄 Starting Firebase registration...");
+
+      // 1️⃣ Create Firebase user
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          );
+
+      final uid = userCredential.user!.uid;
+      print("✅ Firebase user created: $uid");
+
+      // 2️⃣ Run backend registration
+      try {
+        await register(uid); // ⬅️ Only proceed if this passes
+        print("✅ Backend registration success");
+
+        // 3️⃣ Create Firestore doc only after successful backend registration
+        await FirebaseFirestore.instance.collection('users').doc(uid).set({
+          'uid': uid,
+          'apiUserId': '',
+          'name': nameController.text.trim(),
+          'email': emailController.text.trim(),
+          'role': 'employer',
+          'profileImage': '',
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+        print("✅ Firestore document created successfully");
+      } catch (apiError) {
+        print("❌ Backend registration failed: $apiError");
+
+        // Delete Firebase user if backend fails
+        await FirebaseAuth.instance.currentUser?.delete();
+        print("⚠️ Firebase user deleted due to backend failure");
+        rethrow;
+      }
+    } on FirebaseAuthException catch (e) {
+      // Firebase-specific errors
+      if (e.code == 'email-already-in-use') {
+        print('⚠️ Email already exists in Firebase');
+      } else if (e.code == 'weak-password') {
+        print('⚠️ Password is too weak');
+      } else if (e.code == 'invalid-email') {
+        print('⚠️ Invalid email format');
+      } else {
+        print('❌ FirebaseAuthException: ${e.code} - ${e.message}');
+      }
+    } catch (e) {
+      print('❌ Unexpected error during syncUserWithFirebase: $e');
     }
+  }
+
+  Future<void> register(String uid) async {
+    // if (!isChecked.value) {
+    //   Get.snackbar(
+    //     'Error',
+    //     'Please agree to the Terms of Service',
+    //     backgroundColor: Colors.red,
+    //     colorText: Colors.white,
+    //   );
+    //   return;
+    // }
 
     isLoading.value = true;
     errorMessage.value = '';
@@ -142,21 +194,21 @@ class SignUpEmployerController extends GetxController {
       }
 
       final userSkill = skills.firstWhere(
-            (skill) => skill.name == selectedSkill.value,
+        (skill) => skill.name == selectedSkill.value,
         orElse: () => throw Exception('Invalid eye color'),
       );
 
       final response = await AuthProvider.register(
+        uid: uid,
         name: nameController.text,
         email: emailController.text,
         password: passwordController.text,
         passwordConfirmation: confirmPasswordController.text,
         role: 2,
-
         country: countryController.text,
         state: stateController.text,
         city: cityController.text,
-        skillId:  userSkill.id,
+        skillId: userSkill.id,
       );
 
       if (response.status) {
@@ -167,7 +219,7 @@ class SignUpEmployerController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        Get.offAllNamed(Routes.CUSTOMDRAWER);
+        Get.offAllNamed(Routes.SIGN_IN_VIEW);
       } else {
         throw Exception(response.message);
       }
@@ -184,6 +236,4 @@ class SignUpEmployerController extends GetxController {
       isLoading.value = false;
     }
   }
-
-
 }

@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:barbee_hive_app/data/api/api_service.dart';
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart'
+    show FirebaseAuth, FirebaseAuthException;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,7 +19,8 @@ class SignUpEmployeeController extends GetxController {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final TextEditingController countryController = TextEditingController();
   final TextEditingController stateController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
@@ -35,7 +39,6 @@ class SignUpEmployeeController extends GetxController {
   final RxList<Skill> skills = <Skill>[].obs;
   final Rx<File?> selectedImage = Rx<File?>(null); // Added for image selection
   final RxString profileImageUrl = ''.obs; // Added to store profile image URL
-
 
   final Rx<File?> selectedResume = Rx<File?>(null);
 
@@ -59,7 +62,7 @@ class SignUpEmployeeController extends GetxController {
     emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
-   // experienceController.dispose();
+    // experienceController.dispose();
     dateController.dispose();
     countryController.dispose();
     stateController.dispose();
@@ -167,7 +170,10 @@ class SignUpEmployeeController extends GetxController {
             ),
             ListTile(
               leading: Icon(Icons.photo_library, color: Colors.white),
-              title: Text('Choose from Gallery', style: TextStyle(color: Colors.white)),
+              title: Text(
+                'Choose from Gallery',
+                style: TextStyle(color: Colors.white),
+              ),
               onTap: () {
                 Get.back();
                 pickImage(ImageSource.gallery);
@@ -183,7 +189,6 @@ class SignUpEmployeeController extends GetxController {
       ),
     );
   }
-
 
   Future<void> pickResume() async {
     try {
@@ -306,7 +311,61 @@ class SignUpEmployeeController extends GetxController {
     }
   }
 
-  Future<void> register() async {
+  Future<void> syncUserWithFirebase() async {
+    try {
+      print("🔄 Starting Firebase registration...");
+
+      // 1️⃣ Create Firebase user
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          );
+
+      final uid = userCredential.user!.uid;
+      print("✅ Firebase user created: $uid");
+
+      // 2️⃣ Run backend registration
+      try {
+        await register(uid); // ⬅️ Only proceed if this passes
+        print("✅ Backend registration success");
+
+        // 3️⃣ Create Firestore doc only after successful backend registration
+        await FirebaseFirestore.instance.collection('users').doc(uid).set({
+          'uid': uid,
+          'apiUserId': '',
+          'name': nameController.text.trim(),
+          'email': emailController.text.trim(),
+          'role': 'employer',
+          'profileImage': '',
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+        print("✅ Firestore document created successfully");
+      } catch (apiError) {
+        print("❌ Backend registration failed: $apiError");
+
+        // Delete Firebase user if backend fails
+        await FirebaseAuth.instance.currentUser?.delete();
+        print("⚠️ Firebase user deleted due to backend failure");
+        rethrow;
+      }
+    } on FirebaseAuthException catch (e) {
+      // Firebase-specific errors
+      if (e.code == 'email-already-in-use') {
+        print('⚠️ Email already exists in Firebase');
+      } else if (e.code == 'weak-password') {
+        print('⚠️ Password is too weak');
+      } else if (e.code == 'invalid-email') {
+        print('⚠️ Invalid email format');
+      } else {
+        print('❌ FirebaseAuthException: ${e.code} - ${e.message}');
+      }
+    } catch (e) {
+      print('❌ Unexpected error during syncUserWithFirebase: $e');
+    }
+  }
+
+  Future<void> register(String uid) async {
     if (!isChecked.value) {
       Get.snackbar(
         'Error',
@@ -326,7 +385,8 @@ class SignUpEmployeeController extends GetxController {
       if (nameController.text.isEmpty) print('❌ Missing: name');
       if (emailController.text.isEmpty) print('❌ Missing: email');
       if (passwordController.text.isEmpty) print('❌ Missing: password');
-      if (confirmPasswordController.text.isEmpty) print('❌ Missing: confirmPassword');
+      if (confirmPasswordController.text.isEmpty)
+        print('❌ Missing: confirmPassword');
       if (selectedSkill.value.isEmpty) print('❌ Missing: selectedSkill');
       if (selectedDate.value.isEmpty) print('❌ Missing: selectedDate');
       if (selectedGender.value.isEmpty) print('❌ Missing: selectedGender');
@@ -335,7 +395,8 @@ class SignUpEmployeeController extends GetxController {
       if (cityController.text.isEmpty) print('❌ Missing: city');
       if (selectedHeight.value.isEmpty) print('❌ Missing: selectedHeight');
       if (selectedEyeColor.value.isEmpty) print('❌ Missing: selectedEyeColor');
-      if (selectedHairColor.value.isEmpty) print('❌ Missing: selectedHairColor');
+      if (selectedHairColor.value.isEmpty)
+        print('❌ Missing: selectedHairColor');
 
       // Main validation
       if (selectedImage.value == null ||
@@ -364,17 +425,17 @@ class SignUpEmployeeController extends GetxController {
       }
 
       final userSkill = skills.firstWhere(
-            (skill) => skill.name == selectedSkill.value,
+        (skill) => skill.name == selectedSkill.value,
         orElse: () => throw Exception('Invalid Skill'),
       );
 
       final eyeColor = eyeColors.firstWhere(
-            (color) => color.name == selectedEyeColor.value,
+        (color) => color.name == selectedEyeColor.value,
         orElse: () => throw Exception('Invalid eye color'),
       );
 
       final hairColor = hairColors.firstWhere(
-            (color) => color.name == selectedHairColor.value,
+        (color) => color.name == selectedHairColor.value,
         orElse: () => throw Exception('Invalid hair color'),
       );
 
@@ -402,6 +463,7 @@ class SignUpEmployeeController extends GetxController {
       print('----------------------------');
 
       final response = await AuthProvider.register(
+        uid: uid,
         name: nameController.text,
         email: emailController.text,
         password: passwordController.text,
@@ -431,7 +493,7 @@ class SignUpEmployeeController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        Get.offAllNamed(Routes.CUSTOMDRAWER);
+        Get.offAllNamed(Routes.SIGN_IN_VIEW);
       } else {
         throw Exception(response.message);
       }
@@ -449,8 +511,7 @@ class SignUpEmployeeController extends GetxController {
     }
   }
 
-
-// Future<void> register() async {
+  // Future<void> register() async {
   //   if (!isChecked.value) {
   //     Get.snackbar(
   //       'Error',
@@ -567,5 +628,3 @@ class SignUpEmployeeController extends GetxController {
   //   }
   // }
 }
-
-

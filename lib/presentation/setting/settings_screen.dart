@@ -22,29 +22,31 @@ class SettingsScreen extends StatelessWidget {
         leadingIconPath: AppAssets.backIcon,
         showHexagon: false,
       ),
-      body: Column(
-        spacing: 5.h,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _notificationSection(context),
-          _displaySection(context),
-          _aboutSection(context: context),
-          _buildButton(
-            context: context,
-            buttonText: "Delete Account",
-            onTap: () {},
-            textColor: AppColors.colorFF3B30,
-          ),
-          SizedBox(height: 10.h),
-          _buildButton(
-            context: context,
-            buttonText: "Sign Out",
-            onTap: () {},
-            textColor: AppColors.white,
-          ),
-        ],
-      ).paddingSymmetric(horizontal: 15.w, vertical: 20.h),
+      body: SingleChildScrollView(
+        child: Column(
+          spacing: 5.h,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _notificationSection(context),
+            _displaySection(context),
+            _aboutSection(context: context),
+            _buildButton(
+              context: context,
+              buttonText: "Delete Account",
+              onTap: () {},
+              textColor: AppColors.colorFF3B30,
+            ),
+            SizedBox(height: 10.h),
+            _buildButton(
+              context: context,
+              buttonText: "Sign Out",
+              onTap: () {},
+              textColor: AppColors.white,
+            ),
+          ],
+        ).paddingSymmetric(horizontal: 15.w, vertical: 20.h),
+      ),
     );
   }
 

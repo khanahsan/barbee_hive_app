@@ -7,14 +7,19 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_textfield.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/controller/application_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 class ApplicationsScreen extends GetView<ApplicationsController> {
   final int jobId;
-  const ApplicationsScreen({required this.jobId, super.key});
+  ApplicationsScreen({required this.jobId, super.key});
+
+  final ChatController chatController = Get.put(ChatController());
 
   @override
   Widget build(BuildContext context) {
@@ -483,8 +488,25 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                   buttonTextSize: 15.sp,
                   buttonHeight: 55.h,
                   onTap: () {
-                    print('Send Message to: ${application.applicant.id}');
-                    // Implement messaging
+                    Get.to(
+                      () => 
+                      ChatScreen(
+                        chatId:
+                            "${chatController.currentUserId.value}-${application.applicant.uid}", // Potential chatId
+                        otherName:
+                            application.applicant.name ??
+                            application.applicant.email,
+                        otherImage: application.applicant.profileImage ?? '',
+                        employeeData: {
+                          'uid': application.applicant.uid,
+                          'name':
+                              application.applicant.name ??
+                              application.applicant.email,
+                          'profileImage':
+                              application.applicant.profileImage ?? '',
+                        },
+                      ),
+                    );
                   },
                 ),
               ),

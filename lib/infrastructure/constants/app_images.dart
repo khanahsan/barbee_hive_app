@@ -62,6 +62,7 @@ class AppAssets {
   static String salaryLogo = '$imagesPath/salary_logo.png';
   static String locationLogo = '$imagesPath/location_logo.png';
   static String experienceLogo = '$imagesPath/experience_logo.png';
+    static String experienceLogo2 = '$imagesPath/experience_logo2.png';
   static String recruiterLogo = '$imagesPath/recruiter_logo.png';
   static String jobtyprLogo = '$imagesPath/jobtype_logo.png';
   static String uploadimgLogo = '$imagesPath/uploadimg_logo.png';

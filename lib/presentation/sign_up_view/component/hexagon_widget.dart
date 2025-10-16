@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
+import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -56,7 +57,7 @@ class HexagonAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double resolvedWidth = width ?? 100.w;
+    final double resolvedWidth = width ?? 160.w;
     final double resolvedHeight = height ?? resolvedWidth * 0.866;
 
     return GestureDetector(
@@ -66,7 +67,9 @@ class HexagonAvatar extends StatelessWidget {
         child: Container(
           width: resolvedWidth,
           height: resolvedHeight,
-          color: borderColor ?? AppColors.primary, // Replace with AppColors.primary
+          color:
+              borderColor ??
+              AppColors.primary, // Replace with AppColors.primary
           padding: EdgeInsets.all(3.w),
           child: ClipPath(
             clipper: HexagonClipper(),
@@ -87,14 +90,17 @@ class HexagonAvatar extends StatelessWidget {
         fit: BoxFit.contain,
         width: width,
         height: height,
-        errorBuilder: (context, error, stackTrace) => _buildDefaultIcon(width, height),
+        errorBuilder:
+            (context, error, stackTrace) => _buildDefaultIcon(width, height),
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
           return Center(
             child: CircularProgressIndicator(
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
-                  : null,
+              value:
+                  loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          (loadingProgress.expectedTotalBytes ?? 1)
+                      : null,
             ),
           );
         },
@@ -105,7 +111,8 @@ class HexagonAvatar extends StatelessWidget {
         fit: BoxFit.contain,
         width: width,
         height: height,
-        errorBuilder: (context, error, stackTrace) => _buildDefaultIcon(width, height),
+        errorBuilder:
+            (context, error, stackTrace) => _buildDefaultIcon(width, height),
       );
     } else {
       return SvgPicture.asset(
@@ -131,3 +138,101 @@ class HexagonAvatar extends StatelessWidget {
 }
 
 
+class HexagonProfilePhotoTile extends StatelessWidget {
+  final File? selectedImage;
+  final String? imageUrl;
+  final VoidCallback? onTap;
+
+  const HexagonProfilePhotoTile({
+    super.key,
+    this.selectedImage,
+    this.imageUrl,
+    this.onTap,
+  });
+
+  bool _isNetworkImage(String? path) {
+    return path != null &&
+        path.isNotEmpty &&
+        (path.startsWith('http://') || path.startsWith('https://'));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Outer hexagon border
+          ClipPath(
+            clipper: HexagonClipper(),
+            child: Container(
+              width: 124.w,
+              height: 124.h,
+              color: AppColors.primary,
+              padding: EdgeInsets.all(3.w),
+              child: ClipPath(
+                clipper: HexagonClipper(),
+                child: Container(
+                  color: AppColors.black,
+                  child: _buildInnerContent(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInnerContent() {
+    // ✅ Show network image
+    if (_isNetworkImage(imageUrl)) {
+      return Image.network(
+        imageUrl!,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        errorBuilder: (context, error, stackTrace) =>
+            _buildUploadPlaceholder(),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return const Center(child: CircularProgressIndicator());
+        },
+      );
+    }
+
+    // ✅ Show local selected image
+    if (selectedImage != null) {
+      return Image.file(
+        selectedImage!,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        errorBuilder: (context, error, stackTrace) =>
+            _buildUploadPlaceholder(),
+      );
+    }
+
+    // ✅ Show upload placeholder
+    return _buildUploadPlaceholder();
+  }
+
+  Widget _buildUploadPlaceholder() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          AppAssets.cameraLogo,
+          color: AppColors.grey,
+          height: 25.h,
+        ),
+        SizedBox(height: 5.h),
+        Text(
+          'Upload Photo',
+          style: TextStyle(color: AppColors.grey, fontSize: 14.sp),
+        ),
+      ],
+    );
+  }
+}

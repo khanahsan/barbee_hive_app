@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
+import 'package:barbee_hive_app/data/model/applied_job_response.dart';
 import 'package:barbee_hive_app/data/model/color_response.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/data/model/job_application_response.dart';
@@ -253,13 +254,13 @@ class AuthProvider {
 
     print('Job Post Payload: $fields, Image: ${image?.path}');
     final files = <String, File>{};
-    if (image != null) files['resume'] = image;
+    if (image != null) files['image'] = image;
     final data = await ApiService.multipartPost(
       ApiEndPoints.jobStore,
       fields: fields,
       files: files.isNotEmpty ? files : null,
       // fileField: 'image', // Matches API field
-      auth: true, // Requires authentication
+      auth: true,
     );
 
     return JobPostResponse.fromJson(data);
@@ -357,50 +358,6 @@ class AuthProvider {
     return UserProfileResponse.fromJson(data);
   }
 
-  // static Future<UserProfileResponse> updateUserProfile({
-  //   required String name,
-  //   required String email,
-  //   required String country,
-  //   required String state,
-  //   required String city,
-  //   String? dob,
-  //   String? gender,
-  //   int? eyeColorId,
-  //   int? hairColorId,
-  //   int? height,
-  //   int? skillId,
-  //   File? resume,
-  // }) async {
-  //   final fields = <String, String>{
-  //     'name': name,
-  //     'email': email,
-  //     'country': country,
-  //     'state': state,
-  //     'city': city,
-  //   };
-  //
-  //   // Add optional fields if they are not null
-  //   if (dob != null) fields['dob'] = dob;
-  //   if (gender != null) fields['gender'] = gender;
-  //   if (eyeColorId != null) fields['eye_color_id'] = eyeColorId.toString();
-  //   if (hairColorId != null) fields['hair_color_id'] = hairColorId.toString();
-  //   if (height != null) fields['height'] = height.toString();
-  //   if (skillId != null) fields['skill_id'] = skillId.toString();
-  //
-  //   debugPrint('Update Profile Payload: $fields, Resume: ${resume?.path}');
-  //   final files = <String, File>{};
-  //   if (resume != null) files['resume'] = resume;
-  //   final data = await ApiService.multipartPost(
-  //     Endpoints.updateProfile,
-  //     fields: fields,
-  //     files: files.isNotEmpty ? files : null,
-  //     //fileField: 'resume',
-  //     auth: true,
-  //   );
-  //
-  //   return UserProfileResponse.fromJson(data);
-  // }
-
   static Future<JobListResponse> getJobs(int? userId) async {
     final data = await ApiService.get(
       '${ApiEndPoints.jobs}?user_id=$userId',
@@ -412,6 +369,14 @@ class AuthProvider {
   static Future<JobListResponse> getEmployeeJobs() async {
     final data = await ApiService.get(ApiEndPoints.jobs, auth: true);
     return JobListResponse.fromJson(data);
+  }
+
+  static Future<AppliedJobsResponse> getAppliedJobs(int? userId) async {
+    final data = await ApiService.get(
+      '${ApiEndPoints.appliedJobs}?user_id=$userId',
+      auth: true,
+    );
+    return AppliedJobsResponse.fromJson(data);
   }
 
   static Future<JobApplicationResponse> applyJob({

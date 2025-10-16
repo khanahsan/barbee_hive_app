@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 

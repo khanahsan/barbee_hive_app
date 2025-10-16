@@ -223,8 +223,7 @@ class JobPostingController extends GetxController {
       );
 
       if (response.status) {
-        /*Get.snackbar('Success', response.message, backgroundColor: Colors.green, colorText: Colors.white);
-        Get.offAllNamed(Routes.CUSTOMDRAWER);*/
+
 
         print('Status is true, showing dialog');
         await showResetPasswordDialog(context); // Wait for dialog to close

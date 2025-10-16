@@ -14,6 +14,7 @@ class ApiEndPoints {
   static const String jobUpdate = 'jobs/update';
   static const String updateProfile = 'profiles/update';
   static const String jobs = 'jobs';
+  static const String appliedJobs = 'jobs/applied';
   static const String applyJob = 'jobs/applications/store';
   static const String jobApplications = 'jobs/applications/show';
   static const String setting = 'setting';

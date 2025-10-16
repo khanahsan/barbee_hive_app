@@ -311,61 +311,7 @@ class SignUpEmployeeController extends GetxController {
     }
   }
 
-  Future<void> syncUserWithFirebase() async {
-    try {
-      print("🔄 Starting Firebase registration...");
-
-      // 1️⃣ Create Firebase user
-      final userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim(),
-          );
-
-      final uid = userCredential.user!.uid;
-      print("✅ Firebase user created: $uid");
-
-      // 2️⃣ Run backend registration
-      try {
-        await register(uid); // ⬅️ Only proceed if this passes
-        print("✅ Backend registration success");
-
-        // 3️⃣ Create Firestore doc only after successful backend registration
-        await FirebaseFirestore.instance.collection('users').doc(uid).set({
-          'uid': uid,
-          'apiUserId': '',
-          'name': nameController.text.trim(),
-          'email': emailController.text.trim(),
-          'role': 'employer',
-          'profileImage': '',
-          'createdAt': FieldValue.serverTimestamp(),
-        });
-        print("✅ Firestore document created successfully");
-      } catch (apiError) {
-        print("❌ Backend registration failed: $apiError");
-
-        // Delete Firebase user if backend fails
-        await FirebaseAuth.instance.currentUser?.delete();
-        print("⚠️ Firebase user deleted due to backend failure");
-        rethrow;
-      }
-    } on FirebaseAuthException catch (e) {
-      // Firebase-specific errors
-      if (e.code == 'email-already-in-use') {
-        print('⚠️ Email already exists in Firebase');
-      } else if (e.code == 'weak-password') {
-        print('⚠️ Password is too weak');
-      } else if (e.code == 'invalid-email') {
-        print('⚠️ Invalid email format');
-      } else {
-        print('❌ FirebaseAuthException: ${e.code} - ${e.message}');
-      }
-    } catch (e) {
-      print('❌ Unexpected error during syncUserWithFirebase: $e');
-    }
-  }
-
-  Future<void> register(String uid) async {
+  Future<void> registerEmployee() async {
     if (!isChecked.value) {
       Get.snackbar(
         'Error',
@@ -376,133 +322,162 @@ class SignUpEmployeeController extends GetxController {
       return;
     }
 
+    // 🔹 Step 1: Validate all inputs first
+    if (selectedImage.value == null ||
+        nameController.text.isEmpty ||
+        emailController.text.isEmpty ||
+        passwordController.text.isEmpty ||
+        confirmPasswordController.text.isEmpty ||
+        selectedSkill.value.isEmpty ||
+        selectedDate.value.isEmpty ||
+        selectedGender.value.isEmpty ||
+        countryController.text.isEmpty ||
+        stateController.text.isEmpty ||
+        cityController.text.isEmpty ||
+        selectedHeight.value.isEmpty ||
+        selectedEyeColor.value.isEmpty ||
+        selectedHairColor.value.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'All fields are required',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (passwordController.text != confirmPasswordController.text) {
+      Get.snackbar(
+        'Error',
+        'Passwords do not match',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (!RegExp(r'^\d{2}-\d{2}-\d{4}$').hasMatch(selectedDate.value)) {
+      Get.snackbar(
+        'Error',
+        'DOB must be in MM-DD-YYYY format',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    final userSkill = skills.firstWhere(
+      (skill) => skill.name == selectedSkill.value,
+      orElse: () => throw Exception('Invalid skill'),
+    );
+
+    final eyeColor = eyeColors.firstWhere(
+      (color) => color.name == selectedEyeColor.value,
+      orElse: () => throw Exception('Invalid eye color'),
+    );
+
+    final hairColor = hairColors.firstWhere(
+      (color) => color.name == selectedHairColor.value,
+      orElse: () => throw Exception('Invalid hair color'),
+    );
+
     isLoading.value = true;
     errorMessage.value = '';
 
     try {
-      // Debug: Check for any missing fields
-      if (selectedImage.value == null) print('❌ Missing: selectedImage');
-      if (nameController.text.isEmpty) print('❌ Missing: name');
-      if (emailController.text.isEmpty) print('❌ Missing: email');
-      if (passwordController.text.isEmpty) print('❌ Missing: password');
-      if (confirmPasswordController.text.isEmpty)
-        print('❌ Missing: confirmPassword');
-      if (selectedSkill.value.isEmpty) print('❌ Missing: selectedSkill');
-      if (selectedDate.value.isEmpty) print('❌ Missing: selectedDate');
-      if (selectedGender.value.isEmpty) print('❌ Missing: selectedGender');
-      if (countryController.text.isEmpty) print('❌ Missing: country');
-      if (stateController.text.isEmpty) print('❌ Missing: state');
-      if (cityController.text.isEmpty) print('❌ Missing: city');
-      if (selectedHeight.value.isEmpty) print('❌ Missing: selectedHeight');
-      if (selectedEyeColor.value.isEmpty) print('❌ Missing: selectedEyeColor');
-      if (selectedHairColor.value.isEmpty)
-        print('❌ Missing: selectedHairColor');
+      print("🔄 Starting Firebase registration...");
 
-      // Main validation
-      if (selectedImage.value == null ||
-          nameController.text.isEmpty ||
-          emailController.text.isEmpty ||
-          passwordController.text.isEmpty ||
-          confirmPasswordController.text.isEmpty ||
-          selectedSkill.value.isEmpty ||
-          selectedDate.value.isEmpty ||
-          selectedGender.value.isEmpty ||
-          countryController.text.isEmpty ||
-          stateController.text.isEmpty ||
-          cityController.text.isEmpty ||
-          selectedHeight.value.isEmpty ||
-          selectedEyeColor.value.isEmpty ||
-          selectedHairColor.value.isEmpty) {
-        throw Exception('All fields are required');
-      }
+      // 🔹 Step 2: Create Firebase User
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          );
 
-      if (passwordController.text != confirmPasswordController.text) {
-        throw Exception('Passwords do not match');
-      }
+      final uid = userCredential.user!.uid;
+      print("✅ Firebase user created: $uid");
 
-      if (!RegExp(r'^\d{2}-\d{2}-\d{4}$').hasMatch(selectedDate.value)) {
-        throw Exception('DOB must be in MM-DD-YYYY format');
-      }
+      try {
+        // 🔹 Step 3: Register with Backend API
+        final response = await AuthProvider.register(
+          uid: uid,
+          name: nameController.text,
+          email: emailController.text,
+          password: passwordController.text,
+          passwordConfirmation: confirmPasswordController.text,
+          role: 3,
+          country: countryController.text,
+          state: stateController.text,
+          city: cityController.text,
+          dob: selectedDate.value,
+          gender: selectedGender.value.toLowerCase(),
+          eyeColorId: eyeColor.id,
+          hairColorId: hairColor.id,
+          height: int.parse(selectedHeight.value),
+          resume: selectedResume.value,
+          skillId: userSkill.id,
+          profileImage: selectedImage.value,
+        );
 
-      final userSkill = skills.firstWhere(
-        (skill) => skill.name == selectedSkill.value,
-        orElse: () => throw Exception('Invalid Skill'),
-      );
+        if (!response.status) throw Exception(response.message);
 
-      final eyeColor = eyeColors.firstWhere(
-        (color) => color.name == selectedEyeColor.value,
-        orElse: () => throw Exception('Invalid eye color'),
-      );
-
-      final hairColor = hairColors.firstWhere(
-        (color) => color.name == selectedHairColor.value,
-        orElse: () => throw Exception('Invalid hair color'),
-      );
-
-      // Debug: Print all field values
-      print('--- Registration Fields ---');
-      print('Name: ${nameController.text}');
-      print('Email: ${emailController.text}');
-      print('Password: ${passwordController.text}');
-      print('Confirm Password: ${confirmPasswordController.text}');
-      print('Selected Skill: ${selectedSkill.value}');
-      print('Selected DOB: ${selectedDate.value}');
-      print('Selected Gender: ${selectedGender.value}');
-      print('Country: ${countryController.text}');
-      print('State: ${stateController.text}');
-      print('City: ${cityController.text}');
-      print('Selected Height: ${selectedHeight.value}');
-      print('Selected Eye Color: ${selectedEyeColor.value}');
-      print('Selected Hair Color: ${selectedHairColor.value}');
-      print('Selected Resume: ${selectedResume.value}');
-      print('Selected Image: ${selectedImage.value}');
-      print('Eye Color ID: ${eyeColor.id}');
-      print('Hair Color ID: ${hairColor.id}');
-      print('Skill ID: ${userSkill.id}');
-      print('Is Checked: ${isChecked.value}');
-      print('----------------------------');
-
-      final response = await AuthProvider.register(
-        uid: uid,
-        name: nameController.text,
-        email: emailController.text,
-        password: passwordController.text,
-        passwordConfirmation: confirmPasswordController.text,
-        role: 3,
-        country: countryController.text,
-        state: stateController.text,
-        city: cityController.text,
-        dob: selectedDate.value,
-        gender: selectedGender.value.toLowerCase(),
-        eyeColorId: eyeColor.id,
-        hairColorId: hairColor.id,
-        height: int.parse(selectedHeight.value),
-        resume: selectedResume.value,
-        skillId: userSkill.id,
-        profileImage: selectedImage.value,
-      );
-
-      if (response.status) {
         ApiService.setToken(response.data.token);
+
         if (response.data.user.profileImage != null) {
           profileImageUrl.value = response.data.user.profileImage!;
         }
+
+        print("✅ Backend registration success");
+
+        // 🔹 Step 4: Create Firestore document
+        await FirebaseFirestore.instance.collection('users').doc(uid).set({
+          'uid': uid,
+          'apiUserId': response.data.user.id ?? '',
+          'name': nameController.text.trim(),
+          'email': emailController.text.trim(),
+          'role': 'employee', // role 3 = employee
+          'profileImage': response.data.user.profileImage ?? '',
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
+        print("✅ Firestore document created successfully");
+
         Get.snackbar(
           'Success',
           response.message,
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
+
         Get.offAllNamed(Routes.SIGN_IN_VIEW);
+      } catch (apiError) {
+        // 🔹 Step 5: Rollback Firebase if backend fails
+        print("❌ Backend registration failed: $apiError");
+        await FirebaseAuth.instance.currentUser?.delete();
+        print("⚠️ Firebase user deleted due to backend failure");
+
+        Get.snackbar(
+          'Error',
+          apiError.toString().replaceFirst('Exception: ', ''),
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        Get.snackbar('Error', 'Email already exists in Firebase');
+      } else if (e.code == 'weak-password') {
+        Get.snackbar('Error', 'Password is too weak');
+      } else if (e.code == 'invalid-email') {
+        Get.snackbar('Error', 'Invalid email format');
       } else {
-        throw Exception(response.message);
+        Get.snackbar('Error', '${e.code}: ${e.message}');
       }
     } catch (e) {
-      print('Registration Error: $e');
-      errorMessage.value = e.toString().replaceFirst('Exception: ', '');
+      print('❌ Unexpected error: $e');
       Get.snackbar(
         'Error',
-        errorMessage.value,
+        e.toString().replaceFirst('Exception: ', ''),
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );

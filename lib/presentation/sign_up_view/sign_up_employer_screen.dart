@@ -8,7 +8,7 @@ import '../../infrastructure/widgets/custom_btn.dart';
 import '../../infrastructure/widgets/custom_text_field.dart';
 import 'component/agree_terms_tile.dart';
 import 'component/custom_dropdown.dart';
-import 'component/profile_photo_tile.dart';
+import 'component/hexagon_widget.dart';
 import 'controllers/sign_up_employer_controller.dart';
 
 class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
@@ -77,7 +77,17 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                 ),
 
                                 //Profile Photo Tile
-                                ProfilePhotoTile(),
+                                HexagonProfilePhotoTile(
+                                  selectedImage: controller.selectedImage.value,
+                                  imageUrl:
+                                      controller
+                                              .profileImageUrl
+                                              .value
+                                              .isNotEmpty
+                                          ? controller.profileImageUrl.value
+                                          : null,
+                                  onTap: controller.showImagePickerOptions,
+                                ),
 
                                 //Business Name Field
                                 CustomTextField(
@@ -156,9 +166,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                 //Position Seeking Field
                                 CustomDropdownField(
                                   hint: 'Position Seeking',
-
                                   iconPath: AppAssets.experienceLogo,
-
                                   selectedValue: controller.selectedSkill,
                                   onChanged: controller.updateSkill,
                                   items:
@@ -195,7 +203,8 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                   btnBackgroundColor: AppColors.primary,
                                   btnTxtColor: Colors.white,
                                   buttonWidth: double.infinity,
-                                  onPressed: () => controller.syncUserWithFirebase(),
+                                  onPressed:
+                                      () => controller.registerEmployer(),
                                 ),
                               ],
                             ),

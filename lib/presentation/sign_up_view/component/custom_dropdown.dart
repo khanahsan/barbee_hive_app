@@ -20,7 +20,6 @@ class CustomDropdownField extends StatelessWidget {
     required this.items,
   });
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -35,12 +34,12 @@ class CustomDropdownField extends StatelessWidget {
           Image.asset(
             iconPath,
             color: AppColors.textFieldTextColor,
-            width: 16.w,
-            height: 16.h,
+            width: 18.w,
+            height: 18.h,
           ),
           Expanded(
             child: Obx(
-                  () => DropdownButtonHideUnderline(
+              () => DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   isExpanded: true,
                   dropdownColor: Colors.grey[900],
@@ -48,14 +47,14 @@ class CustomDropdownField extends StatelessWidget {
                     selectedValue.value.isEmpty ? hint : selectedValue.value,
                     style: TextStyle(
                       color: AppColors.textFieldTextColor,
-                      fontSize: 14.sp,
+                      fontSize: 18.sp,
                     ),
                   ),
                   iconEnabledColor: Colors.grey,
                   items: items,
                   onChanged: onChanged,
                   value:
-                  selectedValue.value.isEmpty ? null : selectedValue.value,
+                      selectedValue.value.isEmpty ? null : selectedValue.value,
                   menuMaxHeight: 300.h,
                 ),
               ),

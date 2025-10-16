@@ -683,10 +683,18 @@ class CustomDrawer extends StatelessWidget {
                           SizedBox(height: 25.h),
 
                           drawerMenuTile(
-                            title: "My Jobs",
+                            title:
+                                controller.role == 2
+                                    ? "My Jobs"
+                                    : "My Applications",
                             iconPath: AppAssets.jobIcon,
-                            onTap: () {},
+                            onTap: () {
+                              controller.role == 2
+                                  ? Get.toNamed(Routes.jobs)
+                                  : Get.toNamed(Routes.myJobs);
+                            },
                           ),
+
                           SizedBox(height: 25.h),
 
                           drawerMenuTile(

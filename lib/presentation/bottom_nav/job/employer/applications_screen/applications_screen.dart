@@ -12,7 +12,6 @@ import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 class ApplicationsScreen extends GetView<ApplicationsController> {

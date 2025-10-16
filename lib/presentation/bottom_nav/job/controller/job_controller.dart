@@ -12,12 +12,15 @@ class JobController extends GetxController {
   final isLoadingEmployer = false.obs;
   final errorMessageEmployer = ''.obs;
 
-
   final employeeJobs = <JobData>[].obs;
   final isLoadingEmployee = false.obs;
   final errorMessageEmployee = ''.obs;
 
-
+  final searchController = TextEditingController();
+  final experienceController = TextEditingController();
+  final salaryController = TextEditingController();
+  final RxString selectedJobType = ''.obs;
+  final filteredJobs = <JobData>[].obs;
 
   @override
   void onInit() {
@@ -36,7 +39,12 @@ class JobController extends GetxController {
     final userId = SharedPreferenceHelper.getInt(SharedPrefKeys.userId);
     if (userId == null) {
       errorMessageEmployer.value = 'User ID not found';
-      Get.snackbar('Error', errorMessageEmployer.value, backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        errorMessageEmployer.value,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -53,7 +61,12 @@ class JobController extends GetxController {
       }
     } catch (e) {
       errorMessageEmployer.value = e.toString().replaceFirst('Exception: ', '');
-      Get.snackbar('Error', errorMessageEmployer.value, backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        errorMessageEmployer.value,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoadingEmployer.value = false;
     }
@@ -68,15 +81,83 @@ class JobController extends GetxController {
       final response = await AuthProvider.getEmployeeJobs();
       if (response.status) {
         employeeJobs.assignAll(response.data);
+        filteredJobs.assignAll(response.data);
         print('response.data ${response.data.length}');
       } else {
         throw Exception(response.message);
       }
     } catch (e) {
       errorMessageEmployee.value = e.toString().replaceFirst('Exception: ', '');
-      Get.snackbar('Error', errorMessageEmployee.value, backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        errorMessageEmployee.value,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoadingEmployee.value = false;
     }
+  }
+
+  void filterApplicationsByText(String query) {
+    var filtered = employeeJobs.toList();
+
+    if (query.isNotEmpty) {
+      filtered =
+          filtered.where((app) {
+            final titleMatch = app.title.toLowerCase().contains(
+              query.toLowerCase(),
+            );
+            final skillMatch =
+                app.skills!.name.toLowerCase().contains(query.toLowerCase()) ??
+                false;
+            return titleMatch || skillMatch;
+          }).toList();
+    }
+
+    filteredJobs.assignAll(applyDialogFilters(filtered));
+  }
+
+  List<JobData> applyDialogFilters(List<JobData> inputList) {
+    var filtered = inputList;
+
+    // Filter by selected skill (position)
+    // if (selectedSkill.value.isNotEmpty) {
+    //   filtered =
+    //       filtered.where((app) {
+    //         return app.applicant.skills?.name.toLowerCase() ==
+    //             selectedSkill.value.toLowerCase();
+    //       }).toList();
+    // }
+
+    if (selectedJobType.value.isNotEmpty) {
+      filtered =
+          filtered.where((app) {
+            return app.jobType.toLowerCase() ==
+                selectedJobType.value.toLowerCase();
+          }).toList();
+    }
+
+    if (salaryController.text.isNotEmpty) {
+      final salary = int.tryParse(salaryController.text);
+      if (salary != null) {
+        filtered =
+            filtered.where((app) {
+              return app.salaryRange.min == salary;
+            }).toList();
+      }
+    }
+
+    if (experienceController.text.isNotEmpty) {
+      final experience = int.tryParse(experienceController.text);
+      if (experience != null) {
+        filtered =
+            filtered.where((app) {
+              return app.experienceLevel == experience;
+            }).toList();
+      }
+    }
+
+    return filtered;
   }
 }

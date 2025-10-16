@@ -1,3 +1,4 @@
+import 'package:barbee_hive_app/data/firebase/firebase_notificaton_service.dart';
 import 'package:barbee_hive_app/firebase_options.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_binding.dart';
@@ -18,6 +19,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AdsHelper.initialize();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await NotificationService().initNotification();
+  await NotificationService().getToken();
 
   var initialRoute = await Routes.initialRoute;
   await ApiService.initToken();

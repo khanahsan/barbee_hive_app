@@ -1,12 +1,14 @@
 import 'package:barbee_hive_app/data/api/api_service.dart';
 
 class Routes {
-static Future<String> get initialRoute async {
-  await ApiService.initToken();
-  final token = ApiService.getToken();
-  print('Token: $token, Route: ${token != null && token.isNotEmpty ? CUSTOMDRAWER : HOME}');
-  return token != null && token.isNotEmpty ? CUSTOMDRAWER : HOME;
-}
+  static Future<String> get initialRoute async {
+    await ApiService.initToken();
+    final token = ApiService.getToken();
+    print(
+      'Token: $token, Route: ${token != null && token.isNotEmpty ? CUSTOMDRAWER : HOME}',
+    );
+    return token != null && token.isNotEmpty ? CUSTOMDRAWER : HOME;
+  }
 
   static const AUTH = '/auth';
   static const HOME = '/home';
@@ -30,4 +32,6 @@ static Future<String> get initialRoute async {
   static const jobPostingScreen = '/job_posting_screen';
   static const jobUpdateScreen = '/job_update_screen';
   static const applicantProfile = '/applicant_profile';
+  static const myJobs = '/my_jobs';
+  static const jobs = '/jobs';
 }

@@ -5,7 +5,6 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/widgets/custom_btn.dart';
-import '../../../infrastructure/widgets/custom_dialog.dart';
 import '../../../infrastructure/widgets/custom_textfield.dart';
 import '../controllers/auth.controller.dart';
 

@@ -11,7 +11,6 @@ class ProfilePhotoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.red,
       padding: EdgeInsets.all(10.w),
       child: Stack(
         alignment: Alignment.center,

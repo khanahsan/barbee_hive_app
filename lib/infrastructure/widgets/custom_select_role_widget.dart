@@ -33,11 +33,13 @@ class CustomSelectRoleWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(iconPath!, width: 70.w, height: 70.h),
+              SizedBox(height: 15.h),
               CustomButton(
+                buttonColor: AppColors.primary,
                 buttonText: btnText!,
                 onTap: () {},
-                buttonWidth: 95.0.w,
-                buttonHeight: 22.0.h,
+                buttonWidth: 100.0.w,
+                buttonHeight: 25.0.h,
                 borderRadius: 4.0.r,
               ),
             ],

@@ -7,7 +7,6 @@ import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/navigation/routes.dart';
 import '../../../infrastructure/widgets/custom_btn.dart';
-import '../../../infrastructure/widgets/fading_image_carousel.dart';
 import '../../../infrastructure/widgets/hexagon_clipper.dart';
 import 'controller/dashboardController.dart';
 

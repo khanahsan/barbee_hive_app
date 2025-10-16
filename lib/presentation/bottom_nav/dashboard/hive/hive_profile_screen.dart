@@ -4,7 +4,6 @@ import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../../data/model/dashboard_response.dart';
@@ -12,7 +11,6 @@ import '../../../../infrastructure/constants/app_colors.dart';
 import '../../../../infrastructure/constants/app_images.dart';
 import '../../../../infrastructure/widgets/custom_appbar.dart';
 import '../../../../infrastructure/widgets/custom_pdf_view.dart';
-import '../b2b/b2b_fading_carousel.dart';
 
 class HiveProfileScreen extends StatefulWidget {
   HiveProfileScreen({super.key, required this.currentUser});

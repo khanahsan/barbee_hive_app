@@ -1,4 +1,3 @@
-import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
@@ -161,7 +160,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         },
         title: _getAppBarTitle(currentBottomIndex),
         showActions: true,
-        leadingIconPath: AppAssets.menuIcon,
+
         actions:
             currentBottomIndex != 1 && currentBottomIndex != 3
                 ? [
@@ -171,16 +170,16 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     iconWidth: 24.w,
                   ),
                   currentBottomIndex != 2 ? SizedBox(width: 10.w) : SizedBox(),
-                  currentBottomIndex != 2
-                      ? _buildSvgPicture(
-                        iconPath: AppAssets.filterIcon,
-                        iconHeight: 24.h,
-                        iconWidth: 24.w,
-                        onTap: () {
-                          _scaffoldKey.currentState?.openEndDrawer();
-                        },
-                      )
-                      : SizedBox(),
+                  // currentBottomIndex != 2
+                  //     ? _buildSvgPicture(
+                  //       iconPath: AppAssets.filterIcon,
+                  //       iconHeight: 24.h,
+                  //       iconWidth: 24.w,
+                  //       onTap: () {
+                  //         _scaffoldKey.currentState?.openEndDrawer();
+                  //       },
+                  //     )
+                  //     : SizedBox(),
                 ]
                 : null,
       ),

@@ -9,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../../infrastructure/constants/app_colors.dart';
-import 'b2b_fading_carousel.dart';
 
 class B2BScreen extends StatelessWidget {
   B2BScreen({super.key, required this.currentUser});

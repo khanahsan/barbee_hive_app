@@ -1,7 +1,6 @@
 import 'package:barbee_hive_app/data/api/api_service.dart';
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/model/applicant_profile_response.dart';
-import 'package:barbee_hive_app/data/model/user_profile_response.dart';
 import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

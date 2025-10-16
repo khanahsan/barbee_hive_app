@@ -14,6 +14,7 @@ class CustomDrawerController extends GetxController
   final isDrawerOpen = false.obs;
   final userName = ''.obs;
   final userProfileImage = ''.obs;
+  int? role;
 
   @override
   void onInit() {
@@ -27,34 +28,21 @@ class CustomDrawerController extends GetxController
     offsetAnimation = Tween<Offset>(
       begin: const Offset(1.0, 0.0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeOutCubic),
+    );
 
-    fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Curves.easeOut,
-    ));
+    fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+    );
 
-    drawerScaleAnimation = Tween<double>(
-      begin: 0.92,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Curves.easeOut,
-    ));
+    drawerScaleAnimation = Tween<double>(begin: 0.92, end: 1.0).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+    );
 
-    dashboardStackScaleAnimation = Tween<double>(
-      begin: 0.97,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: animationController,
-      curve: Curves.easeOut,
-    ));
+    dashboardStackScaleAnimation = Tween<double>(begin: 0.97, end: 1.0).animate(
+      CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+    );
 
     _loadUserData();
   }
@@ -69,10 +57,13 @@ class CustomDrawerController extends GetxController
   }
 
   Future<void> _loadUserData() async {
-    final currentUserName =
-    SharedPreferenceHelper.getString(SharedPrefKeys.userName);
-    final currentProfileImage =
-    SharedPreferenceHelper.getString(SharedPrefKeys.userProfileImage);
+    final currentUserName = SharedPreferenceHelper.getString(
+      SharedPrefKeys.userName,
+    );
+    final currentProfileImage = SharedPreferenceHelper.getString(
+      SharedPrefKeys.userProfileImage,
+    );
+    role = SharedPreferenceHelper.getInt(SharedPrefKeys.userRole);
 
     userName.value = currentUserName ?? "";
     userProfileImage.value = currentProfileImage ?? "";

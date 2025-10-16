@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 /* class FadingImageCarousel extends StatefulWidget {
   const FadingImageCarousel({super.key, required this.imagePaths});

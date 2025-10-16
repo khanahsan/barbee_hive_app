@@ -10,14 +10,19 @@ class JobApplicationResponse {
   });
 
   factory JobApplicationResponse.fromJson(Map<String, dynamic> json) {
+    final data = json['data'];
     return JobApplicationResponse(
       status: json['status'] ?? false,
       message: json['message'] ?? '',
       data:
-          (json['data'] as List<dynamic>?)
-              ?.map((item) => JobApplicationData.fromJson(item))
-              .toList() ??
-          [],
+          (data is List)
+              ? data.map((item) => JobApplicationData.fromJson(item)).toList()
+              : [JobApplicationData.fromJson(data)],
+      // data:
+      //     (json['data'] as List<dynamic>?)
+      //         ?.map((item) => JobApplicationData.fromJson(item))
+      //         .toList() ??
+      //     [],
     );
   }
 }

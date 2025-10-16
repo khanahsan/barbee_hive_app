@@ -22,10 +22,6 @@ class SelectRoleView extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
-          'account type',
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
       ),
       body: Center(
         child: Column(
@@ -54,40 +50,44 @@ class SelectRoleView extends StatelessWidget {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                        color: AppColors.black,
-                        borderRadius: BorderRadius.only(topRight: Radius.circular(18.0), topLeft: Radius.circular(18.0))),
+                      color: AppColors.black,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(18.0),
+                        topLeft: Radius.circular(18.0),
+                      ),
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       spacing: 20.h,
                       children: [
-                        SizedBox(height: 15.h,),
+                        SizedBox(height: 15.h),
                         const Text(
                           'Choose an account type',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
-                
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            CustomSelectRoleWidget(iconPath: AppAssets.employeeLogo,
-                              onTap: (){
-                              Get.toNamed(Routes.SIGN_UP_VIEW);
-                              }, btnText: 'Employee',
+                            CustomSelectRoleWidget(
+                              iconPath: AppAssets.employeeLogo,
+                              onTap: () {
+                                Get.toNamed(Routes.SIGN_UP_VIEW);
+                              },
+                              btnText: 'Employee',
                             ),
                             CustomSelectRoleWidget(
                               iconPath: AppAssets.employerLogo,
-                              onTap: (){
+                              onTap: () {
                                 Get.toNamed(Routes.SIGN_UP_EMPLOYER);
                               },
                               btnText: 'Employer',
                             ),
                           ],
-                        )
+                        ),
                       ],
-                    ),),
+                    ),
+                  ),
                 ),
               ),
             ),

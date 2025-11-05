@@ -62,7 +62,7 @@ class SettingsScreen extends StatelessWidget {
         buttonText,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
           fontSize: 19.sp,
-          color: textColor ?? AppColors.primary,
+          color: textColor ?? AppColors.colorFF8600,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -133,7 +133,7 @@ class SettingsScreen extends StatelessWidget {
           "Notifications",
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontSize: 19.sp,
-            color: AppColors.primary,
+            color: AppColors.colorFF8600,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -159,7 +159,7 @@ class SettingsScreen extends StatelessWidget {
           "Display",
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontSize: 19.sp,
-            color: AppColors.primary,
+            color: AppColors.colorFF8600,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -179,7 +179,7 @@ class SettingsScreen extends StatelessWidget {
           "About",
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontSize: 19.sp,
-            color: AppColors.primary,
+            color: AppColors.colorFF8600,
             fontWeight: FontWeight.w600,
           ),
         ),

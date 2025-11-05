@@ -1,5 +1,5 @@
 import 'package:barbee_hive_app/data/api/api_service.dart';
-import 'package:barbee_hive_app/data/api/auth_provider.dart';
+import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
 import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/location_service.dart';
@@ -8,6 +8,7 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../data/api/firebase/firebase_service.dart';
 import '../../../infrastructure/helpers/shared_preference_helper.dart';
 
 class AuthController extends GetxController {
@@ -59,7 +60,7 @@ class AuthController extends GetxController {
 
     try {
       print('Attempting login with email: $email');
-      final response = await AuthProvider.login(email, password);
+      final response = await AuthApi.login(email, password);
       print('Login Response: $response');
       TokenStorage.saveToken(response.token);
 
@@ -85,7 +86,7 @@ class AuthController extends GetxController {
       );
 
       ApiService.setToken(response.token);
-      await AuthProvider.syncUserWithFirebase(
+      await FirebaseService.syncUserWithFirebase(
         apiUserId: response.user.id,
         email: response.user.email,
         password: password,
@@ -119,7 +120,7 @@ class AuthController extends GetxController {
     isLoading.value = true;
 
     try {
-      await AuthProvider.logout();
+      await AuthApi.logout();
       await TokenStorage.clearToken();
       ApiService.clearToken();
       Get.snackbar("Success", "Logged out successfully");
@@ -139,7 +140,6 @@ class AuthController extends GetxController {
     }
   }
 
-  /*
   Future<void> forgotPassword(BuildContext context) async {
     final email = fEmailController.text.trim();
 
@@ -161,65 +161,7 @@ class AuthController extends GetxController {
 
     try {
       print('Attempting forgot password for email: $email');
-      final response = await AuthProvider.forgotPassword(email);
-      final status = response['status'] as bool;
-      final message = response['message'] as String;
-      print('Forgot Password Response: status=$status, message=$message');
-
-
-      showResetPasswordDialog(context, email);
-
-      if (status) {
-        Get.offNamed(
-          Routes.SIGN_IN_VIEW,
-        ); // Navigate to SIGN_IN_VIEW on success
-      }
-    } catch (e) {
-      print('Forgot Password Error: $e');
-      String errorMessage = e.toString().replaceFirst(
-        'Exception: POST request error: Exception: ',
-        '',
-      );
-      errorMessage =
-          errorMessage.startsWith('Exception: ')
-              ? errorMessage.replaceFirst('Exception: ', '')
-              : errorMessage;
-      Get.snackbar(
-        "Forgot Password Failed",
-        errorMessage,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.TOP,
-        duration: Duration(seconds: 3),
-      );
-    } finally {
-      fPasswordIsLoading.value = false;
-    }
-  }
-*/
-
-  Future<void> forgotPassword(BuildContext context) async {
-    final email = fEmailController.text.trim();
-
-    if (email.isEmpty) {
-      Get.snackbar("Error", "Email required", backgroundColor: Colors.red);
-      return; // Keep return to prevent API call
-    }
-
-    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      Get.snackbar(
-        "Error",
-        "Please enter a valid email address",
-        backgroundColor: Colors.red,
-      );
-      return;
-    }
-
-    fPasswordIsLoading.value = true;
-
-    try {
-      print('Attempting forgot password for email: $email');
-      final response = await AuthProvider.forgotPassword(email);
+      final response = await AuthApi.forgotPassword(email);
       final status = response['status'] as bool; // Status is a boolean
       final message = response['message'] as String;
       print('Forgot Password Response: status=$status, message=$message');

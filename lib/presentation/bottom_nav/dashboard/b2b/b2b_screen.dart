@@ -58,7 +58,7 @@ class B2BScreen extends StatelessWidget {
                   height: 532.h,
                   padding: EdgeInsets.only(top: 3.h),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: AppColors.colorFF8600,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20.0.r),
                       topRight: Radius.circular(20.0.r),
@@ -94,7 +94,7 @@ class B2BScreen extends StatelessWidget {
                           ).textTheme.titleMedium?.copyWith(
                             fontSize: 12.sp,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
+                            color: AppColors.colorFF8600,
                           ),
                         ),
                         SizedBox(height: 40.h),
@@ -122,7 +122,7 @@ class B2BScreen extends StatelessWidget {
                           },
                           buttonText: "Send Message",
                           buttonWidth: double.infinity,
-                          buttonColor: AppColors.primary,
+                          buttonColor: AppColors.colorFF8600,
                           textColor: AppColors.white,
                           buttonHeight: 55.h,
                           buttonTextSize: 16.sp,
@@ -150,7 +150,7 @@ class B2BScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontSize: 17.sp,
             fontWeight: FontWeight.w600,
-            color: AppColors.primary,
+            color: AppColors.colorFF8600,
           ),
         ),
         Row(

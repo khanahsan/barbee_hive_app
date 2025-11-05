@@ -1,8 +1,13 @@
+import 'dart:developer';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdsHelper {
   static final AdsHelper _instance = AdsHelper._internal();
+
   factory AdsHelper() => _instance;
+
   AdsHelper._internal();
 
   BannerAd? _bannerAd;
@@ -19,8 +24,12 @@ class AdsHelper {
     required Function(BannerAd) onAdLoaded,
     required Function onAdFailed,
   }) {
+    final bannerID = dotenv.env['BANNER_AD_UNIT_ID'];
+
+    log('BANNER ID: $bannerID');
+
     _bannerAd = BannerAd(
-      adUnitId: "ca-app-pub-3940256099942544/6300978111", // test banner
+      adUnitId: bannerID ?? '', // test banner
       size: AdSize.largeBanner,
       request: const AdRequest(),
       listener: BannerAdListener(
@@ -37,8 +46,12 @@ class AdsHelper {
 
   /// ✅ Interstitial Ad
   void loadInterstitialAd() {
+    final interstitialID = dotenv.env['INTERSTITIAL_AD_UNIT_ID'];
+
+    log('Interstitial ID: $interstitialID');
+
     InterstitialAd.load(
-      adUnitId: "ca-app-pub-3940256099942544/1033173712", // test interstitial
+      adUnitId: interstitialID ?? '', // test interstitial
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) => _interstitialAd = ad,

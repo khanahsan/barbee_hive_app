@@ -1,9 +1,9 @@
-import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../../../data/api/job/job_api.dart';
 
 class ApplyScreenController extends GetxController {
   final experienceLevel = TextEditingController();
@@ -38,7 +38,12 @@ class ApplyScreenController extends GetxController {
         expectedSalary.text.isEmpty ||
         selectedJobType.value.isEmpty) {
       errorMessage.value = 'All fields are required';
-      Get.snackbar('Error', errorMessage.value, backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        errorMessage.value,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -46,12 +51,22 @@ class ApplyScreenController extends GetxController {
     final salary = double.tryParse(expectedSalary.text);
     if (years == null || years <= 0) {
       errorMessage.value = 'Invalid years of experience';
-      Get.snackbar('Error', errorMessage.value, backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        errorMessage.value,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
     if (salary == null || salary <= 0) {
       errorMessage.value = 'Invalid expected salary';
-      Get.snackbar('Error', errorMessage.value, backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        errorMessage.value,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -60,7 +75,7 @@ class ApplyScreenController extends GetxController {
 
     try {
       print('Applying for jobId: $jobId');
-      final response = await AuthProvider.applyJob(
+      final response = await JobApi.applyJob(
         jobId: jobId,
         experienceLevel: experienceLevel.text,
         yearsOfExperience: years,
@@ -71,10 +86,7 @@ class ApplyScreenController extends GetxController {
       if (response.status) {
         Get.back(); // Close screen
         Get.dialog(
-          CustomDialog(
-            title: "Congratulations",
-            subTitle: response.message,
-          ),
+          CustomDialog(title: "Congratulations", subTitle: response.message),
           barrierDismissible: false,
         );
       } else {
@@ -83,7 +95,12 @@ class ApplyScreenController extends GetxController {
     } catch (e) {
       print('Apply Job Error: $e');
       errorMessage.value = e.toString().replaceFirst('Exception: ', '');
-      Get.snackbar('Error', errorMessage.value, backgroundColor: Colors.red, colorText: Colors.white);
+      Get.snackbar(
+        'Error',
+        errorMessage.value,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading.value = false;
     }

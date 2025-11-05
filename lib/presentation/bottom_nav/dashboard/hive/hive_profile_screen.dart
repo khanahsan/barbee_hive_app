@@ -1,5 +1,7 @@
 import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,7 @@ import '../../../../infrastructure/widgets/custom_appbar.dart';
 import '../../../../infrastructure/widgets/custom_pdf_view.dart';
 
 class HiveProfileScreen extends StatefulWidget {
-  HiveProfileScreen({super.key, required this.currentUser});
+  const HiveProfileScreen({super.key, required this.currentUser});
 
   final User currentUser;
 
@@ -50,10 +52,6 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
             child: Image.network(
               widget.currentUser.profileImage ?? AppAssets.nullProfile,
             ),
-            // child: CustomFadingCarousel
-            //   showIndicators: false,
-            //   imagePaths: List.filled(3, AppAssets.profileImage),
-            // ),
           ),
 
           Positioned(
@@ -68,7 +66,7 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
                   height: 532.h,
                   padding: EdgeInsets.only(top: 3.h),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: AppColors.colorFF8600,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20.0.r),
                       topRight: Radius.circular(20.0.r),
@@ -91,63 +89,68 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.currentUser.employee?.name ?? "",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium?.copyWith(
-                            fontSize: 22.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.white,
-                          ),
+                        /// NAME LABEL
+                        CustomText(
+                          title: widget.currentUser.employee?.name ?? "",
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.white,
                         ),
-                        Text(
-                          ".6 mi away",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium?.copyWith(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
-                          ),
+
+                        /// DISTANCE
+                        CustomText(
+                          title: ".6 mi away",
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.colorFF8600,
                         ),
                         SizedBox(height: 25.h),
+
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           spacing: 1.5.h,
                           children: [
+                            /// EXPERIENCE FIELD
                             _infoRow(
-                              context,
                               "Experience",
                               widget.currentUser.employee?.skill?.name ?? "",
                             ),
-                            _infoRow(context, "Age", "28 Yr"),
+
+                            /// AGE FIELD
+                            // _infoRow("Age", "${widget.currentUser.employee?.} Yr"),
+
+                            /// GENDER FIELD
                             _infoRow(
-                              context,
                               "Gender",
                               widget.currentUser.employee?.gender ?? "",
                             ),
+
+                            /// EYE COLOR FIELD
                             _infoRow(
-                              context,
                               "Eye Color",
                               widget.currentUser.employee?.eyeColor?.name ?? "",
                             ),
+
+                            /// HAIR COLOR FIELD
                             _infoRow(
-                              context,
                               "Hair Color",
                               widget.currentUser.employee?.hairColor?.name ??
                                   "",
                             ),
+
+                            /// RESUME FIELD
                             _resumeRow(context),
                           ],
                         ),
                         SizedBox(height: 20.h),
+
                         CustomButton(
                           onTap: () {
                             Get.to(
                               () => ChatScreen(
                                 chatId:
-                                    "${chatController.currentUserId.value}-${widget.currentUser.uid}", // Potential chatId
+                                    "${chatController.currentUserId.value}-${widget.currentUser.uid}",
+                                // Potential chatId
                                 otherName: widget.currentUser.employee!.name,
                                 otherImage: widget.currentUser.profileImage!,
                                 employeeData: {
@@ -162,7 +165,7 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
                           },
                           buttonText: "Send Message",
                           buttonWidth: double.infinity,
-                          buttonColor: AppColors.primary,
+                          buttonColor: AppColors.colorFF8600,
                           textColor: AppColors.white,
                           buttonHeight: 55.h,
                           buttonTextSize: 16.sp,
@@ -179,13 +182,13 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
     );
   }
 
-  Widget _infoRow(BuildContext context, String label, String value) {
+  Widget _infoRow(String label, String value) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       spacing: 1.5.w,
       children: [
-        Expanded(child: _infoTile(context, label, AppColors.white, false)),
-        Expanded(child: _infoTile(context, value, AppColors.color5E5E5E, true)),
+        Expanded(child: _infoTile(label, AppColors.white, false)),
+        Expanded(child: _infoTile(value, AppColors.color5E5E5E, true)),
       ],
     );
   }
@@ -197,12 +200,7 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
       spacing: 1.5.w,
       children: [
         Expanded(
-          child: _infoTile(
-            context,
-            "Resume/Certification",
-            AppColors.white,
-            false,
-          ),
+          child: _infoTile("Resume/Certification", AppColors.white, false),
         ),
         Expanded(
           child: GestureDetector(
@@ -210,29 +208,21 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
               if (resumePath != null && resumePath.isNotEmpty) {
                 Get.to(() => CustomPdfView(pdfUrl: resumePath));
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('No resume available')),
+                Utilities.showSnackBar(
+                  title: 'Error',
+                  message: 'No Resume Available',
+                  isSuccess: false,
                 );
               }
             },
-            child: _infoTile(
-              context,
-              "Click View",
-              AppColors.color8690FF,
-              true,
-            ),
+            child: _infoTile("Click View", AppColors.color8690FF, true),
           ),
         ),
       ],
     );
   }
 
-  Widget _infoTile(
-    BuildContext context,
-    String text,
-    Color color,
-    bool isLeftAligned,
-  ) {
+  Widget _infoTile(String text, Color color, bool isLeftAligned) {
     return Container(
       alignment: isLeftAligned ? Alignment.centerLeft : Alignment.centerRight,
       padding: EdgeInsets.only(
@@ -241,13 +231,11 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
       ),
       height: 50.h,
       color: AppColors.color111111,
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w600,
-          color: color,
-        ),
+      child: CustomText(
+        title: text,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: color,
       ),
     );
   }

@@ -1,16 +1,18 @@
+import 'package:barbee_hive_app/infrastructure/constants/app_strings.dart';
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import '../../../infrastructure/constants/app_colors.dart';
-import '../../../infrastructure/constants/app_images.dart';
-import '../../../infrastructure/navigation/routes.dart';
-import '../../../infrastructure/widgets/custom_btn.dart';
-import '../../../infrastructure/widgets/custom_textfield.dart';
-import '../controllers/auth.controller.dart';
+import '../../infrastructure/constants/app_colors.dart';
+import '../../infrastructure/constants/app_images.dart';
+import '../../infrastructure/navigation/routes.dart';
+import '../../infrastructure/widgets/custom_btn.dart';
+import '../../infrastructure/widgets/custom_textfield.dart';
+import '../auth/controllers/auth.controller.dart';
 
 class SignInView extends GetView<AuthController> {
   const SignInView({super.key});
@@ -26,10 +28,7 @@ class SignInView extends GetView<AuthController> {
             left: 0,
             right: 0,
             top: 0,
-            child: Container(
-              //height: 200.h,
-              child: Image.asset(AppAssets.backgroundLogo, fit: BoxFit.cover),
-            ),
+            child: Image.asset(AppAssets.backgroundLogo, fit: BoxFit.cover),
           ),
           Positioned(
             bottom: 0,
@@ -37,19 +36,22 @@ class SignInView extends GetView<AuthController> {
             right: 0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-
               spacing: 15.h,
               children: [
-                Text(
-                  'Login to\nBarBee Hive',
-                  style: TextStyle(fontSize: 36, color: AppColors.white),
+                /// LABEL
+                CustomText(
+                  title: '${AppStrings.loginTo}\n${AppStrings.appName}',
+                  fontSize: 36,
+                  color: AppColors.white,
                 ).paddingSymmetric(horizontal: 20.w),
+
+                /// SUB LABEL
                 RichText(
                   text: TextSpan(
                     style: TextStyle(fontSize: 12, color: AppColors.white),
                     children: [
                       TextSpan(
-                        text: 'Welcome back to  ',
+                        text: '${AppStrings.welcomeBackTo} ',
                         style: TextStyle(
                           color: AppColors.white,
                           fontSize: 20.0.sp,
@@ -57,23 +59,15 @@ class SignInView extends GetView<AuthController> {
                         ),
                       ),
                       TextSpan(
-                        text: 'Barbee Hive,',
+                        text: '${AppStrings.appName}, ',
                         style: TextStyle(
-                          color: AppColors.primary,
+                          color: AppColors.colorFF8600,
                           fontSize: 20.0.sp,
                           fontWeight: FontWeight.w400,
                         ),
-                        recognizer:
-                            TapGestureRecognizer()
-                              ..onTap = () {
-                                /*// Open YouTube URL
-                            const url = 'https://www.youtube.com';
-                            launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);*/
-                              },
                       ),
                       TextSpan(
-                        text:
-                            ' Find the Hottest Bars. Join the Coolest Crowds.',
+                        text: AppStrings.findHottestBar,
                         style: TextStyle(
                           color: AppColors.white,
                           fontSize: 20.0.sp,
@@ -89,7 +83,7 @@ class SignInView extends GetView<AuthController> {
                   margin: EdgeInsets.only(top: 20.h),
                   padding: EdgeInsets.only(top: 3.h),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: AppColors.colorFF8600,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20.0.r),
                       topRight: Radius.circular(20.0.r),
@@ -114,7 +108,7 @@ class SignInView extends GetView<AuthController> {
                         spacing: 15.h,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          //Email Field
+                          /// EMAIL FIELD
                           CustomTextField(
                             validate: FormValidators.validateEmail,
                             fontColor: AppColors.color4C4C4C,
@@ -131,7 +125,7 @@ class SignInView extends GetView<AuthController> {
                             controller: controller.nameController,
                           ),
 
-                          //Password Field
+                          /// PASSWORD FIELD
                           Obx(
                             () => CustomTextField(
                               validate: FormValidators.validatePassword,
@@ -140,7 +134,8 @@ class SignInView extends GetView<AuthController> {
                               fillColor: AppColors.color101010,
                               enabledBorderColor: Colors.transparent,
                               obscureText: controller.isObscured.value,
-                              hintText: 'Password',
+                              hintText: AppStrings.password,
+                              actionKeyboard: TextInputAction.done,
                               prefixIcon: SvgPicture.asset(
                                 AppAssets.lockIcon,
                                 fit: BoxFit.scaleDown,
@@ -159,7 +154,7 @@ class SignInView extends GetView<AuthController> {
                             ),
                           ),
 
-                          //Forget Password Field
+                          /// FORGET PASSWORD OPTION
                           Align(
                             alignment: Alignment.centerRight,
                             child: GestureDetector(
@@ -172,34 +167,30 @@ class SignInView extends GetView<AuthController> {
                                   context,
                                 ).textTheme.titleMedium?.copyWith(
                                   fontSize: 15.sp,
-                                  color: AppColors.primary,
+                                  color: AppColors.colorFF8600,
                                 ),
                               ),
                             ),
                           ),
-
-                          //Sign In Button
                           SizedBox(height: 30.h),
+
+                          /// SIGN IN OPTION
                           Obx(
                             () => CustomBtn(
                               buttonHeight: 55.h,
-                              btnTitle: 'Sign In',
-                              btnBackgroundColor: AppColors.primary,
+                              btnTitle: AppStrings.signIn,
+                              btnBackgroundColor: AppColors.colorFF8600,
                               btnTxtColor: AppColors.white,
                               onPressed: () {
-                                if (controller.formKey.currentState!
-                                    .validate()) {
+                                if (controller.formKey.currentState!.validate()) {
                                   controller.login();
                                 }
                               },
-                              isLoading:
-                                  controller
-                                      .isLoading
-                                      .value, // Pass reactive isLoading value
+                              isLoading: controller.isLoading.value,
                             ),
                           ),
 
-                          //Sign Up Option
+                          /// SIGN UP OPTION
                           RichText(
                             text: TextSpan(
                               style: TextStyle(
@@ -208,7 +199,7 @@ class SignInView extends GetView<AuthController> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: "Don't have an account?",
+                                  text: AppStrings.noAccount,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.titleMedium?.copyWith(
@@ -218,12 +209,12 @@ class SignInView extends GetView<AuthController> {
                                 ),
                                 TextSpan(text: " "),
                                 TextSpan(
-                                  text: 'Sign Up',
+                                  text: AppStrings.signUp,
                                   style: Theme.of(
                                     context,
                                   ).textTheme.titleMedium?.copyWith(
                                     fontSize: 15.sp,
-                                    color: AppColors.primary,
+                                    color: AppColors.colorFF8600,
                                   ),
                                   recognizer:
                                       TapGestureRecognizer()..onTap = () {},

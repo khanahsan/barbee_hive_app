@@ -82,7 +82,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                 controller.isEditing.value ? null : fullHeight,
                             padding: EdgeInsets.only(top: 3.h),
                             decoration: BoxDecoration(
-                              color: AppColors.primary,
+                              color: AppColors.colorFF8600,
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(20.0.r),
                                 topRight: Radius.circular(20.0.r),
@@ -128,7 +128,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                           ).textTheme.titleMedium?.copyWith(
                                             fontSize: 16.sp,
                                             fontWeight: FontWeight.w600,
-                                            color: AppColors.primary,
+                                            color: AppColors.colorFF8600,
                                           ),
                                         ),
                                         TextSpan(text: " "),
@@ -141,7 +141,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                             fontWeight: FontWeight.w600,
                                             color:
                                                 controller.isEditing.value
-                                                    ? AppColors.primary
+                                                    ? AppColors.colorFF8600
                                                     : AppColors.white,
                                           ),
                                         ),
@@ -163,7 +163,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                           controller.isEditing.value == true
                                               ? "Submit Now"
                                               : 'Edit Profile',
-                                      btnBackgroundColor: AppColors.primary,
+                                      btnBackgroundColor: AppColors.colorFF8600,
                                       btnTxtColor: Colors.white,
                                       // width: double.infinity,
                                       onPressed: () {

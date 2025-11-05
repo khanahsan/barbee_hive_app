@@ -1,3 +1,4 @@
+/*
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
@@ -8,9 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
+
 import '../../infrastructure/constants/app_colors.dart';
-import '../../infrastructure/constants/app_images.dart';
-import '../../infrastructure/widgets/custom_appbar.dart';
 import 'dashboard/dashboard_screen.dart';
 import 'job/job_screen.dart';
 import 'message/message_screen.dart';
@@ -125,13 +125,13 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   // Getter for screens list
   List<Widget> get screens {
     return [
-      DashboardScreen(),
-      MessageScreen(),
+      DashboardScreen(onMenuPressed: widget.onMenuPressed),
+      MessageScreen(onMenuPressed: widget.onMenuPressed),
       // currentUserID != null && role != null
       //     ? MessageScreen(currentUserID: currentUserID.toString(), role: role!)
       //     : Center(child: CircularProgressIndicator()), // Fallback while loading
-      JobScreen(),
-      PricingPlansScreen(),
+      JobScreen(onMenuPressed: widget.onMenuPressed),
+      PricingPlansScreen(onMenuPressed: widget.onMenuPressed),
     ];
   }
 
@@ -152,44 +152,44 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     print("role, $role");
     return Scaffold(
       key: _scaffoldKey,
-      appBar: customAppbar(
-        profileImagePath: userProfileImage,
-        context: context,
-        leadingTapFunction: () {
-          widget.onMenuPressed();
-        },
-        title: _getAppBarTitle(currentBottomIndex),
-        showActions: true,
 
-        actions:
-            currentBottomIndex != 1 && currentBottomIndex != 3
-                ? [
-                  _buildSvgPicture(
-                    iconPath: AppAssets.bellIcon,
-                    iconHeight: 24.h,
-                    iconWidth: 24.w,
-                  ),
-                  currentBottomIndex != 2 ? SizedBox(width: 10.w) : SizedBox(),
-                  // currentBottomIndex != 2
-                  //     ? _buildSvgPicture(
-                  //       iconPath: AppAssets.filterIcon,
-                  //       iconHeight: 24.h,
-                  //       iconWidth: 24.w,
-                  //       onTap: () {
-                  //         _scaffoldKey.currentState?.openEndDrawer();
-                  //       },
-                  //     )
-                  //     : SizedBox(),
-                ]
-                : null,
-      ),
-
+      // appBar: customAppbar(
+      //   profileImagePath: userProfileImage,
+      //   context: context,
+      //   leadingTapFunction: () {
+      //     widget.onMenuPressed();
+      //   },
+      //   title: _getAppBarTitle(currentBottomIndex),
+      //   showActions: true,
+      //
+      //   actions:
+      //       currentBottomIndex != 1 && currentBottomIndex != 3
+      //           ? [
+      //             _buildSvgPicture(
+      //               iconPath: AppAssets.bellIcon,
+      //               iconHeight: 24.h,
+      //               iconWidth: 24.w,
+      //             ),
+      //             currentBottomIndex != 2 ? SizedBox(width: 10.w) : SizedBox(),
+      //             // currentBottomIndex != 2
+      //             //     ? _buildSvgPicture(
+      //             //       iconPath: AppAssets.filterIcon,
+      //             //       iconHeight: 24.h,
+      //             //       iconWidth: 24.w,
+      //             //       onTap: () {
+      //             //         _scaffoldKey.currentState?.openEndDrawer();
+      //             //       },
+      //             //     )
+      //             //     : SizedBox(),
+      //           ]
+      //           : null,
+      // ),
       endDrawer: Drawer(
         backgroundColor: AppColors.black,
         child: Column(
           children: [
             AppBar(
-              backgroundColor: AppColors.primary,
+              backgroundColor: AppColors.colorFF8600,
               title: Text("Filters"),
               titleTextStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontSize: 20.sp,
@@ -281,7 +281,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               onTap: () {},
               buttonWidth: double.infinity,
               buttonHeight: 60.h,
-              buttonColor: AppColors.primary,
+              buttonColor: AppColors.colorFF8600,
               borderRadius: 10.r,
             ).paddingSymmetric(horizontal: 15.w),
           ],
@@ -343,6 +343,208 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
               items.map((String val) {
                 return DropdownMenuItem<String>(value: val, child: Text(val));
               }).toList(),
+          onChanged: onChanged,
+        ),
+      ),
+    );
+  }
+}
+*/
+
+import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/cutom_bottom_nav_bar.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/dashboard_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/job_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/message/message_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/pricing_plans_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:my_responsive_ui/my_responsive_ui.dart';
+
+import 'controller/bottom_nav_controller.dart';
+
+class BottomNavScreen extends GetView<BottomNavController> {
+  const BottomNavScreen({super.key, required this.onMenuPressed});
+
+  final VoidCallback onMenuPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+    // Screen list
+    final List<Widget> screens = [
+      DashboardScreen(onMenuPressed: onMenuPressed),
+      MessageScreen(onMenuPressed: onMenuPressed),
+      JobScreen(onMenuPressed: onMenuPressed),
+      PricingPlansScreen(onMenuPressed: onMenuPressed),
+    ];
+
+    return Obx(
+      () => Scaffold(
+        key: scaffoldKey,
+        backgroundColor: AppColors.black,
+
+        // endDrawer: Drawer(
+        //   backgroundColor: AppColors.black,
+        //   child: Column(
+        //     children: [
+        //       AppBar(
+        //         backgroundColor: AppColors.colorFF8600,
+        //         title: const Text("Filters"),
+        //         titleTextStyle: Theme.of(
+        //           context,
+        //         ).textTheme.titleMedium?.copyWith(
+        //           fontSize: 20.sp,
+        //           fontWeight: FontWeight.w500,
+        //           color: AppColors.white,
+        //         ),
+        //         automaticallyImplyLeading: false,
+        //         actions: [
+        //           IconButton(
+        //             icon: const Icon(Icons.close, color: AppColors.white),
+        //             onPressed: () {
+        //               Navigator.of(context).pop();
+        //             },
+        //           ),
+        //         ],
+        //       ),
+        //       SizedBox(height: 30.h),
+        //
+        //       _buildDropdown(
+        //         context,
+        //         value: controller.selectedJob?.value,
+        //         hintText: "Select Job Type",
+        //         items: controller.jobList,
+        //         onChanged: (val) => controller.selectedJob?.value = val ?? '',
+        //       ).paddingSymmetric(horizontal: 15.w),
+        //
+        //       SizedBox(height: 25.h),
+        //       _buildDropdown(
+        //         context,
+        //         value: controller.selectedPosition?.value,
+        //         hintText: "Select Position Type",
+        //         items: controller.positionList,
+        //         onChanged:
+        //             (val) => controller.selectedPosition?.value = val ?? '',
+        //       ).paddingSymmetric(horizontal: 15.w),
+        //
+        //       SizedBox(height: 25.h),
+        //       _buildDropdown(
+        //         context,
+        //         value: controller.selectedMinAge?.value,
+        //         hintText: "Min Age",
+        //         items: controller.minAgeList,
+        //         onChanged:
+        //             (val) => controller.selectedMinAge?.value = val ?? '',
+        //       ).paddingSymmetric(horizontal: 15.w),
+        //
+        //       SizedBox(height: 25.h),
+        //       _buildDropdown(
+        //         context,
+        //         value: controller.selectedMaxAge?.value,
+        //         hintText: "Max Age",
+        //         items: controller.maxAgeList,
+        //         onChanged:
+        //             (val) => controller.selectedMaxAge?.value = val ?? '',
+        //       ).paddingSymmetric(horizontal: 15.w),
+        //
+        //       SizedBox(height: 25.h),
+        //       _buildDropdown(
+        //         context,
+        //         value: controller.selectedGender?.value,
+        //         hintText: "Gender",
+        //         items: controller.genderList,
+        //         onChanged:
+        //             (val) => controller.selectedGender?.value = val ?? '',
+        //       ).paddingSymmetric(horizontal: 15.w),
+        //
+        //       SizedBox(height: 25.h),
+        //       _buildDropdown(
+        //         context,
+        //         value: controller.selectedHeight?.value,
+        //         hintText: "Height",
+        //         items: controller.heightList,
+        //         onChanged:
+        //             (val) => controller.selectedHeight?.value = val ?? '',
+        //       ).paddingSymmetric(horizontal: 15.w),
+        //
+        //       SizedBox(height: 25.h),
+        //       _buildDropdown(
+        //         context,
+        //         value: controller.selectedEyeColor?.value,
+        //         hintText: "Eye Color",
+        //         items: controller.eyeColorList,
+        //         onChanged:
+        //             (val) => controller.selectedEyeColor?.value = val ?? '',
+        //       ).paddingSymmetric(horizontal: 15.w),
+        //
+        //       SizedBox(height: 25.h),
+        //       _buildDropdown(
+        //         context,
+        //         value: controller.selectedHairColor?.value,
+        //         hintText: "Hair Color",
+        //         items: controller.hairColorList,
+        //         onChanged:
+        //             (val) => controller.selectedHairColor?.value = val ?? '',
+        //       ).paddingSymmetric(horizontal: 15.w),
+        //
+        //       SizedBox(height: 25.h),
+        //       CustomButton(
+        //         buttonText: "Apply Filters",
+        //         onTap: controller.applyFilters,
+        //         buttonWidth: double.infinity,
+        //         buttonHeight: 60.h,
+        //         buttonColor: AppColors.colorFF8600,
+        //         borderRadius: 10.r,
+        //       ).paddingSymmetric(horizontal: 15.w),
+        //     ],
+        //   ),
+        // ),
+        body: screens[controller.currentBottomIndex.value],
+
+        bottomNavigationBar: CustomBottomNavBar(
+          currentIndex: controller.currentBottomIndex.value,
+          onTap: (index) => controller.onItemTapped(index),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdown(
+    BuildContext context, {
+    String? value,
+    required String hintText,
+    required List<String> items,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.colorA3A3A3),
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          isExpanded: true,
+          value: value!.isEmpty ? null : value,
+          hint: Text(
+            hintText,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: AppColors.colorA3A3A3,
+              fontSize: 16.sp,
+            ),
+          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(color: AppColors.colorA3A3A3),
+          items:
+              items
+                  .map(
+                    (String val) =>
+                        DropdownMenuItem<String>(value: val, child: Text(val)),
+                  )
+                  .toList(),
           onChanged: onChanged,
         ),
       ),

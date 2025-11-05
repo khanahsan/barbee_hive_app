@@ -7,6 +7,7 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../../data/api/job/job_api.dart';
 import '../../../../../../data/model/color_response.dart' as colorModel;
 
 class JobUpdateController extends GetxController {
@@ -158,7 +159,7 @@ class JobUpdateController extends GetxController {
     errorMessage.value = '';
 
     try {
-      final response = await AuthProvider.updateJob(
+      final response = await JobApi.updateJob(
         id: job.id,
         title: jobRoleController.text,
         description: jobDesController.text,

@@ -21,7 +21,7 @@ class ProfilePhotoTile extends StatelessWidget {
               padding: EdgeInsets.all(10),
               width: 124.w,
               height: 124.h,
-              color: AppColors.primary,
+              color: AppColors.colorFF8600,
             ),
           ),
           ClipPath(

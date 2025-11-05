@@ -1,6 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_binding.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/customDrawer/custom_drawer.dart';
-import 'package:barbee_hive_app/presentation/auth/views/sign_in_view.dart';
+import 'package:barbee_hive_app/presentation/signIn/sign_in_view.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/b2b/b2b_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/hive/hive_profile_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/myjobs_screen.dart';

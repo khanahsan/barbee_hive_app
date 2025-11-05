@@ -1,4 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/widgets/customDrawer/controller/custom_drawer_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/controller/bottom_nav_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/controller/apply_screen_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/controller/myjob_screen_controller.dart';
@@ -6,6 +8,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applicant_p
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/controller/application_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/controller/job_update_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller/pricing_plans_controller.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/controllers/sign_up_employer_controller.dart';
 import 'package:get/get.dart';
@@ -21,6 +24,7 @@ class InitialBindings implements Bindings {
     // TODO: implement dependencies
 
     Get.lazyPut<HomeController>(() => HomeController());
+    Get.lazyPut<DashboardController>(() => DashboardController());
     Get.lazyPut<CustomDrawerController>(() => CustomDrawerController());
     Get.lazyPut<AuthController>(() => AuthController());
     Get.lazyPut<SignUpEmployeeController>(() => SignUpEmployeeController());
@@ -34,5 +38,10 @@ class InitialBindings implements Bindings {
     Get.lazyPut<ChatController>(() => ChatController(), fenix: true);
     Get.lazyPut<JobUpdateController>(() => JobUpdateController(), fenix: true);
     Get.lazyPut<MyjobsController>(() => MyjobsController(), fenix: true);
+    Get.lazyPut<BottomNavController>(() => BottomNavController(), fenix: true);
+    Get.lazyPut<PricingPlansController>(
+      () => PricingPlansController(),
+      fenix: true,
+    );
   }
 }

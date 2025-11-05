@@ -31,7 +31,7 @@ class ForgotPasswordView extends GetView<AuthController> {
               Container(
                 padding: EdgeInsets.only(top: 3.h),
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: AppColors.colorFF8600,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.0.r),
                     topRight: Radius.circular(20.0.r),
@@ -89,7 +89,7 @@ class ForgotPasswordView extends GetView<AuthController> {
                         () => CustomBtn(
                           buttonHeight: 55.h,
                           btnTitle: 'Send Code',
-                          btnBackgroundColor: AppColors.primary,
+                          btnBackgroundColor: AppColors.colorFF8600,
                           btnTxtColor: AppColors.white,
                           onPressed: () => controller.forgotPassword(context),
                           isLoading: controller.fPasswordIsLoading.value,

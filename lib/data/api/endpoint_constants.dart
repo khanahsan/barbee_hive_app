@@ -18,4 +18,7 @@ class ApiEndPoints {
   static const String applyJob = 'jobs/applications/store';
   static const String jobApplications = 'jobs/applications/show';
   static const String setting = 'setting';
+
+  /// SUBSCRIPTION
+  static const String subscriptionPlans = 'subscription/plans';
 }

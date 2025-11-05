@@ -35,7 +35,7 @@ class CustomSelectRoleWidget extends StatelessWidget {
               Image.asset(iconPath!, width: 70.w, height: 70.h),
               SizedBox(height: 15.h),
               CustomButton(
-                buttonColor: AppColors.primary,
+                buttonColor: AppColors.colorFF8600,
                 buttonText: btnText!,
                 onTap: () {},
                 buttonWidth: 100.0.w,

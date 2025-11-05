@@ -106,7 +106,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                         onTap: () => Navigator.of(context).pop(),
                         child: Icon(
                           Icons.close,
-                          color: AppColors.primary,
+                          color: AppColors.colorFF8600,
                           size: 24.sp,
                         ),
                       ),
@@ -185,7 +185,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                       buttonText: "Done",
                       buttonWidth: double.infinity,
                       buttonTextSize: 15.sp,
-                      buttonColor: AppColors.primary,
+                      buttonColor: AppColors.colorFF8600,
                       buttonHeight: 55.h,
                       borderRadius: 10.r,
                       onTap: () {
@@ -241,7 +241,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
             SizedBox(height: 20.h),
             if (controller.isLoading.value)
               const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+                child: CircularProgressIndicator(color: AppColors.colorFF8600),
               )
             else if (controller.errorMessage.isNotEmpty)
               Column(
@@ -256,7 +256,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     buttonText: 'Retry',
                     onTap: () => controller.fetchApplications(jobId),
                     buttonWidth: 100.w,
-                    buttonColor: AppColors.primary,
+                    buttonColor: AppColors.colorFF8600,
                     buttonHeight: 40.h,
                     buttonTextSize: 16.sp,
                   ),
@@ -462,7 +462,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                   buttonText: 'View Profile',
                   buttonWidth: double.infinity,
                   buttonColor: AppColors.color101010,
-                  borderColor: AppColors.primary,
+                  borderColor: AppColors.colorFF8600,
                   buttonTextSize: 15.sp,
                   buttonHeight: 55.h,
 
@@ -483,7 +483,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                 child: CustomButton(
                   buttonText: 'Send Message',
                   buttonWidth: double.infinity,
-                  buttonColor: AppColors.primary,
+                  buttonColor: AppColors.colorFF8600,
                   buttonTextSize: 15.sp,
                   buttonHeight: 55.h,
                   onTap: () {

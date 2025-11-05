@@ -12,11 +12,18 @@ class ChatController extends GetxController {
   var currentUserRole = "".obs;
   var chats = <QueryDocumentSnapshot>[].obs;
   var isLoading = true.obs;
+  RxString userProfileImage = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
     loadCurrentUser();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    userProfileImage.value =
+        SharedPreferenceHelper.getString(SharedPrefKeys.userProfileImage) ?? '';
   }
 
   /// Load current user details from Firebase + SharedPrefs

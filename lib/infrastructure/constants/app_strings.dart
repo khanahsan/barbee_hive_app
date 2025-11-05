@@ -1,12 +1,10 @@
 class AppStrings {
-  static const String appHeading = 'Welcome to Loyalty Hub';
-  static const String appSubtitle =
-      'Your ultimate loyalty experience! Track rewards, discover deals, and connect with local favorites—all in one app.';
-  static const String signUp = 'Sign Up';
-  static const String login = 'Login';
 
-  static const String signUpToContinue = 'Sign up to continue';
   static const String name = 'Name';
+  static const String appName = 'BarBee Hive';
+  static const String loginTo = 'Login to';
+  static const String welcomeBackTo = 'Welcome back to';
+  static const String findHottestBar = 'Find the Hottest Bars. Join the Coolest Crowds.';
   static const String yourName = 'Your name';
   static const String exampleEmail = "john.doe@abc.com";
 
@@ -23,6 +21,8 @@ class AppStrings {
   static const String forgotPassword = 'Forgot Password?';
   static const String signInToContinue = 'Sign in to continue';
   static const String signIn = 'Sign In';
+  static const String signUp = 'Sign Up';
+  static const String noAccount = 'Don''t have an account?';
 
   static const String confirmEmail = 'Confirm email';
   static const String confirm = 'Confirm';

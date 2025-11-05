@@ -79,7 +79,7 @@ class MyJobsScreen extends GetView<MyjobsController> {
                     controller.isLoading.value
                         ? Center(
                           child: CircularProgressIndicator(
-                            color: AppColors.primary,
+                            color: AppColors.colorFF8600,
                           ),
                         )
                         : controller.appliedJobs.isEmpty

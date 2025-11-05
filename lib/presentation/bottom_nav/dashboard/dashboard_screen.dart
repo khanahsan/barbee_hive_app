@@ -1,4 +1,7 @@
+import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -6,44 +9,49 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/navigation/routes.dart';
+import '../../../infrastructure/widgets/custom_appbar.dart';
 import '../../../infrastructure/widgets/custom_btn.dart';
 import '../../../infrastructure/widgets/hexagon_clipper.dart';
 import 'controller/dashboardController.dart';
 
-class DashboardScreen extends StatelessWidget {
-  DashboardScreen({super.key});
+class DashboardScreen extends GetView<DashboardController> {
+  DashboardScreen({super.key, this.onMenuPressed});
 
-  var controller = Get.put(DashboardController());
+  final VoidCallback? onMenuPressed;
 
   @override
   Widget build(BuildContext context) {
-    final List<String> imagePaths = [
-      AppAssets.sampleImage,
-      AppAssets.sampleImage2,
-      AppAssets.profileImage,
-    ];
-
     return Scaffold(
-      // appBar: appBarSection(context),
+      appBar: customAppbar(
+        showHexagon: true,
+        profileImagePath: controller.userProfileImage.value,
+        context: context,
+        leadingTapFunction: () {
+          if (onMenuPressed != null) onMenuPressed!();
+        },
+        actions: [
+          SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
+        ],
+        title: 'Home',
+      ),
       backgroundColor: AppColors.black,
       body: Obx(() {
-        if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
-        } else if (controller.errorMessage.value.isNotEmpty) {
+        if (controller.errorMessage.value.isNotEmpty) {
           return Center(
             child: Column(
+              spacing: 10.h,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  controller.errorMessage.value,
-                  style: TextStyle(color: Colors.red, fontSize: 16.sp),
+                CustomText(
+                  title: controller.errorMessage.value,
+                  fontSize: 16,
+                  color: AppColors.expiredBannerColor,
                 ),
-                SizedBox(height: 10.h),
                 CustomBtn(
                   btnTitle: 'Retry',
                   onPressed: () => controller.fetchDashboardUsers(),
                   buttonHeight: 50,
-                  btnBackgroundColor: AppColors.primary,
+                  btnBackgroundColor: AppColors.colorFF8600,
                   btnTxtColor: AppColors.white,
                 ),
               ],
@@ -56,27 +64,32 @@ class DashboardScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               spacing: 25.h,
               children: [
+                /// B2B SECTION
                 b2bSection(context),
 
-                // FadingImageCarousel(
-                //   imagePaths: imagePaths,
-                //   bannerAd: controller.bannerAd,
-                //   isAdLoaded: controller.isAdLoaded.value,
-                // ),
+                /// BANNER AD SECTION
+                Obx(() {
+                  if (controller.isBannerLoaded.value &&
+                      controller.bannerAd != null) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(8.r),
+                      child: SizedBox(
+                        height: controller.bannerAd!.size.height.toDouble(),
+                        width: controller.bannerAd!.size.width.toDouble(),
+                        child: AdWidget(
+                          ad: controller.bannerAd!,
+                        ), // ✅ Fixed here
+                      ),
+                    );
+                  } else {
+                    return AppShimmer(
+                      height: 80.h, // approximate ad height
+                      width: double.infinity,
+                    );
+                  }
+                }),
 
-                //Ads
-                if (controller.isBannerLoaded.value &&
-                    controller.bannerAd != null)
-                  ClipRRect(
-                    borderRadius: BorderRadiusGeometry.circular(8.r),
-                    child: SizedBox(
-                      height: controller.bannerAd!.size.height.toDouble(),
-                      width: controller.bannerAd!.size.width.toDouble(),
-                      child: AdWidget(ad: controller.bannerAd!),
-                    ),
-                  ),
-
-                //Employee Hive
+                /// HIVE SECTION
                 hiveSection(context),
               ],
             ),
@@ -96,6 +109,9 @@ class DashboardScreen extends StatelessWidget {
       final List<int> pattern = _getPattern(users.length, itemHeight);
       final maxHeight = MediaQuery.of(context).size.height * 0.6;
 
+      if (controller.isLoading.value) {
+        return AppShimmer(height: 450.h, width: double.infinity);
+      }
       if (users.isEmpty) {
         return Container(
           padding: EdgeInsets.all(15.w),
@@ -159,7 +175,7 @@ class DashboardScreen extends StatelessWidget {
                             borderColor:
                                 index % 2 == 0
                                     ? AppColors.white
-                                    : AppColors.primary,
+                                    : AppColors.colorFF8600,
                             name:
                                 (users[index].employee?.name ??
                                             users[index].email.split('@').first)
@@ -244,6 +260,9 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget b2bSection(BuildContext context) {
+    if (controller.isLoading.value) {
+      return AppShimmer(height: 250.h, width: double.infinity);
+    }
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
       alignment: Alignment.center,
@@ -300,12 +319,8 @@ class DashboardScreen extends StatelessWidget {
                                   borderColor:
                                       index % 2 == 0
                                           ? AppColors.white
-                                          : AppColors.primary,
-                                  name: user.employer!.businessName,
-                                  // name:
-                                  //     name.isNotEmpty
-                                  //         ? name
-                                  //         : 'Unknown Employer',
+                                          : AppColors.colorFF8600,
+                                  name: name,
                                   totalMl: "aa",
                                 ),
                               );

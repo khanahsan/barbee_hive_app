@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:barbee_hive_app/data/api/profile/profile_api.dart';
 import 'package:barbee_hive_app/data/model/color_response.dart' as colorModel;
-
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:flutter/material.dart';
@@ -58,10 +58,6 @@ class ProfileController extends GetxController {
     // fetchHairColors();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
   @override
   void onClose() {
@@ -100,7 +96,7 @@ class ProfileController extends GetxController {
   Future<void> fetchUserProfile(int userId) async {
     try {
       isLoading.value = true;
-      final profile = await AuthProvider.getUserProfile(userId);
+      final profile = await ProfileApi.getUserProfile(userId);
       userProfile.value = profile;
 
       debugPrint("userProfile.value ${userProfile.value}");
@@ -133,7 +129,8 @@ class ProfileController extends GetxController {
         currentEyeColorId.value = data.employee?.eyeColor?.id ?? 0;
         currentHairColorName.value = data.employee?.hairColor?.name ?? '';
         currentHairColorId.value = data.employee?.hairColor?.id ?? 0;
-        currentGender.value = (data.employee?.gender ?? '').capitalizeFirst ?? '';
+        currentGender.value =
+            (data.employee?.gender ?? '').capitalizeFirst ?? '';
         currentHeight.value = data.employee?.height ?? 0;
         currentSkillName.value = data.employee?.skill.name ?? '';
         currentSkillId.value = data.employee?.skill.id ?? 0;
@@ -152,12 +149,10 @@ class ProfileController extends GetxController {
         }
 
         debugPrint("currentGender.value ${currentGender.value}");
-
       }
       emailController.text = data.email ?? '';
     }
   }
-
 
   bool get isEmployer => currentUserRole.value == 2;
 
@@ -248,18 +243,29 @@ class ProfileController extends GetxController {
     try {
       isLoading.value = true;
 
-      final response = await AuthProvider.updateUserProfile(
+      final response = await ProfileApi.updateUserProfile(
         city: "Los Angeles",
         country: "US",
         state: "CA",
-        resume: selectedResumeFilePath.isNotEmpty ? File(selectedResumeFilePath.value) : null,
+        resume:
+            selectedResumeFilePath.isNotEmpty
+                ? File(selectedResumeFilePath.value)
+                : null,
 
         name: nameController.text.trim(),
         email: emailController.text.trim(),
-        dob: dobController.text.trim().isNotEmpty ? dobController.text.trim() : null,
-        eyeColorId: currentEyeColorId.value != 0 ? currentEyeColorId.value : null,
-        hairColorId: currentHairColorId.value != 0 ? currentHairColorId.value : null,
-        gender: currentGender.value.isNotEmpty ? currentGender.value.toLowerCase() : null,
+        dob:
+            dobController.text.trim().isNotEmpty
+                ? dobController.text.trim()
+                : null,
+        eyeColorId:
+            currentEyeColorId.value != 0 ? currentEyeColorId.value : null,
+        hairColorId:
+            currentHairColorId.value != 0 ? currentHairColorId.value : null,
+        gender:
+            currentGender.value.isNotEmpty
+                ? currentGender.value.toLowerCase()
+                : null,
         height: currentHeight.value != 0 ? currentHeight.value : null,
         skillId: currentSkillId.value != 0 ? currentSkillId.value : null,
       );
@@ -280,5 +286,4 @@ class ProfileController extends GetxController {
       isLoading.value = false;
     }
   }
-
 }

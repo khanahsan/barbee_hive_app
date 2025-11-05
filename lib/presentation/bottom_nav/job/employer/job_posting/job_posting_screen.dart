@@ -43,7 +43,7 @@ class JobPostingScreen extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.only(top: 3.h),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: AppColors.colorFF8600,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20.0.r),
                       topRight: Radius.circular(20.0.r),
@@ -209,7 +209,7 @@ class JobPostingScreen extends StatelessWidget {
                           () => CustomBtn(
                             btnTitle: 'Submit Now',
                             buttonHeight: 50.h,
-                            btnBackgroundColor: AppColors.primary,
+                            btnBackgroundColor: AppColors.colorFF8600,
                             btnTxtColor: Colors.white,
                             buttonWidth: double.infinity,
                             onPressed: () => controller.postJob(context),

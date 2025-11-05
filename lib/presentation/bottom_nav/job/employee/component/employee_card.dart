@@ -78,7 +78,7 @@ class _EmployeeCardState extends State<EmployeeCard>
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.primary,
+                          color: AppColors.colorFF8600,
                         ),
                       ),
                       Text(
@@ -116,7 +116,7 @@ class _EmployeeCardState extends State<EmployeeCard>
                       vertical: 5.h,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: AppColors.colorFF8600,
                       borderRadius: BorderRadius.circular(5.r),
                     ),
                     child: Text(
@@ -174,7 +174,7 @@ class _EmployeeCardState extends State<EmployeeCard>
                 buttonText: isExpanded ? "Apply Now" : "View Detail",
                 buttonWidth: double.infinity,
                 buttonColor: AppColors.color101010,
-                borderColor: AppColors.primary,
+                borderColor: AppColors.colorFF8600,
                 onTap: () {
                   if (isExpanded) {
                     Get.toNamed(
@@ -196,10 +196,34 @@ class _EmployeeCardState extends State<EmployeeCard>
     );
   }
 
+  // Widget infoRow({required String iconPath, required String rowTitle}) {
+  //   return Row(
+  //     crossAxisAlignment: CrossAxisAlignment.center,
+  //     mainAxisSize: MainAxisSize.min,
+  //     spacing: 8.w,
+  //     children: [
+  //       SvgPicture.asset(
+  //         iconPath,
+  //         height: 18.h,
+  //         width: 18.w,
+  //         fit: BoxFit.cover,
+  //       ),
+  //       Text(
+  //         rowTitle,
+  //         style: Theme.of(context).textTheme.titleSmall?.copyWith(
+  //           fontSize: 15.sp,
+  //           fontWeight: FontWeight.w600,
+  //           color: AppColors.color5E5E5E,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
   Widget infoRow({required String iconPath, required String rowTitle}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max, // allow full width
       spacing: 8.w,
       children: [
         SvgPicture.asset(
@@ -208,15 +232,20 @@ class _EmployeeCardState extends State<EmployeeCard>
           width: 18.w,
           fit: BoxFit.cover,
         ),
-        Text(
-          rowTitle,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            fontSize: 15.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.color5E5E5E,
+        Expanded(
+          child: Text(
+            rowTitle,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              fontSize: 15.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.color5E5E5E,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
     );
   }
+
 }

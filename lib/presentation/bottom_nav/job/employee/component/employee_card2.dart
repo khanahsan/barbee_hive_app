@@ -69,7 +69,7 @@ class _EmployeeCard2State extends State<EmployeeCard2>
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontSize: 15.sp,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.primary,
+                          color: AppColors.colorFF8600,
                         ),
                       ),
                       Text(
@@ -107,7 +107,7 @@ class _EmployeeCard2State extends State<EmployeeCard2>
                       vertical: 5.h,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: AppColors.colorFF8600,
                       borderRadius: BorderRadius.circular(5.r),
                     ),
                     child: Text(
@@ -140,7 +140,7 @@ class _EmployeeCard2State extends State<EmployeeCard2>
                 height: 60.h,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.primary),
+                  border: Border.all(color: AppColors.colorFF8600),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Center(

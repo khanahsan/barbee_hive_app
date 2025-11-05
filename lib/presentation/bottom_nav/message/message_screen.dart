@@ -8,6 +8,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
+import '../../../infrastructure/widgets/custom_appbar.dart';
+
 /* 
  class MessageScreen extends StatelessWidget {
   final ChatController chatController = Get.put(ChatController());
@@ -174,11 +176,22 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 }
   */
 class MessageScreen extends GetView<ChatController> {
-  const MessageScreen({super.key});
+  const MessageScreen({super.key, this.onMenuPressed});
+
+  final VoidCallback? onMenuPressed;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: customAppbar(
+        showHexagon: true,
+        profileImagePath: controller.userProfileImage.value,
+        context: context,
+        leadingTapFunction: () {
+          if (onMenuPressed != null) onMenuPressed!();
+        },
+        title: 'Messages',
+      ),
       backgroundColor: AppColors.black,
       body: Obx(() {
         if (controller.isLoading.value) {

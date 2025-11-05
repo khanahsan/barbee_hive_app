@@ -29,7 +29,7 @@ class AgreeTermsTile extends GetView<SignUpEmployeeController> {
                 ),
                 color:
                 controller.isChecked.value
-                    ? AppColors.primary
+                    ? AppColors.colorFF8600
                     : Colors.transparent,
               ),
               child:
@@ -46,7 +46,7 @@ class AgreeTermsTile extends GetView<SignUpEmployeeController> {
           Text(
             'I agree to the Terms of Service',
             style: TextStyle(
-              color: AppColors.primary,
+              color: AppColors.colorFF8600,
               fontSize: 14.sp,
             ),
           ),

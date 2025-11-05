@@ -342,7 +342,7 @@ class ChatScreen extends StatelessWidget {
                             chatController.unblockEmployee(chatId);
                           }
                         },
-                        activeColor: AppColors.primary,
+                        activeColor: AppColors.colorFF8600,
                         inactiveThumbColor: AppColors.grey,
                         inactiveTrackColor: AppColors.grey.withOpacity(0.5),
                       ),
@@ -408,7 +408,7 @@ class ChatScreen extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color:
                                       isMe
-                                          ? AppColors.primary
+                                          ? AppColors.colorFF8600
                                           : AppColors.color27272A,
                                   borderRadius: BorderRadius.circular(10.r),
                                 ),
@@ -420,7 +420,7 @@ class ChatScreen extends StatelessWidget {
                                       Text(
                                         otherName,
                                         style: TextStyle(
-                                          color: AppColors.primary,
+                                          color: AppColors.colorFF8600,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12.sp,
                                         ),
@@ -511,7 +511,7 @@ class ChatScreen extends StatelessWidget {
                             width: 30.w,
                             height: 30.h,
                             decoration: BoxDecoration(
-                              color: AppColors.primary,
+                              color: AppColors.colorFF8600,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(

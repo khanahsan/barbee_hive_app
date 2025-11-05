@@ -27,7 +27,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
               margin: EdgeInsets.only(top: 20.h),
               padding: EdgeInsets.only(top: 3.h),
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: AppColors.colorFF8600,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(20.0.r),
                   topRight: Radius.circular(20.0.r),
@@ -441,7 +441,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                             ),
                                             color:
                                                 controller.isChecked.value
-                                                    ? AppColors.primary
+                                                    ? AppColors.colorFF8600
                                                     : Colors.transparent,
                                           ),
                                           child:
@@ -458,7 +458,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                       Text(
                                         'I agree to the Terms of Service',
                                         style: TextStyle(
-                                          color: AppColors.primary,
+                                          color: AppColors.colorFF8600,
                                           fontSize: 14.sp,
                                         ),
                                       ),
@@ -469,7 +469,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                 CustomBtn(
                                   btnTitle: 'Create Account',
                                   buttonHeight: 50.h,
-                                  btnBackgroundColor: AppColors.primary,
+                                  btnBackgroundColor: AppColors.colorFF8600,
                                   btnTxtColor: Colors.white,
                                   buttonWidth: double.infinity,
                                   onPressed:

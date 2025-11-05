@@ -33,7 +33,7 @@ class CustomBottomNavBar extends StatelessWidget {
           onTap: onTap,
           backgroundColor: Colors.transparent,
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: AppColors.primary,
+          selectedItemColor: AppColors.colorFF8600,
           unselectedItemColor: Colors.white,
           showSelectedLabels: false,
           showUnselectedLabels: false,
@@ -42,7 +42,7 @@ class CustomBottomNavBar extends StatelessWidget {
               icon: SvgPicture.asset(
                 AppAssets.beeIcon,
                 colorFilter: ColorFilter.mode(
-                  currentIndex == 0 ? AppColors.primary : Colors.white,
+                  currentIndex == 0 ? AppColors.colorFF8600 : Colors.white,
                   BlendMode.srcIn,
                 ),
                 height: 30.h,
@@ -55,7 +55,7 @@ class CustomBottomNavBar extends StatelessWidget {
               icon: SvgPicture.asset(
                 AppAssets.chatIcon,
                 colorFilter: ColorFilter.mode(
-                  currentIndex == 1 ? AppColors.primary : Colors.white,
+                  currentIndex == 1 ? AppColors.colorFF8600 : Colors.white,
                   BlendMode.srcIn,
                 ),
                 height: 25.h,
@@ -68,7 +68,7 @@ class CustomBottomNavBar extends StatelessWidget {
               icon: SvgPicture.asset(
                 AppAssets.findIcon,
                 colorFilter: ColorFilter.mode(
-                  currentIndex == 2 ? AppColors.primary : Colors.white,
+                  currentIndex == 2 ? AppColors.colorFF8600 : Colors.white,
                   BlendMode.srcIn,
                 ),
                 height: 25.h,

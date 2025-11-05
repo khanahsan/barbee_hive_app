@@ -47,10 +47,25 @@ class CustomDrawerController extends GetxController
     _loadUserData();
   }
 
+  // void toggleDrawer() {
+  //   if (isDrawerOpen.value) {
+  //     animationController.reverse();
+  //   } else {
+  //     animationController.forward();
+  //   }
+  //   isDrawerOpen.value = !isDrawerOpen.value;
+  // }
+
   void toggleDrawer() {
     if (isDrawerOpen.value) {
+      animationController.duration = const Duration(
+        milliseconds: 200,
+      ); // faster close
       animationController.reverse();
     } else {
+      animationController.duration = const Duration(
+        milliseconds: 280,
+      ); // normal open
       animationController.forward();
     }
     isDrawerOpen.value = !isDrawerOpen.value;

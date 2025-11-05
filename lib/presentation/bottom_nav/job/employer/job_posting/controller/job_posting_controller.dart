@@ -10,6 +10,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
+import '../../../../../../data/api/job/job_api.dart';
 import '../../../../../../data/model/color_response.dart' as colorModel;
 
 
@@ -205,7 +206,7 @@ class JobPostingController extends GetxController {
     errorMessage.value = '';
 
     try {
-      final response = await AuthProvider.postJob(
+      final response = await JobApi.postJob(
         title: jobRoleController.text,
         description: jobDesController.text,
         experienceLevel: experienceLevelController.text,

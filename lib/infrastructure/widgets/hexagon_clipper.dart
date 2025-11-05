@@ -1,219 +1,11 @@
 import 'dart:math' as Math;
+
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
+
 import '../constants/app_colors.dart';
-
-/*class HexagonClipper extends CustomClipper<Path> {
-  final double scale;
-
-  HexagonClipper({this.scale = 1.0});
-
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    final w = size.width;
-    final h = size.height;
-
-    final double centerX = w / 2;
-    final double centerY = h / 2;
-
-    final double radius = w / 2 * scale;
-
-    for (int i = 0; i < 6; i++) {
-      final angle = (60 * i - 30) * 3.1415926535897932 / 180;
-      final x = centerX + radius * Math.cos(angle);
-      final y = centerY + radius * Math.sin(angle);
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-    }
-
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => true;
-}
-
-class HexagonAvatar extends StatelessWidget {
-  const HexagonAvatar({
-    super.key,
-    this.height,
-    this.width,
-    this.borderColor,
-    required this.imagePath,
-    this.name,
-    this.totalMl,
-    this.textStyle,
-  });
-
-  final double? height;
-  final double? width;
-  final Color? borderColor;
-  final String imagePath;
-  final String? name;
-  final String? totalMl;
-  final TextStyle? textStyle;
-
-  @override
-  Widget build(BuildContext context) {
-    final double resolvedWidth = width ?? 80.w;
-    final double resolvedHeight = height ?? resolvedWidth * 0.866;
-
-    return ClipPath(
-      clipper: HexagonClipper(),
-      child: Container(
-        padding: const EdgeInsets.all(2),
-        width: resolvedWidth,
-        height: resolvedHeight,
-        color: borderColor ?? AppColors.primary,
-        child: ClipPath(
-          clipper: HexagonClipper(),
-          child: Container(
-            padding: const EdgeInsets.all(3.5),
-            width: resolvedWidth,
-            height: resolvedHeight,
-            color: AppColors.black,
-            child: ClipPath(
-              clipper: HexagonClipper(),
-              child: SizedBox(
-                width: resolvedWidth,
-                height: resolvedHeight,
-                child: Stack(
-                  fit: StackFit.expand,
-                  alignment: Alignment.center,
-                  children: [
-                    Image.asset(imagePath, fit: BoxFit.cover),
-                    if (name != null)
-                      Positioned(
-                        bottom: 15.h,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              name!,
-                              textAlign: TextAlign.center,
-                              style:
-                                  textStyle ??
-                                  Theme.of(
-                                    context,
-                                  ).textTheme.titleSmall?.copyWith(
-                                    fontSize: 10.sp,
-                                    color: AppColors.white,
-                                  ),
-                            ),
-                            Text(
-                              totalMl!,
-                              textAlign: TextAlign.center,
-                              style:
-                                  textStyle ??
-                                  Theme.of(
-                                    context,
-                                  ).textTheme.titleSmall?.copyWith(
-                                    fontSize: 9.sp,
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}*/
-
-// class HexagonAvatar extends StatelessWidget {
-//   const HexagonAvatar({
-//     super.key,
-//     this.height,
-//     this.width,
-//     this.borderColor,
-//     required this.imagePath,
-//   });
-//
-//   final double? height;
-//   final double? width;
-//   final Color? borderColor;
-//   final String imagePath;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return ClipPath(
-//       clipper: HexagonClipper(),
-//       child: Container(
-//         padding: EdgeInsets.all(2),
-//         width: width ?? 80.w,
-//         height: height ?? 90.h,
-//         color: borderColor ?? AppColors.primary,
-//         child: ClipPath(
-//           clipper: HexagonClipper(),
-//           child: Container(
-//             padding: EdgeInsets.all(3.5),
-//             width: width ?? 80.w,
-//             height: height ?? 90.h,
-//             color: AppColors.black,
-//             child: ClipPath(
-//               clipper: HexagonClipper(),
-//               child: SizedBox(
-//                 width: width ?? 80.w,
-//                 height: height ?? 90.h,
-//                 child: Image.asset(
-//                   AppAssets.profileImage,
-//                   fit: BoxFit.fitWidth,
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//     // return Stack(
-//     //   alignment: Alignment.center,
-//     //   children: [
-//     //     // Outer Hexagon (Border layer)
-//     //     ClipPath(
-//     //       clipper: HexagonClipper(scale: 0.9),
-//     //       child: Container(
-//     //         width: width ?? 80.w,
-//     //         height: height ?? 90.h,
-//     //         color: AppColors.primary,
-//     //       ),
-//     //     ),
-//     //
-//     //     ClipPath(
-//     //       clipper: HexagonClipper(scale: 0.80),
-//     //       child: Container(
-//     //         width: width ?? 80.w,
-//     //         height: height ?? 90.h,
-//     //         color: AppColors.black,
-//     //       ),
-//     //     ),
-//     //     ClipPath(
-//     //       clipper: HexagonClipper(scale: 0.70),
-//     //       child: SizedBox(
-//     //         width: width ?? 80.w,
-//     //         height: height ?? 90.h,
-//     //         child: Image.asset(AppAssets.profileImage, fit: BoxFit.scaleDown),
-//     //       ),
-//     //     ),
-//     //   ],
-//     // );
-//   }
-// }
-
-import 'dart:math' as Math;
 
 class HexagonClipper extends CustomClipper<Path> {
   final double scale;
@@ -232,7 +24,6 @@ class HexagonClipper extends CustomClipper<Path> {
     // final double radius = w / 2 * scale;
 
     final double radius = (w / 2) / Math.cos(Math.pi / 7) * scale;
-
 
     for (int i = 0; i < 6; i++) {
       final angle = (60 * i - 30) * 3.1415926535897932 / 180;
@@ -258,8 +49,8 @@ class HexagonClipper extends CustomClipper<Path> {
   //   final double centerX = w / 2;
   //   final double centerY = h / 2;
 
-    // Calculate radius that fits within the height and width
-    // Max radius that fits in both width and height
+  // Calculate radius that fits within the height and width
+  // Max radius that fits in both width and height
   //   final double radius =
   //       Math.min(w / 2, h / (Math.sin(Math.pi / 3) * 1.5)) * scale;
   //
@@ -468,8 +259,6 @@ class HexagonAvatar extends StatelessWidget {
         imagePath.isEmpty ||
         (!_isNetworkImage(imagePath) && !_isValidAssetImage(imagePath));
 
-
-
     return Stack(
       children: [
         ClipPath(
@@ -478,7 +267,7 @@ class HexagonAvatar extends StatelessWidget {
             padding: const EdgeInsets.all(1),
             width: resolvedWidth,
             height: resolvedHeight,
-            color: borderColor ?? AppColors.primary,
+            color: borderColor ?? AppColors.colorFF8600,
             child: ClipPath(
               clipper: HexagonClipper(),
               child: Container(
@@ -565,7 +354,7 @@ class HexagonAvatar extends StatelessWidget {
                 padding: const EdgeInsets.all(1),
                 width: 35.w,
                 height: 45.h,
-                color: borderColor ?? AppColors.primary,
+                color: borderColor ?? AppColors.colorFF8600,
                 child: ClipPath(
                   clipper: HexagonClipper(),
                   child: Container(
@@ -587,14 +376,13 @@ class HexagonAvatar extends StatelessWidget {
               ),
             ),
           ),
-
       ],
     );
   }
 
   Widget _buildInitial(BuildContext context) {
     return Container(
-      color: AppColors.primary, // Background for initial
+      color: AppColors.colorFF8600, // Background for initial
       alignment: Alignment.center,
       child: Text(
         name != null && name!.isNotEmpty ? name![0].toUpperCase() : '?',
@@ -624,7 +412,8 @@ class HoneycombLayoutDelegate extends MultiChildLayoutDelegate {
   @override
   Size getSize(BoxConstraints constraints) {
     final int totalItemsInPattern = pattern.reduce((a, b) => a + b);
-    final int rowCount = (users.length / totalItemsInPattern).ceil() +
+    final int rowCount =
+        (users.length / totalItemsInPattern).ceil() +
         (users.length % totalItemsInPattern > 0 ? 1 : 0);
     final double totalHeight = rowCount * itemHeight * 0.75;
 
@@ -632,7 +421,8 @@ class HoneycombLayoutDelegate extends MultiChildLayoutDelegate {
     final int maxItemsInRow = pattern.reduce((a, b) => a > b ? a : b);
 
     // Effective width of the widest row
-    final double totalWidth = (maxItemsInRow * itemWidth) - ((maxItemsInRow - 1) * 1.5);
+    final double totalWidth =
+        (maxItemsInRow * itemWidth) - ((maxItemsInRow - 1) * 1.5);
 
     return Size(totalWidth, totalHeight);
   }

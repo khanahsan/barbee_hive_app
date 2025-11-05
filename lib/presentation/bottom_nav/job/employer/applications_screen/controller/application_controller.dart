@@ -4,6 +4,7 @@ import 'package:barbee_hive_app/data/model/job_application_response.dart';
 import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../../../data/api/job/job_api.dart';
 import '../../../../../../data/model/color_response.dart' as colorModel;
 
 
@@ -95,7 +96,7 @@ class ApplicationsController extends GetxController {
 
     try {
       print('Fetching applications for jobId: $jobId, Filters: $filters');
-      final response = await AuthProvider.getJobApplications(jobId, filters: filters);
+      final response = await JobApi.getJobApplications(jobId, filters: filters);
       print('API Response: status=${response.status}, message=${response.message}, data=${response.data.length} applications');
       if (response.status) {
         applications.assignAll(response.data); // Fixed: response.data is List<JobApplicationData>

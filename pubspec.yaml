@@ -55,6 +55,8 @@ dependencies:
   google_mobile_ads: ^5.3.1
   flutter_local_notifications: ^19.4.2
   firebase_messaging: ^15.2.7
+  flutter_dotenv: ^6.0.0
+  shimmer: ^3.0.0
 
 
 dev_dependencies:
@@ -77,6 +79,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/icons/
+    - .env
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

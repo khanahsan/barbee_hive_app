@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/api_service.dart';
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
+import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -399,7 +400,7 @@ class SignUpEmployeeController extends GetxController {
 
       try {
         // 🔹 Step 3: Register with Backend API
-        final response = await AuthProvider.register(
+        final response = await AuthApi.register(
           uid: uid,
           name: nameController.text,
           email: emailController.text,

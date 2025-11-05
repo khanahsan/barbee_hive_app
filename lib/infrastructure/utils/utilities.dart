@@ -1,7 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:my_responsive_ui/my_responsive_ui.dart';
+
+import '../constants/app_colors.dart';
 
 class Utilities {
+  static void showSnackBar({
+    required String message,
+    String? title,
+    Color? textColor,
+    double? borderRadius,
+    bool isSuccess = true,
+    Duration duration = const Duration(milliseconds: 1500),
+  }) {
+    Get.snackbar(
+      title ?? '',
+      message,
+      backgroundColor: isSuccess ? Colors.green : Colors.red,
+      colorText: textColor ?? AppColors.white,
+      duration: duration,
+      borderRadius: borderRadius ?? 12.r,
+      dismissDirection: DismissDirection.startToEnd,
+    );
+  }
+
   static void showToast({required String toastMsg, required bool isSuccess}) {
     Fluttertoast.showToast(
       msg: toastMsg,
@@ -12,11 +35,14 @@ class Utilities {
       fontSize: 16.0,
     );
   }
-
-  
 }
 
 extension StringCasingExtension on String {
-  String get toCapitalized => length > 0 ?'${this[0].toUpperCase()}${substring(1).toLowerCase()}':'';
-  String get toTitleCase => replaceAll(RegExp(' +'), ' ').split(' ').map((str) => str.toCapitalized).join(' ');
+  String get toCapitalized =>
+      length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
+
+  String get toTitleCase => replaceAll(
+    RegExp(' +'),
+    ' ',
+  ).split(' ').map((str) => str.toCapitalized).join(' ');
 }

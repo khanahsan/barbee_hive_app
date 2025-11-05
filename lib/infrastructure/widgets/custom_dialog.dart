@@ -148,7 +148,7 @@ class CustomDialog extends StatelessWidget {
                   height: 80.h,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primary,
+                    color: AppColors.colorFF8600,
                   ),
                   child: Center(
                     child: Image.asset(
@@ -183,7 +183,7 @@ class CustomDialog extends StatelessWidget {
                     email ?? "",
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontSize: 15.sp,
-                      color: AppColors.primary,
+                      color: AppColors.colorFF8600,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -196,7 +196,7 @@ class CustomDialog extends StatelessWidget {
                       Get.back(); // Close the dialog
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: AppColors.colorFF8600,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),
@@ -217,7 +217,7 @@ class CustomDialog extends StatelessWidget {
               right: 1.w,
               top: 1.h,
               child: IconButton(
-                icon: Icon(Icons.close, color: AppColors.primary, size: 24.sp),
+                icon: Icon(Icons.close, color: AppColors.colorFF8600, size: 24.sp),
                 onPressed: () {
                   Get.back(); // Close the dialog
                 },

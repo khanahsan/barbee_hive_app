@@ -69,7 +69,7 @@ class HexagonAvatar extends StatelessWidget {
           height: resolvedHeight,
           color:
               borderColor ??
-              AppColors.primary, // Replace with AppColors.primary
+              AppColors.colorFF8600, // Replace with AppColors.primary
           padding: EdgeInsets.all(3.w),
           child: ClipPath(
             clipper: HexagonClipper(),
@@ -169,7 +169,7 @@ class HexagonProfilePhotoTile extends StatelessWidget {
             child: Container(
               width: 124.w,
               height: 124.h,
-              color: AppColors.primary,
+              color: AppColors.colorFF8600,
               padding: EdgeInsets.all(3.w),
               child: ClipPath(
                 clipper: HexagonClipper(),

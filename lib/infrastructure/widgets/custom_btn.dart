@@ -11,7 +11,7 @@ class CustomBtn extends StatelessWidget {
     required this.btnTitle,
     required this.onPressed,
     this.isLoading = false,
-    this.btnBackgroundColor = AppColors.primary,
+    this.btnBackgroundColor = AppColors.colorFF8600,
     this.btnTxtColor = AppColors.white,
     this.fontSize = 16,
     this.fontWeight = FontWeight.w700,
@@ -74,7 +74,7 @@ class CustomBtn extends StatelessWidget {
         height: 25.h,
         child: const CircularProgressIndicator.adaptive(
           backgroundColor: AppColors.white,
-          valueColor: AlwaysStoppedAnimation(AppColors.primary),
+          valueColor: AlwaysStoppedAnimation(AppColors.colorFF8600),
           strokeWidth: 5.0,
         ),
       )

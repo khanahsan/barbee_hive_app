@@ -58,7 +58,7 @@ class _FadingImageCarouselState extends State<CustomFadingCarousel> {
             painter: HexagonPainter(
               color:
                   _currentIndex == index
-                      ? AppColors.primary
+                      ? AppColors.colorFF8600
                       : Colors.transparent,
               borderColor: AppColors.white,
             ),

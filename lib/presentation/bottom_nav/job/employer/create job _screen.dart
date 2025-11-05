@@ -61,7 +61,7 @@ class CreateJobScreen extends StatelessWidget {
             "Pay \$5",
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontSize: 25.sp,
-              color: AppColors.primary,
+              color: AppColors.colorFF8600,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -79,11 +79,11 @@ class CreateJobScreen extends StatelessWidget {
             onTap: () {},
             text: "View Monthly Plans",
             buttonColor: AppColors.black,
-            borderColor: AppColors.primary,
+            borderColor: AppColors.colorFF8600,
             isIcon: true,
             iconPath: AppAssets.arrowForwardBIcon,
             iconSize: 12.sp,
-            iconColor: AppColors.primary,
+            iconColor: AppColors.colorFF8600,
           ),
 
           SizedBox(height: 20.h),
@@ -92,7 +92,7 @@ class CreateJobScreen extends StatelessWidget {
               Get.toNamed(Routes.jobPostingScreen);
             },
             text: "Continue",
-            buttonColor: AppColors.primary,
+            buttonColor: AppColors.colorFF8600,
           ),
         ],
       ),

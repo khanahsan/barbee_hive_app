@@ -41,7 +41,7 @@ class SelectRoleView extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.only(top: 3.h),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: AppColors.colorFF8600,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(20.0.r),
                       topRight: Radius.circular(20.0.r),

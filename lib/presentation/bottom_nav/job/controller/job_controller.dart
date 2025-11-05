@@ -1,84 +1,109 @@
-import 'package:barbee_hive_app/data/api/auth_provider.dart';
+import 'dart:developer';
+
 import 'package:barbee_hive_app/data/model/job_list_response.dart';
+import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 
+import '../../../../data/api/job/job_api.dart';
 import '../../../../infrastructure/helpers/shared_preference_helper.dart';
 
 class JobController extends GetxController {
-  Rx<bool> isEmployer = false.obs;
-  final employerJobs = <JobData>[].obs;
-  final isLoadingEmployer = false.obs;
-  final errorMessageEmployer = ''.obs;
-
-  final employeeJobs = <JobData>[].obs;
-  final isLoadingEmployee = false.obs;
-  final errorMessageEmployee = ''.obs;
-
+  /// Controllers
   final searchController = TextEditingController();
   final experienceController = TextEditingController();
   final salaryController = TextEditingController();
+
+  /// Save Role Value
+  Rx<bool> isEmployer = false.obs;
+
+  /// Save User Profile
+  Rx<String?> userProfileImage = ''.obs;
+
+  /// Employer Jobs List
+  final employerJobs = <JobData>[].obs;
+
+  final isLoading = false.obs;
+  final errorMessage = ''.obs;
+
+  /// Employee Jobs List
+  final employeeJobs = <JobData>[].obs;
+
   final RxString selectedJobType = ''.obs;
   final filteredJobs = <JobData>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    loadRole();
-    fetchEmployerJobs();
-    fetchEmployeeJobs();
+    loadRoleAsync();
   }
 
-  void loadRole() {
+  /// Fetch Role Value From Local Storage
+  Future<void> loadRoleAsync() async {
     final role = SharedPreferenceHelper.getInt(SharedPrefKeys.userRole);
     isEmployer.value = role == 2;
+
+    userProfileImage.value = SharedPreferenceHelper.getString(
+      SharedPrefKeys.userProfileImage,
+    );
+
+    if (isEmployer.value) {
+      fetchEmployerJobs();
+    } else {
+      fetchEmployeeJobs();
+    }
   }
 
+  /// Function to get Employer Jobs
   Future<void> fetchEmployerJobs() async {
+    log('fetchEmployerJobs Function Called');
+
     final userId = SharedPreferenceHelper.getInt(SharedPrefKeys.userId);
     if (userId == null) {
-      errorMessageEmployer.value = 'User ID not found';
+      errorMessage.value = 'User ID not found';
       Get.snackbar(
         'Error',
-        errorMessageEmployer.value,
+        errorMessage.value,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
       return;
     }
 
-    isLoadingEmployer.value = true;
-    errorMessageEmployer.value = '';
+    isLoading.value = true;
+    errorMessage.value = '';
 
     try {
       employerJobs.clear();
-      final response = await AuthProvider.getJobs(userId);
+      final response = await JobApi.getJobs(userId);
       if (response.status) {
         employerJobs.assignAll(response.data);
       } else {
         throw Exception(response.message);
       }
     } catch (e) {
-      errorMessageEmployer.value = e.toString().replaceFirst('Exception: ', '');
+      errorMessage.value = e.toString().replaceFirst('Exception: ', '');
       Get.snackbar(
         'Error',
-        errorMessageEmployer.value,
+        errorMessage.value,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     } finally {
-      isLoadingEmployer.value = false;
+      isLoading.value = false;
     }
   }
 
+  /// Function to get Employee Jobs
   Future<void> fetchEmployeeJobs() async {
-    isLoadingEmployee.value = true;
-    errorMessageEmployee.value = '';
+    log('fetchEmployeeJobs Function Called');
+
+    isLoading.value = true;
+    errorMessage.value = '';
 
     try {
       employeeJobs.clear();
-      final response = await AuthProvider.getEmployeeJobs();
+      final response = await JobApi.getEmployeeJobs();
       if (response.status) {
         employeeJobs.assignAll(response.data);
         filteredJobs.assignAll(response.data);
@@ -87,18 +112,19 @@ class JobController extends GetxController {
         throw Exception(response.message);
       }
     } catch (e) {
-      errorMessageEmployee.value = e.toString().replaceFirst('Exception: ', '');
+      errorMessage.value = e.toString().replaceFirst('Exception: ', '');
       Get.snackbar(
         'Error',
-        errorMessageEmployee.value,
+        errorMessage.value,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     } finally {
-      isLoadingEmployee.value = false;
+      isLoading.value = false;
     }
   }
 
+  /// Filter Jobs (Show Only For Employee)
   void filterApplicationsByText(String query) {
     var filtered = employeeJobs.toList();
 
@@ -120,15 +146,6 @@ class JobController extends GetxController {
 
   List<JobData> applyDialogFilters(List<JobData> inputList) {
     var filtered = inputList;
-
-    // Filter by selected skill (position)
-    // if (selectedSkill.value.isNotEmpty) {
-    //   filtered =
-    //       filtered.where((app) {
-    //         return app.applicant.skills?.name.toLowerCase() ==
-    //             selectedSkill.value.toLowerCase();
-    //       }).toList();
-    // }
 
     if (selectedJobType.value.isNotEmpty) {
       filtered =
@@ -159,5 +176,14 @@ class JobController extends GetxController {
     }
 
     return filtered;
+  }
+
+  @override
+  void onClose() {
+    // Dispose controllers
+    searchController.dispose();
+    experienceController.dispose();
+    salaryController.dispose();
+    super.onClose();
   }
 }

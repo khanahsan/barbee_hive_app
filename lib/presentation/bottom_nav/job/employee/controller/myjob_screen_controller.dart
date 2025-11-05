@@ -1,9 +1,10 @@
-import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/data/model/applied_job_response.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../../../data/api/job/job_api.dart';
 
 class MyjobsController extends GetxController {
   final isLoading = false.obs;
@@ -38,7 +39,7 @@ class MyjobsController extends GetxController {
     errorMessage.value = '';
 
     try {
-      final response = await AuthProvider.getAppliedJobs(userId);
+      final response = await JobApi.getAppliedJobs(userId);
       if (response.status) {
         appliedJobs.assignAll(response.data);
         print('response $response');

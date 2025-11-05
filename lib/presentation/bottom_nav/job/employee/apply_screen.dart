@@ -113,7 +113,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
               margin: EdgeInsets.only(top: 20.h),
               padding: EdgeInsets.only(top: 3.h),
               decoration: BoxDecoration(
-                color: AppColors.primary,
+                color: AppColors.colorFF8600,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(24.r),
                   topRight: Radius.circular(24.r),
@@ -209,7 +209,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                         buttonWidth: double.infinity,
                         textColor: Colors.white,
                         buttonTextSize: 18.sp,
-                        buttonColor: AppColors.primary,
+                        buttonColor: AppColors.colorFF8600,
                         buttonHeight: 65.h,
                         onTap:
                             controller.isLoading.value

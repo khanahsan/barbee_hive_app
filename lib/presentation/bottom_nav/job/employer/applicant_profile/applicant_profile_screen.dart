@@ -27,7 +27,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
       ),
       body: Obx(
             () => controller.isLoading.value
-            ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+            ? const Center(child: CircularProgressIndicator(color: AppColors.colorFF8600))
             : controller.errorMessage.isNotEmpty
             ? Center(
           child: Column(
@@ -43,7 +43,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                 buttonText: 'Retry',
                 onTap: () => controller.fetchProfile(Get.arguments?['userId'] ?? 38),
                 buttonWidth: 100.w,
-                buttonColor: AppColors.primary,
+                buttonColor: AppColors.colorFF8600,
                 buttonHeight: 40.h,
                 buttonTextSize: 16.sp,
               ),
@@ -84,7 +84,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                       height: 532.h,
                       padding: EdgeInsets.only(top: 3.h),
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: AppColors.colorFF8600,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(20.r),
                           topRight: Radius.circular(20.r),
@@ -121,7 +121,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 fontSize: 12.sp,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
+                                color: AppColors.colorFF8600,
                               ),
                             ),
                             SizedBox(height: 25.h),
@@ -162,7 +162,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                             CustomButton(
                               buttonText: 'Send Message',
                               buttonWidth: double.infinity,
-                              buttonColor: AppColors.primary,
+                              buttonColor: AppColors.colorFF8600,
                               textColor: AppColors.white,
                               buttonHeight: 55.h,
                               buttonTextSize: 16.sp,

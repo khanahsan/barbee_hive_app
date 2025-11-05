@@ -36,7 +36,7 @@ class EmployerCard extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(7.r),
-              border: Border.all(color: AppColors.primary, width: 1),
+              border: Border.all(color: AppColors.colorFF8600, width: 1),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -77,9 +77,9 @@ class EmployerCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
+                    color: AppColors.colorFF8600,
                     decoration: TextDecoration.underline,
-                    decorationColor: AppColors.primary,
+                    decorationColor: AppColors.colorFF8600,
                   ),
                 ),
               ],
@@ -105,7 +105,7 @@ class EmployerCard extends StatelessWidget {
                 buttonText: "View Applications",
                 buttonWidth: 185.w,
                 buttonColor: AppColors.color101010,
-                borderColor: AppColors.primary,
+                borderColor: AppColors.colorFF8600,
                 buttonHeight: 50.h,
                 buttonTextSize: 15.sp,
               ),
@@ -116,7 +116,7 @@ class EmployerCard extends StatelessWidget {
                 buttonText: "Edit Job",
                 buttonWidth: 185.w,
                 buttonColor: AppColors.color101010,
-                borderColor: AppColors.primary,
+                borderColor: AppColors.colorFF8600,
                 buttonHeight: 50.h,
                 buttonTextSize: 15.sp,
               ),

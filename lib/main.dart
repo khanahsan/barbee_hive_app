@@ -5,6 +5,7 @@ import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_bindi
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -25,6 +26,8 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await NotificationService().initNotification();
   await NotificationService().getToken();
+
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
 
   var initialRoute = await Routes.initialRoute;
   await ApiService.initToken();

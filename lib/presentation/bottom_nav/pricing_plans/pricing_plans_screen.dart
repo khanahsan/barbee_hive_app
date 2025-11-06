@@ -30,6 +30,7 @@ class PricingPlansScreen extends GetView<PricingPlansController> {
       body: Obx(() {
         return RefreshIndicator(
           onRefresh: () async {
+            controller.errorMessage.value = '';
             controller.onInit();
           },
           child: _bodyWidget(),
@@ -53,12 +54,17 @@ class PricingPlansScreen extends GetView<PricingPlansController> {
 
     /// SHOW ERROR MESSAGE
     if (controller.errorMessage.isNotEmpty) {
-      return Center(
-        child: CustomText(
-          title: controller.errorMessage.value,
-          color: AppColors.white,
-          fontSize: 20,
-        ),
+      return ListView(
+        children: [
+          SizedBox(height: 300.h),
+          Center(
+            child: CustomText(
+              title: controller.errorMessage.value,
+              color: AppColors.white,
+              fontSize: 20,
+            ),
+          ),
+        ],
       );
     }
 

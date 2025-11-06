@@ -57,6 +57,7 @@ dependencies:
   firebase_messaging: ^15.2.7
   flutter_dotenv: ^6.0.0
   shimmer: ^3.0.0
+  flutter_stripe: ^12.1.0
 
 
 dev_dependencies:

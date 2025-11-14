@@ -77,15 +77,10 @@ class PricingPlansController extends GetxController {
         // 🔹 Paid plan → Stripe Payment Sheet
         final clientSecret = data.clientSecret;
 
-        if (clientSecret == null) {
-          Get.snackbar('Error', 'Missing payment client secret from server');
-          return;
-        }
-
         try {
           // Initialize PaymentSheet
           await StripeService.instance.initPaymentSheet(
-            clientSecret: clientSecret,
+            clientSecret: clientSecret ?? '',
             merchantDisplayName: 'Barbee Hive',
           );
 

@@ -94,7 +94,7 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
                           title: widget.currentUser.employee?.name ?? "",
                           fontSize: 22,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.white,
+                          color: AppColors.colorFFFFFF,
                         ),
 
                         /// DISTANCE
@@ -166,7 +166,7 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
                           buttonText: "Send Message",
                           buttonWidth: double.infinity,
                           buttonColor: AppColors.colorFF8600,
-                          textColor: AppColors.white,
+                          textColor: AppColors.colorFFFFFF,
                           buttonHeight: 55.h,
                           buttonTextSize: 16.sp,
                         ),
@@ -187,7 +187,7 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
       mainAxisSize: MainAxisSize.min,
       spacing: 1.5.w,
       children: [
-        Expanded(child: _infoTile(label, AppColors.white, false)),
+        Expanded(child: _infoTile(label, AppColors.colorFFFFFF, false)),
         Expanded(child: _infoTile(value, AppColors.color5E5E5E, true)),
       ],
     );
@@ -200,7 +200,7 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
       spacing: 1.5.w,
       children: [
         Expanded(
-          child: _infoTile("Resume/Certification", AppColors.white, false),
+          child: _infoTile("Resume/Certification", AppColors.colorFFFFFF, false),
         ),
         Expanded(
           child: GestureDetector(

@@ -201,7 +201,7 @@ class CustomButton extends StatelessWidget {
                           height: iconSize ?? 15.h,
                           width: iconSize ?? 15.w,
                           fit: BoxFit.cover,
-                          color: iconColor ?? AppColors.white,
+                          color: iconColor ?? AppColors.colorFFFFFF,
                         ),
                       ],
                     ),

@@ -52,7 +52,7 @@ class DashboardScreen extends GetView<DashboardController> {
                   onPressed: () => controller.fetchDashboardUsers(),
                   buttonHeight: 50,
                   btnBackgroundColor: AppColors.colorFF8600,
-                  btnTxtColor: AppColors.white,
+                  btnTxtColor: AppColors.colorFFFFFF,
                 ),
               ],
             ),
@@ -122,7 +122,7 @@ class DashboardScreen extends GetView<DashboardController> {
           child: Center(
             child: Text(
               'No Hive users found',
-              style: TextStyle(color: AppColors.white, fontSize: 16.sp),
+              style: TextStyle(color: AppColors.colorFFFFFF, fontSize: 16.sp),
             ),
           ),
         );
@@ -137,7 +137,7 @@ class DashboardScreen extends GetView<DashboardController> {
             Text(
               'HIVE',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: AppColors.white,
+                color: AppColors.colorFFFFFF,
                 fontSize: 25.sp,
                 fontWeight: FontWeight.w600,
               ),
@@ -174,7 +174,7 @@ class DashboardScreen extends GetView<DashboardController> {
                             height: itemHeight,
                             borderColor:
                                 index % 2 == 0
-                                    ? AppColors.white
+                                    ? AppColors.colorFFFFFF
                                     : AppColors.colorFF8600,
                             name:
                                 (users[index].employee?.name ??
@@ -278,7 +278,7 @@ class DashboardScreen extends GetView<DashboardController> {
           Text(
             'B2B',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: AppColors.white,
+              color: AppColors.colorFFFFFF,
               fontSize: 25.sp,
               fontWeight: FontWeight.w600,
             ),
@@ -288,7 +288,7 @@ class DashboardScreen extends GetView<DashboardController> {
                 controller.employers.isEmpty
                     ? Text(
                       'No B2B users found',
-                      style: TextStyle(color: AppColors.white, fontSize: 16.sp),
+                      style: TextStyle(color: AppColors.colorFFFFFF, fontSize: 16.sp),
                     )
                     : SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -318,7 +318,7 @@ class DashboardScreen extends GetView<DashboardController> {
                                   height: 100.h,
                                   borderColor:
                                       index % 2 == 0
-                                          ? AppColors.white
+                                          ? AppColors.colorFFFFFF
                                           : AppColors.colorFF8600,
                                   name: name,
                                   totalMl: "aa",

@@ -18,7 +18,7 @@ class Utilities {
       title ?? '',
       message,
       backgroundColor: isSuccess ? Colors.green : Colors.red,
-      colorText: textColor ?? AppColors.white,
+      colorText: textColor ?? AppColors.colorFFFFFF,
       duration: duration,
       borderRadius: borderRadius ?? 12.r,
       dismissDirection: DismissDirection.startToEnd,

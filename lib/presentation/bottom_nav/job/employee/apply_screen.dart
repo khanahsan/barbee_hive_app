@@ -1,5 +1,5 @@
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_textfield.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/controller/apply_screen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -81,7 +81,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                     onTap: () => Navigator.of(context).pop(),
                     child: Icon(
                       Icons.arrow_back,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                       size: 25.sp,
                     ),
                   ),
@@ -90,7 +90,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                     ),
                   ),
                   SvgPicture.asset(
@@ -98,7 +98,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                     height: 22.h,
                     width: 22.w,
                     fit: BoxFit.cover,
-                    color: AppColors.white,
+                    color: AppColors.colorFFFFFF,
                   ),
                 ],
               ),
@@ -133,7 +133,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                   mainAxisSize: MainAxisSize.min,
                   spacing: 18.h,
                   children: [
-                    CustomTextField(
+                    AppTextField(
                       controller: controller.experienceLevel,
                       fontColor: AppColors.textFieldTextColor,
                       hintText: "Experience Level",
@@ -147,7 +147,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                         fit: BoxFit.scaleDown,
                       ),
                     ),
-                    CustomTextField(
+                    AppTextField(
                       controller: controller.yearsOfExperience,
                       fontColor: AppColors.textFieldTextColor,
                       hintText: "Years of Experience",
@@ -161,7 +161,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                         fit: BoxFit.scaleDown,
                       ),
                     ),
-                    CustomTextField(
+                    AppTextField(
                       controller: controller.expectedSalary,
                       fontColor: AppColors.textFieldTextColor,
                       hintText: "Expected Salary",

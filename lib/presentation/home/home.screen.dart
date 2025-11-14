@@ -50,24 +50,24 @@ class HomeScreen extends GetView<HomeController> {
                 },
               ),
 
-              Platform.isIOS ?
-              CustomBtn(
-                buttonHeight: 50,
-                btnBackgroundColor: Colors.black,
-                btnTitle: 'Continue with Apple',
-                borderColor: Colors.grey.shade900,
-                borderWidth: 1.0.w,
-                onPressed: () {},
-                iconPath: AppAssets.appleLogo,
-              ):CustomBtn(
-                buttonHeight: 50,
-                btnBackgroundColor: Colors.black,
-                btnTitle: 'Continue with Google',
-                borderColor: Colors.grey.shade900,
-                borderWidth: 1.0.w,
-                onPressed: () {},
-                iconPath: AppAssets.googleLogo,
-              ),
+              // Platform.isIOS ?
+              // CustomBtn(
+              //   buttonHeight: 50,
+              //   btnBackgroundColor: Colors.black,
+              //   btnTitle: 'Continue with Apple',
+              //   borderColor: Colors.grey.shade900,
+              //   borderWidth: 1.0.w,
+              //   onPressed: () {},
+              //   iconPath: AppAssets.appleLogo,
+              // ):CustomBtn(
+              //   buttonHeight: 50,
+              //   btnBackgroundColor: Colors.black,
+              //   btnTitle: 'Continue with Google',
+              //   borderColor: Colors.grey.shade900,
+              //   borderWidth: 1.0.w,
+              //   onPressed: () {},
+              //   iconPath: AppAssets.googleLogo,
+              // ),
             ],
           ),
         ),

@@ -60,7 +60,7 @@ class PricingPlansScreen extends GetView<PricingPlansController> {
           Center(
             child: CustomText(
               title: controller.errorMessage.value,
-              color: AppColors.white,
+              color: AppColors.colorFFFFFF,
               fontSize: 20,
             ),
           ),

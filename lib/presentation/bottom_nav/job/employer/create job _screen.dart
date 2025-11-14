@@ -49,7 +49,7 @@ class CreateJobScreen extends StatelessWidget {
               "You have to pay to\npost your Job",
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontSize: 35.sp,
-                color: AppColors.white,
+                color: AppColors.colorFFFFFF,
                 fontWeight: FontWeight.w800,
               ),
             ),
@@ -70,7 +70,7 @@ class CreateJobScreen extends StatelessWidget {
             "To Create Job",
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontSize: 25.sp,
-              color: AppColors.white,
+              color: AppColors.colorFFFFFF,
               fontWeight: FontWeight.w600,
             ),
           ),

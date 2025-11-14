@@ -11,7 +11,7 @@ import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/navigation/routes.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
-import '../../infrastructure/widgets/custom_textfield.dart';
+import '../../infrastructure/widgets/app_text_field.dart';
 import '../auth/controllers/auth.controller.dart';
 
 class SignInView extends GetView<AuthController> {
@@ -20,8 +20,8 @@ class SignInView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.black,
+      resizeToAvoidBottomInset: true,
+      backgroundColor: AppColors.color000000,
       body: Stack(
         children: [
           Positioned(
@@ -31,7 +31,7 @@ class SignInView extends GetView<AuthController> {
             child: Image.asset(AppAssets.backgroundLogo, fit: BoxFit.cover),
           ),
           Positioned(
-            bottom: 0,
+            bottom: 15.h,
             left: 0,
             right: 0,
             child: Column(
@@ -42,18 +42,18 @@ class SignInView extends GetView<AuthController> {
                 CustomText(
                   title: '${AppStrings.loginTo}\n${AppStrings.appName}',
                   fontSize: 36,
-                  color: AppColors.white,
+                  color: AppColors.colorFFFFFF,
                 ).paddingSymmetric(horizontal: 20.w),
 
                 /// SUB LABEL
                 RichText(
                   text: TextSpan(
-                    style: TextStyle(fontSize: 12, color: AppColors.white),
+                    style: TextStyle(fontSize: 12, color: AppColors.colorFFFFFF),
                     children: [
                       TextSpan(
                         text: '${AppStrings.welcomeBackTo} ',
                         style: TextStyle(
-                          color: AppColors.white,
+                          color: AppColors.colorFFFFFF,
                           fontSize: 20.0.sp,
                           fontWeight: FontWeight.w400,
                         ),
@@ -69,7 +69,7 @@ class SignInView extends GetView<AuthController> {
                       TextSpan(
                         text: AppStrings.findHottestBar,
                         style: TextStyle(
-                          color: AppColors.white,
+                          color: AppColors.colorFFFFFF,
                           fontSize: 20.0.sp,
                           fontWeight: FontWeight.w400,
                         ),
@@ -79,7 +79,7 @@ class SignInView extends GetView<AuthController> {
                 ).paddingSymmetric(horizontal: 20.w),
 
                 Container(
-                  height: 532.h,
+                  // height: 532.h,
                   margin: EdgeInsets.only(top: 20.h),
                   padding: EdgeInsets.only(top: 3.h),
                   decoration: BoxDecoration(
@@ -96,7 +96,7 @@ class SignInView extends GetView<AuthController> {
                     ),
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: AppColors.black,
+                      color: AppColors.color000000,
                       borderRadius: BorderRadius.only(
                         topRight: Radius.circular(18.0),
                         topLeft: Radius.circular(18.0),
@@ -104,125 +104,124 @@ class SignInView extends GetView<AuthController> {
                     ),
                     child: Form(
                       key: controller.formKey,
-                      child: Column(
-                        spacing: 15.h,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          /// EMAIL FIELD
-                          CustomTextField(
-                            validate: FormValidators.validateEmail,
-                            fontColor: AppColors.color4C4C4C,
-                            filled: true,
-                            fillColor: AppColors.color101010,
-                            enabledBorderColor: Colors.transparent,
-                            hintText: 'Username or Email',
-                            prefixIcon: SvgPicture.asset(
-                              AppAssets.personIcon,
-                              fit: BoxFit.scaleDown,
-                              color: AppColors.color4C4C4C,
-                            ),
-                            // icon: AppAssets.nameLogo,
-                            controller: controller.nameController,
-                          ),
-
-                          /// PASSWORD FIELD
-                          Obx(
-                            () => CustomTextField(
-                              validate: FormValidators.validatePassword,
-                              fontColor: AppColors.color4C4C4C,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          spacing: 15.h,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            /// EMAIL FIELD
+                            AppTextField(
+                              validator: FormValidators.validateEmail,
                               filled: true,
                               fillColor: AppColors.color101010,
                               enabledBorderColor: Colors.transparent,
-                              obscureText: controller.isObscured.value,
-                              hintText: AppStrings.password,
-                              actionKeyboard: TextInputAction.done,
+                              hintText: 'Username or Email',
                               prefixIcon: SvgPicture.asset(
-                                AppAssets.lockIcon,
+                                AppAssets.personIcon,
                                 fit: BoxFit.scaleDown,
+                                color: AppColors.color4C4C4C,
                               ),
-                              suffixIcon: GestureDetector(
-                                onTap: controller.togglePasswordVisibility,
-                                child: Icon(
-                                  controller.isObscured.value
-                                      ? Icons.visibility_off_outlined
-                                      : Icons.visibility_outlined,
-                                  size: 25.sp,
-                                  color: AppColors.color4C4C4C,
+                              controller: controller.nameController,
+                            ),
+
+                            /// PASSWORD FIELD
+                            Obx(
+                              () => AppTextField(
+                                validator: FormValidators.validatePassword,
+                                filled: true,
+                                fillColor: AppColors.color101010,
+                                enabledBorderColor: Colors.transparent,
+                                isObscuredText: controller.isObscured.value,
+                                hintText: AppStrings.password,
+                                textInputAction: TextInputAction.done,
+                                prefixIcon: SvgPicture.asset(
+                                  AppAssets.lockIcon,
+                                  fit: BoxFit.scaleDown,
                                 ),
-                              ),
-                              controller: controller.passwordController,
-                            ),
-                          ),
-
-                          /// FORGET PASSWORD OPTION
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: GestureDetector(
-                              onTap: () {
-                                Get.toNamed(Routes.FORGOT_PASSWORD);
-                              },
-                              child: Text(
-                                'Forgot Password?',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.titleMedium?.copyWith(
-                                  fontSize: 15.sp,
-                                  color: AppColors.colorFF8600,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 30.h),
-
-                          /// SIGN IN OPTION
-                          Obx(
-                            () => CustomBtn(
-                              buttonHeight: 55.h,
-                              btnTitle: AppStrings.signIn,
-                              btnBackgroundColor: AppColors.colorFF8600,
-                              btnTxtColor: AppColors.white,
-                              onPressed: () {
-                                if (controller.formKey.currentState!.validate()) {
-                                  controller.login();
-                                }
-                              },
-                              isLoading: controller.isLoading.value,
-                            ),
-                          ),
-
-                          /// SIGN UP OPTION
-                          RichText(
-                            text: TextSpan(
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.white,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: AppStrings.noAccount,
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleMedium?.copyWith(
-                                    fontSize: 15.sp,
-                                    color: AppColors.white,
+                                suffixIcon: GestureDetector(
+                                  onTap: controller.togglePasswordVisibility,
+                                  child: Icon(
+                                    controller.isObscured.value
+                                        ? Icons.visibility_off_outlined
+                                        : Icons.visibility_outlined,
+                                    size: 25.sp,
+                                    color: AppColors.color4C4C4C,
                                   ),
                                 ),
-                                TextSpan(text: " "),
-                                TextSpan(
-                                  text: AppStrings.signUp,
+                                controller: controller.passwordController,
+                              ),
+                            ),
+
+                            /// FORGET PASSWORD OPTION
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: () {
+                                  Get.toNamed(Routes.FORGOT_PASSWORD);
+                                },
+                                child: Text(
+                                  'Forgot Password?',
                                   style: Theme.of(
                                     context,
                                   ).textTheme.titleMedium?.copyWith(
                                     fontSize: 15.sp,
                                     color: AppColors.colorFF8600,
                                   ),
-                                  recognizer:
-                                      TapGestureRecognizer()..onTap = () {},
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ],
+                            SizedBox(height: 30.h),
+
+                            /// SIGN IN OPTION
+                            Obx(
+                              () => CustomBtn(
+                                buttonHeight: 55.h,
+                                btnTitle: AppStrings.signIn,
+                                btnBackgroundColor: AppColors.colorFF8600,
+                                btnTxtColor: AppColors.colorFFFFFF,
+                                onPressed: () {
+                                  if (controller.formKey.currentState!.validate()) {
+                                    controller.login();
+                                  }
+                                },
+                                isLoading: controller.isLoading.value,
+                              ),
+                            ),
+
+                            /// SIGN UP OPTION
+                            RichText(
+                              text: TextSpan(
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.colorFFFFFF,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: AppStrings.noAccount,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleMedium?.copyWith(
+                                      fontSize: 15.sp,
+                                      color: AppColors.colorFFFFFF,
+                                    ),
+                                  ),
+                                  TextSpan(text: " "),
+                                  TextSpan(
+                                    text: AppStrings.signUp,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleMedium?.copyWith(
+                                      fontSize: 15.sp,
+                                      color: AppColors.colorFF8600,
+                                    ),
+                                    recognizer:
+                                        TapGestureRecognizer()..onTap = () {},
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -77,7 +77,7 @@ class _EmployeeCard2State extends State<EmployeeCard2>
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.white,
+                          color: AppColors.colorFFFFFF,
                         ),
                       ),
                     ],
@@ -95,7 +95,7 @@ class _EmployeeCard2State extends State<EmployeeCard2>
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontSize: 24.sp,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.white,
+                        color: AppColors.colorFFFFFF,
                       ),
                       overflow: TextOverflow.ellipsis, // Truncate long text
                       maxLines: 1, // Limit to one line
@@ -115,7 +115,7 @@ class _EmployeeCard2State extends State<EmployeeCard2>
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.white,
+                        color: AppColors.colorFFFFFF,
                       ),
                     ),
                   ),
@@ -146,7 +146,7 @@ class _EmployeeCard2State extends State<EmployeeCard2>
                 child: Center(
                   child: Text(
                     "Applied",
-                    style: TextStyle(fontSize: 14, color: AppColors.white),
+                    style: TextStyle(fontSize: 14, color: AppColors.colorFFFFFF),
                   ),
                 ),
               ),

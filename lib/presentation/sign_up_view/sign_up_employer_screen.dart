@@ -4,8 +4,8 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
+import '../../infrastructure/widgets/app_text_field.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
-import '../../infrastructure/widgets/custom_text_field.dart';
 import 'component/agree_terms_tile.dart';
 import 'component/custom_dropdown.dart';
 import 'component/hexagon_widget.dart';
@@ -90,55 +90,73 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                 ),
 
                                 //Business Name Field
-                                CustomTextField(
-                                  hint: 'Business Name',
-                                  icon: AppAssets.nameLogo,
+                                AppTextField(
+                                  hintText: 'Business Name',
+                                  prefixIcon: Image.asset(AppAssets.nameLogo),
                                   controller: controller.nameController,
                                 ),
 
                                 //Email Address Field
-                                CustomTextField(
-                                  hint: 'Email Address',
-                                  icon: AppAssets.emailLogo,
+                                AppTextField(
+                                  hintText: 'Email Address',
+                                  prefixIcon: Image.asset(AppAssets.emailLogo),
                                   controller: controller.emailController,
                                 ),
 
                                 //Password Field
                                 Obx(
-                                  () => CustomTextField(
-                                    hint: 'Password',
-                                    icon: AppAssets.passwordLogo,
+                                  () => AppTextField(
+                                    hintText: 'Password',
+                                    prefixIcon: Image.asset(
+                                      AppAssets.passwordLogo,
+                                    ),
                                     controller: controller.passwordController,
-                                    isPassword: true,
-                                    isObscured:
+
+                                    isObscuredText:
                                         !controller.isPasswordVisible.value,
-                                    onToggleVisibility:
-                                        controller.togglePasswordVisibility,
+                                    suffixIcon: GestureDetector(
+                                      onTap:
+                                          () =>
+                                              controller
+                                                  .togglePasswordVisibility,
+                                      child: Image.asset(
+                                        AppAssets.passwordLogo,
+                                      ),
+                                    ),
                                   ),
                                 ),
 
                                 //Confirm Password Field
                                 Obx(
-                                  () => CustomTextField(
-                                    hint: 'Confirm Password',
-                                    icon: AppAssets.passwordLogo,
+                                  () => AppTextField(
+                                    hintText: 'Confirm Password',
+                                    prefixIcon: Image.asset(
+                                      AppAssets.passwordLogo,
+                                    ),
                                     controller:
                                         controller.confirmPasswordController,
-                                    isPassword: true,
-                                    isObscured:
+                                    isObscuredText:
                                         !controller
                                             .isConfirmPasswordVisible
                                             .value,
-                                    onToggleVisibility:
-                                        controller
-                                            .toggleConfirmPasswordVisibility,
+                                    suffixIcon: GestureDetector(
+                                      onTap:
+                                          () =>
+                                              controller
+                                                  .toggleConfirmPasswordVisibility,
+                                      child: Image.asset(
+                                        AppAssets.passwordLogo,
+                                      ),
+                                    ),
                                   ),
                                 ),
 
                                 //Country Field
-                                CustomTextField(
-                                  hint: 'Country',
-                                  icon: AppAssets.countryIcon,
+                                AppTextField(
+                                  hintText: 'Country',
+                                  prefixIcon: Image.asset(
+                                    AppAssets.countryLogo,
+                                  ),
                                   controller: controller.countryController,
                                 ),
 
@@ -147,16 +165,20 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                   spacing: 10.w,
                                   children: [
                                     Expanded(
-                                      child: CustomTextField(
-                                        hint: 'State',
-                                        icon: AppAssets.stateIcon,
+                                      child: AppTextField(
+                                        hintText: 'State',
+                                        prefixIcon: Image.asset(
+                                          AppAssets.stateLogo,
+                                        ),
                                         controller: controller.stateController,
                                       ),
                                     ),
                                     Expanded(
-                                      child: CustomTextField(
-                                        hint: 'City',
-                                        icon: AppAssets.cityIcon,
+                                      child: AppTextField(
+                                        hintText: 'City',
+                                        prefixIcon: Image.asset(
+                                          AppAssets.cityLogo,
+                                        ),
                                         controller: controller.cityController,
                                       ),
                                     ),

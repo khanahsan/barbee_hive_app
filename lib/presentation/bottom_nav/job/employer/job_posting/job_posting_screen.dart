@@ -85,7 +85,7 @@ class JobPostingScreen extends StatelessWidget {
                         _buildTextField(
                           context,
                           'Country',
-                          icon: AppAssets.countryIcon,
+                          icon: AppAssets.countryLogo,
                           controller.countryController,
                         ),
                         Row(
@@ -94,7 +94,7 @@ class JobPostingScreen extends StatelessWidget {
                               child: _buildTextField(
                                 context,
                                 'State',
-                                icon: AppAssets.stateIcon,
+                                icon: AppAssets.stateLogo,
                                 controller.stateController,
                               ),
                             ),
@@ -103,7 +103,7 @@ class JobPostingScreen extends StatelessWidget {
                               child: _buildTextField(
                                 context,
                                 'City',
-                                icon: AppAssets.cityIcon,
+                                icon: AppAssets.cityLogo,
                                 controller.cityController,
                               ),
                             ),
@@ -112,7 +112,7 @@ class JobPostingScreen extends StatelessWidget {
                         _buildTextField(
                           context,
                           'Recruiter',
-                          icon: AppAssets.countryIcon,
+                          icon: AppAssets.countryLogo,
                           controller.recruiterController,
                         ),
                         _buildDropdownField(

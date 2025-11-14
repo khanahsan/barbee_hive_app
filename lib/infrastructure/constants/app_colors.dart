@@ -13,7 +13,9 @@ class AppColors {
   static const Color filterBGColor = Color(0xFFF9F9F9);
   static const Color customBoxBorderColor = Color(0xFF95989A);
 
-  static const Color white = Color(0xffffffff);
+  static const Color colorFFFFFF = Color(0xFFFFFFFF);
+  static const Color color000000 = Color(0xff000000);
+
   static const Color color151515 = Color(0xFF151515);
   static const Color lightgrey = Color(0xff868889);
   static const Color categorybordergrey = Color(0xff95989A);

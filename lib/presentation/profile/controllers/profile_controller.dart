@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/profile/profile_api.dart';
@@ -24,7 +25,12 @@ class ProfileController extends GetxController {
   final emailController = TextEditingController();
   final passController = TextEditingController();
   final confirmPassController = TextEditingController();
+  final countryController = TextEditingController();
+  final stateController = TextEditingController();
+  final cityController = TextEditingController();
   final dobController = TextEditingController();
+
+  final formKey = GlobalKey<FormState>();
 
   RxString currentEyeColorName = "".obs;
   RxInt currentEyeColorId = 0.obs;
@@ -47,17 +53,14 @@ class ProfileController extends GetxController {
   final selectedExperience = ''.obs;
 
   final selectedResumeFilePath = ''.obs;
+  Rx<File?> selectedResumeFile = Rx<File?>(null);
+
 
   @override
   void onInit() {
     super.onInit();
     initController();
-    // getUserIdAndFetchProfile();
-    // getUserRole();
-    // fetchEyeColors();
-    // fetchHairColors();
   }
-
 
   @override
   void onClose() {
@@ -65,6 +68,9 @@ class ProfileController extends GetxController {
     emailController.dispose();
     passController.dispose();
     confirmPassController.dispose();
+    countryController.dispose();
+    stateController.dispose();
+    cityController.dispose();
     dobController.dispose();
     super.onClose();
   }
@@ -99,8 +105,6 @@ class ProfileController extends GetxController {
       final profile = await ProfileApi.getUserProfile(userId);
       userProfile.value = profile;
 
-      debugPrint("userProfile.value ${userProfile.value}");
-
       populateData();
     } catch (e) {
       debugPrint('Error, Failed to fetch user profile: $e');
@@ -125,28 +129,37 @@ class ProfileController extends GetxController {
         nameController.text = data.employer?.businessName ?? '';
       } else {
         nameController.text = data.employee?.name ?? '';
+        countryController.text = data.employee?.country ?? '';
+        stateController.text = data.employee?.state ?? '';
+        cityController.text = data.employee?.city ?? '';
         currentEyeColorName.value = data.employee?.eyeColor?.name ?? '';
         currentEyeColorId.value = data.employee?.eyeColor?.id ?? 0;
+        selectedResumeFilePath.value = data.employee?.resumePath ?? '';
         currentHairColorName.value = data.employee?.hairColor?.name ?? '';
         currentHairColorId.value = data.employee?.hairColor?.id ?? 0;
+
         currentGender.value =
             (data.employee?.gender ?? '').capitalizeFirst ?? '';
+
         currentHeight.value = data.employee?.height ?? 0;
+
         currentSkillName.value = data.employee?.skill.name ?? '';
+
+        log("currentSkillName.value: ${currentSkillName.value}");
         currentSkillId.value = data.employee?.skill.id ?? 0;
         userProfileImage.value = data.profileImage ?? '';
-        final rawDob = data.employee?.dob;
-        if (rawDob != null && rawDob.isNotEmpty) {
-          try {
-            final inputFormat = DateFormat('MM-dd-yyyy');
-            final outputFormat = DateFormat('MM/dd/yyyy');
-            final parsedDob = inputFormat.parse(rawDob);
-            final formattedDob = outputFormat.format(parsedDob);
-            dobController.text = formattedDob;
-          } catch (e) {
-            debugPrint('Invalid DOB format: $rawDob');
-          }
-        }
+        dobController.text = data.employee?.dob ?? '';
+        // if (rawDob != null && rawDob.isNotEmpty) {
+        //   try {
+        //     final inputFormat = DateFormat('MM-dd-yyyy');
+        //     final outputFormat = DateFormat('MM/dd/yyyy');
+        //     final parsedDob = inputFormat.parse(rawDob);
+        //     final formattedDob = outputFormat.format(parsedDob);
+        //     dobController.text = formattedDob;
+        //   } catch (e) {
+        //     debugPrint('Invalid DOB format: $rawDob');
+        //   }
+        // }
 
         debugPrint("currentGender.value ${currentGender.value}");
       }
@@ -247,10 +260,8 @@ class ProfileController extends GetxController {
         city: "Los Angeles",
         country: "US",
         state: "CA",
-        resume:
-            selectedResumeFilePath.isNotEmpty
-                ? File(selectedResumeFilePath.value)
-                : null,
+        resume: selectedResumeFile.value,
+
 
         name: nameController.text.trim(),
         email: emailController.text.trim(),

@@ -4,6 +4,7 @@ import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/location_service.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -64,20 +65,31 @@ class AuthController extends GetxController {
       print('Login Response: $response');
       TokenStorage.saveToken(response.token);
 
+      /// SAVE USER ROLE
       await SharedPreferenceHelper.saveInt(
         SharedPrefKeys.userRole,
         response.user.role,
       );
+
+      /// SAVE AUTH TOKEN
+      await SharedPreferenceHelper.saveString(
+        SharedPrefKeys.authToken,
+        response.token,
+      );
+
+      /// SAVE USER ID
       await SharedPreferenceHelper.saveInt(
         SharedPrefKeys.userId,
         response.user.id,
       );
 
+      /// SAVE USER PROFILE
       await SharedPreferenceHelper.saveString(
         SharedPrefKeys.userProfileImage,
         response.user.profileImage ?? '',
       );
 
+      /// SAVE USER NAME
       await SharedPreferenceHelper.saveString(
         SharedPrefKeys.userName,
         response.user.role == 3
@@ -98,7 +110,11 @@ class AuthController extends GetxController {
         profileImage: response.user.profileImage,
       );
 
-      Get.snackbar("Success", response.message);
+      Utilities.showSnackBar(
+        title: "Success",
+        message: response.message,
+        isSuccess: true,
+      );
       Get.offAllNamed(Routes.CUSTOMDRAWER);
     } catch (e) {
       String errorMessage = e.toString().replaceFirst(

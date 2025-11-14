@@ -60,7 +60,7 @@ class _FadingImageCarouselState extends State<CustomFadingCarousel> {
                   _currentIndex == index
                       ? AppColors.colorFF8600
                       : Colors.transparent,
-              borderColor: AppColors.white,
+              borderColor: AppColors.colorFFFFFF,
             ),
           ),
         );

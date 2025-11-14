@@ -65,7 +65,7 @@ class EmployerCard extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.white,
+                          color: AppColors.colorFFFFFF,
                         ),
                       ),
                     ],
@@ -140,7 +140,7 @@ class EmployerCard extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: AppColors.white,
+                color: AppColors.colorFFFFFF,
               ),
             ),
             SizedBox(height: 15.h),
@@ -149,7 +149,7 @@ class EmployerCard extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: AppColors.white,
+                color: AppColors.colorFFFFFF,
               ),
             ),
             // Text(
@@ -166,7 +166,7 @@ class EmployerCard extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: AppColors.white,
+                color: AppColors.colorFFFFFF,
               ),
             ),
             SizedBox(height: 15.h),
@@ -175,7 +175,7 @@ class EmployerCard extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: AppColors.white,
+                color: AppColors.colorFFFFFF,
               ),
             ),
             SizedBox(height: 15.h),
@@ -184,7 +184,7 @@ class EmployerCard extends StatelessWidget {
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
-                color: AppColors.white,
+                color: AppColors.colorFFFFFF,
               ),
             ),
           ],

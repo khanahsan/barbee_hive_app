@@ -476,7 +476,7 @@ class ChatScreen extends StatelessWidget {
                         keyboardType: TextInputType.multiline,
                         maxLines: 3,
                         style: TextStyle(
-                          color: AppColors.white,
+                          color: AppColors.colorFFFFFF,
                           fontSize: 17.sp,
                           fontWeight: FontWeight.w400,
                         ),
@@ -484,7 +484,7 @@ class ChatScreen extends StatelessWidget {
                           border: InputBorder.none,
                           hintText: 'Type here...',
                           hintStyle: TextStyle(
-                            color: AppColors.white,
+                            color: AppColors.colorFFFFFF,
                             fontSize: 17.sp,
                             fontWeight: FontWeight.w400,
                           ),
@@ -516,7 +516,7 @@ class ChatScreen extends StatelessWidget {
                             ),
                             child: Icon(
                               Icons.arrow_forward,
-                              color: AppColors.white,
+                              color: AppColors.colorFFFFFF,
                               size: 22.sp,
                             ),
                           ),

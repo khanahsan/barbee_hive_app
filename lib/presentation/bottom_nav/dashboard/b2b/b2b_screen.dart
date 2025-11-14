@@ -2,6 +2,8 @@ import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/b2b_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +12,12 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../../infrastructure/constants/app_colors.dart';
 
-class B2BScreen extends StatelessWidget {
+class B2BScreen extends GetView<B2BController> {
   B2BScreen({super.key, required this.currentUser});
 
   final User currentUser;
   final ChatController chatController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,13 +40,6 @@ class B2BScreen extends StatelessWidget {
             child: Image.network(
               currentUser.profileImage ?? AppAssets.nullProfile,
             ),
-            // child: CustomFadingCarousel(
-            //   imagePaths: [
-            //     AppAssets.profileImage,
-            //     AppAssets.profileImage,
-            //     AppAssets.profileImage,
-            //   ],
-            // ),
           ),
 
           Positioned(
@@ -77,56 +73,53 @@ class B2BScreen extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       //crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                          "${currentUser.employer?.businessName ?? ""}",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium?.copyWith(
-                            fontSize: 22.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.white,
-                          ),
+                        /// EMPLOYER NAME
+                        CustomText(
+                          title: currentUser.employer?.businessName ?? "",
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.colorFFFFFF,
                         ),
-                        Text(
-                          ".6 mi away",
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium?.copyWith(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.colorFF8600,
-                          ),
+
+                        /// TOTAL DISTANCE
+                        CustomText(
+                          title: ".6 mi away",
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.colorFF8600,
                         ),
                         SizedBox(height: 40.h),
 
                         _seekingRow(context),
                         SizedBox(height: 30.h),
 
-                        CustomButton(
-                          onTap: () {
-                            Get.to(
-                              () => ChatScreen(
-                                chatId:
-                                    "${chatController.currentUserId.value}-${currentUser.uid}",
-                                otherName: currentUser.employer!.businessName,
-                                otherImage: currentUser.profileImage ?? '',
-                                employeeData: {
-                                  'uid': currentUser.uid,
-                                  'name': currentUser.employer!.businessName,
-                                  'profileImage':
-                                      currentUser.profileImage ?? '',
-                                  'role': currentUser.role,
-                                },
-                              ),
-                            );
-                          },
-                          buttonText: "Send Message",
-                          buttonWidth: double.infinity,
-                          buttonColor: AppColors.colorFF8600,
-                          textColor: AppColors.white,
-                          buttonHeight: 55.h,
-                          buttonTextSize: 16.sp,
-                        ),
+                        /// SEND MESSAGE OPTION (SHOW ONLY TO EMPLOYER)
+                        if (controller.canSendMessage)
+                          CustomButton(
+                            onTap: () {
+                              Get.to(
+                                () => ChatScreen(
+                                  chatId:
+                                      "${chatController.currentUserId.value}-${currentUser.uid}",
+                                  otherName: currentUser.employer!.businessName,
+                                  otherImage: currentUser.profileImage ?? '',
+                                  employeeData: {
+                                    'uid': currentUser.uid,
+                                    'name': currentUser.employer!.businessName,
+                                    'profileImage':
+                                        currentUser.profileImage ?? '',
+                                    'role': currentUser.role,
+                                  },
+                                ),
+                              );
+                            },
+                            buttonText: "Send Message",
+                            buttonWidth: double.infinity,
+                            buttonColor: AppColors.colorFF8600,
+                            textColor: AppColors.colorFFFFFF,
+                            buttonHeight: 55.h,
+                            buttonTextSize: 16.sp,
+                          ),
                       ],
                     ).paddingSymmetric(horizontal: 20.w, vertical: 20.h),
                   ),
@@ -145,14 +138,15 @@ class B2BScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       spacing: 8.h,
       children: [
-        Text(
-          "Seeking",
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontSize: 17.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.colorFF8600,
-          ),
+        /// SEEKING LABEL
+        CustomText(
+          title: "Seeking",
+          fontSize: 17,
+          fontWeight: FontWeight.w600,
+          color: AppColors.colorFF8600,
         ),
+
+        /// SEEKING OPTIONS
         Row(
           mainAxisSize: MainAxisSize.min,
           spacing: 2.w,
@@ -179,13 +173,12 @@ class B2BScreen extends StatelessWidget {
       width: double.infinity,
       height: 50.h,
       color: AppColors.color111111,
-      child: Text(
-        tabTitle,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w600,
-          color: AppColors.color5E5E5E,
-        ),
+
+      child: CustomText(
+        title: tabTitle,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: AppColors.color5E5E5E,
       ),
     );
   }

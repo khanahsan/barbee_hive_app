@@ -54,7 +54,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
             ? Center(
           child: Text(
             'No profile data',
-            style: TextStyle(color: AppColors.white, fontSize: 16.sp),
+            style: TextStyle(color: AppColors.colorFFFFFF, fontSize: 16.sp),
           ),
         )
             : Stack(
@@ -111,7 +111,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                 fontSize: 22.sp,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.white,
+                                color: AppColors.colorFFFFFF,
                               ),
                             ),
                             Text(
@@ -163,7 +163,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                               buttonText: 'Send Message',
                               buttonWidth: double.infinity,
                               buttonColor: AppColors.colorFF8600,
-                              textColor: AppColors.white,
+                              textColor: AppColors.colorFFFFFF,
                               buttonHeight: 55.h,
                               buttonTextSize: 16.sp,
                               onTap: () {
@@ -189,7 +189,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Expanded(child: _infoTile(context, label, AppColors.white, false)),
+        Expanded(child: _infoTile(context, label, AppColors.colorFFFFFF, false)),
         Expanded(child: _infoTile(context, value, AppColors.color5E5E5E, true)),
       ],
     );

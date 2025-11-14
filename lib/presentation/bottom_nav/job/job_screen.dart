@@ -5,7 +5,7 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_textfield.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -45,12 +45,12 @@ class JobScreen extends GetView<JobController> {
           children: [
             /// SEARCH FIELD
             if (!isEmployer)
-              CustomTextField(
+              AppTextField(
                 hintText: "Search jobs here...",
                 fillColor: AppColors.color101010,
-                cursorColor: AppColors.grey,
-                focusedBorderColor: AppColors.grey,
-                hintColor: Colors.grey.shade700,
+                // cursorColor: AppColors.grey,
+                // focusedBorderColor: AppColors.grey,
+                // hintStyle: TextStyle(color: Colors.grey.shade700),
                 fontColor: Colors.white,
                 filled: true,
                 controller: controller.searchController,

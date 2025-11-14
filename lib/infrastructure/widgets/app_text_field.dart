@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -172,6 +173,145 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
           ),
           controller: widget.controller,
+        ),
+      ),
+    );
+  }
+}*/
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:my_responsive_ui/my_responsive_ui.dart';
+
+import '../constants/app_colors.dart';
+
+
+class AppTextField extends StatelessWidget {
+  const AppTextField({
+    super.key,
+    this.controller,
+    this.inputFormatters,
+    this.keyboardType,
+    this.isTapAble = true,
+    this.focusNode,
+    this.isObscuredText = false,
+    this.onChanged,
+    this.onFieldSubmitted,
+    this.textAlign = TextAlign.start,
+    this.textAlignVertical,
+    this.contentPadding,
+    this.fillColor = AppColors.colorFFFFFF,
+    this.filled = true,
+    this.prefixIcon,
+    this.prefixIconColor = Colors.grey,
+    this.suffixIcon,
+    this.suffixIconColor = Colors.grey,
+    required this.hintText,
+    this.prefixIconConstraints,
+    this.textInputAction,
+    this.validator,
+    this.autofillHints,
+    this.maxLines = 1,
+    this.readOnly = false,
+    this.autoValidateMode = AutovalidateMode.disabled,
+    this.fontColor = AppColors.color4C4C4C,
+    this.fontSize,
+    this.fontWeight = FontWeight.w400,
+    this.enabledBorderColor,
+  });
+
+  final TextEditingController? controller;
+  final List<TextInputFormatter>? inputFormatters;
+  final TextInputType? keyboardType;
+  final bool isTapAble, isObscuredText, filled, readOnly;
+  final FocusNode? focusNode;
+  final void Function(String)? onChanged, onFieldSubmitted;
+  final TextAlign textAlign;
+  final TextAlignVertical? textAlignVertical;
+  final EdgeInsets? contentPadding;
+  final int maxLines;
+  final Color fillColor, prefixIconColor, suffixIconColor;
+  final Widget? prefixIcon, suffixIcon;
+  final String hintText;
+  final Iterable<String>? autofillHints;
+  final TextInputAction? textInputAction;
+  final String? Function(String?)? validator;
+  final BoxConstraints? prefixIconConstraints;
+  final AutovalidateMode autoValidateMode;
+  final Color? fontColor;
+  final double? fontSize;
+  final Color? enabledBorderColor;
+  final FontWeight? fontWeight;
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = TextStyle(
+      color: fontColor ?? AppColors.color4C4C4C,
+      fontSize: fontSize?.sp ?? 16.sp,
+      fontWeight: fontWeight ?? FontWeight.w400,
+    );
+
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      enabled: isTapAble,
+      focusNode: focusNode,
+      obscureText: isObscuredText,
+      maxLines: maxLines,
+      onChanged: onChanged,
+      onFieldSubmitted: onFieldSubmitted,
+      validator: validator,
+      autovalidateMode: autoValidateMode,
+      autofillHints: autofillHints,
+      textAlign: textAlign,
+      textAlignVertical: textAlignVertical,
+      textInputAction: textInputAction,
+      readOnly: readOnly,
+      cursorColor: AppColors.colorFFFFFF,
+      style: textStyle, // ✅ unified text style
+
+      decoration: InputDecoration(
+        isDense: true,
+        contentPadding:
+        contentPadding ?? EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        fillColor: isTapAble ? fillColor : Colors.grey,
+        filled: filled,
+        prefixIcon: prefixIcon,
+        prefixIconColor: prefixIconColor,
+        prefixIconConstraints: prefixIconConstraints,
+        suffixIcon: suffixIcon,
+        suffixIconColor: suffixIconColor,
+        hintText: hintText,
+        hintStyle: textStyle, // ✅ same style
+        labelStyle: textStyle, // ✅ same style
+        floatingLabelBehavior: FloatingLabelBehavior.auto,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide(color: enabledBorderColor ?? Colors.grey),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide(color: enabledBorderColor ?? Colors.transparent),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide(
+            color: enabledBorderColor ?? AppColors.colorFF8600,
+            width: 1.5,
+          ),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: const BorderSide(color: Colors.red, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: const BorderSide(color: Colors.red, width: 1.5),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: const BorderSide(color: Colors.grey),
         ),
       ),
     );

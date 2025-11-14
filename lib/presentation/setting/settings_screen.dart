@@ -42,7 +42,7 @@ class SettingsScreen extends StatelessWidget {
               context: context,
               buttonText: "Sign Out",
               onTap: () {},
-              textColor: AppColors.white,
+              textColor: AppColors.colorFFFFFF,
             ),
           ],
         ).paddingSymmetric(horizontal: 15.w, vertical: 20.h),
@@ -81,13 +81,13 @@ class SettingsScreen extends StatelessWidget {
         title,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(
           fontSize: 16.sp,
-          color: AppColors.white,
+          color: AppColors.colorFFFFFF,
           fontWeight: FontWeight.w600,
         ),
       ),
       trailing: SvgPicture.asset(
         AppAssets.arrowForwardIcon,
-        color: AppColors.white,
+        color: AppColors.colorFFFFFF,
         height: 25.h,
         width: 25.w,
         fit: BoxFit.cover,
@@ -116,7 +116,7 @@ class SettingsScreen extends StatelessWidget {
           tileText,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontSize: 16.sp,
-            color: AppColors.white,
+            color: AppColors.colorFFFFFF,
             fontWeight: FontWeight.w600,
           ),
         ),

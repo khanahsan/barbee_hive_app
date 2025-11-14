@@ -45,7 +45,7 @@ class CustomDrawer extends StatelessWidget {
                               AppAssets.closeIcon,
                               width: 15.w,
                               height: 15.h,
-                              color: AppColors.white,
+                              color: AppColors.colorFFFFFF,
                             ).paddingSymmetric(horizontal: 5.w),
                           ),
                           SizedBox(height: 30.h),
@@ -66,7 +66,7 @@ class CustomDrawer extends StatelessWidget {
                           CustomText(
                             title: controller.userName.value,
                             fontSize: 30,
-                            color: AppColors.white,
+                            color: AppColors.colorFFFFFF,
                             fontWeight: FontWeight.w600,
                           ),
                           SizedBox(height: 60.h),
@@ -222,7 +222,7 @@ class CustomDrawer extends StatelessWidget {
           CustomText(
             title: title,
             fontSize: 21,
-            color: AppColors.white,
+            color: AppColors.colorFFFFFF,
             fontWeight: FontWeight.w600,
           ),
         ],

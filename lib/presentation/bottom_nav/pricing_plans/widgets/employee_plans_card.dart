@@ -65,7 +65,7 @@ class EmployeePlansCard extends StatelessWidget {
                 CustomText(
                   title: "${plan.durationDisplay} Plan",
                   fontSize: 16,
-                  color: AppColors.white,
+                  color: AppColors.colorFFFFFF,
                   fontWeight: FontWeight.w400,
                 ),
 
@@ -73,7 +73,7 @@ class EmployeePlansCard extends StatelessWidget {
                 CustomText(
                   title: plan.price == 0 ? "Free" : "\$${plan.price}",
                   fontSize: 25,
-                  color: AppColors.white,
+                  color: AppColors.colorFFFFFF,
                   fontWeight: FontWeight.w600,
                 ),
               ],
@@ -133,7 +133,7 @@ class EmployeePlansCard extends StatelessWidget {
           child: CustomText(
             title: text,
             fontSize: 16,
-            color: AppColors.white,
+            color: AppColors.colorFFFFFF,
             fontWeight: FontWeight.w400,
             maxLines: 3,
           ),
@@ -161,7 +161,7 @@ class EmployeePlansCard extends StatelessWidget {
         CustomText(
           title: subTitle,
           fontSize: 16,
-          color: AppColors.white,
+          color: AppColors.colorFFFFFF,
           fontWeight: FontWeight.w400,
         ),
         SizedBox(height: 10.h),

@@ -35,16 +35,21 @@ class AppAssets {
   static String clockIcon = '$iconPath/clock_icon.svg';
   static String envelopeIcon = '$iconPath/envelope_icon.svg';
   static String personIcon = '$iconPath/person_icon.svg';
+  static String emailIcon = '$iconPath/email_icon.svg';
   static String lockIcon = '$iconPath/lock_icon.svg';
-  static String experienceIcon = '$iconPath/experience_icon.svg';
+  static String cardIcon = '$iconPath/card_icon.svg';
+  static String countryIcon = '$iconPath/country_icon.svg';
+  static String stateIcon = '$iconPath/state_icon.svg';
+  static String cityIcon = '$iconPath/city_icon.svg';
+  static String calendarIcon = '$iconPath/calender_icon.svg';
   static String uploadImageIcon = '$iconPath/upload_image_icon.svg';
   static String cameraIcon = '$iconPath/camera_icon.svg';
   static String experienceLevel = '$iconPath/experience_level.svg';
   static String salary = '$iconPath/salary.svg';
 
-  static String countryIcon = '$iconPath/country_icon.png';
-  static String cityIcon = '$iconPath/city_icon.png';
-  static String stateIcon = '$iconPath/state_icon.png';
+  static String countryLogo = '$iconPath/country_icon.png';
+  static String cityLogo = '$iconPath/city_icon.png';
+  static String stateLogo = '$iconPath/state_icon.png';
 
   static String logo = '$imagesPath/barbee_logo.png';
   static String appleLogo = '$imagesPath/apple_logo.png';

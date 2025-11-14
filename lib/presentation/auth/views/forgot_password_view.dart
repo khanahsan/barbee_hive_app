@@ -5,7 +5,7 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/widgets/custom_btn.dart';
-import '../../../infrastructure/widgets/custom_textfield.dart';
+import '../../../infrastructure/widgets/app_text_field.dart';
 import '../controllers/auth.controller.dart';
 
 class ForgotPasswordView extends GetView<AuthController> {
@@ -52,7 +52,7 @@ class ForgotPasswordView extends GetView<AuthController> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     // spacing: 10.h,
                     children: [
-                      CustomTextField(
+                      AppTextField(
                         hintText: 'Email Address',
                         prefixIcon: SvgPicture.asset(
                           AppAssets.envelopeIcon,
@@ -90,7 +90,7 @@ class ForgotPasswordView extends GetView<AuthController> {
                           buttonHeight: 55.h,
                           btnTitle: 'Send Code',
                           btnBackgroundColor: AppColors.colorFF8600,
-                          btnTxtColor: AppColors.white,
+                          btnTxtColor: AppColors.colorFFFFFF,
                           onPressed: () => controller.forgotPassword(context),
                           isLoading: controller.fPasswordIsLoading.value,
                         ),

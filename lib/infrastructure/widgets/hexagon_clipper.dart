@@ -389,7 +389,7 @@ class HexagonAvatar extends StatelessWidget {
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
           fontSize: 24.sp,
           fontWeight: FontWeight.bold,
-          color: AppColors.white,
+          color: AppColors.colorFFFFFF,
         ),
       ),
     );

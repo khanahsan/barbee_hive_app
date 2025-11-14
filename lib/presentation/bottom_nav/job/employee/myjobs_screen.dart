@@ -1,7 +1,7 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_textfield.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/component/employee_card2.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/controller/myjob_screen_controller.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +34,7 @@ class MyJobsScreen extends GetView<MyjobsController> {
               fit: BoxFit.cover,
               height: 23.h,
               width: 23.w,
-              color: AppColors.white,
+              color: AppColors.colorFFFFFF,
             ),
           ],
         ),
@@ -48,12 +48,12 @@ class MyJobsScreen extends GetView<MyjobsController> {
           spacing: 5.h,
           mainAxisSize: MainAxisSize.min,
           children: [
-            CustomTextField(
+            AppTextField(
               hintText: "Search jobs here...",
               fillColor: AppColors.color101010,
-              cursorColor: AppColors.grey,
-              focusedBorderColor: AppColors.grey,
-              hintColor: Colors.grey.shade700,
+              // cursorColor: AppColors.grey,
+              // focusedBorderColor: AppColors.grey,
+              // hintColor: Colors.grey.shade700,
               fontColor: Colors.white,
               filled: true,
               // controller: controller.searchController,

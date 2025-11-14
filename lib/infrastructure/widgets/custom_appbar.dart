@@ -53,7 +53,7 @@ PreferredSizeWidget customAppbar({
       title: Text(
         title,
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-          color: AppColors.white,
+          color: AppColors.colorFFFFFF,
           fontSize: 25.sp,
           fontWeight: FontWeight.w600,
         ),

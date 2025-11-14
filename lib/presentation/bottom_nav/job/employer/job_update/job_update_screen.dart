@@ -79,7 +79,7 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                         _buildTextField(
                           context,
                           'Country',
-                          icon: AppAssets.countryIcon,
+                          icon: AppAssets.countryLogo,
                           controller.countryController,
                         ),
                         Row(
@@ -88,7 +88,7 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                               child: _buildTextField(
                                 context,
                                 'State',
-                                icon: AppAssets.stateIcon,
+                                icon: AppAssets.stateLogo,
                                 controller.stateController,
                               ),
                             ),

@@ -272,7 +272,7 @@ class MessageScreen extends GetView<ChatController> {
               imagePath: profileImage,
               width: 80.w,
               height: 90.h,
-              borderColor: AppColors.white,
+              borderColor: AppColors.colorFFFFFF,
             ),
             SizedBox(width: 10.w),
             Expanded(
@@ -284,7 +284,7 @@ class MessageScreen extends GetView<ChatController> {
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                     ),
                   ),
                   Text(

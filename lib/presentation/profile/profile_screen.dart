@@ -40,7 +40,7 @@ class ProfileScreen extends GetView<ProfileController> {
                 fit: BoxFit.cover,
                 height: 23.h,
                 width: 23.w,
-                color: AppColors.white,
+                color: AppColors.colorFFFFFF,
               ),
             ],
           ),
@@ -102,77 +102,82 @@ class ProfileScreen extends GetView<ProfileController> {
                                   topLeft: Radius.circular(18.0),
                                 ),
                               ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    controller.userName,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium?.copyWith(
-                                      fontSize: 24.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.white,
+                              child: Form(
+                                key: controller.formKey,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      controller.userName,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleMedium?.copyWith(
+                                        fontSize: 24.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.colorFFFFFF,
+                                      ),
                                     ),
-                                  ),
-                                  RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text:
-                                              controller.isEditing.value
-                                                  ? ""
-                                                  : "Experience",
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.titleMedium?.copyWith(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.colorFF8600,
-                                          ),
-                                        ),
-                                        TextSpan(text: " "),
-                                        TextSpan(
-                                          text: controller.currentUserSkill,
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.titleMedium?.copyWith(
-                                            fontSize: 16.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color:
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text:
                                                 controller.isEditing.value
-                                                    ? AppColors.colorFF8600
-                                                    : AppColors.white,
+                                                    ? ""
+                                                    : "Experience",
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.titleMedium?.copyWith(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.colorFF8600,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                          TextSpan(text: " "),
+                                          TextSpan(
+                                            text: controller.currentUserSkill,
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.titleMedium?.copyWith(
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color:
+                                                  controller.isEditing.value
+                                                      ? AppColors.colorFF8600
+                                                      : AppColors.colorFFFFFF,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: 40.h),
-                                  if (controller.isEditing.value) ...[
-                                    if (controller.currentUserRole.value == 2)
-                                      EmployerEditWidget(),
-                                    if (controller.currentUserRole.value == 3)
-                                      EmployeeEditWidget(),
-                                    SizedBox(height: 20.h),
+                                    SizedBox(height: 40.h),
+                                    if (controller.isEditing.value) ...[
+                                      if (controller.currentUserRole.value == 2)
+                                        EmployerEditWidget(),
+                                      if (controller.currentUserRole.value == 3)
+                                        EmployeeEditWidget(),
+                                      SizedBox(height: 20.h),
+                                    ],
+                                    Obx(
+                                      () => CustomBtn(
+                                        buttonHeight: 58.h,
+                                        btnTitle:
+                                            controller.isEditing.value == true
+                                                ? "Submit Now"
+                                                : 'Edit Profile',
+                                        btnBackgroundColor: AppColors.colorFF8600,
+                                        btnTxtColor: Colors.white,
+                                        // width: double.infinity,
+                                        onPressed: () {
+                                          if(controller.formKey.currentState!.validate()){
+                                            controller.isEditing.value == true ?
+                                            controller.updateUserProfile() : controller.toggleEditing();
+                                          }
+                                        },
+                                      ),
+                                    ),
                                   ],
-                                  Obx(
-                                    () => CustomBtn(
-                                      buttonHeight: 58.h,
-                                      btnTitle:
-                                          controller.isEditing.value == true
-                                              ? "Submit Now"
-                                              : 'Edit Profile',
-                                      btnBackgroundColor: AppColors.colorFF8600,
-                                      btnTxtColor: Colors.white,
-                                      // width: double.infinity,
-                                      onPressed: () {
-                                        controller.isEditing.value == true ?
-                                        controller.updateUserProfile() : controller.toggleEditing();
-                                      },
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
                           ),

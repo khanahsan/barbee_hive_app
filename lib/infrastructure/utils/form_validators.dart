@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class FormValidators {
@@ -6,17 +8,33 @@ class FormValidators {
     if (value == null || value.isEmpty) {
       return 'Date of Birth required';
     }
+
     try {
-      final DateTime birthDate = DateTime.parse(value.toString());
-      final int age = _calculateAge(birthDate);
-      if (age < 18) {
-        return 'You must be at least 18 years old';
+      final normalized = value.toString().replaceAll('/', '-');
+      final parts = normalized.split('-');
+      if (parts.length != 3) return 'Invalid date format';
+
+      final int month = int.parse(parts[0]);
+      final int day = int.parse(parts[1]);
+      final int year = int.parse(parts[2]);
+
+      final birthDate = DateTime(year, month, day);
+
+      final today = DateTime.now();
+      int age = today.year - birthDate.year;
+      if (today.month < birthDate.month ||
+          (today.month == birthDate.month && today.day < birthDate.day)) {
+        age--;
       }
-    } catch (e) {
+
+      if (age < 18) return 'You must be at least 18 years old';
+    } catch (_) {
       return 'Invalid date format';
     }
+
     return null;
   }
+
 
   // Email validation
   static String? validateEmail(dynamic value) {

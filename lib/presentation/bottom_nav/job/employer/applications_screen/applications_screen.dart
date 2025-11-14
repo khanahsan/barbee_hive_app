@@ -4,7 +4,7 @@ import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_textfield.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/controller/application_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
@@ -36,7 +36,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
         dropdownColor: AppColors.color101010,
         decoration: InputDecoration(
           filled: true,
-          fillColor: AppColors.white,
+          fillColor: AppColors.colorFFFFFF,
           contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
@@ -87,7 +87,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
           return StatefulBuilder(
             builder: (context, setState) {
               return AlertDialog(
-                backgroundColor: AppColors.white,
+                backgroundColor: AppColors.colorFFFFFF,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -219,12 +219,12 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
         () => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CustomTextField(
+            AppTextField(
               enabledBorderColor: AppColors.lightgrey,
               fillColor: AppColors.color101010,
-              cursorColor: AppColors.grey,
-              focusedBorderColor: AppColors.grey,
-              hintColor: Colors.grey.shade700,
+              // cursorColor: AppColors.grey,
+              // focusedBorderColor: AppColors.grey,
+              // hintColor: Colors.grey.shade700,
               fontColor: Colors.white,
               filled: true,
               hintText: "Search by Filters",
@@ -265,7 +265,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
             else if (controller.filteredApplications.isEmpty)
               Text(
                 'No applications found',
-                style: TextStyle(color: AppColors.white, fontSize: 16.sp),
+                style: TextStyle(color: AppColors.colorFFFFFF, fontSize: 16.sp),
               )
             else
               Flexible(
@@ -323,7 +323,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     application.applicant.name ?? application.applicant.email,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 22.sp,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -353,7 +353,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                             context,
                           ).textTheme.titleMedium?.copyWith(
                             fontSize: 10.sp,
-                            color: AppColors.white,
+                            color: AppColors.colorFFFFFF,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -376,7 +376,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     'Job Role',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 13.sp,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -385,7 +385,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     'Years of Experience',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 13.sp,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -394,7 +394,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     'Expected Salary',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 13.sp,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -403,7 +403,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     'Experience Level',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 13.sp,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -418,7 +418,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     application.applicant.skills!.name,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 13.sp,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -427,7 +427,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     '${application.yearsOfExperience} Years',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 13.sp,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -436,7 +436,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     '\$${application.expectedSalary}',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 13.sp,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -445,7 +445,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     application.experienceLevel,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontSize: 13.sp,
-                      color: AppColors.white,
+                      color: AppColors.colorFFFFFF,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -525,10 +525,10 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
   }) {
     return Obx(
       () => DropdownButtonFormField<String>(
-        dropdownColor: AppColors.white,
+        dropdownColor: AppColors.colorFFFFFF,
         decoration: InputDecoration(
           filled: true,
-          fillColor: AppColors.white,
+          fillColor: AppColors.colorFFFFFF,
           contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8.r),
@@ -604,7 +604,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                 fontWeight: FontWeight.w500,
               ),
               filled: true,
-              fillColor: AppColors.white,
+              fillColor: AppColors.colorFFFFFF,
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 10.w,
                 vertical: 8.h,

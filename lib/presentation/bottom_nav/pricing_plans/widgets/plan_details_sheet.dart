@@ -45,7 +45,7 @@ class PlanDetailsBottomSheet extends GetView<PricingPlansController> {
             title: plan.name,
             fontSize: 22.sp,
             fontWeight: FontWeight.bold,
-            color: AppColors.white,
+            color: AppColors.colorFFFFFF,
           ),
           SizedBox(height: 10.h),
 
@@ -65,7 +65,7 @@ class PlanDetailsBottomSheet extends GetView<PricingPlansController> {
               title: "Features",
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
-              color: AppColors.white,
+              color: AppColors.colorFFFFFF,
             ),
             SizedBox(height: 10.h),
             ...plan.features!.map(
@@ -102,7 +102,7 @@ class PlanDetailsBottomSheet extends GetView<PricingPlansController> {
             children: [
               CustomText(
                 title: "Price:",
-                color: AppColors.white,
+                color: AppColors.colorFFFFFF,
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
               ),

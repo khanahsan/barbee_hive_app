@@ -38,6 +38,46 @@ class RegisterData {
   }
 }
 
+// class User {
+//   final int id;
+//   final String email;
+//   final int role;
+//   final bool? isVerified;
+//   final bool? isActive;
+//   final String createdAt;
+//   final String updatedAt;
+//   final Employee employee;
+//   final String? profileImage;
+//
+//   User({
+//     required this.id,
+//     required this.email,
+//     required this.role,
+//     this.isVerified,
+//     this.isActive,
+//     required this.createdAt,
+//     required this.updatedAt,
+//     required this.employee,
+//     required this.profileImage,
+//   });
+//
+//   factory User.fromJson(Map<String, dynamic> json) {
+//     return User(
+//       id: json['id'] ?? 0,
+//       email: json['email'] ?? '',
+//       role: json['role'] ?? 0,
+//       isVerified: json['is_verified'],
+//       isActive: json['is_active'],
+//       createdAt: json['created_at'] ?? '',
+//       updatedAt: json['updated_at'] ?? '',
+//       profileImage: json['profile_image'],
+//       employee: Employee.fromJson(json['employee'] ?? {}
+//       ),
+//     );
+//   }
+// }
+
+
 class User {
   final int id;
   final String email;
@@ -46,7 +86,8 @@ class User {
   final bool? isActive;
   final String createdAt;
   final String updatedAt;
-  final Employee employee;
+  final Employee? employee;
+  final Employer? employer;
   final String? profileImage;
 
   User({
@@ -57,7 +98,8 @@ class User {
     this.isActive,
     required this.createdAt,
     required this.updatedAt,
-    required this.employee,
+    this.employee,
+    this.employer,
     required this.profileImage,
   });
 
@@ -71,8 +113,12 @@ class User {
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
       profileImage: json['profile_image'],
-      employee: Employee.fromJson(json['employee'] ?? {}
-      ),
+      employee: json['employee'] != null
+          ? Employee.fromJson(json['employee'])
+          : null,
+      employer: json['employer'] != null
+          ? Employer.fromJson(json['employer'])
+          : null,
     );
   }
 }
@@ -126,6 +172,36 @@ class Employee {
     );
   }
 }
+
+class Employer {
+  final String businessName;
+  final String initials;
+  final String country;
+  final String state;
+  final String city;
+  final Skill skill;
+
+  Employer({
+    required this.businessName,
+    required this.initials,
+    required this.country,
+    required this.state,
+    required this.city,
+    required this.skill,
+  });
+
+  factory Employer.fromJson(Map<String, dynamic> json) {
+    return Employer(
+      businessName: json['business_name'] ?? '',
+      initials: json['initials'] ?? '',
+      country: json['country'] ?? '',
+      state: json['state'] ?? '',
+      city: json['city'] ?? '',
+      skill: Skill.fromJson(json['skill'] ?? {}),
+    );
+  }
+}
+
 
 class Skill {
   final int id;

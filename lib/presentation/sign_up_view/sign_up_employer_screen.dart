@@ -1,4 +1,6 @@
+import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
@@ -6,8 +8,7 @@ import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/widgets/app_text_field.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
-import 'component/agree_terms_tile.dart';
-import 'component/custom_dropdown.dart';
+import '../../infrastructure/widgets/custom_dropdown.dart';
 import 'component/hexagon_widget.dart';
 import 'controllers/sign_up_employer_controller.dart';
 
@@ -51,184 +52,238 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                               horizontal: 15.w,
                               vertical: 20.h,
                             ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 15.h,
-                              children: [
-                                Row(
-                                  spacing: 30.w,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.arrow_back,
-                                        color: Colors.white,
-                                      ),
-                                      onPressed: () => Get.back(),
-                                    ),
-                                    Text(
-                                      'Sign Up as Employer',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 25.0.sp,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                //Profile Photo Tile
-                                HexagonProfilePhotoTile(
-                                  selectedImage: controller.selectedImage.value,
-                                  imageUrl:
-                                      controller
-                                              .profileImageUrl
-                                              .value
-                                              .isNotEmpty
-                                          ? controller.profileImageUrl.value
-                                          : null,
-                                  onTap: controller.showImagePickerOptions,
-                                ),
-
-                                //Business Name Field
-                                AppTextField(
-                                  hintText: 'Business Name',
-                                  prefixIcon: Image.asset(AppAssets.nameLogo),
-                                  controller: controller.nameController,
-                                ),
-
-                                //Email Address Field
-                                AppTextField(
-                                  hintText: 'Email Address',
-                                  prefixIcon: Image.asset(AppAssets.emailLogo),
-                                  controller: controller.emailController,
-                                ),
-
-                                //Password Field
-                                Obx(
-                                  () => AppTextField(
-                                    hintText: 'Password',
-                                    prefixIcon: Image.asset(
-                                      AppAssets.passwordLogo,
-                                    ),
-                                    controller: controller.passwordController,
-
-                                    isObscuredText:
-                                        !controller.isPasswordVisible.value,
-                                    suffixIcon: GestureDetector(
-                                      onTap:
-                                          () =>
-                                              controller
-                                                  .togglePasswordVisibility,
-                                      child: Image.asset(
-                                        AppAssets.passwordLogo,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                                //Confirm Password Field
-                                Obx(
-                                  () => AppTextField(
-                                    hintText: 'Confirm Password',
-                                    prefixIcon: Image.asset(
-                                      AppAssets.passwordLogo,
-                                    ),
-                                    controller:
-                                        controller.confirmPasswordController,
-                                    isObscuredText:
-                                        !controller
-                                            .isConfirmPasswordVisible
-                                            .value,
-                                    suffixIcon: GestureDetector(
-                                      onTap:
-                                          () =>
-                                              controller
-                                                  .toggleConfirmPasswordVisibility,
-                                      child: Image.asset(
-                                        AppAssets.passwordLogo,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                                //Country Field
-                                AppTextField(
-                                  hintText: 'Country',
-                                  prefixIcon: Image.asset(
-                                    AppAssets.countryLogo,
-                                  ),
-                                  controller: controller.countryController,
-                                ),
-
-                                //State and City Field
-                                Row(
-                                  spacing: 10.w,
-                                  children: [
-                                    Expanded(
-                                      child: AppTextField(
-                                        hintText: 'State',
-                                        prefixIcon: Image.asset(
-                                          AppAssets.stateLogo,
+                            child: Form(
+                              key: controller.formKey,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: 15.h,
+                                children: [
+                                  Row(
+                                    spacing: 30.w,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.arrow_back,
+                                          color: Colors.white,
                                         ),
-                                        controller: controller.stateController,
+                                        onPressed: () => Get.back(),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: AppTextField(
-                                        hintText: 'City',
-                                        prefixIcon: Image.asset(
-                                          AppAssets.cityLogo,
+                                      Text(
+                                        'Sign Up as Employer',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 25.0.sp,
+                                          fontWeight: FontWeight.w500,
                                         ),
-                                        controller: controller.cityController,
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
 
-                                //Position Seeking Field
-                                CustomDropdownField(
-                                  hint: 'Position Seeking',
-                                  iconPath: AppAssets.experienceLogo,
-                                  selectedValue: controller.selectedSkill,
-                                  onChanged: controller.updateSkill,
-                                  items:
-                                      controller.skills
-                                          .asMap()
-                                          .entries
-                                          .where(
-                                            (entry) =>
-                                                !controller.skills
-                                                    .sublist(0, entry.key)
-                                                    .map((e) => e.name)
-                                                    .contains(entry.value.name),
-                                          )
-                                          .map(
-                                            (entry) => DropdownMenuItem(
-                                              value: entry.value.name,
-                                              child: Text(
-                                                entry.value.name,
-                                                style: TextStyle(
-                                                  color: Colors.white,
+                                  //Profile Photo Tile
+                                  HexagonProfilePhotoTile(
+                                    selectedImage:
+                                        controller.selectedImage.value,
+                                    imageUrl: null,
+                                    onTap: controller.showImagePickerOptions,
+                                  ),
+
+                                  // HexagonProfilePhotoTile(
+                                  //   selectedImage:
+                                  //       controller.selectedImage.value,
+                                  //   imageUrl:
+                                  //       controller
+                                  //               .selectedImage.value?.isNotEmpty
+                                  //           ? controller.profileImageUrl.value
+                                  //           : null,
+                                  //   onTap: controller.showImagePickerOptions,
+                                  // ),
+
+                                  /// Business Name Field
+                                  _buildTextField(
+                                    hint: 'Business Name',
+                                    controller: controller.nameController,
+                                    icon: AppAssets.personIcon,
+                                    validator:
+                                        (value) =>
+                                            FormValidators.validateName(value),
+                                  ),
+
+                                  /// Email Address Field
+                                  _buildTextField(
+                                    hint: 'Email Address',
+                                    controller: controller.emailController,
+                                    icon: AppAssets.emailIcon,
+                                    validator:
+                                        (value) =>
+                                            FormValidators.validateEmail(value),
+                                  ),
+
+                                  /// Password Field
+                                  Obx(
+                                    () => _buildTextField(
+                                      hint: 'Password',
+                                      controller: controller.passwordController,
+                                      icon: AppAssets.lockIcon,
+                                      obscure:
+                                          !controller.isPasswordVisible.value,
+                                      suffix: GestureDetector(
+                                        onTap:
+                                            controller.togglePasswordVisibility,
+                                        child: Icon(
+                                          controller.isPasswordVisible.value
+                                              ? Icons.visibility_outlined
+                                              : Icons.visibility_off_outlined,
+                                        ),
+                                      ),
+                                      validator:
+                                          (value) =>
+                                              FormValidators.validatePassword(
+                                                value,
+                                              ),
+                                    ),
+                                  ),
+
+                                  /// Confirm Password Field
+                                  Obx(
+                                    () => _buildTextField(
+                                      hint: 'Confirm Password',
+                                      controller:
+                                          controller.confirmPasswordController,
+                                      icon: AppAssets.lockIcon,
+                                      obscure:
+                                          !controller
+                                              .isConfirmPasswordVisible
+                                              .value,
+                                      suffix: GestureDetector(
+                                        onTap:
+                                            controller
+                                                .toggleConfirmPasswordVisibility,
+                                        child: Icon(
+                                          controller
+                                                  .isConfirmPasswordVisible
+                                                  .value
+                                              ? Icons.visibility_outlined
+                                              : Icons.visibility_off_outlined,
+                                        ),
+                                      ),
+                                      validator:
+                                          (value) =>
+                                              FormValidators.validateConfirmPassword(
+                                                value,
+                                                controller
+                                                    .passwordController
+                                                    .text,
+                                              ),
+                                    ),
+                                  ),
+
+                                  /// Country Field
+                                  _buildTextField(
+                                    hint: 'Country',
+                                    controller: controller.countryController,
+                                    icon: AppAssets.countryIcon,
+                                    validator:
+                                        (value) =>
+                                            FormValidators.validateRequired(
+                                              value,
+                                              "Country",
+                                            ),
+                                  ),
+
+                                  /// State and City Field
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    spacing: 10.w,
+                                    children: [
+                                      Expanded(
+                                        child: _buildTextField(
+                                          hint: 'State',
+                                          controller:
+                                              controller.stateController,
+                                          icon: AppAssets.stateIcon,
+                                          validator:
+                                              (value) =>
+                                                  FormValidators.validateRequired(
+                                                    value,
+                                                    "State",
+                                                  ),
+                                        ),
+                                      ),
+
+                                      Expanded(
+                                        child: _buildTextField(
+                                          hint: 'City',
+                                          controller: controller.cityController,
+                                          icon: AppAssets.cityIcon,
+                                          validator:
+                                              (value) =>
+                                                  FormValidators.validateRequired(
+                                                    value,
+                                                    "City",
+                                                  ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  /// Position Seeking Field
+                                  CustomDropdown(
+                                    validator:
+                                        (value) =>
+                                            FormValidators.validateRequired(
+                                              value,
+                                              "Position Seeking",
+                                            ),
+                                    hint: 'Position Seeking',
+                                    iconPath: AppAssets.experienceLogo,
+                                    selectedValue: controller.selectedSkill,
+                                    onChanged: controller.updateSkill,
+                                    items:
+                                        controller.skills
+                                            .asMap()
+                                            .entries
+                                            .where(
+                                              (entry) =>
+                                                  !controller.skills
+                                                      .sublist(0, entry.key)
+                                                      .map((e) => e.name)
+                                                      .contains(
+                                                        entry.value.name,
+                                                      ),
+                                            )
+                                            .map(
+                                              (entry) => DropdownMenuItem(
+                                                value: entry.value.name,
+                                                child: Text(
+                                                  entry.value.name,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          )
-                                          .toList(),
-                                ),
-                                AgreeTermsTile(),
-                                SizedBox(height: 30.h),
+                                            )
+                                            .toList(),
+                                  ),
+                                  _checkBox(),
+                                  SizedBox(height: 30.h),
 
-                                //Create Account Button
-                                CustomBtn(
-                                  btnTitle: 'Create Account',
-                                  buttonHeight: 50.h,
-                                  btnBackgroundColor: AppColors.colorFF8600,
-                                  btnTxtColor: Colors.white,
-                                  buttonWidth: double.infinity,
-                                  onPressed:
-                                      () => controller.registerEmployer(),
-                                ),
-                              ],
+                                  /// Create Account Option
+                                  CustomBtn(
+                                    btnTitle: 'Create Account',
+                                    buttonHeight: 50.h,
+                                    btnBackgroundColor: AppColors.colorFF8600,
+                                    btnTxtColor: Colors.white,
+                                    buttonWidth: double.infinity,
+                                    onPressed: () {
+                                      if (controller.formKey.currentState!
+                                          .validate()) {
+                                        controller.registerEmployer();
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                 ),
@@ -237,6 +292,67 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _checkBox() {
+    return Obx(
+      () => Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () {
+              controller.toggleCheckbox();
+            },
+            child: Container(
+              width: 20.w,
+              height: 20.h,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.grey, width: 2.w),
+                color:
+                    controller.isChecked.value
+                        ? AppColors.colorFF8600
+                        : Colors.transparent,
+              ),
+              child:
+                  controller.isChecked.value
+                      ? Icon(Icons.check, size: 15.sp, color: Colors.white)
+                      : null,
+            ),
+          ),
+          SizedBox(width: 10.w),
+          Text(
+            'I agree to the Terms of Service',
+            style: TextStyle(color: AppColors.colorFF8600, fontSize: 14.sp),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required String hint,
+    required TextEditingController controller,
+    required String icon,
+    bool obscure = false,
+    Widget? suffix,
+    String? Function(String?)? validator,
+  }) {
+    return AppTextField(
+      validator: validator,
+      hintText: hint,
+      controller: controller,
+      isObscuredText: obscure,
+      fillColor: AppColors.textFieldBackground,
+      fontColor: AppColors.textFieldTextColor,
+      enabledBorderColor: Colors.transparent,
+      prefixIcon: SvgPicture.asset(
+        icon,
+        color: AppColors.textFieldTextColor,
+        fit: BoxFit.scaleDown,
+      ),
+      suffixIcon: suffix,
     );
   }
 }

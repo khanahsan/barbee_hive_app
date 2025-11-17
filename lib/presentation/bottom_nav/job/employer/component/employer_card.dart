@@ -215,7 +215,8 @@ class EmployerCard extends StatelessWidget {
 
               SizedBox(height: 15.h),
               Text(
-                '\$${job.salaryRange.min}-\$${job.salaryRange.max}',
+                '\$${job.salaryRange.min}',
+                // '\$${job.salaryRange.min}-\$${job.salaryRange.max}',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w600,

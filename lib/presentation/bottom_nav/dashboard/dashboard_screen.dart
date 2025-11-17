@@ -58,40 +58,43 @@ class DashboardScreen extends GetView<DashboardController> {
             ),
           );
         } else {
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 25.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              spacing: 25.h,
-              children: [
-                /// B2B SECTION
-                b2bSection(context),
+          return RefreshIndicator(
+            onRefresh: () => controller.fetchDashboardUsers(),
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 25.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 25.h,
+                children: [
+                  /// B2B SECTION
+                  b2bSection(context),
 
-                /// BANNER AD SECTION
-                Obx(() {
-                  if (controller.isBannerLoaded.value &&
-                      controller.bannerAd != null) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(8.r),
-                      child: SizedBox(
-                        height: controller.bannerAd!.size.height.toDouble(),
-                        width: controller.bannerAd!.size.width.toDouble(),
-                        child: AdWidget(
-                          ad: controller.bannerAd!,
-                        ), // ✅ Fixed here
-                      ),
-                    );
-                  } else {
-                    return AppShimmer(
-                      height: 80.h, // approximate ad height
-                      width: double.infinity,
-                    );
-                  }
-                }),
+                  /// BANNER AD SECTION
+                  Obx(() {
+                    if (controller.isBannerLoaded.value &&
+                        controller.bannerAd != null) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: SizedBox(
+                          height: controller.bannerAd!.size.height.toDouble(),
+                          width: controller.bannerAd!.size.width.toDouble(),
+                          child: AdWidget(
+                            ad: controller.bannerAd!,
+                          ), // ✅ Fixed here
+                        ),
+                      );
+                    } else {
+                      return AppShimmer(
+                        height: 80.h, // approximate ad height
+                        width: double.infinity,
+                      );
+                    }
+                  }),
 
-                /// HIVE SECTION
-                hiveSection(context),
-              ],
+                  /// HIVE SECTION
+                  hiveSection(context),
+                ],
+              ),
             ),
           );
         }
@@ -288,7 +291,10 @@ class DashboardScreen extends GetView<DashboardController> {
                 controller.employers.isEmpty
                     ? Text(
                       'No B2B users found',
-                      style: TextStyle(color: AppColors.colorFFFFFF, fontSize: 16.sp),
+                      style: TextStyle(
+                        color: AppColors.colorFFFFFF,
+                        fontSize: 16.sp,
+                      ),
                     )
                     : SingleChildScrollView(
                       scrollDirection: Axis.horizontal,

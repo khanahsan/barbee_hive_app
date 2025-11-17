@@ -123,8 +123,8 @@ class _EmployeeCard2State extends State<EmployeeCard2>
               ),
               infoRow(
                 iconPath: AppAssets.containerIcon,
-                rowTitle:
-                    "\$${widget.job.salaryRange.min}-${widget.job.salaryRange.max} per month",
+                rowTitle: "\$${widget.job.salaryRange.min} per month",
+                // "\$${widget.job.salaryRange.min}-${widget.job.salaryRange.max} per month",
               ),
 
               infoRow(
@@ -146,7 +146,10 @@ class _EmployeeCard2State extends State<EmployeeCard2>
                 child: Center(
                   child: Text(
                     "Applied",
-                    style: TextStyle(fontSize: 14, color: AppColors.colorFFFFFF),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.colorFFFFFF,
+                    ),
                   ),
                 ),
               ),

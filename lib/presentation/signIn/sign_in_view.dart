@@ -1,6 +1,7 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_strings.dart';
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/presentation/sign_up_view/views/select_role_view.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -48,7 +49,10 @@ class SignInView extends GetView<AuthController> {
                 /// SUB LABEL
                 RichText(
                   text: TextSpan(
-                    style: TextStyle(fontSize: 12, color: AppColors.colorFFFFFF),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.colorFFFFFF,
+                    ),
                     children: [
                       TextSpan(
                         text: '${AppStrings.welcomeBackTo} ',
@@ -180,7 +184,8 @@ class SignInView extends GetView<AuthController> {
                                 btnBackgroundColor: AppColors.colorFF8600,
                                 btnTxtColor: AppColors.colorFFFFFF,
                                 onPressed: () {
-                                  if (controller.formKey.currentState!.validate()) {
+                                  if (controller.formKey.currentState!
+                                      .validate()) {
                                     controller.login();
                                   }
                                 },
@@ -215,7 +220,10 @@ class SignInView extends GetView<AuthController> {
                                       color: AppColors.colorFF8600,
                                     ),
                                     recognizer:
-                                        TapGestureRecognizer()..onTap = () {},
+                                        TapGestureRecognizer()
+                                          ..onTap = () {
+                                            Get.to(() => SelectRoleView());
+                                          },
                                   ),
                                 ],
                               ),

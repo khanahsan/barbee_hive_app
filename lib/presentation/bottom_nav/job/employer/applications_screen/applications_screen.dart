@@ -292,7 +292,8 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
     required BuildContext context,
     required JobApplicationData application,
   }) {
-    print('Rendering card for: ${application.applicant.email}'); // Debug
+    print('Rendering card for: ${application.applicant.email}');
+    print('Application details: $application');
     return Container(
       width: double.infinity,
       padding: EdgeInsets.only(bottom: 8.h, left: 8.w, right: 8.w, top: 5.h),
@@ -488,8 +489,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                   buttonHeight: 55.h,
                   onTap: () {
                     Get.to(
-                      () => 
-                      ChatScreen(
+                      () => ChatScreen(
                         chatId:
                             "${chatController.currentUserId.value}-${application.applicant.uid}", // Potential chatId
                         otherName:

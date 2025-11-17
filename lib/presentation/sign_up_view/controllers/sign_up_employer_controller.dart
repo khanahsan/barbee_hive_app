@@ -1,9 +1,11 @@
+/*
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/api_service.dart';
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     show FirebaseAuth, FirebaseAuthException;
@@ -37,15 +39,12 @@ class SignUpEmployerController extends GetxController {
   final Rx<File?> selectedImage = Rx<File?>(null);
   final RxString profileImageUrl = ''.obs;
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   void onInit() {
     super.onInit();
     fetchSkills();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
   }
 
   @override
@@ -163,11 +162,10 @@ class SignUpEmployerController extends GetxController {
     } catch (e) {
       print('Skills Error: $e');
       errorMessage.value = 'Failed to fetch skills';
-      Get.snackbar(
-        'Error',
-        errorMessage.value,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: errorMessage.value,
+        isSuccess: false,
       );
     } finally {
       isLoading.value = false;
@@ -176,40 +174,20 @@ class SignUpEmployerController extends GetxController {
 
   Future<void> registerEmployer() async {
     try {
-      // 🔹 Step 1: Validate form before doing anything
-      // if (!isChecked.value) {
-      //   Get.snackbar(
-      //     'Error',
-      //     'Please agree to the Terms of Service',
-      //     backgroundColor: Colors.red,
-      //     colorText: Colors.white,
-      //   );
-      //   return;
-      // }
-
-      if (nameController.text.isEmpty ||
-          emailController.text.isEmpty ||
-          passwordController.text.isEmpty ||
-          confirmPasswordController.text.isEmpty ||
-          countryController.text.isEmpty ||
-          stateController.text.isEmpty ||
-          cityController.text.isEmpty ||
-          selectedSkill.value.isEmpty) {
-        Get.snackbar(
-          'Error',
-          'All fields are required',
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+      if (selectedImage.value == null) {
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: 'Please upload a profile image',
+          isSuccess: false,
         );
         return;
       }
 
-      if (passwordController.text != confirmPasswordController.text) {
-        Get.snackbar(
-          'Error',
-          'Passwords do not match',
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+      if (!isChecked.value) {
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: 'You must agree to the terms & conditions',
+          isSuccess: false,
         );
         return;
       }
@@ -268,11 +246,10 @@ class SignUpEmployerController extends GetxController {
 
         print("✅ Firestore user document created");
 
-        Get.snackbar(
-          'Success',
-          response.message,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
+        Utilities.showSnackBar(
+          title: 'Success',
+          message: response.message,
+          isSuccess: true,
         );
 
         Get.offAllNamed(Routes.SIGN_IN_VIEW);
@@ -282,34 +259,344 @@ class SignUpEmployerController extends GetxController {
         await FirebaseAuth.instance.currentUser?.delete();
         print("⚠️ Firebase user deleted due to backend failure");
 
-        Get.snackbar(
-          'Error',
-          apiError.toString().replaceFirst('Exception: ', ''),
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: apiError.toString().replaceFirst('Exception: ', ''),
+          isSuccess: false,
         );
       }
     } on FirebaseAuthException catch (e) {
       // Firebase errors
       if (e.code == 'email-already-in-use') {
-        Get.snackbar('Error', 'Email already exists in Firebase');
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: 'Email already exists in Firebase',
+          isSuccess: false,
+        );
       } else if (e.code == 'weak-password') {
-        Get.snackbar('Error', 'Password is too weak');
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: 'Password is too weak',
+          isSuccess: false,
+        );
       } else if (e.code == 'invalid-email') {
-        Get.snackbar('Error', 'Invalid email format');
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: 'Invalid email format',
+          isSuccess: false,
+        );
       } else {
-        Get.snackbar('Error', '${e.code}: ${e.message}');
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: '${e.code}: ${e.message}',
+          isSuccess: false,
+        );
       }
     } catch (e) {
       print('❌ Unexpected Error: $e');
-      Get.snackbar(
-        'Error',
-        e.toString().replaceFirst('Exception: ', ''),
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: e.toString().replaceFirst('Exception: ', ''),
+        isSuccess: false,
       );
     } finally {
       isLoading.value = false;
     }
+  }
+}
+*/
+
+
+import 'dart:io';
+import 'package:barbee_hive_app/data/api/api_service.dart';
+import 'package:barbee_hive_app/data/api/auth_provider.dart';
+import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
+import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, FirebaseAuthException;
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:my_responsive_ui/my_responsive_ui.dart';
+import '../../../data/model/color_response.dart';
+
+class SignUpEmployerController extends GetxController {
+  // ---------------------- TEXT CONTROLLERS ---------------------- //
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final countryController = TextEditingController();
+  final stateController = TextEditingController();
+  final cityController = TextEditingController();
+
+  // ---------------------- OBSERVABLES ---------------------- //
+  final selectedSkill = ''.obs;
+  final isChecked = false.obs;
+  final isPasswordVisible = false.obs;
+  final isConfirmPasswordVisible = false.obs;
+  final isLoading = false.obs;
+  final errorMessage = ''.obs;
+
+  final skills = <Skill>[].obs;
+  final selectedImage = Rx<File?>(null);
+
+  final formKey = GlobalKey<FormState>();
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchSkills();
+  }
+
+  @override
+  void onClose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    countryController.dispose();
+    stateController.dispose();
+    cityController.dispose();
+    super.onClose();
+  }
+
+  // ---------------------- UI ACTIONS ---------------------- //
+  void toggleCheckbox() => isChecked.toggle();
+
+  void togglePasswordVisibility() {
+    isPasswordVisible.toggle();
+    update();
+  }
+
+  void toggleConfirmPasswordVisibility() {
+    isConfirmPasswordVisible.toggle();
+    update();
+  }
+
+  void updateSkill(String? value) {
+    if (value != null) selectedSkill.value = value;
+  }
+
+  // ---------------------- IMAGE PICKER ---------------------- //
+  Future<void> pickImage(ImageSource source) async {
+    try {
+      final picked = await ImagePicker().pickImage(source: source);
+      if (picked != null) {
+        selectedImage.value = File(picked.path);
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to pick image: $e',
+          backgroundColor: Colors.red, colorText: Colors.white);
+    }
+  }
+
+  Future<void> showImagePickerOptions() async {
+    await Get.bottomSheet(
+      Container(
+        padding: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _bottomOption(Icons.camera_alt, 'Take Photo', () {
+              Get.back();
+              pickImage(ImageSource.camera);
+            }),
+            _bottomOption(Icons.photo_library, 'Choose from Gallery', () {
+              Get.back();
+              pickImage(ImageSource.gallery);
+            }),
+            _bottomOption(Icons.cancel, 'Cancel', () => Get.back()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  ListTile _bottomOption(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(title, style: const TextStyle(color: Colors.white)),
+      onTap: onTap,
+    );
+  }
+
+  // ---------------------- FETCH SKILLS ---------------------- //
+  Future<void> fetchSkills() async {
+    isLoading.value = true;
+
+    try {
+      final response = await AuthProvider.getSkills();
+
+      if (response.status) {
+        skills.assignAll(response.data);
+      } else {
+        errorMessage.value = response.message;
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: errorMessage.value,
+          isSuccess: false,
+        );
+      }
+    } catch (e) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Failed to fetch skills',
+        isSuccess: false,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // ---------------------- REGISTER EMPLOYER ---------------------- //
+  Future<void> registerEmployer() async {
+
+
+
+    if (!_validateImage() || !_validateTerms()) return;
+
+    try {
+      final userSkill = skills.firstWhere(
+            (s) => s.name == selectedSkill.value,
+        orElse: () => throw Exception('Invalid skill selected'),
+      );
+
+      isLoading.value = true;
+
+      // Create Firebase User
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      final uid = userCredential.user!.uid;
+
+      // 🔍 Debug Print - Before registration
+      print("=========== EMPLOYER REGISTRATION DATA ===========");
+      print("Name: ${nameController.text}");
+      print("Email: ${emailController.text}");
+      print("Password: ${passwordController.text}");
+      print("Confirm Password: ${confirmPasswordController.text}");
+      print("Country: ${countryController.text}");
+      print("State: ${stateController.text}");
+      print("City: ${cityController.text}");
+      print("Selected Skill: ${selectedSkill.value}");
+      print("Skill ID: ${userSkill.id}");
+      print("Image Selected: ${selectedImage.value != null}");
+      if (selectedImage.value != null) {
+        print("Image Path: ${selectedImage.value!.path}");
+      }
+      print("=================================================");
+
+      try {
+        // Register with Backend
+        final apiResponse = await AuthApi.register(
+          uid: uid,
+          name: nameController.text,
+          email: emailController.text,
+          password: passwordController.text,
+          passwordConfirmation: confirmPasswordController.text,
+          role: 2,
+          country: countryController.text,
+          state: stateController.text,
+          city: cityController.text,
+          skillId: userSkill.id,
+          profileImage: selectedImage.value,
+        );
+
+        if (!apiResponse.status) throw Exception(apiResponse.message);
+
+        ApiService.setToken(apiResponse.data.token);
+
+        // Create Firestore User
+        await FirebaseFirestore.instance.collection('users').doc(uid).set({
+          'uid': uid,
+          'apiUserId': '',
+          'name': nameController.text.trim(),
+          'email': emailController.text.trim(),
+          'role': 'employer',
+          'profileImage': apiResponse.data.user.profileImage,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
+        Utilities.showSnackBar(
+          title: 'Success',
+          message: apiResponse.message,
+          isSuccess: true,
+        );
+
+        Get.offAllNamed(Routes.SIGN_IN_VIEW);
+
+      } catch (apiError) {
+        await FirebaseAuth.instance.currentUser?.delete();
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: apiError.toString().replaceFirst('Exception: ', ''),
+          isSuccess: false,
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      _handleFirebaseErrors(e);
+    } catch (e) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: e.toString().replaceFirst('Exception: ', ''),
+        isSuccess: false,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // ---------------------- VALIDATION HELPERS ---------------------- //
+  bool _validateImage() {
+    if (selectedImage.value == null) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please upload a profile image',
+        isSuccess: false,
+      );
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateTerms() {
+    if (!isChecked.value) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'You must agree to the terms & conditions ${isChecked.value}',
+        isSuccess: false,
+      );
+      return false;
+    }
+    return true;
+  }
+
+  void _handleFirebaseErrors(FirebaseAuthException e) {
+    String msg;
+
+    switch (e.code) {
+      case 'email-already-in-use':
+        msg = 'Email already exists in Firebase';
+        break;
+      case 'weak-password':
+        msg = 'Password is too weak';
+        break;
+      case 'invalid-email':
+        msg = 'Invalid email format';
+        break;
+      default:
+        msg = '${e.code}: ${e.message}';
+    }
+
+    Utilities.showSnackBar(title: 'Error', message: msg, isSuccess: false);
   }
 }

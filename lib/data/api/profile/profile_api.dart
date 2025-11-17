@@ -47,7 +47,6 @@ class ProfileApi {
 
     final files = <String, File>{if (resume != null) 'resume': resume};
 
-    debugPrint('📤 Updating profile: $fields');
     final data = await ApiService.multipartPost(
       ApiEndPoints.updateProfile,
       fields: fields,

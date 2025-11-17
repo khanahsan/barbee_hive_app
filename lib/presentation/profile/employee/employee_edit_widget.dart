@@ -23,6 +23,7 @@ class EmployeeEditWidget extends GetView<ProfileController> {
           mainAxisSize: MainAxisSize.min,
           spacing: 15.h,
           children: [
+
             /// NAME FIELD
             _buildCustomTextField(
               hintText: "Name",
@@ -41,40 +42,73 @@ class EmployeeEditWidget extends GetView<ProfileController> {
             ),
 
             /// PASSWORD FIELD
-            _buildCustomTextField(
-              hintText: "Password",
-              controller: controller.passController,
-              prefixIconPath: AppAssets.lockIcon,
+            Obx(() => AppTextField(
+              fontSize: 16,
+              contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
               validator: (value) {
                 if (value != null && value.isNotEmpty) {
-                  // Only validate if user typed something
                   return FormValidators.validatePassword(value);
                 }
-                return null; // empty password is allowed
+                return null;
               },
-            ),
+              fontColor: AppColors.color4C4C4C,
+              controller: controller.passController,
+              filled: true,
+              fillColor: AppColors.textFieldBackground,
+              enabledBorderColor: Colors.transparent,
+              hintText: "Password",
+              isObscuredText: controller.passwordObscure.value,
+              prefixIcon: SvgPicture.asset(
+                AppAssets.lockIcon,
+                fit: BoxFit.scaleDown,
+                color: AppColors.color4C4C4C,
+              ),
+              suffixIcon: GestureDetector(
+                onTap: () => controller.passwordObscure.value = !controller.passwordObscure.value,
+                child: Icon(
+                  controller.passwordObscure.value ? Icons.visibility_off : Icons.visibility,
+                  color: AppColors.color4C4C4C,
+                ),
+              ),
+            )),
 
             /// CONFIRM PASSWORD FIELD
-            _buildCustomTextField(
-              hintText: "Confirm Password",
-              controller: controller.confirmPassController,
-              prefixIconPath: AppAssets.lockIcon,
+            Obx(() => AppTextField(
+              fontSize: 16,
+              contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
               validator: (value) {
                 if (controller.passController.text.isNotEmpty) {
-                  // Only validate if password field is not empty
-                  return FormValidators.validateConfirmPassword(
-                    value,
-                    controller.passController.text,
-                  );
+                  return FormValidators.validateConfirmPassword(value, controller.passController.text);
                 }
-                return null; // allow empty confirm password if password is empty
+                return null;
               },
-            ),
+              fontColor: AppColors.color4C4C4C,
+              controller: controller.confirmPassController,
+              filled: true,
+              fillColor: AppColors.textFieldBackground,
+              enabledBorderColor: Colors.transparent,
+              hintText: "Confirm Password",
+              isObscuredText: controller.confirmPasswordObscure.value,
+              prefixIcon: SvgPicture.asset(
+                AppAssets.lockIcon,
+                fit: BoxFit.scaleDown,
+                color: AppColors.color4C4C4C,
+              ),
+              suffixIcon: GestureDetector(
+                onTap: () => controller.confirmPasswordObscure.value = !controller.confirmPasswordObscure.value,
+                child: Icon(
+                  controller.confirmPasswordObscure.value ? Icons.visibility_off : Icons.visibility,
+                  color: AppColors.color4C4C4C,
+                ),
+              ),
+            )),
+
 
             /// POSITION FIELD
             CustomDropdown(
               validator:
-                  (value) => FormValidators.validateRequired(
+                  (value) =>
+                  FormValidators.validateRequired(
                     value,
                     "Position Seeking",
                   ),
@@ -82,18 +116,19 @@ class EmployeeEditWidget extends GetView<ProfileController> {
               iconPath: AppAssets.cardIcon,
               selectedValue: controller.currentSkillName,
               items:
-                  controller.skills
-                      .map(
-                        (e) => DropdownMenuItem<String>(
-                          value: e.name,
-                          child: Text(e.name),
-                        ),
-                      )
-                      .toList(),
+              controller.skills
+                  .map(
+                    (e) =>
+                    DropdownMenuItem<String>(
+                      value: e.name,
+                      child: Text(e.name),
+                    ),
+              )
+                  .toList(),
               onChanged: (val) {
                 controller.currentSkillName.value = val ?? '';
                 final selected = controller.skills.firstWhereOrNull(
-                  (e) => e.name == val,
+                      (e) => e.name == val,
                 );
                 controller.currentSkillId.value = selected?.id ?? 0;
               },
@@ -149,19 +184,20 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                   child: CustomDropdown(
                     validator:
                         (value) =>
-                            FormValidators.validateRequired(value, "Gender"),
+                        FormValidators.validateRequired(value, "Gender"),
                     hint: "Gender",
                     iconPath: AppAssets.genderLogo,
                     selectedValue: controller.currentGender,
                     items:
-                        controller.genderList
-                            .map(
-                              (e) => DropdownMenuItem<String>(
-                                value: e,
-                                child: Text(e),
-                              ),
-                            )
-                            .toList(),
+                    controller.genderList
+                        .map(
+                          (e) =>
+                          DropdownMenuItem<String>(
+                            value: e,
+                            child: Text(e),
+                          ),
+                    )
+                        .toList(),
                     onChanged: (val) {
                       controller.currentGender.value = val ?? '';
                     },
@@ -172,21 +208,24 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                     return CustomDropdown(
                       validator:
                           (value) =>
-                              FormValidators.validateRequired(value, "Height"),
+                          FormValidators.validateRequired(value, "Height"),
                       hint: "Height",
                       iconPath: AppAssets.heightLogo,
                       // convert int → string
                       selectedValue:
-                          controller.currentHeight.value.toString().obs,
+                      controller.currentHeight.value
+                          .toString()
+                          .obs,
                       items:
-                          controller.heightList
-                              .map(
-                                (e) => DropdownMenuItem<String>(
-                                  value: e.toString(),
-                                  child: Text(e.toString()),
-                                ),
-                              )
-                              .toList(),
+                      controller.heightList
+                          .map(
+                            (e) =>
+                            DropdownMenuItem<String>(
+                              value: e.toString(),
+                              child: Text(e.toString()),
+                            ),
+                      )
+                          .toList(),
                       onChanged: (val) {
                         controller.currentHeight.value =
                             int.tryParse(val ?? '') ?? 0;
@@ -206,23 +245,24 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                   child: CustomDropdown(
                     validator:
                         (value) =>
-                            FormValidators.validateRequired(value, "Eye Color"),
+                        FormValidators.validateRequired(value, "Eye Color"),
                     hint: "Eye Color",
                     iconPath: AppAssets.personIcon,
                     selectedValue: controller.currentEyeColorName,
                     items:
-                        controller.eyeColors
-                            .map(
-                              (e) => DropdownMenuItem<String>(
-                                value: e.name,
-                                child: Text(e.name),
-                              ),
-                            )
-                            .toList(),
+                    controller.eyeColors
+                        .map(
+                          (e) =>
+                          DropdownMenuItem<String>(
+                            value: e.name,
+                            child: Text(e.name),
+                          ),
+                    )
+                        .toList(),
                     onChanged: (val) {
                       controller.currentEyeColorName.value = val ?? '';
                       final selected = controller.eyeColors.firstWhereOrNull(
-                        (e) => e.name == val,
+                            (e) => e.name == val,
                       );
                       controller.currentEyeColorId.value = selected?.id ?? 0;
                     },
@@ -231,7 +271,8 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                 Expanded(
                   child: CustomDropdown(
                     validator:
-                        (value) => FormValidators.validateRequired(
+                        (value) =>
+                        FormValidators.validateRequired(
                           value,
                           "Hair Color",
                         ),
@@ -239,18 +280,19 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                     iconPath: AppAssets.personIcon,
                     selectedValue: controller.currentHairColorName,
                     items:
-                        controller.hairColors
-                            .map(
-                              (e) => DropdownMenuItem<String>(
-                                value: e.name,
-                                child: Text(e.name),
-                              ),
-                            )
-                            .toList(),
+                    controller.hairColors
+                        .map(
+                          (e) =>
+                          DropdownMenuItem<String>(
+                            value: e.name,
+                            child: Text(e.name),
+                          ),
+                    )
+                        .toList(),
                     onChanged: (val) {
                       controller.currentHairColorName.value = val ?? '';
                       final selected = controller.hairColors.firstWhereOrNull(
-                        (e) => e.name == val,
+                            (e) => e.name == val,
                       );
                       controller.currentHairColorId.value = selected?.id ?? 0;
                     },
@@ -264,7 +306,9 @@ class EmployeeEditWidget extends GetView<ProfileController> {
               onFileSelected: (file) {
                 controller.selectedResumeFile.value = file;
                 controller.selectedResumeFilePath.value =
-                    file.path.split('/').last;
+                    file.path
+                        .split('/')
+                        .last;
               },
             ),
           ],
@@ -273,41 +317,45 @@ class EmployeeEditWidget extends GetView<ProfileController> {
     );
   }
 
-  Widget _buildCustomTextField({
-    required TextEditingController controller,
-    required String hintText,
-    String? prefixIconPath,
-    String? suffixIconPath,
-    bool? readOnly,
-    String? Function(String?)? validator,
-  }) {
-    return AppTextField(
-      fontSize: 16,
-      contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
-      validator: validator,
-      fontColor: AppColors.color4C4C4C,
-      controller: controller,
-      filled: true,
-      fillColor: AppColors.textFieldBackground,
-      enabledBorderColor: Colors.transparent,
-      hintText: hintText,
-      readOnly: readOnly ?? false,
-      prefixIcon:
-          prefixIconPath != null
-              ? SvgPicture.asset(
-                prefixIconPath,
-                fit: BoxFit.scaleDown,
-                color: AppColors.color4C4C4C,
-              )
-              : null,
-      suffixIcon:
-          suffixIconPath != null
-              ? SvgPicture.asset(
-                suffixIconPath,
-                fit: BoxFit.scaleDown,
-                color: AppColors.color4C4C4C,
-              )
-              : null,
-    );
-  }
+
+
+
+
+Widget _buildCustomTextField({
+  required TextEditingController controller,
+  required String hintText,
+  String? prefixIconPath,
+  String? suffixIconPath,
+  bool? readOnly,
+  String? Function(String?)? validator,
+}) {
+  return AppTextField(
+    fontSize: 16,
+    contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+    validator: validator,
+    fontColor: AppColors.color4C4C4C,
+    controller: controller,
+    filled: true,
+    fillColor: AppColors.textFieldBackground,
+    enabledBorderColor: Colors.transparent,
+    hintText: hintText,
+    readOnly: readOnly ?? false,
+    prefixIcon:
+        prefixIconPath != null
+            ? SvgPicture.asset(
+              prefixIconPath,
+              fit: BoxFit.scaleDown,
+              color: AppColors.color4C4C4C,
+            )
+            : null,
+    suffixIcon:
+        suffixIconPath != null
+            ? SvgPicture.asset(
+              suffixIconPath,
+              fit: BoxFit.scaleDown,
+              color: AppColors.color4C4C4C,
+            )
+            : null,
+  );
+}
 }

@@ -477,6 +477,7 @@ class SignUpEmployeeController extends GetxController {
 }
 */
 
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/api_service.dart';
@@ -876,6 +877,8 @@ class SignUpEmployeeController extends GetxController {
           skillId: userSkill.id,
           profileImage: selectedImage.value,
         );
+
+        log("EMPLOYEE REGISTER SIGN UP: ${response.data}");
 
         if (!response.status) throw Exception(response.message);
 

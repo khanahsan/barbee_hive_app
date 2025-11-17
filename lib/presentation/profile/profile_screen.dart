@@ -1,4 +1,8 @@
-import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:barbee_hive_app/infrastructure/widgets/custom_profile_image.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +11,7 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
+import '../../infrastructure/navigation/routes.dart';
 import '../../infrastructure/widgets/custom_appbar.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
 import 'employee/employee_edit_widget.dart';
@@ -35,12 +40,15 @@ class ProfileScreen extends GetView<ProfileController> {
             leadingIconPath: AppAssets.backIcon,
             showHexagon: false,
             actions: [
-              SvgPicture.asset(
-                AppAssets.settingIcon,
-                fit: BoxFit.cover,
-                height: 23.h,
-                width: 23.w,
-                color: AppColors.colorFFFFFF,
+              GestureDetector(
+                onTap: () => Get.offNamed(Routes.settingsScreen),
+                child: SvgPicture.asset(
+                  AppAssets.settingIcon,
+                  fit: BoxFit.cover,
+                  height: 23.h,
+                  width: 23.w,
+                  color: AppColors.colorFFFFFF,
+                ),
               ),
             ],
           ),
@@ -107,15 +115,11 @@ class ProfileScreen extends GetView<ProfileController> {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(
-                                      controller.userName,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleMedium?.copyWith(
-                                        fontSize: 24.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.colorFFFFFF,
-                                      ),
+                                    CustomText(
+                                      title: controller.userName,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.colorFFFFFF,
                                     ),
                                     RichText(
                                       text: TextSpan(
@@ -152,10 +156,14 @@ class ProfileScreen extends GetView<ProfileController> {
                                     ),
                                     SizedBox(height: 40.h),
                                     if (controller.isEditing.value) ...[
+                                      /// SHOW EMPLOYER EDIT PROFILE
                                       if (controller.currentUserRole.value == 2)
                                         EmployerEditWidget(),
+
+                                      /// SHOW EMPLOYEE EDIT PROFILE
                                       if (controller.currentUserRole.value == 3)
                                         EmployeeEditWidget(),
+
                                       SizedBox(height: 20.h),
                                     ],
                                     Obx(
@@ -165,15 +173,34 @@ class ProfileScreen extends GetView<ProfileController> {
                                             controller.isEditing.value == true
                                                 ? "Submit Now"
                                                 : 'Edit Profile',
-                                        btnBackgroundColor: AppColors.colorFF8600,
+                                        btnBackgroundColor:
+                                            AppColors.colorFF8600,
                                         btnTxtColor: Colors.white,
                                         // width: double.infinity,
                                         onPressed: () {
-                                          if(controller.formKey.currentState!.validate()){
-                                            controller.isEditing.value == true ?
-                                            controller.updateUserProfile() : controller.toggleEditing();
+                                          log("BUTTON PRESSED ${!controller.isEditing.value}");
+
+                                          if (!controller.isEditing.value) {
+                                            controller.toggleEditing();
+                                            return;
+                                          }
+
+                                          if (controller.formKey.currentState!.validate()) {
+                                            log("Calling updateUserProfile()");
+                                            controller.updateUserProfile();
                                           }
                                         },
+
+                                        // onPressed: () {
+                                        //
+                                        //   log("AAAAAAAAA");
+                                        //   if (controller.formKey.currentState!
+                                        //       .validate()) {
+                                        //     controller.isEditing.value == true
+                                        //         ? controller.updateUserProfile()
+                                        //         : controller.toggleEditing();
+                                        //   }
+                                        // },
                                       ),
                                     ),
                                   ],
@@ -184,13 +211,28 @@ class ProfileScreen extends GetView<ProfileController> {
 
                           Positioned(
                             top: -80.h,
-                            child: HexagonAvatar(
-                              imagePath: controller.userProfileImage.value,
-                              width: 130.w,
-                              height: 140.h,
-                              showOption: true,
+                            child: Obx(
+                              () => CustomProfileImage(
+                                imagePath: controller.userProfileImage.value,
+                                name: controller.userName,
+                                showEditButton: controller.isEditing.value,
+                                onImagePicked: (File file) {
+                                  controller.userProfileImage.value = file.path;
+                                },
+                                borderColor: AppColors.colorFF8600,
+                              ),
                             ),
                           ),
+
+                          // Positioned(
+                          //   top: -80.h,
+                          //   child: HexagonAvatar(
+                          //     imagePath: controller.userProfileImage.value,
+                          //     width: 130.w,
+                          //     height: 140.h,
+                          //     showOption: true,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

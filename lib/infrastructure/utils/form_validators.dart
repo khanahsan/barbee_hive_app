@@ -176,6 +176,35 @@ class FormValidators {
     return null;
   }
 
+  static String? validateSalary(
+      String? value,
+      String fieldName, {
+        int min = 5,
+        int max = 10000,
+        bool isMinField = true, // true if this is the minimum salary field
+      }) {
+    if (value == null || value.isEmpty) {
+      return '$fieldName is required';
+    }
+
+    final parsed = int.tryParse(value);
+    if (parsed == null) {
+      return '$fieldName must be a number';
+    }
+
+    if (isMinField && parsed < min) {
+      return 'Minimum salary is $min';
+    }
+
+    if (!isMinField && parsed > max) {
+      return 'Maximum salary is $max';
+    }
+
+    return null;
+  }
+
+
+
   // Account Name validation (Only alphabets allowed)
   static String? validateName(dynamic value) {
     if (value == null || value.toString().isEmpty) {

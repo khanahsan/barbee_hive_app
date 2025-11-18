@@ -1,9 +1,11 @@
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/model/color_response.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
+import 'package:barbee_hive_app/data/model/job_type_response.dart';
 import 'package:barbee_hive_app/data/model/setting_response.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../model/experience_level_response.dart';
 import 'api_service.dart';
 
 class AuthProvider {
@@ -103,6 +105,22 @@ class AuthProvider {
       auth: false, // Set to false if public
     );
     return SkillsResponse.fromJson(data);
+  }
+
+  static Future<ExperienceLevelResponse> getExperienceLevels() async {
+    final data = await ApiService.get(
+      ApiEndPoints.getExperienceLevels,
+      auth: false, // Set to false if public
+    );
+    return ExperienceLevelResponse.fromJson(data);
+  }
+
+  static Future<JobTypeResponse> getJobTypes() async {
+    final data = await ApiService.get(
+      ApiEndPoints.getJobTypes,
+      auth: false, // Set to false if public
+    );
+    return JobTypeResponse.fromJson(data);
   }
 
   static Future<SettingsResponse> getSetting() async {

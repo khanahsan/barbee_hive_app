@@ -427,6 +427,8 @@ class ProfileController extends GetxController {
     debugPrint("currentUserRole: ${currentUserRole.value}");
   }
 
+
+
   // ---------------- Fetch Profile Data ----------------
   Future<void> fetchUserProfile(int userId) async {
     try {
@@ -452,6 +454,8 @@ class ProfileController extends GetxController {
 
     if (isEmployer) {
       nameController.text = data.employer?.businessName ?? '';
+      currentSkillName.value = data.employer?.skill.name ?? '';
+      currentSkillId.value = data.employer?.skill.id ?? 0;
     } else {
       // Employee details
       nameController.text = data.employee?.name ?? '';

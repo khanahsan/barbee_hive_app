@@ -44,9 +44,7 @@ class HomeScreen extends GetView<HomeController> {
                 borderColor: Colors.white,
                 borderWidth: 1.0.w,
                 onPressed: () {
-                  //Get.to(SignUpViewScreen());
                   Get.to(() => SelectRoleView());
-                  // Get.toNamed(Routes.SELECT_ROLE_VIEW);
                 },
               ),
 

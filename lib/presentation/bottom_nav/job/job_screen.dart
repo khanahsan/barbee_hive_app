@@ -34,9 +34,9 @@ class JobScreen extends GetView<JobController> {
           },
           title: isEmployer ? 'Job Applications' : 'Find Jobs',
           profileImagePath: controller.userProfileImage.value,
-          actions: [
-            SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
-          ],
+          // actions: [
+          //   SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
+          // ],
         ),
         backgroundColor: AppColors.black,
         body: Column(

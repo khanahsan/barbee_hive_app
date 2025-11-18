@@ -188,8 +188,8 @@ class CustomDropdown extends StatelessWidget {
       iconWidget = SvgPicture.asset(
         iconPath,
         color: textColor ?? AppColors.textFieldTextColor,
-        width: iconSize ?? 20.w,
-        height: iconSize ?? 20.h,
+        width: iconSize ?? 25.w,
+        height: iconSize ?? 25.h,
       );
     } else {
       iconWidget = Image.asset(
@@ -230,13 +230,15 @@ class CustomDropdown extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16.sp,
                             overflow: TextOverflow.ellipsis,
-                            color: textColor ?? AppColors.color4C4C4C,
+                            color: textColor ?? AppColors.colorA3A3A3,
+                            fontWeight: FontWeight.w400,
                           ),
                           hint: Text(
                             selectedValue.value.isEmpty ? hint : selectedValue.value,
                             style: TextStyle(
-                              color: textColor ?? AppColors.color4C4C4C,
+                              color: textColor ?? AppColors.colorA3A3A3,
                               fontSize: fontSize ?? 16.sp,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                           iconEnabledColor: Colors.grey,

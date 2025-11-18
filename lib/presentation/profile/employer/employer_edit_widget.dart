@@ -89,8 +89,8 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
-import '../../../infrastructure/widgets/custom_dropdown.dart';
 import '../../../infrastructure/widgets/app_text_field.dart';
+import '../../../infrastructure/widgets/custom_dropdown.dart';
 
 class EmployerEditWidget extends GetView<ProfileController> {
   const EmployerEditWidget({super.key});
@@ -137,18 +137,18 @@ class EmployerEditWidget extends GetView<ProfileController> {
               () => CustomDropdown(
                 hint: "Experience",
                 iconPath: AppAssets.cardIcon,
-                selectedValue: controller.selectedExperience,
+                selectedValue: controller.currentSkillName,
                 items:
-                    controller.experienceList
+                    controller.skills
                         .map(
-                          (e) => DropdownMenuItem<String>(
-                            value: e,
-                            child: Text(e),
+                          (skill) => DropdownMenuItem<String>(
+                            value: skill.name,
+                            child: Text(skill.name),
                           ),
                         )
                         .toList(),
                 onChanged: (val) {
-                  controller.selectedExperience.value = val ?? '';
+                  controller.currentSkillName.value = val ?? '';
                 },
               ),
             ),

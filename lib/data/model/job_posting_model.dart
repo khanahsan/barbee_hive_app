@@ -13,7 +13,7 @@ class JobPostResponse {
     return JobPostResponse(
       status: json['status'] ?? false,
       message: json['message'] ?? '',
-      data: JobData.fromJson(json['data']),
+      data: JobData.fromJson(json['data']['job']),
     );
   }
 }
@@ -124,7 +124,7 @@ class Employer {
       country: json['country'] ?? '',
       state: json['state'] ?? '',
       city: json['city'] ?? '',
-      profileImage: json['profile_image'],
+      profileImage: json['profile_image'] ?? '',
     );
   }
 }

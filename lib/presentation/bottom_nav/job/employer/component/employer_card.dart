@@ -4,6 +4,7 @@ import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -91,34 +92,69 @@ class EmployerCard extends StatelessWidget {
           SizedBox(height: 20.h),
 
           //Buttons
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     CustomButton(
+          //       onTap: () {
+          //         LogUtil.logError('job.id ${job.id}');
+          //         Get.toNamed(
+          //           Routes.applicationsScreen,
+          //           arguments: {'jobId': job.id},
+          //         );
+          //       },
+          //       buttonText: "View Applications",
+          //       buttonWidth: 185.w,
+          //       buttonColor: AppColors.color101010,
+          //       borderColor: AppColors.colorFF8600,
+          //       buttonHeight: 50.h,
+          //       buttonTextSize: 15.sp,
+          //     ),
+          //     CustomButton(
+          //       onTap: () {
+          //         Get.toNamed(Routes.jobUpdateScreen, arguments: job);
+          //       },
+          //       buttonText: "Edit Job",
+          //       buttonWidth: 185.w,
+          //       buttonColor: AppColors.color101010,
+          //       borderColor: AppColors.colorFF8600,
+          //       buttonHeight: 50.h,
+          //       buttonTextSize: 15.sp,
+          //     ),
+          //   ],
+          // ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomButton(
-                onTap: () {
-                  LogUtil.logError('job.id ${job.id}');
-                  Get.toNamed(
-                    Routes.applicationsScreen,
-                    arguments: {'jobId': job.id},
-                  );
-                },
-                buttonText: "View Applications",
-                buttonWidth: 185.w,
-                buttonColor: AppColors.color101010,
-                borderColor: AppColors.colorFF8600,
-                buttonHeight: 50.h,
-                buttonTextSize: 15.sp,
+              Expanded(
+                child: CustomButton(
+                  buttonWidth: 0.w,
+                  onTap: () {
+                    LogUtil.logError('job.id ${job.id}');
+                    Get.toNamed(
+                      Routes.applicationsScreen,
+                      arguments: {'jobId': job.id},
+                    );
+                  },
+                  buttonText: "View Applications",
+                  buttonColor: AppColors.color101010,
+                  borderColor: AppColors.colorFF8600,
+                  buttonHeight: 50.h,
+                  buttonTextSize: 15.sp,
+                ),
               ),
-              CustomButton(
-                onTap: () {
-                  Get.toNamed(Routes.jobUpdateScreen, arguments: job);
-                },
-                buttonText: "Edit Job",
-                buttonWidth: 185.w,
-                buttonColor: AppColors.color101010,
-                borderColor: AppColors.colorFF8600,
-                buttonHeight: 50.h,
-                buttonTextSize: 15.sp,
+              SizedBox(width: 10.w), // spacing between buttons
+              Expanded(
+                child: CustomButton(
+                  buttonWidth: 0.w,
+                  onTap: () {
+                    Get.toNamed(Routes.jobUpdateScreen, arguments: job);
+                  },
+                  buttonText: "Edit Job",
+                  buttonColor: AppColors.color101010,
+                  borderColor: AppColors.colorFF8600,
+                  buttonHeight: 50.h,
+                  buttonTextSize: 15.sp,
+                ),
               ),
             ],
           ),
@@ -129,119 +165,96 @@ class EmployerCard extends StatelessWidget {
 
   Widget _buildRow({required BuildContext context}) {
     return Row(
+      spacing: 20.w,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              "Job Role",
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.colorFFFFFF,
-              ),
+            CustomText(
+              title: "Job Role",
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.colorFFFFFF,
             ),
             SizedBox(height: 15.h),
-            Text(
-              "Year of Experience",
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.colorFFFFFF,
-              ),
-            ),
-            // Text(
-            //   "Skills",
-            //   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-            //     fontSize: 14.sp,
-            //     fontWeight: FontWeight.w600,
-            //     color: AppColors.white,
-            //   ),
-            // ),
-            SizedBox(height: 15.h),
-            Text(
-              "Salary",
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.colorFFFFFF,
-              ),
+
+            CustomText(
+              title: "Experience Level",
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.colorFFFFFF,
             ),
             SizedBox(height: 15.h),
-            Text(
-              "Experience Level",
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.colorFFFFFF,
-              ),
+
+            CustomText(
+              title: "Salary",
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.colorFFFFFF,
             ),
             SizedBox(height: 15.h),
-            Text(
-              "Location",
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.colorFFFFFF,
-              ),
+
+            CustomText(
+              title: "Job Type",
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.colorFFFFFF,
+            ),
+            SizedBox(height: 15.h),
+
+            CustomText(
+              title: "Location",
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.colorFFFFFF,
             ),
           ],
         ),
-        SizedBox(width: 25.w),
+
         Flexible(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                job.title,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.grey,
-                ),
+              CustomText(
+                title: job.title,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.grey,
               ),
               SizedBox(height: 15.h),
-              Text(
-                job.experienceLevel,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.grey,
-                ),
-              ),
 
-              SizedBox(height: 15.h),
-              Text(
-                '\$${job.salaryRange.min}',
-                // '\$${job.salaryRange.min}-\$${job.salaryRange.max}',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.grey,
-                ),
+              CustomText(
+                title: job.experienceLevel,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.grey,
               ),
               SizedBox(height: 15.h),
-              Text(
-                job.skills?.name ?? 'N/A',
-                //job.skills?.map((skill) => skill.name).join(', ') ?? 'N/A',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.grey,
-                ),
-                overflow: TextOverflow.ellipsis,
+
+              CustomText(
+                title: '\$${job.salaryRange.min} - ${job.salaryRange.max}',
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.grey,
               ),
               SizedBox(height: 15.h),
-              Text(
-                '${job.country}, ${job.state}, ${job.city}',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.grey,
-                ),
+
+              CustomText(
+                title: job.jobType,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.grey,
+              ),
+              SizedBox(height: 15.h),
+
+              CustomText(
+                title: '${job.country}, ${job.state}, ${job.city}',
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.grey,
               ),
             ],
           ),

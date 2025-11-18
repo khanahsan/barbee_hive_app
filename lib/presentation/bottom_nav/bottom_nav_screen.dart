@@ -377,7 +377,7 @@ class BottomNavScreen extends GetView<BottomNavController> {
       DashboardScreen(onMenuPressed: onMenuPressed),
       MessageScreen(onMenuPressed: onMenuPressed),
       JobScreen(onMenuPressed: onMenuPressed),
-      PricingPlansScreen(onMenuPressed: onMenuPressed),
+      PricingPlansScreen(onMenuPressed: onMenuPressed, showBackButton: false),
     ];
 
     return Obx(

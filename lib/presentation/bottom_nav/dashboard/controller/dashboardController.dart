@@ -56,6 +56,9 @@ class DashboardController extends GetxController {
   }
 
   void getUserLocationAndFetchDashboard() async {
+
+    isLoading.value = true;
+
     try {
       final position = await LocationService.determinePosition();
 

@@ -589,10 +589,10 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon,
       fillColor: AppColors.textFieldBackground,
-      fontColor: AppColors.textFieldTextColor,
       enabledBorderColor: Colors.transparent,
       fontSize: 16,
       contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+
     );
   }
 

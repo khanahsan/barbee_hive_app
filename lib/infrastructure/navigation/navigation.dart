@@ -1,6 +1,5 @@
 import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_binding.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/customDrawer/custom_drawer.dart';
-import 'package:barbee_hive_app/presentation/signIn/sign_in_view.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/b2b/b2b_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/hive/hive_profile_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/myjobs_screen.dart';
@@ -10,8 +9,10 @@ import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/create%20jo
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_posting/job_posting_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/job_update_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/job_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/pricing_plans_screen.dart';
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
 import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
+import 'package:barbee_hive_app/presentation/signIn/sign_in_view.dart';
 import 'package:barbee_hive_app/presentation/sign_up_view/sign_up_employer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -122,6 +123,15 @@ class Nav {
     GetPage(
       name: Routes.settingsScreen,
       page: () => const SettingsScreen(),
+      binding: InitialBindings(),
+    ),
+
+    GetPage(
+      name: Routes.pricingPlansScreen,
+      page:
+          () => PricingPlansScreen(
+            showBackButton: Get.arguments["showBackButton"],
+          ),
       binding: InitialBindings(),
     ),
 

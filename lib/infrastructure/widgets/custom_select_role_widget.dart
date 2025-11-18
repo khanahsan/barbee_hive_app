@@ -1,8 +1,8 @@
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../constants/app_colors.dart';
-import 'custom_button.dart';
 
 class CustomSelectRoleWidget extends StatelessWidget {
   final String? iconPath;
@@ -30,17 +30,24 @@ class CustomSelectRoleWidget extends StatelessWidget {
         ),
         child: Center(
           child: Column(
+            spacing: 15.h,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(iconPath!, width: 70.w, height: 70.h),
-              SizedBox(height: 15.h),
-              CustomButton(
-                buttonColor: AppColors.colorFF8600,
-                buttonText: btnText!,
-                onTap: () {},
-                buttonWidth: 100.0.w,
-                buttonHeight: 25.0.h,
-                borderRadius: 4.0.r,
+
+              /// ROLE TYPE
+              Container(
+                alignment: Alignment.center,
+                width: 100.w,
+                height: 25.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4.r),
+                  color: AppColors.colorFF8600,
+                ),
+                child: CustomText(
+                  title: btnText ?? '',
+                  color: AppColors.colorFFFFFF,
+                ),
               ),
             ],
           ),

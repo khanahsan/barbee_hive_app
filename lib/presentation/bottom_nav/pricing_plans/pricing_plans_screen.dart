@@ -1,4 +1,5 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
+import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller/pricing_plans_controller.dart';
@@ -11,7 +12,13 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../infrastructure/widgets/custom_appbar.dart';
 
 class PricingPlansScreen extends GetView<PricingPlansController> {
-  const PricingPlansScreen({super.key, this.onMenuPressed});
+  const PricingPlansScreen({
+    super.key,
+    this.onMenuPressed,
+    required this.showBackButton,
+  });
+
+  final bool showBackButton;
 
   final VoidCallback? onMenuPressed;
 
@@ -22,10 +29,17 @@ class PricingPlansScreen extends GetView<PricingPlansController> {
         showHexagon: false,
         context: context,
         leadingTapFunction: () {
-          if (onMenuPressed != null) onMenuPressed!();
+          if (showBackButton) {
+            Get.back(); // go back if back button is enabled
+          } else if (onMenuPressed != null) {
+            onMenuPressed!(); // otherwise perform menu action
+          }
         },
+        leadingIconPath: showBackButton ? AppAssets.backIcon : null,
+        // show back icon if needed
         title: 'Pricing Plans',
       ),
+
       backgroundColor: AppColors.black,
       body: Obx(() {
         return RefreshIndicator(

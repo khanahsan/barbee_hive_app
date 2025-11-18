@@ -1,8 +1,12 @@
+import 'dart:developer';
+
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/model/pricing_plans_model.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/widgets/plan_details_sheet.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 class EmployerPlansCard extends StatelessWidget {
@@ -88,17 +92,30 @@ class EmployerPlansCard extends StatelessWidget {
                   titleColor: primaryColor,
                 ),
 
-            SizedBox(height: 20.h),
-
             /// TRY PLAN OPTION
-            CustomButton(
-              buttonText: "Get Started",
-              buttonWidth: double.infinity,
-              buttonHeight: 52.h,
-              buttonTextSize: 16.sp,
-              buttonTextWeight: FontWeight.w600,
-              buttonColor: AppColors.colorFF8600,
-            ),
+            if (plan.price != 0) ...[
+              SizedBox(height: 20.h),
+              CustomButton(
+                onTap: () {
+                  log('CALLING');
+                  if (plan == null) {
+                    log('Plan is null, cannot open details.');
+                    return;
+                  }
+                  Get.bottomSheet(
+                    PlanDetailsBottomSheet(plan: plan),
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                  );
+                },
+                buttonText: "Get Started",
+                buttonWidth: double.infinity,
+                buttonHeight: 52.h,
+                buttonTextSize: 16.sp,
+                buttonTextWeight: FontWeight.w600,
+                buttonColor: AppColors.colorFF8600,
+              ),
+            ],
           ],
         ),
       ),

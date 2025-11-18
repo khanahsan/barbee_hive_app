@@ -95,28 +95,29 @@ class EmployeePlansCard extends StatelessWidget {
               ),
 
             /// TRY PLAN OPTION
-            CustomButton(
-              onTap: () {
-                log('CALLING');
-                if (plan == null) {
-                  log('Plan is null, cannot open details.');
-                  return;
-                }
+            if (plan.price != 0)
+              CustomButton(
+                onTap: () {
+                  log('CALLING');
+                  if (plan == null) {
+                    log('Plan is null, cannot open details.');
+                    return;
+                  }
 
-                Get.bottomSheet(
-                  PlanDetailsBottomSheet(plan: plan),
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                );
-              },
+                  Get.bottomSheet(
+                    PlanDetailsBottomSheet(plan: plan),
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                  );
+                },
 
-              buttonText: "Get Started",
-              buttonWidth: double.infinity,
-              buttonHeight: 52.h,
-              buttonTextSize: 16.sp,
-              buttonTextWeight: FontWeight.w600,
-              buttonColor: AppColors.colorFF8600,
-            ),
+                buttonText: "Get Started",
+                buttonWidth: double.infinity,
+                buttonHeight: 52.h,
+                buttonTextSize: 16.sp,
+                buttonTextWeight: FontWeight.w600,
+                buttonColor: AppColors.colorFF8600,
+              ),
           ],
         ),
       ),

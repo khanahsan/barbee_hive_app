@@ -76,7 +76,11 @@ class CreateJobScreen extends StatelessWidget {
           ),
           SizedBox(height: 30.h),
           _buildActionButton(
-            onTap: () {},
+            onTap:
+                () => Get.toNamed(
+                  Routes.pricingPlansScreen,
+                  arguments: {'showBackButton': true},
+                ),
             text: "View Monthly Plans",
             buttonColor: AppColors.black,
             borderColor: AppColors.colorFF8600,

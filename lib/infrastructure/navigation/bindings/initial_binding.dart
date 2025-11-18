@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 
 import '../../../presentation/auth/controllers/auth.controller.dart';
 import '../../../presentation/bottom_nav/dashboard/controller/b2b_controller.dart';
+import '../../../presentation/bottom_nav/job/employer/job_posting/controller/job_posting_controller.dart';
 import '../../../presentation/home/controllers/home.controller.dart';
 import '../../../presentation/sign_up_view/controllers/sign_up_employee_controller.dart';
 import '../../../presentation/splash/controllers/splash.controller.dart';
@@ -41,6 +42,10 @@ class InitialBindings implements Bindings {
     Get.lazyPut<JobUpdateController>(() => JobUpdateController(), fenix: true);
     Get.lazyPut<MyjobsController>(() => MyjobsController(), fenix: true);
     Get.lazyPut<BottomNavController>(() => BottomNavController(), fenix: true);
+    Get.lazyPut<JobPostingController>(
+      () => JobPostingController(),
+      // fenix: true,
+    );
     Get.lazyPut<PricingPlansController>(
       () => PricingPlansController(),
       fenix: true,

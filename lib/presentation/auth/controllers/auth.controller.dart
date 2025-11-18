@@ -8,9 +8,12 @@ import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../data/api/firebase/firebase_service.dart';
+import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/helpers/shared_preference_helper.dart';
+import '../../../infrastructure/widgets/custom_text.dart';
 
 class AuthController extends GetxController {
   final TextEditingController nameController = TextEditingController();
@@ -132,16 +135,81 @@ class AuthController extends GetxController {
     }
   }
 
+  // Future<void> logout() async {
+  //   isLoading.value = true;
+  //
+  //   try {
+  //     await AuthApi.logout();
+  //     await TokenStorage.clearToken();
+  //     ApiService.clearToken();
+  //     Get.snackbar("Success", "Logged out successfully");
+  //     Get.offAllNamed(Routes.HOME);
+  //   } catch (e) {
+  //     String errorMessage = e.toString().replaceFirst(
+  //       'Exception: POST request error: Exception: ',
+  //       '',
+  //     );
+  //     errorMessage =
+  //         errorMessage.startsWith('Exception: ')
+  //             ? errorMessage.replaceFirst('Exception: ', '')
+  //             : errorMessage;
+  //     Get.snackbar("Logout Failed", errorMessage, backgroundColor: Colors.red);
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
+
   Future<void> logout() async {
-    isLoading.value = true;
+    // Show loading dialog
+    Get.dialog<void>(
+      Center(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.r),
+            color: AppColors.colorFFFFFF,
+          ),
+          child: Column(
+            spacing: 20.h,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CircularProgressIndicator(color: AppColors.colorE4A74C),
+              const CustomText(
+                title: 'Signing Out..',
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColors.color000000,
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
 
     try {
+      // 🔄 Use Function 2 API call
       await AuthApi.logout();
+
+      // 🔐 Clear tokens (from Function 2)
       await TokenStorage.clearToken();
       ApiService.clearToken();
-      Get.snackbar("Success", "Logged out successfully");
-      Get.offAllNamed(Routes.HOME);
+
+      Get.back<void>(); // close dialog
+
+      // 🟢 Success
+      Utilities.showSnackBar(
+        message: "Logged out successfully",
+        title: 'Sign Out',
+        isSuccess: true,
+      );
+
+      // navigate
+      Get.offAllNamed<void>(Routes.HOME);
     } catch (e) {
+      Get.back<void>(); // close dialog
+
+      // Clean error message (from Function 2)
       String errorMessage = e.toString().replaceFirst(
         'Exception: POST request error: Exception: ',
         '',
@@ -150,9 +218,13 @@ class AuthController extends GetxController {
           errorMessage.startsWith('Exception: ')
               ? errorMessage.replaceFirst('Exception: ', '')
               : errorMessage;
-      Get.snackbar("Logout Failed", errorMessage, backgroundColor: Colors.red);
-    } finally {
-      isLoading.value = false;
+
+      // 🔴 Error
+      Utilities.showSnackBar(
+        message: errorMessage,
+        title: 'Error',
+        isSuccess: false,
+      );
     }
   }
 

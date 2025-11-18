@@ -185,7 +185,6 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../constants/app_colors.dart';
 
-
 class AppTextField extends StatelessWidget {
   const AppTextField({
     super.key,
@@ -214,7 +213,7 @@ class AppTextField extends StatelessWidget {
     this.maxLines = 1,
     this.readOnly = false,
     this.autoValidateMode = AutovalidateMode.disabled,
-    this.fontColor = AppColors.color4C4C4C,
+    this.fontColor = AppColors.colorA3A3A3,
     this.fontSize,
     this.fontWeight = FontWeight.w400,
     this.enabledBorderColor,
@@ -251,11 +250,13 @@ class AppTextField extends StatelessWidget {
       fontWeight: fontWeight ?? FontWeight.w400,
     );
 
+    final borderColor = enabledBorderColor ?? AppColors.textFieldBackground;
+
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
-      enabled: isTapAble,
+      enabled: true,
       focusNode: focusNode,
       obscureText: isObscuredText,
       maxLines: maxLines,
@@ -269,13 +270,16 @@ class AppTextField extends StatelessWidget {
       textInputAction: textInputAction,
       readOnly: readOnly,
       cursorColor: AppColors.colorFFFFFF,
-      style: textStyle, // ✅ unified text style
+      style: textStyle,
 
+      // ✅ unified text style
       decoration: InputDecoration(
         isDense: true,
         contentPadding:
-        contentPadding ?? EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        fillColor: isTapAble ? fillColor : Colors.grey,
+            contentPadding ??
+            EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        // fillColor: isTapAble ? fillColor : Colors.grey,
+        fillColor: fillColor,
         filled: filled,
         prefixIcon: prefixIcon,
         prefixIconColor: prefixIconColor,
@@ -283,23 +287,26 @@ class AppTextField extends StatelessWidget {
         suffixIcon: suffixIcon,
         suffixIconColor: suffixIconColor,
         hintText: hintText,
-        hintStyle: textStyle, // ✅ same style
-        labelStyle: textStyle, // ✅ same style
+        hintStyle: textStyle,
+        // ✅ same style
+        labelStyle: textStyle,
+        // ✅ same style
         floatingLabelBehavior: FloatingLabelBehavior.auto,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: enabledBorderColor ?? Colors.grey),
+          borderSide: BorderSide(color: borderColor),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: enabledBorderColor ?? Colors.transparent),
+          borderSide: BorderSide(color: borderColor),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(
-            color: enabledBorderColor ?? AppColors.colorFF8600,
-            width: 1.5,
-          ),
+          borderSide: BorderSide(color: borderColor, width: 1.5),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.r),
+          borderSide: BorderSide(color: borderColor),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
@@ -308,10 +315,6 @@ class AppTextField extends StatelessWidget {
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.r),
           borderSide: const BorderSide(color: Colors.red, width: 1.5),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: Colors.grey),
         ),
       ),
     );

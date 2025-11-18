@@ -10,7 +10,6 @@ import '../endpoint_constants.dart';
 
 class JobApi {
   static Future<JobPostResponse> postJob({
-    required String title,
     required String description,
     required String experienceLevel,
     required String minSalary,
@@ -25,7 +24,6 @@ class JobApi {
     File? image,
   }) async {
     final fields = <String, String>{
-      'title': title,
       'description': description,
       'experience_level': experienceLevel,
       'min_salary': minSalary,
@@ -41,6 +39,18 @@ class JobApi {
 
     final files = <String, File>{if (image != null) 'image': image};
 
+    // --- Print all fields for debugging ---
+    print('--- Posting Job ---');
+    fields.forEach((key, value) {
+      print('$key: $value');
+    });
+    if (image != null) {
+      print('image: ${image.path}');
+    } else {
+      print('image: null');
+    }
+    print('-------------------');
+
     final data = await ApiService.multipartPost(
       ApiEndPoints.jobStore,
       fields: fields,
@@ -50,6 +60,48 @@ class JobApi {
 
     return JobPostResponse.fromJson(data);
   }
+
+  // static Future<JobPostResponse> postJob({
+  //   required String title,
+  //   required String description,
+  //   required String experienceLevel,
+  //   required String minSalary,
+  //   required String maxSalary,
+  //   required String jobType,
+  //   required String country,
+  //   required String state,
+  //   required String city,
+  //   required String recruiterName,
+  //   required int noOfDays,
+  //   required int skillId,
+  //   File? image,
+  // }) async {
+  //   final fields = <String, String>{
+  //     'title': title,
+  //     'description': description,
+  //     'experience_level': experienceLevel,
+  //     'min_salary': minSalary,
+  //     'max_salary': maxSalary,
+  //     'job_type': jobType,
+  //     'country': country,
+  //     'state': state,
+  //     'city': city,
+  //     'recruiter_name': recruiterName,
+  //     'no_of_days': '$noOfDays',
+  //     'skill_id': '$skillId',
+  //   };
+  //
+  //   final files = <String, File>{if (image != null) 'image': image};
+  //
+  //   final data = await ApiService.multipartPost(
+  //     ApiEndPoints.jobStore,
+  //     fields: fields,
+  //     files: files.isNotEmpty ? files : null,
+  //     auth: true,
+  //   );
+  //
+  //   return JobPostResponse.fromJson(data);
+  // }
 
   static Future<JobListResponse> getJobs(int? userId) async {
     final data = await ApiService.get(

@@ -8,6 +8,8 @@ class ApiEndPoints {
   static const String eyeColors = 'dashboard/eye-colors';
   static const String hairColors = 'dashboard/hair-colors';
   static const String getSkills = 'dashboard/skills';
+  static const String getExperienceLevels = 'dashboard/experience-levels';
+  static const String getJobTypes = 'dashboard/job-types';
   static const String registerEmployee = 'register';
   static const String userProfile = 'profiles';
   static const String jobStore = 'jobs/store';

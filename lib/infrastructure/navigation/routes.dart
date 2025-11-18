@@ -25,6 +25,7 @@ class Routes {
   static const PROFILE_SCREEN = '/profile_screen';
   static const chatScreen = '/chat_screen';
   static const settingsScreen = '/settings_screen';
+  static const pricingPlansScreen = '/pricing_plans_screen';
   static const createJobScreen = '/create_job_screen';
   static const applicationsScreen = '/applications_screen';
   static const b2bScreen = '/b2b_screen';

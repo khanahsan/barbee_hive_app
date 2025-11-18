@@ -1,13 +1,13 @@
+import 'dart:developer';
+
 import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../infrastructure/constants/app_colors.dart';
-import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/navigation/routes.dart';
 import '../../../infrastructure/widgets/custom_appbar.dart';
 import '../../../infrastructure/widgets/custom_btn.dart';
@@ -29,9 +29,9 @@ class DashboardScreen extends GetView<DashboardController> {
         leadingTapFunction: () {
           if (onMenuPressed != null) onMenuPressed!();
         },
-        actions: [
-          SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
-        ],
+        // actions: [
+        //   SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
+        // ],
         title: 'Home',
       ),
       backgroundColor: AppColors.black,
@@ -61,6 +61,8 @@ class DashboardScreen extends GetView<DashboardController> {
           return RefreshIndicator(
             onRefresh: () => controller.fetchDashboardUsers(),
             child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(), // <- Important
+
               padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 25.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -71,25 +73,21 @@ class DashboardScreen extends GetView<DashboardController> {
 
                   /// BANNER AD SECTION
                   Obx(() {
-                    if (controller.isBannerLoaded.value &&
-                        controller.bannerAd != null) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(8.r),
-                        child: SizedBox(
-                          height: controller.bannerAd!.size.height.toDouble(),
-                          width: controller.bannerAd!.size.width.toDouble(),
-                          child: AdWidget(
-                            ad: controller.bannerAd!,
-                          ), // ✅ Fixed here
-                        ),
-                      );
-                    } else {
-                      return AppShimmer(
-                        height: 80.h, // approximate ad height
-                        width: double.infinity,
-                      );
+                    if (!controller.isBannerLoaded.value || controller.bannerAd == null) {
+                      return AppShimmer(height: 80.h, width: double.infinity);
                     }
+
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: SizedBox(
+                        width: controller.bannerAd!.size.width.toDouble(),
+                        height: controller.bannerAd!.size.height.toDouble(),
+                        child: AdWidget(ad: controller.bannerAd!),
+                      ),
+                    );
                   }),
+
+
 
                   /// HIVE SECTION
                   hiveSection(context),
@@ -262,80 +260,155 @@ class DashboardScreen extends GetView<DashboardController> {
     return pattern;
   }
 
+  // Widget b2bSection(BuildContext context) {
+  //
+  //   log('controller.employers ${controller.employers.isEmpty}');
+  //   if (controller.isLoading.value) {
+  //     return AppShimmer(height: 250.h, width: double.infinity);
+  //   }
+  //   return Container(
+  //     padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+  //     alignment: Alignment.center,
+  //     width: double.infinity,
+  //     decoration: BoxDecoration(
+  //       borderRadius: BorderRadius.circular(15.r),
+  //       border: Border.all(color: AppColors.boxBorder, width: 2.5.w),
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.center,
+  //       spacing: 5.h,
+  //       children: [
+  //         Text(
+  //           'B2B',
+  //           style: Theme.of(context).textTheme.titleSmall?.copyWith(
+  //             color: AppColors.colorFFFFFF,
+  //             fontSize: 25.sp,
+  //             fontWeight: FontWeight.w600,
+  //           ),
+  //         ),
+  //         Obx(
+  //           () =>
+  //               controller.employers.isEmpty
+  //                   ? Text(
+  //                     'No B2B users found',
+  //                     style: TextStyle(
+  //                       color: AppColors.colorFFFFFF,
+  //                       fontSize: 16.sp,
+  //                     ),
+  //                   )
+  //                   : SingleChildScrollView(
+  //                     scrollDirection: Axis.horizontal,
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                       children:
+  //                           controller.employers.asMap().entries.map((entry) {
+  //                             final index = entry.key;
+  //                             final user = entry.value;
+  //                             final name =
+  //                                 user.employer?.businessName ??
+  //                                 user.email.split('@').first;
+  //
+  //                             return GestureDetector(
+  //                               onTap:
+  //                                   () => Get.toNamed(
+  //                                     Routes.b2bScreen,
+  //                                     arguments: {'currentUser': user},
+  //                                   ),
+  //
+  //                               child: HexagonAvatar(
+  //                                 imagePath:
+  //                                     user.profileImage!.isNotEmpty == true
+  //                                         ? user.profileImage!
+  //                                         : '',
+  //                                 width: 90.w,
+  //                                 height: 100.h,
+  //                                 borderColor:
+  //                                     index % 2 == 0
+  //                                         ? AppColors.colorFFFFFF
+  //                                         : AppColors.colorFF8600,
+  //                                 name: name,
+  //                                 totalMl: "aa",
+  //                               ),
+  //                             );
+  //                           }).toList(),
+  //                     ),
+  //                   ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   Widget b2bSection(BuildContext context) {
-    if (controller.isLoading.value) {
-      return AppShimmer(height: 250.h, width: double.infinity);
-    }
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-      alignment: Alignment.center,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.r),
-        border: Border.all(color: AppColors.boxBorder, width: 2.5.w),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        spacing: 5.h,
-        children: [
-          Text(
-            'B2B',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: AppColors.colorFFFFFF,
-              fontSize: 25.sp,
-              fontWeight: FontWeight.w600,
+    return Obx(() {
+      log('controller.employers empty? ${controller.employers.isEmpty}');
+      log('isLoading: ${controller.isLoading.value}');
+
+      if (controller.isLoading.value) {
+        return AppShimmer(height: 250.h, width: double.infinity);
+      }
+
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+        alignment: Alignment.center,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.r),
+          border: Border.all(color: AppColors.boxBorder, width: 2.5.w),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 5.h,
+          children: [
+            Text(
+              'B2B',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: AppColors.colorFFFFFF,
+                fontSize: 25.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          Obx(
-            () =>
-                controller.employers.isEmpty
-                    ? Text(
-                      'No B2B users found',
-                      style: TextStyle(
-                        color: AppColors.colorFFFFFF,
-                        fontSize: 16.sp,
-                      ),
-                    )
-                    : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children:
-                            controller.employers.asMap().entries.map((entry) {
-                              final index = entry.key;
-                              final user = entry.value;
-                              final name =
-                                  user.employer?.businessName ??
-                                  user.email.split('@').first;
 
-                              return GestureDetector(
-                                onTap:
-                                    () => Get.toNamed(
-                                      Routes.b2bScreen,
-                                      arguments: {'currentUser': user},
-                                    ),
+            controller.employers.isEmpty
+                ? Text(
+              'No B2B users found',
+              style: TextStyle(
+                color: AppColors.colorFFFFFF,
+                fontSize: 16.sp,
+              ),
+            )
+                : SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children:
+                controller.employers.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final user = entry.value;
 
-                                child: HexagonAvatar(
-                                  imagePath:
-                                      user.profileImage!.isNotEmpty == true
-                                          ? user.profileImage!
-                                          : '',
-                                  width: 90.w,
-                                  height: 100.h,
-                                  borderColor:
-                                      index % 2 == 0
-                                          ? AppColors.colorFFFFFF
-                                          : AppColors.colorFF8600,
-                                  name: name,
-                                  totalMl: "aa",
-                                ),
-                              );
-                            }).toList(),
-                      ),
+                  return GestureDetector(
+                    onTap: () => Get.toNamed(
+                      Routes.b2bScreen,
+                      arguments: {'currentUser': user},
                     ),
-          ),
-        ],
-      ),
-    );
+                    child: HexagonAvatar(
+                      imagePath: user.profileImage ?? "",
+                      width: 90.w,
+                      height: 100.h,
+                      borderColor: index % 2 == 0
+                          ? AppColors.colorFFFFFF
+                          : AppColors.colorFF8600,
+                      name: user.employer?.businessName ??
+                          user.email.split('@').first,
+                      totalMl: "aa",
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
+
 }

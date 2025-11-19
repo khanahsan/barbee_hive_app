@@ -122,8 +122,8 @@ class ChatScreen extends StatelessWidget {
                             if (!isMe) ...[
                               HexagonAvatar(
                                 imagePath: otherImage,
-                                width: 35.w,
-                                height: 45.h,
+                                width: 50.w,
+                                height: 60.h,
                               ),
                               SizedBox(width: 5.w),
                             ],

@@ -10,6 +10,8 @@ class ApiEndPoints {
   static const String getSkills = 'dashboard/skills';
   static const String getExperienceLevels = 'dashboard/experience-levels';
   static const String getJobTypes = 'dashboard/job-types';
+  static const String getGenders = 'dashboard/genders';
+  static const String getHeights = 'dashboard/heights';
   static const String registerEmployee = 'register';
   static const String userProfile = 'profiles';
   static const String jobStore = 'jobs/store';

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
@@ -20,6 +22,8 @@ class B2BScreen extends GetView<B2BController> {
 
   @override
   Widget build(BuildContext context) {
+
+    log("CURRENT CHECK USER: ${currentUser.id}");
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: customAppbar(
@@ -94,7 +98,9 @@ class B2BScreen extends GetView<B2BController> {
                         SizedBox(height: 30.h),
 
                         /// SEND MESSAGE OPTION (SHOW ONLY TO EMPLOYER)
-                        if (controller.canSendMessage)
+                        // if (controller.canSendMessage)
+                        if (controller.canSendMessage &&
+                            !controller.isSameUser(currentUser.id))
                           CustomButton(
                             onTap: () {
                               Get.to(

@@ -232,7 +232,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
 
                                   /// DOB
                                   Obx(
-                                        () => GestureDetector(
+                                    () => GestureDetector(
                                       onTap: controller.pickDate,
                                       child: AbsorbPointer(
                                         child: _buildTextField(
@@ -240,7 +240,8 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                               ? 'DOB (MM-DD-YYYY)'
                                               : controller.selectedDate.value,
                                           controller.dateController,
-                                          suffixIconPath: AppAssets.calendarIcon,
+                                          suffixIconPath:
+                                              AppAssets.calendarIcon,
                                           readOnly: true,
                                           validator: FormValidators.validateAge,
                                         ),
@@ -269,24 +270,24 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                     v,
                                                     'Gender',
                                                   ),
-                                          items: const [
-                                            DropdownMenuItem(
-                                              value: 'Male',
-                                              child: CustomText(
-                                                title: 'Male',
-                                                color: AppColors.color4C4C4C,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                            DropdownMenuItem(
-                                              value: 'Female',
-                                              child: CustomText(
-                                                title: 'Female',
-                                                color: AppColors.color4C4C4C,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ],
+
+                                          items:
+                                              controller.genders
+                                                  .map(
+                                                    (
+                                                      gender,
+                                                    ) => DropdownMenuItem(
+                                                      value: gender.name,
+                                                      child: CustomText(
+                                                        title: gender.name,
+                                                        color:
+                                                            AppColors
+                                                                .color4C4C4C,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .toList(),
                                         ),
                                       ),
                                       Expanded(
@@ -302,32 +303,23 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                     v,
                                                     'Height',
                                                   ),
-                                          items: const [
-                                            DropdownMenuItem(
-                                              value: '140',
-                                              child: CustomText(
-                                                title: '140 cm',
-                                                color: AppColors.color4C4C4C,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                            DropdownMenuItem(
-                                              value: '150',
-                                              child: CustomText(
-                                                title: '150 cm',
-                                                color: AppColors.color4C4C4C,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                            DropdownMenuItem(
-                                              value: '160',
-                                              child: CustomText(
-                                                title: '160 cm',
-                                                color: AppColors.color4C4C4C,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ],
+                                          items:
+                                              controller.heights
+                                                  .map(
+                                                    (
+                                                      height,
+                                                    ) => DropdownMenuItem(
+                                                      value: height.name,
+                                                      child: CustomText(
+                                                        title: height.name,
+                                                        color:
+                                                            AppColors
+                                                                .color4C4C4C,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .toList(),
                                         ),
                                       ),
                                     ],
@@ -592,7 +584,6 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
       enabledBorderColor: Colors.transparent,
       fontSize: 16,
       contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
-
     );
   }
 

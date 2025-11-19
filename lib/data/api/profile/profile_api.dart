@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -30,6 +31,7 @@ class ProfileApi {
     int? height,
     int? skillId,
     File? resume,
+    File? profileImage,
   }) async {
     final fields = <String, String>{
       'name': name,
@@ -39,13 +41,19 @@ class ProfileApi {
       'city': city,
       if (dob != null) 'dob': dob,
       if (gender != null) 'gender': gender,
-      if (eyeColorId != null) 'eyeColorId': '$eyeColorId',
-      if (hairColorId != null) 'hairColorId': '$hairColorId',
+      if (eyeColorId != null) 'eye_color_id': '$eyeColorId',
+      if (hairColorId != null) 'hair_color_id': '$hairColorId',
       if (height != null) 'height': '$height',
-      if (skillId != null) 'skillId': '$skillId',
+      if (skillId != null) 'skill_id': '$skillId',
     };
 
-    final files = <String, File>{if (resume != null) 'resume': resume};
+    log("RESUME PATH: ${resume?.path}");
+    log("PROFILE IMAGE PATH: ${profileImage?.path}");
+
+    final files = <String, File>{
+      if (resume != null) 'resume': resume,
+      if (profileImage != null) 'profile_image': profileImage, // include if selected
+    };
 
     final data = await ApiService.multipartPost(
       ApiEndPoints.updateProfile,

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
@@ -82,6 +84,8 @@ class ApplyScreenController extends GetxController {
         jobType: selectedJobType.value,
         expectedSalary: salary.toStringAsFixed(2),
       );
+
+      log("Apply job Response; ${response.message}");
 
       if (response.status) {
         Get.back(); // Close screen

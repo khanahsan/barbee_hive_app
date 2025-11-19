@@ -191,16 +191,6 @@ class ProfileScreen extends GetView<ProfileController> {
                                           }
                                         },
 
-                                        // onPressed: () {
-                                        //
-                                        //   log("AAAAAAAAA");
-                                        //   if (controller.formKey.currentState!
-                                        //       .validate()) {
-                                        //     controller.isEditing.value == true
-                                        //         ? controller.updateUserProfile()
-                                        //         : controller.toggleEditing();
-                                        //   }
-                                        // },
                                       ),
                                     ),
                                   ],

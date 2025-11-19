@@ -5,23 +5,13 @@ import 'package:get/get.dart';
 import '../../../../infrastructure/constants/shared_pref_keys.dart';
 import '../../../../infrastructure/helpers/shared_preference_helper.dart';
 
-class B2BController extends GetxController {
-  RxInt userRole = 0.obs;
+class HiveProfileController extends GetxController {
   RxInt userId = 0.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchUserRole();
     fetchUserID();
-  }
-
-  /// FETCH ROLE (EMPLOYEE (3) OR EMPLOYER (2))
-  Future<void> fetchUserRole() async {
-    final role = SharedPreferenceHelper.getInt(SharedPrefKeys.userRole) ?? 0;
-    userRole.value = role;
-
-    log("USER ROLE: ${userRole.value}");
   }
 
   /// Fetch the logged-in user's ID
@@ -32,13 +22,9 @@ class B2BController extends GetxController {
     log("USER ID: ${userId.value}");
   }
 
-  /// CONDITION TO CHECK AND SHOW MESSAGE OPTION
-  bool get canSendMessage => userRole.value != 3;
-
   /// Check if the displayed user is the same as the logged-in user.
   bool isSameUser(int otherUserId) {
-    
-    log('AAA ${userId.value == otherUserId}');
+    log('SAME USER: ${userId.value == otherUserId}');
     return userId.value == otherUserId;
   }
 }

@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 
 import '../../../presentation/auth/controllers/auth.controller.dart';
 import '../../../presentation/bottom_nav/dashboard/controller/b2b_controller.dart';
+import '../../../presentation/bottom_nav/dashboard/controller/hive_profile_controller.dart';
 import '../../../presentation/bottom_nav/job/employer/job_posting/controller/job_posting_controller.dart';
 import '../../../presentation/home/controllers/home.controller.dart';
 import '../../../presentation/sign_up_view/controllers/sign_up_employee_controller.dart';
@@ -28,6 +29,7 @@ class InitialBindings implements Bindings {
     Get.lazyPut<HomeController>(() => HomeController());
     Get.lazyPut<DashboardController>(() => DashboardController());
     Get.lazyPut<B2BController>(() => B2BController());
+    Get.lazyPut<HiveProfileController>(() => HiveProfileController());
     Get.lazyPut<CustomDrawerController>(() => CustomDrawerController());
     Get.lazyPut<AuthController>(() => AuthController());
     Get.lazyPut<SignUpEmployeeController>(() => SignUpEmployeeController());

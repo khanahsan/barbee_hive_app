@@ -1,6 +1,8 @@
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/model/color_response.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
+import 'package:barbee_hive_app/data/model/gender_response.dart';
+import 'package:barbee_hive_app/data/model/height_response.dart';
 import 'package:barbee_hive_app/data/model/job_type_response.dart';
 import 'package:barbee_hive_app/data/model/setting_response.dart';
 import 'package:flutter/cupertino.dart';
@@ -121,6 +123,22 @@ class AuthProvider {
       auth: false, // Set to false if public
     );
     return JobTypeResponse.fromJson(data);
+  }
+
+  static Future<GenderResponse> getGenders() async {
+    final data = await ApiService.get(
+      ApiEndPoints.getGenders,
+      auth: false,
+    );
+    return GenderResponse.fromJson(data);
+  }
+
+  static Future<HeightResponse> getHeights() async {
+    final data = await ApiService.get(
+      ApiEndPoints.getHeights,
+      auth: false,
+    );
+    return HeightResponse.fromJson(data);
   }
 
   static Future<SettingsResponse> getSetting() async {

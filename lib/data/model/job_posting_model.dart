@@ -13,7 +13,7 @@ class JobPostResponse {
     return JobPostResponse(
       status: json['status'] ?? false,
       message: json['message'] ?? '',
-      data: JobData.fromJson(json['data']['job']),
+      data: JobData.fromJson(json['data']),
     );
   }
 }

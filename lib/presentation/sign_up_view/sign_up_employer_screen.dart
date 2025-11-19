@@ -345,7 +345,6 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
       controller: controller,
       isObscuredText: obscure,
       fillColor: AppColors.textFieldBackground,
-      fontColor: AppColors.textFieldTextColor,
       enabledBorderColor: Colors.transparent,
       prefixIcon: SvgPicture.asset(
         icon,

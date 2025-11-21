@@ -1,7 +1,8 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_profile_image.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -35,53 +36,13 @@ class MessageScreen extends GetView<ChatController> {
 
         if (controller.chats.isEmpty) {
           return const Center(
-            child: Text("No chats yet", style: TextStyle(color: Colors.white)),
+            child: CustomText(
+              title: "No chats yet",
+              color: AppColors.colorFFFFFF,
+              fontSize: 18,
+            ),
           );
         }
-
-        // return ListView.separated(
-        //   itemCount: controller.chats.length,
-        //   padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
-        //   separatorBuilder: (context, index) => SizedBox(height: 15.h),
-        //   itemBuilder: (context, index) {
-        //     final chat = controller.chats[index].data() as Map<String, dynamic>;
-        //     final participants = chat['participants'] as Map<String, dynamic>;
-        //     final currentUserId = controller.currentUserId.value;
-        //
-        //     final otherEntry = participants.entries.firstWhere(
-        //       (entry) => entry.key != currentUserId,
-        //     );
-        //     final otherUser = otherEntry.value as Map<String, dynamic>;
-        //     final name = otherUser['name'] ?? 'User';
-        //     final image = otherUser['image'] ?? '';
-        //     final role = otherUser['role'] ?? 0;
-        //     final otherUserId = otherEntry.key;
-        //     final lastMessage = chat['lastMessage'] ?? "";
-        //     print(
-        //       "currentUserId: $currentUserId, otherUserId: $otherUserId, name: $name, role: $role ",
-        //     );
-        //     return messageTile(
-        //       context,
-        //       name: name,
-        //       message: lastMessage,
-        //       profileImage: image,
-        //       onTap: () {
-        //         Get.to(
-        //           () => ChatScreen(
-        //             chatId: chat['chatId'],
-        //             otherName: name,
-        //             otherImage: image,
-        //             employeeData: {
-        //               'uid': otherUserId,
-        //               'name': name,
-        //               'profileImage': image,
-        //             },
-        //           ),
-        //         );
-        //       },
-        //     );
-        //   },
-        // );
 
         return ListView.separated(
           itemCount: controller.chats.length,
@@ -107,11 +68,10 @@ class MessageScreen extends GetView<ChatController> {
 
             // Wrap each tile inside FutureBuilder
             return FutureBuilder(
-              future: controller.fetchUserLiveData(otherUserId),
+              future: controller.otherUserLiveData(otherUserId),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return messageTile(
-                    context,
                     name: cachedName,
                     message: lastMessage,
                     profileImage: cachedImage,
@@ -123,7 +83,6 @@ class MessageScreen extends GetView<ChatController> {
                 final liveImage = liveData['profileImage'] ?? cachedImage;
 
                 return messageTile(
-                  context,
                   name: liveName,
                   message: lastMessage,
                   profileImage: liveImage,
@@ -133,19 +92,6 @@ class MessageScreen extends GetView<ChatController> {
                       arguments: {"otherUserID": otherUserId},
                     );
                   },
-                  // onTap: () {
-                  //   Get.to(() => ChatScreen(
-                  //     chatId: chat['chatId'],
-                  //     otherUserId: otherUserId,
-                  //     otherName: liveName,
-                  //     otherImage: liveImage,
-                  //     employeeData: {
-                  //       'uid': otherUserId,
-                  //       'name': liveName,
-                  //       'profileImage': liveImage,
-                  //     },
-                  //   ));
-                  // },
                 );
               },
             );
@@ -155,8 +101,7 @@ class MessageScreen extends GetView<ChatController> {
     );
   }
 
-  Widget messageTile(
-    BuildContext context, {
+  Widget messageTile({
     required String name,
     required String message,
     required String profileImage,
@@ -172,10 +117,12 @@ class MessageScreen extends GetView<ChatController> {
         ),
         child: Row(
           children: [
-            HexagonAvatar(
+            /// PROFILE IMAGE
+            CustomProfileImage(
               imagePath: profileImage,
-              width: 80.w,
-              height: 90.h,
+              wholeAvatarClickable: false,
+              width: 105.w,
+              height: 115.h,
               borderColor: AppColors.colorFFFFFF,
             ),
             SizedBox(width: 10.w),
@@ -183,22 +130,21 @@ class MessageScreen extends GetView<ChatController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.colorFFFFFF,
-                    ),
+                  /// USER NAME
+                  CustomText(
+                    title: name,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.colorFFFFFF,
                   ),
-                  Text(
-                    message,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.grey.withOpacity(0.5),
-                    ),
-                    overflow: TextOverflow.ellipsis,
+
+                  /// CHAT LAST MESSAGE
+                  CustomText(
+                    title: message,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.grey.withOpacity(0.5),
+                    textOverflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
                 ],

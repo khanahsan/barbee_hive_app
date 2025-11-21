@@ -1,5 +1,7 @@
 
 
+import 'dart:developer';
+
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
@@ -33,25 +35,41 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
-      future: chatController.fetchUserLiveData(otherUserId),
-      builder: (context, userSnapshot) {
-        if (!userSnapshot.hasData) {
+    return FutureBuilder<List<dynamic>>(
+      // future: chatController.otherUserLiveData(otherUserId),
+      future: Future.wait([
+        chatController.currentUserLiveData(chatController.currentUserId.value), // CURRENT USER
+        chatController.otherUserLiveData(otherUserId), // OTHER USER
+      ]),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        final otherUser = userSnapshot.data!;
-        final otherName = otherUser["name"] ?? "User";
-        final otherImage = otherUser["profileImage"] ?? "";
-        final otherRole = otherUser["role"] ?? 0;
+        final currentUser = snapshot.data![0] as Map<String, dynamic>;
+        final currentUserRole = currentUser["role"] ?? 0;
+
+        final otherUser   = snapshot.data![1] as Map<String, dynamic>;
+        final otherUserName = otherUser["name"] ?? "User";
+        final otherUserImage = otherUser["profileImage"] ?? "";
+        final otherUserRole = otherUser["role"] ?? 0;
+
+        final chatId = chatController.generateChatId(
+          chatController.currentUserId.value,
+          otherUserId,
+        );
+
+
+        log("CURRENT USER ROLE: $currentUserRole");
+        log("OTHER USER ROLE: $otherUserRole");
 
         return StreamBuilder<DocumentSnapshot>(
           stream:
               FirebaseFirestore.instance
                   .collection("chats")
-                  .doc("${chatController.currentUserId.value}-$otherUserId")
+                  .doc(chatId)
                   .snapshots(),
           builder: (context, chatSnapshot) {
             if (!chatSnapshot.hasData) {
@@ -66,15 +84,15 @@ class ChatScreen extends StatelessWidget {
             final isBlocked = blockedBy != null;
 
             final amIEmployer = chatController.isEmployer.value;
-            final canBlock = amIEmployer && otherRole != 2; // FIXED
+            final canBlock = amIEmployer && otherUserRole != 2; // FIXED
 
             return Scaffold(
               backgroundColor: Colors.black,
               appBar: customAppbar(
-                profileImagePath: otherImage,
+                profileImagePath: otherUserImage,
                 context: context,
                 leadingTapFunction: () => Get.back(),
-                title: otherName,
+                title: otherUserName,
                 showActions: canBlock,
                 // FIXED
                 leadingIconPath: AppAssets.backIcon,
@@ -85,9 +103,9 @@ class ChatScreen extends StatelessWidget {
                             value: isBlocked,
                             onChanged: (value) {
                               if (value) {
-                                chatController.blockEmployee("${chatController.currentUserId.value}-$otherUserId");
+                                chatController.blockEmployee(chatId);
                               } else {
-                                chatController.unblockEmployee("${chatController.currentUserId.value}-$otherUserId");
+                                chatController.unblockEmployee(chatId);
                               }
                             },
                             activeColor: AppColors.colorFF8600,
@@ -106,7 +124,7 @@ class ChatScreen extends StatelessWidget {
                       stream:
                           FirebaseFirestore.instance
                               .collection("chats")
-                              .doc("${chatController.currentUserId.value}-$otherUserId")
+                              .doc(chatId)
                               .collection("messages")
                               .orderBy("timestamp", descending: true)
                               .snapshots(),
@@ -151,7 +169,7 @@ class ChatScreen extends StatelessWidget {
                               children: [
                                 if (!isMe) ...[
                                   HexagonAvatar(
-                                    imagePath: otherImage,
+                                    imagePath: otherUserImage,
                                     width: 50.w,
                                     height: 60.h,
                                   ),
@@ -181,7 +199,7 @@ class ChatScreen extends StatelessWidget {
                                       children: [
                                         if (!isMe)
                                           Text(
-                                            otherName,
+                                            otherUserName,
                                             style: TextStyle(
                                               color: AppColors.colorFF8600,
                                               fontWeight: FontWeight.bold,
@@ -266,7 +284,7 @@ class ChatScreen extends StatelessWidget {
                                   final text = messageController.text.trim();
                                   if (text.isNotEmpty) {
                                     chatController.sendMessage(
-                                      "${chatController.currentUserId.value}-$otherUserId",
+                                      chatId,
                                       text,
                                       {
                                         "uid": otherUserId,
@@ -275,7 +293,8 @@ class ChatScreen extends StatelessWidget {
                                             otherUser["profileImage"] ?? "",
                                         "role": otherUser["role"] ?? "",
                                       },
-                                      chatType, // same as old code
+                                      "${currentUserRole}_$otherUserRole"
+                                      // chatType, // same as old code
                                     );
                                     messageController.clear();
                                   }

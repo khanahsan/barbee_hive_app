@@ -138,7 +138,7 @@ class HexagonAvatar extends StatelessWidget {
 }
 
 
-class HexagonProfilePhotoTile extends StatelessWidget {
+/*class HexagonProfilePhotoTile extends StatelessWidget {
   final File? selectedImage;
   final String? imageUrl;
   final VoidCallback? onTap;
@@ -235,4 +235,4 @@ class HexagonProfilePhotoTile extends StatelessWidget {
       ],
     );
   }
-}
+}*/

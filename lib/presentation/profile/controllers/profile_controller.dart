@@ -1,12 +1,14 @@
-
-
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/model/gender_response.dart';
 import 'package:barbee_hive_app/data/model/height_response.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/customDrawer/controller/custom_drawer_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -25,6 +27,7 @@ class ProfileController extends GetxController {
   RxInt currentUserId = 0.obs;
   RxInt currentUserRole = 0.obs;
   RxString userProfileImage = ''.obs;
+  RxString userCoverImage = ''.obs;
   RxString selectedDate = ''.obs;
   RxBool isEditing = false.obs;
 
@@ -60,6 +63,8 @@ class ProfileController extends GetxController {
 
   RxString currentSkillName = "".obs;
   RxInt currentSkillId = 0.obs;
+
+  RxString currentUID = "".obs;
 
   // Dropdown lists
   final experienceList = ["Fresher", "1-2 Years", "3-5 Years", "5+ Years"];
@@ -101,8 +106,6 @@ class ProfileController extends GetxController {
       dobController.text = formattedDate;
     }
   }
-
-
 
   // ---------------- Lifecycle ----------------
   @override
@@ -185,13 +188,15 @@ class ProfileController extends GetxController {
     final data = userProfile.value?.data;
     if (data == null) return;
 
-    emailController.text = data.email ?? '';
+    emailController.text = data.email;
+    currentUID.value = data.uid;
 
     if (isEmployer) {
       nameController.text = data.employer?.businessName ?? '';
       currentSkillName.value = data.employer?.skill.name ?? '';
       currentSkillId.value = data.employer?.skill.id ?? 0;
       userProfileImage.value = data.profileImage ?? '';
+      userCoverImage.value = data.coverPhoto ?? '';
       countryController.text = data.employer?.country ?? '';
       stateController.text = data.employer?.state ?? '';
       cityController.text = data.employer?.city ?? '';
@@ -216,12 +221,14 @@ class ProfileController extends GetxController {
       currentSkillId.value = data.employee?.skill.id ?? 0;
 
       userProfileImage.value = data.profileImage ?? '';
+      userCoverImage.value = data.coverPhoto ?? '';
       dobController.text = data.employee?.dob ?? '';
 
       debugPrint("currentGender: ${currentGender.value}");
       log("currentSkillName: ${currentSkillName.value}");
       log("currentGender: ${currentGender.value}");
       log("currentHeight: ${currentHeight.value}");
+      log("cover photo: ${userCoverImage.value}");
     }
   }
 
@@ -341,79 +348,94 @@ class ProfileController extends GetxController {
     try {
       isLoading.value = true;
 
-      final requestBody = {
-        "name": nameController.text.trim(),
-        "email": emailController.text.trim(),
-        "country": countryController.text.trim(),
-        "state": stateController.text.trim(),
-        "city": cityController.text.trim(),
-        "dob":
-            dobController.text.trim().isNotEmpty
-                ? dobController.text.trim()
-                : null,
-        "eyeColorId":
-            currentEyeColorId.value != 0 ? currentEyeColorId.value : null,
-        "hairColorId":
-            currentHairColorId.value != 0 ? currentHairColorId.value : null,
-        "gender":
-            currentGender.value.isNotEmpty
-                ? currentGender.value.toLowerCase()
-                : null,
-        "height": currentHeight.value != 0 ? currentHeight.value : null,
-        "skillId": currentSkillId.value != 0 ? currentSkillId.value : null,
-        "resume": selectedResumeFile.value?.path,
-      };
+      final name = nameController.text.trim();
+      final email = emailController.text.trim();
+      final city = cityController.text.trim();
+      final country = countryController.text.trim();
+      final state = stateController.text.trim();
+      final dobText = dobController.text.trim();
+      final gender = currentGender.value.toLowerCase();
 
-      /// Print the whole payload
-      log("📤 Updating profile: $requestBody");
+      final File? profileImageFile =
+          userProfileImage.value.startsWith('http')
+              ? null
+              : File(userProfileImage.value);
 
-      final File? profileImageFile = userProfileImage.value.startsWith('http')
-          ? null
-          : File(userProfileImage.value);
-
-      /// Now call API using ACTUAL typed values (not from the map)
+      // ========== 1️⃣ API CALL ==========
       final response = await ProfileApi.updateUserProfile(
-        city: cityController.text.trim(),
-        country: countryController.text.trim(),
-        state: stateController.text.trim(),
+        city: city,
+        country: country,
+        state: state,
         resume: selectedResumeFile.value,
         profileImage: profileImageFile,
-        name: nameController.text.trim(),
-        email: emailController.text.trim(),
-        dob:
-            dobController.text.trim().isNotEmpty
-                ? dobController.text.trim()
-                : null,
+        name: name,
+        email: email,
+        dob: dobText.isNotEmpty ? dobText : null,
         eyeColorId:
-            currentEyeColorId.value != 0 ? currentEyeColorId.value : null,
+            currentEyeColorId.value == 0 ? null : currentEyeColorId.value,
         hairColorId:
-            currentHairColorId.value != 0 ? currentHairColorId.value : null,
-        gender:
-            currentGender.value.isNotEmpty
-                ? currentGender.value.toLowerCase()
-                : null,
-        height: currentHeight.value != 0 ? currentHeight.value : null,
-        skillId: currentSkillId.value != 0 ? currentSkillId.value : null,
+            currentHairColorId.value == 0 ? null : currentHairColorId.value,
+        gender: gender.isEmpty ? null : gender,
+        height: currentHeight.value == 0 ? null : currentHeight.value,
+        skillId: currentSkillId.value == 0 ? null : currentSkillId.value,
       );
 
-      if (response.status) {
-
-        final controller = Get.find<DashboardController>();
-        Get.back();
-        Utilities.showSnackBar(
-          title: 'Success',
-          message: response.message,
-          isSuccess: true,
-        );
-        toggleEditing();
-        // await fetchUserProfile(currentUserId.value);
-
-      } else {
-        showError('Error', 'Failed to update profile');
+      if (!response.status) {
+        return showError("Error", "Failed to update profile");
       }
+
+      // ========== 2️⃣ SAVE LOCALLY (PARALLEL) ==========
+      final String newProfileName =
+          currentUserRole.value == 2
+              ? (response.data.employer?.businessName ?? '')
+              : (response.data.employee?.name ?? '');
+
+      final String newProfileImg = response.data.profileImage ?? '';
+
+      await Future.wait([
+        SharedPreferenceHelper.saveString(
+          SharedPrefKeys.userName,
+          newProfileName,
+        ),
+        SharedPreferenceHelper.saveString(
+          SharedPrefKeys.userProfileImage,
+          newProfileImg,
+        ),
+      ]);
+
+      // ========== 3️⃣ FIREBASE UPDATE (ONLY IF NEEDED) ==========
+      if (currentUID.isNotEmpty) {
+        final userRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUID.value);
+
+        await userRef.update({
+          'name': name,
+          'profileImage': newProfileImg,
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+      }
+
+      // ========== 4️⃣ REFRESH CONTROLLERS (PARALLEL) ==========
+      await Future.wait([
+        Get.find<CustomDrawerController>().loadUserData(),
+        Get.find<DashboardController>().loadUserData(),
+        Get.find<ChatController>().loadUserData(),
+        Get.find<JobController>().loadRoleAsync(),
+      ]);
+
+      // ========== 5️⃣ SUCCESS UI ==========
+      Get.back();
+      Utilities.showSnackBar(
+        title: 'Success',
+        message: response.message,
+        isSuccess: true,
+      );
+
+      toggleEditing();
     } catch (e) {
       debugPrint("Error updating profile: $e");
-      showError('Error', 'Something went wrong');
+      showError("Error", "Something went wrong");
     } finally {
       isLoading.value = false;
     }

@@ -1,4 +1,5 @@
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
+import 'package:barbee_hive_app/presentation/signUp/component/agree_terms_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -9,7 +10,7 @@ import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/widgets/app_text_field.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
 import '../../infrastructure/widgets/custom_dropdown.dart';
-import 'component/hexagon_widget.dart';
+import '../../infrastructure/widgets/custom_profile_image.dart';
 import 'controllers/sign_up_employer_controller.dart';
 
 class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
@@ -79,24 +80,21 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                     ],
                                   ),
 
-                                  //Profile Photo Tile
-                                  HexagonProfilePhotoTile(
-                                    selectedImage:
-                                        controller.selectedImage.value,
-                                    imageUrl: null,
-                                    onTap: controller.showImagePickerOptions,
+                                  /// PROFILE IMAGE
+                                  CustomProfileImage(
+                                    imagePath:
+                                        controller.selectedImage.value?.path ??
+                                        '',
+                                    width: 130,
+                                    height: 140,
+                                    testIcon: AppAssets.cameraIcon,
+                                    text: "Upload Photo",
+                                    showFullText: true,
+                                    // Only edit icon is clickable
+                                    onImagePicked: (file) {
+                                      controller.selectedImage.value = file;
+                                    },
                                   ),
-
-                                  // HexagonProfilePhotoTile(
-                                  //   selectedImage:
-                                  //       controller.selectedImage.value,
-                                  //   imageUrl:
-                                  //       controller
-                                  //               .selectedImage.value?.isNotEmpty
-                                  //           ? controller.profileImageUrl.value
-                                  //           : null,
-                                  //   onTap: controller.showImagePickerOptions,
-                                  // ),
 
                                   /// Business Name Field
                                   _buildTextField(
@@ -265,13 +263,18 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                             )
                                             .toList(),
                                   ),
-                                  _checkBox(),
-                                  SizedBox(height: 30.h),
+
+                                  /// TERMS SECTION
+                                  AgreeTermsTile(
+                                    onTap: controller.toggleCheckbox,
+                                    isChecked: controller.isChecked,
+                                  ),
+                                  SizedBox(height: 20.h),
 
                                   /// Create Account Option
                                   CustomBtn(
                                     btnTitle: 'Create Account',
-                                    buttonHeight: 50.h,
+                                    buttonHeight: 55.h,
                                     btnBackgroundColor: AppColors.colorFF8600,
                                     btnTxtColor: Colors.white,
                                     buttonWidth: double.infinity,
@@ -291,42 +294,6 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _checkBox() {
-    return Obx(
-      () => Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () {
-              controller.toggleCheckbox();
-            },
-            child: Container(
-              width: 20.w,
-              height: 20.h,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.grey, width: 2.w),
-                color:
-                    controller.isChecked.value
-                        ? AppColors.colorFF8600
-                        : Colors.transparent,
-              ),
-              child:
-                  controller.isChecked.value
-                      ? Icon(Icons.check, size: 15.sp, color: Colors.white)
-                      : null,
-            ),
-          ),
-          SizedBox(width: 10.w),
-          Text(
-            'I agree to the Terms of Service',
-            style: TextStyle(color: AppColors.colorFF8600, fontSize: 14.sp),
-          ),
-        ],
       ),
     );
   }

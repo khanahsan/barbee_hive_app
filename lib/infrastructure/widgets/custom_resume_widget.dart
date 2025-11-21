@@ -44,7 +44,7 @@ class _CustomResumeWidgetState extends State<CustomResumeWidget> {
         ),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 15.w),
-          alignment: Alignment.centerLeft,
+          alignment: Alignment.center,
           width: double.infinity,
           height: 60.h,
           decoration: BoxDecoration(

@@ -572,7 +572,7 @@ class SignUpEmployerController extends GetxController {
     if (!isChecked.value) {
       Utilities.showSnackBar(
         title: 'Error',
-        message: 'You must agree to the terms & conditions ${isChecked.value}',
+        message: 'You must agree to the terms & conditions',
         isSuccess: false,
       );
       return false;

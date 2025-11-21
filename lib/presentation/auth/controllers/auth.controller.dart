@@ -30,7 +30,7 @@ class AuthController extends GetxController {
   void onInit() async {
     super.onInit();
     // fetchDashboardUsers();
-    await LocationService.determinePosition();
+    // await LocationService.determinePosition();
   }
 
   void togglePasswordVisibility() {

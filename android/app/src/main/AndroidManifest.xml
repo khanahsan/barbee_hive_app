@@ -10,7 +10,7 @@
 
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="barbee_hive_app">
+        android:label="Barbee Inc.">
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

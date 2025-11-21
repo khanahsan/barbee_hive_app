@@ -54,6 +54,7 @@ class AppAssets {
   static String stateLogo = '$iconPath/state_icon.png';
 
   static String logo = '$imagesPath/barbee_logo.png';
+  static String exampleCoverPhoto = '$imagesPath/example_cover_photo.jpg';
   static String appleLogo = '$imagesPath/apple_logo.png';
   static String googleLogo = '$imagesPath/google_logo.png';
   static String employerLogo = '$imagesPath/employer_logo.png';

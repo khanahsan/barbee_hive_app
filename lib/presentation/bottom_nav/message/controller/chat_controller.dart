@@ -19,10 +19,10 @@ class ChatController extends GetxController {
   void onInit() {
     super.onInit();
     loadCurrentUser();
-    _loadUserData();
+    loadUserData();
   }
 
-  Future<void> _loadUserData() async {
+  Future<void> loadUserData() async {
     userProfileImage.value =
         SharedPreferenceHelper.getString(SharedPrefKeys.userProfileImage) ?? '';
   }
@@ -63,13 +63,24 @@ class ChatController extends GetxController {
 
     FirebaseFirestore.instance
         .collection('chats')
-        .where('userIds', arrayContains: uid) // ✅ use arrayContains
+        .where('userIds', arrayContains: uid)
         .orderBy('updatedAt', descending: true)
         .snapshots()
         .listen((snapshot) {
-          chats.value = snapshot.docs;
-        });
+      chats.value = snapshot.docs;
+
+      print("📩 LISTEN TO CHATS: Total Chats = ${snapshot.docs.length}");
+
+      for (var doc in snapshot.docs) {
+        print("🟦 Chat ID: ${doc.id}");
+        print("👥 Participants: ${doc['participants']}");
+        print("💬 Last Message: ${doc['lastMessage']}");
+        print("⏰ Updated At: ${doc['updatedAt']}");
+        print("──────────────────────────");
+      }
+    });
   }
+
 
   /// Helper: generate consistent chat ID for any user pair
   String generateChatId(String uid1, String uid2, String chatType) {
@@ -170,6 +181,28 @@ class ChatController extends GetxController {
     return generatedChatId;
   }
 
+  Future<Map<String, dynamic>> fetchUserLiveData(String uid) async {
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get();
+
+    if (!doc.exists) {
+      return {
+        'name': 'User',
+        'profileImage': '',
+        'role': 0,
+      };
+    }
+
+    return {
+      'name': doc['name'] ?? 'User',
+      'profileImage': doc['profileImage'] ?? '',
+      'role': doc['role'] ?? 0,
+    };
+  }
+
+
   // Future<String> startChat(
   //   Map<String, dynamic> otherUser, {
   //   String chatType = 'employer_employee',
@@ -215,115 +248,79 @@ class ChatController extends GetxController {
   //   return generatedChatId;
   // }
 
-  /// Send a message (create chat if missing)
-  Future<void> sendMessage(
-    String chatId,
-    String text,
-    Map<String, dynamic>? otherUserData,
-    String chatType,
-  ) async {
-    if (text.trim().isEmpty) return;
+  /// NEW CODE
+  // Future<void> sendMessage(
+  //     String chatId,
+  //     String text,
+  //     Map<String, dynamic>? otherUserData,
+  //     String chatType,
+  //     ) async {
+  //   if (text.trim().isEmpty) return;
+  //
+  //   final uid = currentUserId.value;
+  //   final today = DateTime.now();
+  //   final todayStr = "${today.year}-${today.month}-${today.day}";
+  //
+  //   final limitDocRef = FirebaseFirestore.instance
+  //       .collection('message_limits')
+  //       .doc(uid)
+  //       .collection('stats')
+  //       .doc(todayStr);
+  //
+  //   final limitDoc = await limitDocRef.get();
+  //
+  //   List<dynamic> uniqueRecipients = [];
+  //   Map<String, dynamic> messageCounts = {};
+  //
+  //   if (limitDoc.exists) {
+  //     uniqueRecipients = limitDoc['uniqueRecipients'] ?? [];
+  //     messageCounts = Map<String, dynamic>.from(
+  //       limitDoc['messageCounts'] ?? {},
+  //     );
+  //   }
+  //
+  //   final receiverId =
+  //       otherUserData?['uid'] ??
+  //           chatId.split('-').firstWhere((id) => id != uid);
+  //
+  //   // ❌ ALL LIMIT LOGIC REMOVED
+  //   // (No unique recipient check, no per-user message count limit)
+  //
+  //   // Proceed with sending message
+  //   final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
+  //   final chatDoc = await chatRef.get();
+  //
+  //   if (!chatDoc.exists && otherUserData != null) {
+  //     await startChat(otherUserData, chatType: chatType);
+  //   }
+  //
+  //   await chatRef.collection('messages').add({
+  //     'senderId': uid,
+  //     'text': text,
+  //     'timestamp': FieldValue.serverTimestamp(),
+  //   });
+  //
+  //   await chatRef.update({
+  //     'lastMessage': text,
+  //     'updatedAt': FieldValue.serverTimestamp(),
+  //   });
+  //
+  //   // Still tracking counts but NOT applying limits
+  //   bool newRecipient = !uniqueRecipients.contains(receiverId);
+  //   int currentCount = messageCounts[receiverId]?.toInt() ?? 0;
+  //
+  //   if (newRecipient) uniqueRecipients.add(receiverId);
+  //   messageCounts[receiverId] = currentCount + 1;
+  //
+  //   await limitDocRef.set({
+  //     'date': todayStr,
+  //     'uniqueRecipients': uniqueRecipients,
+  //     'messageCounts': messageCounts,
+  //   }, SetOptions(merge: true));
+  // }
 
-    final uid = currentUserId.value;
-    final today = DateTime.now();
-    final todayStr = "${today.year}-${today.month}-${today.day}";
 
-    final limitDocRef = FirebaseFirestore.instance
-        .collection('message_limits')
-        .doc(uid)
-        .collection('stats')
-        .doc(todayStr);
-
-    final limitDoc = await limitDocRef.get();
-
-    List<dynamic> uniqueRecipients = [];
-    Map<String, dynamic> messageCounts = {};
-
-    if (limitDoc.exists) {
-      uniqueRecipients = limitDoc['uniqueRecipients'] ?? [];
-      messageCounts = Map<String, dynamic>.from(
-        limitDoc['messageCounts'] ?? {},
-      );
-    }
-
-    final receiverId =
-        otherUserData?['uid'] ??
-        chatId.split('-').firstWhere((id) => id != uid);
-
-    // 🧮 Track messages per recipient
-    int currentCount = messageCounts[receiverId]?.toInt() ?? 0;
-    bool newRecipient = !uniqueRecipients.contains(receiverId);
-
-    // 🧱 Apply limits only if the user is an Employer (role == 2)
-    if (uniqueRecipients.length >= 20 && newRecipient) {
-      Utilities.showSnackBar(
-        title: "Limit Reached",
-        message:
-            "You can only message 20 users per day. Come back tomorrow or upgrade.",
-        isSuccess: false,
-      );
-      return;
-    }
-
-    if (currentCount >= 3) {
-      Utilities.showSnackBar(
-        title: "Daily Message Limit",
-        message: "You can send only 3 messages per user per day.",
-        isSuccess: false,
-      );
-      return;
-    }
-    // if (isEmployer.value) {
-    //   if (uniqueRecipients.length >= 2 && newRecipient) {
-    //     Utilities.showSnackBar(
-    //       title: "Limit Reached",
-    //       message:
-    //           "You can only message 20 users per day. Come back tomorrow or upgrade.",
-    //       isSuccess: false,
-    //     );
-    //     return;
-    //   }
-    //
-    //   if (currentCount >= 3) {
-    //     Utilities.showSnackBar(
-    //       title: "Daily Message Limit",
-    //       message: "You can send only 3 messages per user per day.",
-    //       isSuccess: false,
-    //     );
-    //     return;
-    //   }
-    // }
-
-    // ✅ Proceed with sending message
-    final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
-    final chatDoc = await chatRef.get();
-
-    if (!chatDoc.exists && otherUserData != null) {
-      await startChat(otherUserData, chatType: chatType);
-    }
-
-    await chatRef.collection('messages').add({
-      'senderId': uid,
-      'text': text,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-
-    await chatRef.update({
-      'lastMessage': text,
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
-
-    // ✅ Update message usage
-    if (newRecipient) uniqueRecipients.add(receiverId);
-    messageCounts[receiverId] = currentCount + 1;
-
-    await limitDocRef.set({
-      'date': todayStr,
-      'uniqueRecipients': uniqueRecipients,
-      'messageCounts': messageCounts,
-    }, SetOptions(merge: true));
-  }
-
+  /// Send a message (create chat if missing) (LIMIT ONE)
   // Future<void> sendMessage(
   //   String chatId,
   //   String text,
@@ -332,27 +329,135 @@ class ChatController extends GetxController {
   // ) async {
   //   if (text.trim().isEmpty) return;
   //
+  //   final uid = currentUserId.value;
+  //   final today = DateTime.now();
+  //   final todayStr = "${today.year}-${today.month}-${today.day}";
+  //
+  //   final limitDocRef = FirebaseFirestore.instance
+  //       .collection('message_limits')
+  //       .doc(uid)
+  //       .collection('stats')
+  //       .doc(todayStr);
+  //
+  //   final limitDoc = await limitDocRef.get();
+  //
+  //   List<dynamic> uniqueRecipients = [];
+  //   Map<String, dynamic> messageCounts = {};
+  //
+  //   if (limitDoc.exists) {
+  //     uniqueRecipients = limitDoc['uniqueRecipients'] ?? [];
+  //     messageCounts = Map<String, dynamic>.from(
+  //       limitDoc['messageCounts'] ?? {},
+  //     );
+  //   }
+  //
+  //   final receiverId =
+  //       otherUserData?['uid'] ??
+  //       chatId.split('-').firstWhere((id) => id != uid);
+  //
+  //   // 🧮 Track messages per recipient
+  //   int currentCount = messageCounts[receiverId]?.toInt() ?? 0;
+  //   bool newRecipient = !uniqueRecipients.contains(receiverId);
+  //
+  //   // 🧱 Apply limits only if the user is an Employer (role == 2)
+  //   if (uniqueRecipients.length >= 20 && newRecipient) {
+  //     Utilities.showSnackBar(
+  //       title: "Limit Reached",
+  //       message:
+  //           "You can only message 20 users per day. Come back tomorrow or upgrade.",
+  //       isSuccess: false,
+  //     );
+  //     return;
+  //   }
+  //
+  //   if (currentCount >= 3) {
+  //     Utilities.showSnackBar(
+  //       title: "Daily Message Limit",
+  //       message: "You can send only 3 messages per user per day.",
+  //       isSuccess: false,
+  //     );
+  //     return;
+  //   }
+  //   // if (isEmployer.value) {
+  //   //   if (uniqueRecipients.length >= 2 && newRecipient) {
+  //   //     Utilities.showSnackBar(
+  //   //       title: "Limit Reached",
+  //   //       message:
+  //   //           "You can only message 20 users per day. Come back tomorrow or upgrade.",
+  //   //       isSuccess: false,
+  //   //     );
+  //   //     return;
+  //   //   }
+  //   //
+  //   //   if (currentCount >= 3) {
+  //   //     Utilities.showSnackBar(
+  //   //       title: "Daily Message Limit",
+  //   //       message: "You can send only 3 messages per user per day.",
+  //   //       isSuccess: false,
+  //   //     );
+  //   //     return;
+  //   //   }
+  //   // }
+  //
+  //   // ✅ Proceed with sending message
   //   final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
   //   final chatDoc = await chatRef.get();
   //
-  //   // ✅ Only create chat if it doesn't exist
   //   if (!chatDoc.exists && otherUserData != null) {
   //     await startChat(otherUserData, chatType: chatType);
   //   }
   //
-  //   // 🟢 Add message
   //   await chatRef.collection('messages').add({
-  //     'senderId': currentUserId.value,
+  //     'senderId': uid,
   //     'text': text,
   //     'timestamp': FieldValue.serverTimestamp(),
   //   });
   //
-  //   // 🟢 Update chat metadata
   //   await chatRef.update({
   //     'lastMessage': text,
   //     'updatedAt': FieldValue.serverTimestamp(),
   //   });
+  //
+  //   // ✅ Update message usage
+  //   if (newRecipient) uniqueRecipients.add(receiverId);
+  //   messageCounts[receiverId] = currentCount + 1;
+  //
+  //   await limitDocRef.set({
+  //     'date': todayStr,
+  //     'uniqueRecipients': uniqueRecipients,
+  //     'messageCounts': messageCounts,
+  //   }, SetOptions(merge: true));
   // }
+
+  Future<void> sendMessage(
+    String chatId,
+    String text,
+    Map<String, dynamic>? otherUserData,
+    String chatType,
+  ) async {
+    if (text.trim().isEmpty) return;
+
+    final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
+    final chatDoc = await chatRef.get();
+
+    // ✅ Only create chat if it doesn't exist
+    if (!chatDoc.exists && otherUserData != null) {
+      await startChat(otherUserData, chatType: chatType);
+    }
+
+    // 🟢 Add message
+    await chatRef.collection('messages').add({
+      'senderId': currentUserId.value,
+      'text': text,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    // 🟢 Update chat metadata
+    await chatRef.update({
+      'lastMessage': text,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
 
   /// Block employee (only if employer)
   Future<void> blockEmployee(String chatId) async {

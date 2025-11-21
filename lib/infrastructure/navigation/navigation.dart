@@ -13,7 +13,6 @@ import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/pricing_pl
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
 import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
 import 'package:barbee_hive_app/presentation/signIn/sign_in_view.dart';
-import 'package:barbee_hive_app/presentation/sign_up_view/sign_up_employer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,7 +22,8 @@ import '../../presentation/auth/views/forgot_password_view.dart';
 import '../../presentation/bottom_nav/dashboard/dashboard_screen.dart';
 import '../../presentation/bottom_nav/job/employee/apply_screen.dart';
 import '../../presentation/home/home.screen.dart';
-import '../../presentation/sign_up_view/sign_up_employee_screen.dart';
+import '../../presentation/signUp/sign_up_employee_screen.dart';
+import '../../presentation/signUp/sign_up_employer_screen.dart';
 import '../../presentation/splash/splash.screen.dart';
 import 'routes.dart';
 
@@ -178,7 +178,7 @@ class Nav {
     ),
     GetPage(
       name: Routes.jobs,
-      page: () => JobScreen(),
+      page: () => JobScreen(showBackButton: Get.arguments["showBackButton"]),
       binding: InitialBindings(),
     ),
   ];

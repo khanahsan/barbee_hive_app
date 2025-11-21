@@ -20,6 +20,7 @@ class UserProfileResponse {
 
 class UserProfileData {
   final int id;
+  final String uid;
   final String email;
   final int role;
   final bool isVerified;
@@ -33,6 +34,7 @@ class UserProfileData {
 
   UserProfileData({
     required this.id,
+    required this.uid,
     required this.email,
     required this.role,
     required this.isVerified,
@@ -50,6 +52,7 @@ class UserProfileData {
 
     return UserProfileData(
       id: json['id'],
+      uid: json['uid'],
       email: json['email'],
       role: role,
       isVerified: json['is_verified'],

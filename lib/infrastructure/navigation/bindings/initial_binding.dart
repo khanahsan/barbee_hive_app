@@ -10,7 +10,6 @@ import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller/pricing_plans_controller.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
-import 'package:barbee_hive_app/presentation/sign_up_view/controllers/sign_up_employer_controller.dart';
 import 'package:get/get.dart';
 
 import '../../../presentation/auth/controllers/auth.controller.dart';
@@ -18,7 +17,8 @@ import '../../../presentation/bottom_nav/dashboard/controller/b2b_controller.dar
 import '../../../presentation/bottom_nav/dashboard/controller/hive_profile_controller.dart';
 import '../../../presentation/bottom_nav/job/employer/job_posting/controller/job_posting_controller.dart';
 import '../../../presentation/home/controllers/home.controller.dart';
-import '../../../presentation/sign_up_view/controllers/sign_up_employee_controller.dart';
+import '../../../presentation/signUp/controllers/sign_up_employee_controller.dart';
+import '../../../presentation/signUp/controllers/sign_up_employer_controller.dart';
 import '../../../presentation/splash/controllers/splash.controller.dart';
 
 class InitialBindings implements Bindings {
@@ -36,7 +36,7 @@ class InitialBindings implements Bindings {
     Get.lazyPut<SplashController>(() => SplashController());
     Get.lazyPut<SignUpEmployerController>(() => SignUpEmployerController());
     Get.lazyPut<ProfileController>(() => ProfileController());
-    Get.lazyPut<JobController>(() => JobController());
+    Get.lazyPut<JobController>(() => JobController(), fenix: true);
     Get.lazyPut<ApplyScreenController>(() => ApplyScreenController());
     Get.lazyPut<ApplicationsController>(() => ApplicationsController());
     Get.lazyPut<ApplicantProfileController>(() => ApplicantProfileController());

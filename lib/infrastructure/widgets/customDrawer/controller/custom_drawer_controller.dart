@@ -44,7 +44,7 @@ class CustomDrawerController extends GetxController
       CurvedAnimation(parent: animationController, curve: Curves.easeOut),
     );
 
-    _loadUserData();
+    loadUserData();
   }
 
   // void toggleDrawer() {
@@ -71,7 +71,7 @@ class CustomDrawerController extends GetxController
     isDrawerOpen.value = !isDrawerOpen.value;
   }
 
-  Future<void> _loadUserData() async {
+  Future<void> loadUserData() async {
     final currentUserName = SharedPreferenceHelper.getString(
       SharedPrefKeys.userName,
     );

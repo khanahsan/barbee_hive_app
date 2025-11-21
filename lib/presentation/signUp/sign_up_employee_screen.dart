@@ -3,9 +3,6 @@ import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
-import 'package:barbee_hive_app/presentation/sign_up_view/component/hexagon_widget.dart';
-import 'package:barbee_hive_app/presentation/sign_up_view/controllers/sign_up_employee_controller.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -13,6 +10,10 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../infrastructure/widgets/app_text_field.dart';
 import '../../infrastructure/widgets/custom_dropdown.dart';
+import '../../infrastructure/widgets/custom_profile_image.dart';
+import '../../infrastructure/widgets/custom_resume_widget.dart';
+import 'component/agree_terms_tile.dart';
+import 'controllers/sign_up_employee_controller.dart';
 
 class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
   const SignUpEmployeeScreen({super.key});
@@ -82,26 +83,28 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                   ),
                                   SizedBox(height: 20.h),
 
-                                  /// PROFILE IMAGE
                                   Container(
                                     padding: EdgeInsets.all(10.w),
                                     child: Stack(
                                       alignment: Alignment.center,
                                       children: [
-                                        HexagonProfilePhotoTile(
-                                          selectedImage:
-                                              controller.selectedImage.value,
-                                          imageUrl:
+                                        /// PROFILE IMAGE
+                                        CustomProfileImage(
+                                          imagePath:
                                               controller
-                                                      .profileImageUrl
-                                                      .value
-                                                      .isNotEmpty
-                                                  ? controller
-                                                      .profileImageUrl
-                                                      .value
-                                                  : null,
-                                          onTap:
-                                              controller.showImagePickerOptions,
+                                                  .selectedImage
+                                                  .value
+                                                  ?.path ??
+                                              controller.profileImageUrl.value,
+                                          width: 130,
+                                          height: 140,
+                                          testIcon: AppAssets.cameraIcon,
+                                          text: "Upload Photo",
+                                          showFullText: true,
+                                          onImagePicked: (file) {
+                                            controller.selectedImage.value =
+                                                file;
+                                          },
                                         ),
                                       ],
                                     ),
@@ -196,8 +199,11 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                   ),
                                   SizedBox(height: 15.h),
 
-                                  /// STATE + CITY
+                                  /// STATE & CITY FIELD
                                   Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    spacing: 10.w,
                                     children: [
                                       Expanded(
                                         child: _buildTextField(
@@ -212,7 +218,6 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                   ),
                                         ),
                                       ),
-                                      SizedBox(width: 10.w),
                                       Expanded(
                                         child: _buildTextField(
                                           'City',
@@ -230,7 +235,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                   ),
                                   SizedBox(height: 15.h),
 
-                                  /// DOB
+                                  /// DOB FIELD
                                   Obx(
                                     () => GestureDetector(
                                       onTap: controller.pickDate,
@@ -251,7 +256,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
 
                                   SizedBox(height: 15.h),
 
-                                  /// GENDER + HEIGHT
+                                  /// GENDER & HEIGHT FIELD
                                   Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -326,7 +331,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                   ),
                                   SizedBox(height: 15.h),
 
-                                  /// EYE + HAIR COLOR
+                                  /// EYE + HAIR COLOR FIELD
                                   Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -398,87 +403,30 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
 
                                   /// RESUME UPLOAD
                                   Obx(
-                                    () => DottedBorder(
-                                      options:
-                                          const RoundedRectDottedBorderOptions(
-                                            dashPattern: [6, 3],
-                                            color: AppColors.textFieldTextColor,
-                                            strokeWidth: 2,
-                                            radius: Radius.circular(12),
-                                          ),
-                                      child: GestureDetector(
-                                        onTap: controller.pickResume,
-                                        child: Container(
-                                          width: double.infinity,
-                                          height: 55.h,
-                                          alignment: Alignment.center,
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 10.w,
-                                          ),
-                                          child: Text(
-                                            controller.selectedResume.value ==
-                                                    null
-                                                ? 'Upload Resume/Certification (PDF)'
-                                                : 'Selected: ${controller.selectedResume.value!.path.split('/').last}',
-                                            style: TextStyle(
-                                              color:
-                                                  AppColors.textFieldTextColor,
-                                              fontSize: 14.sp,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ),
+                                    () => CustomResumeWidget(
+                                      initialFileName:
+                                          controller.selectedResume.value?.path
+                                              .split('/')
+                                              .last,
+                                      onFileSelected: (file) {
+                                        controller.selectedResume.value = file;
+                                      },
                                     ),
                                   ),
+
                                   SizedBox(height: 15.h),
 
-                                  /// TERMS CHECKBOX
-                                  Obx(
-                                    () => Row(
-                                      spacing: 10.w,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: controller.toggleCheckbox,
-                                          child: Container(
-                                            width: 20.w,
-                                            height: 20.h,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: AppColors.grey,
-                                                width: 2.w,
-                                              ),
-                                              color:
-                                                  controller.isChecked.value
-                                                      ? AppColors.colorFF8600
-                                                      : Colors.transparent,
-                                            ),
-                                            child:
-                                                controller.isChecked.value
-                                                    ? Icon(
-                                                      Icons.check,
-                                                      size: 15.sp,
-                                                      color: Colors.white,
-                                                    )
-                                                    : null,
-                                          ),
-                                        ),
-                                        CustomText(
-                                          title:
-                                              'I agree to the Terms of Service',
-                                          color: AppColors.colorFF8600,
-                                          fontSize: 14,
-                                        ),
-                                      ],
-                                    ),
+                                  /// TERMS SECTION
+                                  AgreeTermsTile(
+                                    onTap: controller.toggleCheckbox,
+                                    isChecked: controller.isChecked,
                                   ),
                                   SizedBox(height: 30.h),
 
                                   /// CREATE ACCOUNT BUTTON
                                   CustomBtn(
                                     btnTitle: 'Create Account',
-                                    buttonHeight: 50.h,
+                                    buttonHeight: 55.h,
                                     btnBackgroundColor: AppColors.colorFF8600,
                                     btnTxtColor: Colors.white,
                                     buttonWidth: double.infinity,

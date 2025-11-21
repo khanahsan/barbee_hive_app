@@ -4,6 +4,7 @@ import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_binding.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
@@ -38,6 +39,8 @@ void main() async {
   MobileAds.instance.updateRequestConfiguration(configuration);
 
   runApp(Main(initialRoute));
+
+  SystemChrome.setPreferredOrientations(<DeviceOrientation>[DeviceOrientation.portraitUp]);
 }
 
 class Main extends StatelessWidget {

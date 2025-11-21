@@ -15,6 +15,8 @@ class ApplyScreenController extends GetxController {
   final isLoading = false.obs;
   final errorMessage = ''.obs;
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   void onClose() {
     experienceLevel.dispose();
@@ -31,23 +33,6 @@ class ApplyScreenController extends GetxController {
   }
 
   Future<void> applyForJob(int jobId) async {
-    LogUtil.logError(experienceLevel.text);
-    LogUtil.logError(yearsOfExperience.text);
-    LogUtil.logError(expectedSalary.text);
-    LogUtil.logError(selectedJobType.value);
-    if (experienceLevel.text.isEmpty ||
-        yearsOfExperience.text.isEmpty ||
-        expectedSalary.text.isEmpty ||
-        selectedJobType.value.isEmpty) {
-      errorMessage.value = 'All fields are required';
-      Get.snackbar(
-        'Error',
-        errorMessage.value,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-      return;
-    }
 
     final years = int.tryParse(yearsOfExperience.text);
     final salary = double.tryParse(expectedSalary.text);

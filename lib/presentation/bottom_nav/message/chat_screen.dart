@@ -1,5 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
@@ -8,13 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-
 class ChatScreen extends StatelessWidget {
   final String chatId;
   final String otherName;
   final String otherImage;
   final Map<String, dynamic>? employeeData;
   final String chatType;
+
   ChatScreen({
     super.key,
     required this.chatId,
@@ -23,6 +24,7 @@ class ChatScreen extends StatelessWidget {
     this.employeeData,
     this.chatType = 'employer_employee',
   });
+
   final ChatController chatController = Get.find();
   final TextEditingController _messageController = TextEditingController();
 
@@ -273,7 +275,6 @@ class ChatScreen extends StatelessWidget {
     );
   }
 }
-
 
 // import 'dart:developer';
 // import 'package:cloud_firestore/cloud_firestore.dart';
@@ -560,4 +561,3 @@ class ChatScreen extends StatelessWidget {
 //     );
 //   }
 // }
-

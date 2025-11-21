@@ -90,7 +90,10 @@ class CustomDrawer extends StatelessWidget {
                             controller: controller,
                             onTap: () {
                               controller.role == 2
-                                  ? Get.toNamed(Routes.jobs)
+                                  ? Get.toNamed(
+                                    Routes.jobs,
+                                    arguments: {"showBackButton": true},
+                                  )
                                   : Get.toNamed(Routes.myJobs);
                             },
                           ),
@@ -230,7 +233,7 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-// Widget drawerMenuTile({
+  // Widget drawerMenuTile({
   //   required String title,
   //   required String iconPath,
   //   required VoidCallback onTap,

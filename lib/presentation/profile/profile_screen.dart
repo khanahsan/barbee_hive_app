@@ -23,7 +23,7 @@ class ProfileScreen extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final topOffset = 120.h;
+    final topOffset = 170.h;
     final fullHeight = screenHeight - topOffset;
 
     return Scaffold(
@@ -63,16 +63,44 @@ class ProfileScreen extends GetView<ProfileController> {
                 : Stack(
                   alignment: Alignment.topCenter,
                   children: [
+                    // Image.network(controller.userCoverImage.value),
+                    // Positioned(
+                    //   left: 0,
+                    //   right: 0,
+                    //   top: 0,
+                    //   child: ClipRRect(
+                    //     borderRadius: BorderRadius.circular(30.r),
+                    //     child: Image.asset(
+                    //       AppAssets.exampleCoverPhoto,
+                    //       fit: BoxFit.cover,
+                    //     ),
+                    //   ),
+                    // ),
+
+                    // COVER IMAGE
                     Positioned(
                       left: 0,
                       right: 0,
                       top: 0,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(30.r),
-                        child: Image.asset(
-                          AppAssets.profileImage,
-                          fit: BoxFit.cover,
-                        ),
+                        child:
+                            controller.userCoverImage.value.isEmpty
+                                ? Image.asset(
+                                  AppAssets.exampleCoverPhoto,
+                                  fit: BoxFit.cover,
+                                )
+                                : Image.network(
+                                  controller.userCoverImage.value,
+                                  fit: BoxFit.cover,
+                                  height: 200.h,
+                                  width: double.infinity,
+                                  errorBuilder:
+                                      (context, error, stackTrace) =>
+                                          Image.asset(
+                                            AppAssets.exampleCoverPhoto,
+                                          ),
+                                ),
                       ),
                     ),
 
@@ -178,19 +206,21 @@ class ProfileScreen extends GetView<ProfileController> {
                                         btnTxtColor: Colors.white,
                                         // width: double.infinity,
                                         onPressed: () {
-                                          log("BUTTON PRESSED ${!controller.isEditing.value}");
+                                          log(
+                                            "BUTTON PRESSED ${!controller.isEditing.value}",
+                                          );
 
                                           if (!controller.isEditing.value) {
                                             controller.toggleEditing();
                                             return;
                                           }
 
-                                          if (controller.formKey.currentState!.validate()) {
+                                          if (controller.formKey.currentState!
+                                              .validate()) {
                                             log("Calling updateUserProfile()");
                                             controller.updateUserProfile();
                                           }
                                         },
-
                                       ),
                                     ),
                                   ],
@@ -203,13 +233,18 @@ class ProfileScreen extends GetView<ProfileController> {
                             top: -80.h,
                             child: Obx(
                               () => CustomProfileImage(
+                                width: 130,
+                                height: 140,
                                 imagePath: controller.userProfileImage.value,
-                                name: controller.userName,
-                                showEditButton: controller.isEditing.value,
-                                onImagePicked: (File file) {
-                                  controller.userProfileImage.value = file.path;
+                                text: controller.userName,
+                                isEditMode: controller.isEditing.value,
+                                wholeAvatarClickable: false,
+                                onImagePicked: (File? file) {
+                                  if (file != null) {
+                                    controller.userProfileImage.value =
+                                        file.path;
+                                  }
                                 },
-                                borderColor: AppColors.colorFF8600,
                               ),
                             ),
                           ),

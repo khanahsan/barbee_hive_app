@@ -94,7 +94,7 @@ class Employer {
 class Employee {
   final String? name;
   final String? initials;
-  final int? experienceYears;
+  final String? experienceYears;
   final String? country;
   final String? state;
   final String? city;
@@ -128,7 +128,7 @@ class Employee {
     return Employee(
       name: json['name'],
       initials: json['initials'],
-      experienceYears: json['experience_years'],
+      experienceYears: json['experience_years']?.toString(),
       country: json['country'],
       state: json['state'],
       city: json['city'],

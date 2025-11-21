@@ -1,11 +1,11 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -16,9 +16,10 @@ import 'employee/component/employee_card.dart';
 import 'employer/component/employer_card.dart';
 
 class JobScreen extends GetView<JobController> {
-  const JobScreen({super.key, this.onMenuPressed});
+  const JobScreen({super.key, this.onMenuPressed, this.showBackButton});
 
   final VoidCallback? onMenuPressed;
+  final bool? showBackButton;
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +31,30 @@ class JobScreen extends GetView<JobController> {
         appBar: customAppbar(
           context: context,
           leadingTapFunction: () {
-            if (onMenuPressed != null) onMenuPressed!();
+            if (showBackButton == true) {
+              Get.back();
+            } else {
+              if (onMenuPressed != null) onMenuPressed!();
+            }
           },
+          leadingIconPath: showBackButton == true
+              ? AppAssets.backIcon
+              : null,
           title: isEmployer ? 'Job Applications' : 'Find Jobs',
           profileImagePath: controller.userProfileImage.value,
-          // actions: [
-          //   SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
-          // ],
         ),
+
+        // appBar: customAppbar(
+        //   context: context,
+        //   leadingTapFunction: () {
+        //     if (onMenuPressed != null) onMenuPressed!();
+        //   },
+        //   title: isEmployer ? 'Job Applications' : 'Find Jobs',
+        //   profileImagePath: controller.userProfileImage.value,
+        //   // actions: [
+        //   //   SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
+        //   // ],
+        // ),
         backgroundColor: AppColors.black,
         body: Column(
           spacing: 15.h,

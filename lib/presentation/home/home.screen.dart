@@ -1,13 +1,12 @@
-import 'dart:io';
-
-import 'package:barbee_hive_app/presentation/sign_up_view/views/select_role_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
+
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/navigation/routes.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
+import '../signUp/views/select_role_view.dart';
 import 'controllers/home.controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
@@ -47,25 +46,6 @@ class HomeScreen extends GetView<HomeController> {
                   Get.to(() => SelectRoleView());
                 },
               ),
-
-              // Platform.isIOS ?
-              // CustomBtn(
-              //   buttonHeight: 50,
-              //   btnBackgroundColor: Colors.black,
-              //   btnTitle: 'Continue with Apple',
-              //   borderColor: Colors.grey.shade900,
-              //   borderWidth: 1.0.w,
-              //   onPressed: () {},
-              //   iconPath: AppAssets.appleLogo,
-              // ):CustomBtn(
-              //   buttonHeight: 50,
-              //   btnBackgroundColor: Colors.black,
-              //   btnTitle: 'Continue with Google',
-              //   borderColor: Colors.grey.shade900,
-              //   borderWidth: 1.0.w,
-              //   onPressed: () {},
-              //   iconPath: AppAssets.googleLogo,
-              // ),
             ],
           ),
         ),

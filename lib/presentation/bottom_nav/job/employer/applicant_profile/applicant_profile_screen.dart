@@ -63,15 +63,32 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
               top: 100.h,
               left: 0,
               right: 0,
-              child: CustomFadingCarousel(
+              child: controller.profile.value!.profileImage != null &&
+                  controller.profile.value!.profileImage!.isNotEmpty
+                  ? Image.network(
+                controller.profile.value!.profileImage!,
+                height: 350.h,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.asset(
+                    AppAssets.profileImage,
+                    height: 250.h,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  );
+                },
+              )
+                  : CustomFadingCarousel(
                 showIndicators: false,
                 imagePaths: [
-                  controller.profile.value!.profileImage ?? AppAssets.profileImage,
+                  AppAssets.profileImage,
                   controller.profile.value!.coverPhoto ?? AppAssets.profileImage,
                   AppAssets.profileImage,
                 ],
               ),
             ),
+
             Positioned(
               bottom: 0,
               left: 0,
@@ -105,7 +122,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              controller.profile.value!.employee?.name ??
+                              controller.profile.value!.employee?.text ??
                                   controller.profile.value!.employer?.businessName ??
                                   controller.profile.value!.email,
                               style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -131,8 +148,8 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                                 _infoRow(
                                   context,
                                   'Job Role',
-                                  controller.profile.value!.employee?.skill?.name ??
-                                      controller.profile.value!.employer?.skill?.name ??
+                                  controller.profile.value!.employee?.skill?.text ??
+                                      controller.profile.value!.employer?.skill?.text ??
                                       'N/A',
                                 ),
                                 _infoRow(
@@ -153,7 +170,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                                 _infoRow(
                                   context,
                                   'Job Type',
-                                  controller.profile.value!.employee?.eyeColor?.name ?? 'N/A',
+                                  controller.profile.value!.employee?.eyeColor?.text ?? 'N/A',
                                 ),
                       
                               ],

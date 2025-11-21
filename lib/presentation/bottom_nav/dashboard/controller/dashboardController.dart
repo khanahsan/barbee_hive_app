@@ -32,10 +32,10 @@ class DashboardController extends GetxController {
     loadBannerAd();
     AdsHelper().loadInterstitialAd();
 
-    _loadUserData();
+    loadUserData();
   }
 
-  Future<void> _loadUserData() async {
+  Future<void> loadUserData() async {
     userProfileImage.value =
         SharedPreferenceHelper.getString(SharedPrefKeys.userProfileImage) ?? '';
   }

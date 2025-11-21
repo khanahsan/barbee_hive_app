@@ -1,7 +1,7 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_strings.dart';
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
-import 'package:barbee_hive_app/presentation/sign_up_view/views/select_role_view.dart';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,6 +14,7 @@ import '../../infrastructure/navigation/routes.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
 import '../../infrastructure/widgets/app_text_field.dart';
 import '../auth/controllers/auth.controller.dart';
+import '../signUp/views/select_role_view.dart';
 
 class SignInView extends GetView<AuthController> {
   const SignInView({super.key});

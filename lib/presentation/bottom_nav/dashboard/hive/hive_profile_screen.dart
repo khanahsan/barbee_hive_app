@@ -1,9 +1,9 @@
 import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
+import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/hive_profile_controller.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +22,7 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    final chatController = Get.find<ChatController>();
+    // final chatController = Get.find<ChatController>();
 
     /// Replacing initState()
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -138,19 +138,26 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
                       /// CHAT OPTION (SHOW IF THE USER IS DIFFERENT)
                       if (!controller.isSameUser(currentUser.id))
                         CustomButton(
+                          // onTap: () {
+                          //   Get.to(
+                          //     () => ChatScreen(
+                          //       chatId:
+                          //           "${chatController.currentUserId.value}-${currentUser.uid}",
+                          //       otherUserId: currentUser.uid,
+                          //       otherName: currentUser.employee!.name,
+                          //       otherImage: currentUser.profileImage!,
+                          //       employeeData: {
+                          //         'uid': currentUser.uid,
+                          //         'name': currentUser.employee!.name,
+                          //         'profileImage': currentUser.profileImage,
+                          //       },
+                          //     ),
+                          //   );
+                          // },
                           onTap: () {
-                            Get.to(
-                              () => ChatScreen(
-                                chatId:
-                                    "${chatController.currentUserId.value}-${currentUser.uid}",
-                                otherName: currentUser.employee!.name,
-                                otherImage: currentUser.profileImage!,
-                                employeeData: {
-                                  'uid': currentUser.uid,
-                                  'name': currentUser.employee!.name,
-                                  'profileImage': currentUser.profileImage,
-                                },
-                              ),
+                            Get.toNamed(
+                              Routes.chatScreen,
+                              arguments: {'otherUserID': currentUser.uid},
                             );
                           },
                           buttonText: "Send Message",

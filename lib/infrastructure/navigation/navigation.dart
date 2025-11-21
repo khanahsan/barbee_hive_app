@@ -21,6 +21,7 @@ import '../../presentation/auth/auth.screen.dart';
 import '../../presentation/auth/views/forgot_password_view.dart';
 import '../../presentation/bottom_nav/dashboard/dashboard_screen.dart';
 import '../../presentation/bottom_nav/job/employee/apply_screen.dart';
+import '../../presentation/bottom_nav/message/chat_screen.dart';
 import '../../presentation/home/home.screen.dart';
 import '../../presentation/signUp/sign_up_employee_screen.dart';
 import '../../presentation/signUp/sign_up_employer_screen.dart';
@@ -107,19 +108,14 @@ class Nav {
       page: () => const ProfileScreen(),
       binding: InitialBindings(),
     ),
-    /*GetPage(
+
+    GetPage(
       name: Routes.chatScreen,
-      page: () => ChatScreen(),
-      binding: InitialBindings(),
-    ),*/
-    // GetPage(
-    //   name: Routes.chatScreen,
-    //   page: () => ChatScreen(
-    //     chatID: Get.arguments['chatID'],
-    //     otherUserID: Get.arguments['otherUserID'],
-    //     currentUserID: Get.arguments['currentUserID'],
-    //   ),
-    // ),
+      page: () => ChatScreen(
+        // chatId: Get.arguments['chatID'],
+        otherUserId: Get.arguments['otherUserID'],
+      ),
+    ),
     GetPage(
       name: Routes.settingsScreen,
       page: () => const SettingsScreen(),

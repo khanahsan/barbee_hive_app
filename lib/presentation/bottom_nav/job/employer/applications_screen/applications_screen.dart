@@ -2,12 +2,11 @@ import 'package:barbee_hive_app/data/model/job_application_response.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/controller/application_controller.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,9 +15,10 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 class ApplicationsScreen extends GetView<ApplicationsController> {
   final int jobId;
+
   ApplicationsScreen({required this.jobId, super.key});
 
-  final ChatController chatController = Get.put(ChatController());
+  // final ChatController chatController = Get.put(ChatController());
 
   @override
   Widget build(BuildContext context) {
@@ -487,24 +487,31 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                   buttonColor: AppColors.colorFF8600,
                   buttonTextSize: 15.sp,
                   buttonHeight: 55.h,
+                  // onTap: () {
+                  //   Get.to(
+                  //     () => ChatScreen(
+                  //       chatId:
+                  //           "${chatController.currentUserId.value}-${application.applicant.uid}", // Potential chatId
+                  //       otherUserId: application.applicant.uid,
+                  //       otherName:
+                  //           application.applicant.name ??
+                  //           application.applicant.email,
+                  //       otherImage: application.applicant.profileImage ?? '',
+                  //       employeeData: {
+                  //         'uid': application.applicant.uid,
+                  //         'name':
+                  //             application.applicant.name ??
+                  //             application.applicant.email,
+                  //         'profileImage':
+                  //             application.applicant.profileImage ?? '',
+                  //       },
+                  //     ),
+                  //   );
+                  // },
                   onTap: () {
-                    Get.to(
-                      () => ChatScreen(
-                        chatId:
-                            "${chatController.currentUserId.value}-${application.applicant.uid}", // Potential chatId
-                        otherName:
-                            application.applicant.name ??
-                            application.applicant.email,
-                        otherImage: application.applicant.profileImage ?? '',
-                        employeeData: {
-                          'uid': application.applicant.uid,
-                          'name':
-                              application.applicant.name ??
-                              application.applicant.email,
-                          'profileImage':
-                              application.applicant.profileImage ?? '',
-                        },
-                      ),
+                    Get.toNamed(
+                      Routes.chatScreen,
+                      arguments: {"otherUserID": application.applicant.uid},
                     );
                   },
                 ),

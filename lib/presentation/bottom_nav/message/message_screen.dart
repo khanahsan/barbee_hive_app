@@ -1,7 +1,7 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
+import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/message/chat_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -94,7 +94,7 @@ class MessageScreen extends GetView<ChatController> {
 
             // Extract other user
             final otherEntry = participants.entries.firstWhere(
-                  (entry) => entry.key != currentUserId,
+              (entry) => entry.key != currentUserId,
             );
             final otherUserId = otherEntry.key;
             final otherUser = otherEntry.value as Map<String, dynamic>;
@@ -128,23 +128,29 @@ class MessageScreen extends GetView<ChatController> {
                   message: lastMessage,
                   profileImage: liveImage,
                   onTap: () {
-                    Get.to(() => ChatScreen(
-                      chatId: chat['chatId'],
-                      otherName: liveName,
-                      otherImage: liveImage,
-                      employeeData: {
-                        'uid': otherUserId,
-                        'name': liveName,
-                        'profileImage': liveImage,
-                      },
-                    ));
+                    Get.toNamed(
+                      Routes.chatScreen,
+                      arguments: {"otherUserID": otherUserId},
+                    );
                   },
+                  // onTap: () {
+                  //   Get.to(() => ChatScreen(
+                  //     chatId: chat['chatId'],
+                  //     otherUserId: otherUserId,
+                  //     otherName: liveName,
+                  //     otherImage: liveImage,
+                  //     employeeData: {
+                  //       'uid': otherUserId,
+                  //       'name': liveName,
+                  //       'profileImage': liveImage,
+                  //     },
+                  //   ));
+                  // },
                 );
               },
             );
           },
         );
-
       }),
     );
   }

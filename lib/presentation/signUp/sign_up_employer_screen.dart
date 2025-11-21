@@ -108,6 +108,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
 
                                   /// Email Address Field
                                   _buildTextField(
+                                    keyboardType: TextInputType.emailAddress,
                                     hint: 'Email Address',
                                     controller: controller.emailController,
                                     icon: AppAssets.emailIcon,
@@ -305,8 +306,10 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
     bool obscure = false,
     Widget? suffix,
     String? Function(String?)? validator,
+    TextInputType? keyboardType,
   }) {
     return AppTextField(
+      keyboardType: keyboardType,
       validator: validator,
       hintText: hint,
       controller: controller,

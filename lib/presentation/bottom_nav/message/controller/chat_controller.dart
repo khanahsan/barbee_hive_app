@@ -85,16 +85,22 @@ class ChatController extends GetxController {
 
 
   /// Helper: generate consistent chat ID for any user pair
-  String generateChatId(String uid1, String uid2, String chatType) {
-    if (chatType == 'employer_employee') {
-      // keep order as employer-employee
-      return "$uid1-$uid2";
-    } else {
-      // sort alphabetically for same-role chats
-      final ids = [uid1, uid2]..sort();
-      return ids.join('-');
-    }
+  // String generateChatId(String uid1, String uid2, String chatType) {
+  //   if (chatType == 'employer_employee') {
+  //     // keep order as employer-employee
+  //     return "$uid1-$uid2";
+  //   } else {
+  //     // sort alphabetically for same-role chats
+  //     final ids = [uid1, uid2]..sort();
+  //     return ids.join('-');
+  //   }
+  // }
+
+  String generateChatId(String uid1, String uid2) {
+    final ids = [uid1, uid2]..sort();
+    return ids.join('-');
   }
+
 
   /// Stream all chats for this user
   Stream<QuerySnapshot>? getChatsStream() {
@@ -145,7 +151,9 @@ class ChatController extends GetxController {
       return '';
     }
 
-    final generatedChatId = generateChatId(myUid, otherUid, chatType);
+    final generatedChatId = generateChatId(myUid, otherUid);
+
+    log("GENERATE CHAT ID: $generatedChatId");
     final chatRef = FirebaseFirestore.instance
         .collection('chats')
         .doc(generatedChatId);
@@ -183,7 +191,7 @@ class ChatController extends GetxController {
     return generatedChatId;
   }
 
-  Future<Map<String, dynamic>> fetchUserLiveData(String uid) async {
+  Future<Map<String, dynamic>> otherUserLiveData(String uid) async {
     final doc = await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -203,6 +211,14 @@ class ChatController extends GetxController {
       'role': doc['role'] ?? 0,
     };
   }
+
+  Future<Map<String, dynamic>> currentUserLiveData(String userId) async {
+    final doc = await FirebaseFirestore.instance.collection("users").doc(userId).get();
+    return doc.data() ?? {};
+  }
+
+
+
 
 
   // Future<String> startChat(

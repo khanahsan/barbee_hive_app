@@ -32,6 +32,7 @@ class ProfileApi {
     int? skillId,
     File? resume,
     File? profileImage,
+    File? coverImage,
   }) async {
     final fields = <String, String>{
       'name': name,
@@ -49,10 +50,12 @@ class ProfileApi {
 
     log("RESUME PATH: ${resume?.path}");
     log("PROFILE IMAGE PATH: ${profileImage?.path}");
+    log("COVER IMAGE PATH: ${coverImage?.path}");
 
     final files = <String, File>{
       if (resume != null) 'resume': resume,
-      if (profileImage != null) 'profile_image': profileImage, // include if selected
+      if (profileImage != null) 'profile_image': profileImage,
+      if (coverImage != null) 'cover_photo': coverImage,
     };
 
     final data = await ApiService.multipartPost(

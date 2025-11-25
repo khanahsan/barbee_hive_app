@@ -5,6 +5,7 @@ class AppStrings {
   static const String loginTo = 'Login to';
   static const String welcomeBackTo = 'Welcome back to';
   static const String findHottestBar = 'Find the Hottest Bars. Join the Coolest Crowds.';
+  static const String backAtIt = 'Back at it — view local shifts, connect with your crew, and keep your schedule buzzing.';
   static const String yourName = 'Your name';
   static const String exampleEmail = "john.doe@abc.com";
 

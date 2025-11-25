@@ -84,26 +84,103 @@ class ProfileScreen extends GetView<ProfileController> {
                       top: 0,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(30.r),
-                        child:
-                            controller.userCoverImage.value.isEmpty
-                                ? Image.asset(
-                                  AppAssets.exampleCoverPhoto,
+                        child: Stack(
+                          children: [
+                            // Image area (local first, then network, then grey)
+                            Obx(() {
+                              // 1) show newly picked local image immediately
+                              if (controller.coverImageFile.value != null) {
+                                return Image.file(
+                                  controller.coverImageFile.value!,
                                   fit: BoxFit.cover,
-                                )
-                                : Image.network(
+                                  height: 200.h,
+                                  width: double.infinity,
+                                );
+                              }
+
+                              // 2) If server-provided cover exists
+                              if (controller.userCoverImage.value.isNotEmpty &&
+                                  controller.userCoverImage.value != "null") {
+                                return Image.network(
                                   controller.userCoverImage.value,
                                   fit: BoxFit.cover,
                                   height: 200.h,
                                   width: double.infinity,
-                                  errorBuilder:
-                                      (context, error, stackTrace) =>
-                                          Image.asset(
-                                            AppAssets.exampleCoverPhoto,
-                                          ),
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      height: 200.h,
+                                      width: double.infinity,
+                                      color: Colors.grey.shade800,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "Failed to load cover photo",
+                                        style: TextStyle(color: Colors.white70),
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
+
+                              // 3) No image available -> grey background
+                              return Container(
+                                height: 200.h,
+                                width: double.infinity,
+                                color: Colors.grey.shade800,
+                              );
+                            }),
+
+                            // Add/Change Cover Photo button (only when editing)
+                            if (controller.isEditing.value)
+                              Positioned(
+                                right: 15.w,
+                                top: 15.h,
+                                child: CustomBtn(
+                                  buttonWidth: 165.w,
+                                  buttonHeight: 45.h,
+                                  fontSize: 16.sp,
+                                  btnBackgroundColor: AppColors.color000000
+                                      .withOpacity(0.5),
+                                  btnTitle:
+                                      controller.coverImageFile.value != null ||
+                                              controller
+                                                  .userCoverImage
+                                                  .value
+                                                  .isNotEmpty
+                                          ? "Change Cover Photo"
+                                          : "Add Cover Photo",
+                                  onPressed: () => controller.pickCoverPhoto(),
                                 ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
 
+                    // Positioned(
+                    //   left: 0,
+                    //   right: 0,
+                    //   top: 0,
+                    //   child: ClipRRect(
+                    //     borderRadius: BorderRadius.circular(30.r),
+                    //     child:
+                    //         controller.userCoverImage.value.isEmpty
+                    //             ? Image.asset(
+                    //               AppAssets.exampleCoverPhoto,
+                    //               fit: BoxFit.cover,
+                    //             )
+                    //             : Image.network(
+                    //               controller.userCoverImage.value,
+                    //               fit: BoxFit.cover,
+                    //               height: 200.h,
+                    //               width: double.infinity,
+                    //               errorBuilder:
+                    //                   (context, error, stackTrace) =>
+                    //                       Image.asset(
+                    //                         AppAssets.exampleCoverPhoto,
+                    //                       ),
+                    //             ),
+                    //   ),
+                    // ),
                     Positioned(
                       top: topOffset,
                       // 50.h

@@ -41,14 +41,15 @@ class SignInView extends GetView<AuthController> {
               spacing: 15.h,
               children: [
                 /// LABEL
-                CustomText(
-                  title: '${AppStrings.loginTo}\n${AppStrings.appName}',
-                  fontSize: 36,
-                  color: AppColors.colorFFFFFF,
-                ).paddingSymmetric(horizontal: 20.w),
+                // CustomText(
+                //   title: '${AppStrings.loginTo}\n${AppStrings.appName}',
+                //   fontSize: 36,
+                //   color: AppColors.colorFFFFFF,
+                // ).paddingSymmetric(horizontal: 20.w),
 
                 /// SUB LABEL
                 RichText(
+                  textAlign: TextAlign.center,
                   text: TextSpan(
                     style: TextStyle(
                       fontSize: 12,
@@ -59,23 +60,39 @@ class SignInView extends GetView<AuthController> {
                         text: '${AppStrings.welcomeBackTo} ',
                         style: TextStyle(
                           color: AppColors.colorFFFFFF,
-                          fontSize: 20.0.sp,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                       TextSpan(
-                        text: '${AppStrings.appName}, ',
-                        style: TextStyle(
-                          color: AppColors.colorFF8600,
-                          fontSize: 20.0.sp,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      TextSpan(
-                        text: AppStrings.findHottestBar,
+                        text: 'Bar',
                         style: TextStyle(
                           color: AppColors.colorFFFFFF,
-                          fontSize: 20.0.sp,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Bee ',
+                        style: TextStyle(
+                          color: AppColors.colorFF8600,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Inc. ',
+                        style: TextStyle(
+                          color: AppColors.colorFFFFFF,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      TextSpan(
+                        text: AppStrings.backAtIt,
+                        style: TextStyle(
+                          color: AppColors.colorFFFFFF,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w400,
                         ),
                       ),

@@ -11,7 +11,9 @@ import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../data/api/auth_provider.dart';
 import '../../../data/api/profile/profile_api.dart';
@@ -42,6 +44,37 @@ class ProfileController extends GetxController {
   final dobController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
+  final ImagePicker _picker = ImagePicker();
+  Rx<File?> coverImageFile = Rx<File?>(null);
+
+  Future<void> pickCoverPhoto() async {
+    // Request permission
+    var status = await Permission.photos.request();
+
+    if (status.isDenied) {
+      Utilities.showSnackBar(
+        title: "Permission Denied",
+        message: "Gallery access is required to pick cover photo.",
+        isSuccess: false,
+      );
+      return;
+    }
+
+    if (status.isPermanentlyDenied) {
+      openAppSettings();
+      return;
+    }
+
+    // Pick the image
+    final XFile? image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 70,
+    );
+
+    if (image != null) {
+      coverImageFile.value = File(image.path);
+    }
+  }
 
   // Eye colors
   RxString currentEyeColorName = "".obs;
@@ -368,6 +401,7 @@ class ProfileController extends GetxController {
         state: state,
         resume: selectedResumeFile.value,
         profileImage: profileImageFile,
+        coverImage: coverImageFile.value,
         name: name,
         email: email,
         dob: dobText.isNotEmpty ? dobText : null,

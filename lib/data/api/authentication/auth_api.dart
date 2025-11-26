@@ -30,6 +30,21 @@ class AuthApi {
     };
   }
 
+  /// CHANGE PASSWORD API
+  static Future<Map<String, dynamic>> changePassword({
+    required String currentPass,
+    required String newPass,
+  }) async {
+    final response = await ApiService.post(ApiEndPoints.changePassword, {
+      'current_password': currentPass,
+      'password': newPass,
+    }, auth: false);
+    return {
+      'status': response['status'] ?? false,
+      'message': response['message'] ?? 'Request processed',
+    };
+  }
+
   /// REGISTER API
   static Future<RegisterResponse> register({
     required String uid,

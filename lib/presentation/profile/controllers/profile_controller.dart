@@ -454,6 +454,7 @@ class ProfileController extends GetxController {
       await Future.wait([
         Get.find<CustomDrawerController>().loadUserData(),
         Get.find<DashboardController>().loadUserData(),
+        Get.find<DashboardController>().getUserLocationAndFetchDashboard(),
         Get.find<ChatController>().loadUserData(),
         Get.find<JobController>().loadRoleAsync(),
       ]);

@@ -4,6 +4,7 @@ class ApiEndPoints {
   static const String login = 'login';
   static const String logout = 'logout';
   static const String forgotPassword = 'forgot-password';
+  static const String changePassword = 'change-password';
   static const String dashboardUsers = 'dashboard/nearest-users';
   static const String eyeColors = 'dashboard/eye-colors';
   static const String hairColors = 'dashboard/hair-colors';

@@ -63,11 +63,15 @@ class CustomDrawer extends StatelessWidget {
                             color: AppColors.colorFF8600,
                             fontWeight: FontWeight.w600,
                           ),
-                          CustomText(
-                            title: controller.userName.value,
-                            fontSize: 30,
-                            color: AppColors.colorFFFFFF,
-                            fontWeight: FontWeight.w600,
+                          SizedBox(
+                            width: 160.w,
+                            child: CustomText(
+                              title: controller.userName.value,
+                              fontSize: 30,
+                              color: AppColors.colorFFFFFF,
+                              fontWeight: FontWeight.w600,
+                              textOverflow: TextOverflow.ellipsis,
+                            ),
                           ),
                           SizedBox(height: 60.h),
 

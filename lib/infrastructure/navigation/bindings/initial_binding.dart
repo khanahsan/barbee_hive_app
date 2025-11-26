@@ -16,6 +16,7 @@ import '../../../presentation/auth/controllers/auth.controller.dart';
 import '../../../presentation/bottom_nav/dashboard/controller/b2b_controller.dart';
 import '../../../presentation/bottom_nav/dashboard/controller/hive_profile_controller.dart';
 import '../../../presentation/bottom_nav/job/employer/job_posting/controller/job_posting_controller.dart';
+import '../../../presentation/changePassword/controller/change_password_controller.dart';
 import '../../../presentation/home/controllers/home.controller.dart';
 import '../../../presentation/signUp/controllers/sign_up_employee_controller.dart';
 import '../../../presentation/signUp/controllers/sign_up_employer_controller.dart';
@@ -32,6 +33,7 @@ class InitialBindings implements Bindings {
     Get.lazyPut<HiveProfileController>(() => HiveProfileController());
     Get.lazyPut<CustomDrawerController>(() => CustomDrawerController());
     Get.lazyPut<AuthController>(() => AuthController());
+    Get.lazyPut<ChangePasswordController>(() => ChangePasswordController());
     Get.lazyPut<SignUpEmployeeController>(() => SignUpEmployeeController());
     Get.lazyPut<SplashController>(() => SplashController());
     Get.lazyPut<SignUpEmployerController>(() => SignUpEmployerController());

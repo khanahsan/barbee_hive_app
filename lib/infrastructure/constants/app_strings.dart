@@ -11,6 +11,9 @@ class AppStrings {
 
   static const String email = 'Email';
   static const String password = 'Password';
+  static const String currentPassword = 'Current Password';
+  static const String newPassword = 'New Password';
+  static const String confirmPassword = 'Confirm password';
   static const String countryId = 'Country Id';
 
   static const String zipCode = 'Post/Zip code';
@@ -32,8 +35,6 @@ class AppStrings {
   static const String enterCodeSent = 'Enter the code that was sent to your Email';
   static const String resend = 'Resend';
   static const String resetPassword = 'Reset password';
-  static const String newPassword = 'New password';
-  static const String confirmPassword = 'Confirm password';
   static const String makeStrongPassword = 'Make strong 8 digit password';
   static const String confirmsPassword = 'Confirms your password';
   static const String makeStrongPasswordSymbol = 'Make strong 8 digit password with symbol';

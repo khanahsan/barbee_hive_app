@@ -55,7 +55,7 @@ class DashboardController extends GetxController {
     );
   }
 
-  void getUserLocationAndFetchDashboard() async {
+  Future<void> getUserLocationAndFetchDashboard() async {
 
     isLoading.value = true;
 

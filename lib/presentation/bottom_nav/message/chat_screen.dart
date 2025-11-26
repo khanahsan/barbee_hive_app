@@ -1,11 +1,10 @@
-
-
 import 'dart:developer';
 
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,8 +37,10 @@ class ChatScreen extends StatelessWidget {
     return FutureBuilder<List<dynamic>>(
       // future: chatController.otherUserLiveData(otherUserId),
       future: Future.wait([
-        chatController.currentUserLiveData(chatController.currentUserId.value), // CURRENT USER
-        chatController.otherUserLiveData(otherUserId), // OTHER USER
+        chatController.currentUserLiveData(chatController.currentUserId.value),
+        // CURRENT USER
+        chatController.otherUserLiveData(otherUserId),
+        // OTHER USER
       ]),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
@@ -51,7 +52,7 @@ class ChatScreen extends StatelessWidget {
         final currentUser = snapshot.data![0] as Map<String, dynamic>;
         final currentUserRole = currentUser["role"] ?? 0;
 
-        final otherUser   = snapshot.data![1] as Map<String, dynamic>;
+        final otherUser = snapshot.data![1] as Map<String, dynamic>;
         final otherUserName = otherUser["name"] ?? "User";
         final otherUserImage = otherUser["profileImage"] ?? "";
         final otherUserRole = otherUser["role"] ?? 0;
@@ -60,7 +61,6 @@ class ChatScreen extends StatelessWidget {
           chatController.currentUserId.value,
           otherUserId,
         );
-
 
         log("CURRENT USER ROLE: $currentUserRole");
         log("OTHER USER ROLE: $otherUserRole");
@@ -239,15 +239,18 @@ class ChatScreen extends StatelessWidget {
                     ),
                   ),
 
-                  // message input
+                  /// SHOW BLOCK CHAT STATUS
                   if (isBlocked)
-                    Container(
-                      padding: EdgeInsets.all(15),
-                      child: const Text(
-                        "You cannot send a message to this user.",
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    )
+                    CustomText(
+                      title:
+                          currentUserRole == 'employee'
+                              ? "The messages have been disabled by the employer"
+                              : "You cannot send a message to this user.",
+                      color: AppColors.expiredBannerColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ).paddingSymmetric(vertical: 25.h)
+                  /// SHOW MESSAGE FIELD
                   else
                     SafeArea(
                       child: Container(
@@ -293,7 +296,7 @@ class ChatScreen extends StatelessWidget {
                                             otherUser["profileImage"] ?? "",
                                         "role": otherUser["role"] ?? "",
                                       },
-                                      "${currentUserRole}_$otherUserRole"
+                                      "${currentUserRole}_$otherUserRole",
                                       // chatType, // same as old code
                                     );
                                     messageController.clear();

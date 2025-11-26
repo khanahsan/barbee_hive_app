@@ -1,7 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_strings.dart';
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,8 +10,8 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/navigation/routes.dart';
-import '../../infrastructure/widgets/custom_btn.dart';
 import '../../infrastructure/widgets/app_text_field.dart';
+import '../../infrastructure/widgets/custom_btn.dart';
 import '../auth/controllers/auth.controller.dart';
 import '../signUp/views/select_role_view.dart';
 
@@ -128,7 +127,7 @@ class SignInView extends GetView<AuthController> {
                       key: controller.formKey,
                       child: SingleChildScrollView(
                         child: Column(
-                          spacing: 15.h,
+                          spacing: 10.h,
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             /// EMAIL FIELD
@@ -181,18 +180,40 @@ class SignInView extends GetView<AuthController> {
                                 onTap: () {
                                   Get.toNamed(Routes.FORGOT_PASSWORD);
                                 },
-                                child: Text(
-                                  'Forgot Password?',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleMedium?.copyWith(
-                                    fontSize: 15.sp,
-                                    color: AppColors.colorFF8600,
-                                  ),
+                                child: CustomText(
+                                  title: 'Forgot Password?',
+                                  fontSize: 15,
+                                  color: AppColors.colorFF8600,
                                 ),
                               ),
                             ),
-                            SizedBox(height: 30.h),
+                            SizedBox(height: 5.h),
+
+                            /// REMEMBER ME OPTION
+                            Obx(
+                              () => Row(
+                                children: [
+                                  Checkbox(
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    visualDensity: VisualDensity(
+                                      horizontal: -3.w,
+                                      vertical: -4.h,
+                                    ),
+                                    value: controller.rememberMe.value,
+                                    onChanged:
+                                        (v) => controller.toggleRememberMe(v!),
+                                    activeColor: AppColors.colorFF8600,
+                                  ),
+                                  CustomText(
+                                    title: "Remember Me",
+                                    color: AppColors.colorFFFFFF,
+                                    fontSize: 14,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: 3.h),
 
                             /// SIGN IN OPTION
                             Obx(

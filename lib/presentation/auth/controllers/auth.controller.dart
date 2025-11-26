@@ -2,7 +2,6 @@ import 'package:barbee_hive_app/data/api/api_service.dart';
 import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
 import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
-import 'package:barbee_hive_app/infrastructure/helpers/location_service.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
@@ -21,6 +20,7 @@ class AuthController extends GetxController {
   final TextEditingController fEmailController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
+  final RxBool rememberMe = false.obs;
 
   final isLoading = false.obs;
   final fPasswordIsLoading = false.obs;
@@ -31,10 +31,26 @@ class AuthController extends GetxController {
     super.onInit();
     // fetchDashboardUsers();
     // await LocationService.determinePosition();
+
+    String savedEmail =
+        SharedPreferenceHelper.getString(SharedPrefKeys.savedEmail) ?? '';
+    String savedPassword =
+        SharedPreferenceHelper.getString(SharedPrefKeys.savedPassword) ?? '';
+
+    if (savedEmail.isNotEmpty && savedPassword.isNotEmpty) {
+      nameController.text =
+          SharedPreferenceHelper.getString(SharedPrefKeys.savedEmail) ?? "";
+      passwordController.text =
+          SharedPreferenceHelper.getString(SharedPrefKeys.savedPassword) ?? "";
+    }
   }
 
   void togglePasswordVisibility() {
     isObscured.value = !isObscured.value;
+  }
+
+  void toggleRememberMe(bool value) {
+    rememberMe.value = value;
   }
 
   // Method to show the dialog
@@ -99,6 +115,21 @@ class AuthController extends GetxController {
             ? response.user.employee?.name ?? ""
             : response.user.employer?.businessName ?? "",
       );
+
+      if (rememberMe.value) {
+        await SharedPreferenceHelper.saveString(
+          SharedPrefKeys.savedEmail,
+          email,
+        );
+
+        await SharedPreferenceHelper.saveString(
+          SharedPrefKeys.savedPassword,
+          password,
+        );
+      } else {
+        await SharedPreferenceHelper.remove(SharedPrefKeys.savedEmail);
+        await SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
+      }
 
       ApiService.setToken(response.token);
       await FirebaseService.syncUserWithFirebase(

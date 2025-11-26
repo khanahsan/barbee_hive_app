@@ -101,7 +101,7 @@ class CustomDrawer extends StatelessWidget {
                           SizedBox(height: 25.h),
 
                           drawerMenuTile(
-                            title: "Setting",
+                            title: "Settings",
                             iconPath: AppAssets.settingIcon,
                             controller: controller,
                             onTap: () {

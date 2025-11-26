@@ -40,6 +40,7 @@ class EmployerCard extends StatelessWidget {
               border: Border.all(color: AppColors.colorFF8600, width: 1),
             ),
             child: Row(
+              spacing: 5.w,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
@@ -52,29 +53,26 @@ class EmployerCard extends StatelessWidget {
                     ),
                   ),
                   child: Row(
+                    spacing: 2.w,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SvgPicture.asset(
                         AppAssets.clockIcon,
-                        height: 16.h,
-                        width: 16.w,
+                        height: 17.h,
+                        width: 17.w,
                         fit: BoxFit.cover,
                       ),
-                      SizedBox(width: 2.w),
-                      Text(
-                        "${job.remainingHours}hrs",
-                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.colorFFFFFF,
-                        ),
+                      CustomText(
+                        title: "${job.remainingHours}hrs",
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.colorFFFFFF,
                       ),
                     ],
                   ),
                 ),
-                SizedBox(width: 5.w),
                 Text(
-                  "Renew Job in \$1.99",
+                  "Extend Job in \$1.99",
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontSize: 10.sp,
                     fontWeight: FontWeight.w600,

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:barbee_hive_app/data/model/country_response.dart';
 import 'package:barbee_hive_app/data/model/gender_response.dart';
 import 'package:barbee_hive_app/data/model/height_response.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
@@ -18,6 +19,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../data/api/auth_provider.dart';
 import '../../../data/api/profile/profile_api.dart';
 import '../../../data/model/color_response.dart' as colorModel;
+import '../../../data/model/state_response.dart';
 import '../../../data/model/user_profile_response.dart';
 import '../../../infrastructure/constants/shared_pref_keys.dart';
 import '../../../infrastructure/helpers/shared_preference_helper.dart';
@@ -93,9 +95,19 @@ class ProfileController extends GetxController {
   final RxList<colorModel.Skill> skills = <colorModel.Skill>[].obs;
   final RxList<Gender> genders = <Gender>[].obs;
   final RxList<Height> heights = <Height>[].obs;
+  final RxList<Country> countries = <Country>[].obs;
+  final RxList<StateModel> states = <StateModel>[].obs;
 
   RxString currentSkillName = "".obs;
   RxInt currentSkillId = 0.obs;
+
+  RxList<String> selectedSkills = <String>[].obs;
+
+  RxString currentCountryName = "".obs;
+  RxInt currentCountryId = 0.obs;
+
+  RxString currentStateName = "".obs;
+  RxInt currentStateId = 0.obs;
 
   RxString currentUID = "".obs;
 
@@ -177,6 +189,8 @@ class ProfileController extends GetxController {
       fetchSkills(),
       fetchGenders(),
       fetchHeights(),
+      fetchCountries(),
+      fetchStates(),
     ]);
   }
 
@@ -226,18 +240,45 @@ class ProfileController extends GetxController {
 
     if (isEmployer) {
       nameController.text = data.employer?.businessName ?? '';
-      currentSkillName.value = data.employer?.skill.name ?? '';
-      currentSkillId.value = data.employer?.skill.id ?? 0;
+      // currentSkillName.value = data.employer?.skill?.name ?? '';
+      // currentSkillId.value = data.employer?.skill?.id ?? 0;
+
+      if (data.employer?.skills != null && data.employer!.skills.isNotEmpty) {
+        // safe: map over non-nullable list
+        selectedSkills.assignAll(data.employer!.skills.map((s) => s.name));
+        currentSkillId.value =
+            data.employer!.skills.first.id; // keep first for API if needed
+
+        log("SELECTED SKILLS: $selectedSkills");
+      } else {
+        selectedSkills.clear();
+        currentSkillId.value = 0;
+      }
+
+      currentCountryName.value = data.employer?.country?.name ?? '';
+      currentCountryId.value = data.employer?.country?.id ?? 0;
+
+      log(
+        'COUNTRY NAME: ${currentCountryName.value} --- COUNTRY ID: ${currentCountryId.value}',
+      );
+
+      currentStateName.value = data.employer?.state?.name ?? '';
+      currentStateId.value = data.employer?.state?.id ?? 0;
+
+      log(
+        'STATE NAME: ${currentCountryName.value} --- STATE ID: ${currentCountryId.value}',
+      );
+
       userProfileImage.value = data.profileImage ?? '';
       userCoverImage.value = data.coverPhoto ?? '';
-      countryController.text = data.employer?.country ?? '';
-      stateController.text = data.employer?.state ?? '';
+      countryController.text = data.employer?.country?.name ?? '';
+      stateController.text = data.employer?.state?.name ?? '';
       cityController.text = data.employer?.city ?? '';
     } else {
       // Employee details
       nameController.text = data.employee?.name ?? '';
-      countryController.text = data.employee?.country ?? '';
-      stateController.text = data.employee?.state ?? '';
+      countryController.text = data.employee?.country?.name ?? '';
+      stateController.text = data.employee?.state?.name ?? '';
       cityController.text = data.employee?.city ?? '';
 
       currentEyeColorName.value = data.employee?.eyeColor?.name ?? '';
@@ -250,8 +291,35 @@ class ProfileController extends GetxController {
       currentGender.value = (data.employee?.gender ?? '');
       currentHeight.value = data.employee?.height ?? 0;
 
-      currentSkillName.value = data.employee?.skill.name ?? '';
-      currentSkillId.value = data.employee?.skill.id ?? 0;
+      // Employee skills (multi-select)
+      if (data.employee?.skills != null && data.employee!.skills.isNotEmpty) {
+        // safe: map over non-nullable list
+        selectedSkills.assignAll(data.employee!.skills.map((s) => s.name));
+        currentSkillId.value =
+            data.employee!.skills.first.id; // keep first for API if needed
+
+        log("SELECTED SKILLS: $selectedSkills");
+      } else {
+        selectedSkills.clear();
+        currentSkillId.value = 0;
+      }
+
+      // currentSkillName.value = data.employee?.skill.name ?? '';
+      // currentSkillId.value = data.employee?.skill.id ?? 0;
+
+      currentCountryName.value = data.employee?.country?.name ?? '';
+      currentCountryId.value = data.employee?.country?.id ?? 0;
+
+      log(
+        'COUNTRY NAME: ${currentCountryName.value} --- COUNTRY ID: ${currentCountryId.value}',
+      );
+
+      currentStateName.value = data.employee?.state?.name ?? '';
+      currentStateId.value = data.employee?.state?.id ?? 0;
+
+      log(
+        'STATE NAME: ${currentCountryName.value} --- STATE ID: ${currentCountryId.value}',
+      );
 
       userProfileImage.value = data.profileImage ?? '';
       userCoverImage.value = data.coverPhoto ?? '';
@@ -273,10 +341,10 @@ class ProfileController extends GetxController {
           ? userProfile.value?.data.employer?.businessName ?? ''
           : userProfile.value?.data.employee?.name ?? '';
 
-  String get currentUserSkill =>
-      isEmployer
-          ? userProfile.value?.data.employer?.skill.name ?? ''
-          : userProfile.value?.data.employee?.skill.name ?? '';
+  // String get currentUserSkill =>
+  //     isEmployer
+  //         ? userProfile.value?.data.employer?.skill?.name ?? ''
+  //         : userProfile.value?.data.employee?.skill.name ?? '';
 
   // ---------------- Fetch Supporting Data ----------------
   Future<void> fetchEyeColors() async {
@@ -369,6 +437,45 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future<void> fetchCountries() async {
+    isLoading.value = true;
+
+    try {
+      print('Fetching Countries');
+      final response = await AuthProvider.getCountries();
+      if (response.status) {
+        countries.assignAll(response.data);
+      } else {
+        showError('Error', response.message);
+      }
+    } catch (e) {
+      log('Failed to countries');
+      showError('Error', 'Failed to countries');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchStates() async {
+    isLoading.value = true;
+
+    try {
+      print('Fetching States');
+      final response = await AuthProvider.getStates();
+      if (response.status) {
+        states.assignAll(response.data);
+      } else {
+        showError('Error', response.message);
+      }
+    } catch (e) {
+      log('Failed to States');
+
+      showError('Error', 'Failed to States');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // ---------------- UI Helpers ----------------
   void showError(String title, String message) {
     Utilities.showSnackBar(title: title, message: message, isSuccess: false);
@@ -411,7 +518,14 @@ class ProfileController extends GetxController {
             currentHairColorId.value == 0 ? null : currentHairColorId.value,
         gender: gender.isEmpty ? null : gender,
         height: currentHeight.value == 0 ? null : currentHeight.value,
-        skillId: currentSkillId.value == 0 ? null : currentSkillId.value,
+        skillIds:
+            selectedSkills
+                .map(
+                  (name) => skills.firstWhere((skill) => skill.name == name).id,
+                )
+                .toList(),
+
+        // skillId: currentSkillId.value == 0 ? null : currentSkillId.value,
       );
 
       if (!response.status) {
@@ -456,7 +570,7 @@ class ProfileController extends GetxController {
         Get.find<DashboardController>().loadUserData(),
         Get.find<DashboardController>().getUserLocationAndFetchDashboard(),
         Get.find<ChatController>().loadUserData(),
-        Get.find<JobController>().loadRoleAsync(),
+        Get.find<JobController>().loadRole(),
       ]);
 
       // ========== 5️⃣ SUCCESS UI ==========

@@ -1,14 +1,22 @@
+
+
+
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/presentation/auth/controllers/auth.controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-class SettingsScreen extends StatelessWidget {
+import 'controller/setting_controller.dart';
+
+
+
+class SettingsScreen extends GetView<SettingController> {
   const SettingsScreen({super.key});
 
   @override
@@ -17,49 +25,223 @@ class SettingsScreen extends StatelessWidget {
       backgroundColor: AppColors.black,
       appBar: customAppbar(
         context: context,
-        leadingTapFunction: () {
-          Get.back();
-        },
+        leadingTapFunction: () => Get.back(),
         title: "Settings",
         leadingIconPath: AppAssets.backIcon,
         showHexagon: false,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          spacing: 5.h,
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            /// NOTIFICATION SECTION
-            _notificationSection(),
 
-            /// DISPLAY SECTION
-            _displaySection(),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.orange),
+          );
+        }
 
-            /// ACCOUNT SECTION
-            _accountSection(),
+        return SingleChildScrollView(
+          child: Column(
+            spacing: 5.h,
+            children: [
+              _notificationSection(),
+              _displaySection(),
+              _accountSection(),
+              _aboutSection(),
 
-            /// ABOUT SECTION
-            _aboutSection(),
+              _buildButton(
+                context: context,
+                buttonText: "Delete Account",
+                textColor: AppColors.colorFF3B30,
+                onTap: () {},
+              ),
 
-            /// DELETE ACCOUNT OPTION
-            _buildButton(
-              context: context,
-              buttonText: "Delete Account",
-              onTap: () {},
-              textColor: AppColors.colorFF3B30,
-            ),
-            SizedBox(height: 10.h),
+              SizedBox(height: 10.h),
 
-            /// SIGN OUT OPTION
-            _buildButton(
-              context: context,
-              buttonText: "Sign Out",
-              onTap: () {},
-              textColor: AppColors.colorFFFFFF,
-            ),
-          ],
-        ).paddingSymmetric(horizontal: 15.w, vertical: 20.h),
+              _buildButton(
+                context: context,
+                buttonText: "Sign Out",
+                textColor: AppColors.colorFFFFFF,
+                onTap: () {
+                  Get.find<AuthController>().logout();
+                },
+              ),
+            ],
+          ).paddingSymmetric(horizontal: 15.w, vertical: 20.h),
+        );
+      }),
+    );
+  }
+
+  // ------------------------------
+  // SECTIONS
+  // ------------------------------
+
+  Widget _notificationSection() {
+    return Obx(() {
+      return Column(
+        spacing: 2.h,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            title: "Notifications",
+            fontSize: 19,
+            color: AppColors.colorFF8600,
+            fontWeight: FontWeight.w600,
+          ),
+
+          _buildSwitchTile(
+            tileText: "Receive Message",
+            currentValue: controller.receiveMessage.value,
+            onChanged: (val) {
+              controller.receiveMessage.value = val;
+              controller.updateSettings();
+            },
+          ),
+
+          _buildSwitchTile(
+            tileText: "Sound",
+            currentValue: controller.sound.value,
+            onChanged: (val) {
+              controller.sound.value = val;
+              controller.updateSettings();
+            },
+          ),
+
+          _buildSwitchTile(
+            tileText: "Vibrate",
+            currentValue: controller.vibrate.value,
+            onChanged: (val) {
+              controller.vibrate.value = val;
+              controller.updateSettings();
+            },
+          ),
+
+          _buildSwitchTile(
+            tileText: "Location",
+            currentValue: controller.location.value,
+            onChanged: (val) {
+              controller.location.value = val;
+              controller.updateSettings();
+            },
+          ),
+
+          Divider(color: AppColors.color262626),
+        ],
+      );
+    });
+  }
+
+  Widget _displaySection() {
+    return Obx(() {
+      return Column(
+        spacing: 2.h,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomText(
+            title: "Display",
+            fontSize: 19,
+            color: AppColors.colorFF8600,
+            fontWeight: FontWeight.w600,
+          ),
+
+          _buildSwitchTile(
+            tileText: "Show Distance",
+            currentValue: controller.showDistance.value,
+            onChanged: (val) {
+              controller.showDistance.value = val;
+              controller.updateSettings();
+            },
+          ),
+
+          Divider(color: AppColors.color262626),
+        ],
+      );
+    });
+  }
+
+  Widget _accountSection() {
+    return Column(
+      spacing: 2.h,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomText(
+          title: "Account",
+          fontSize: 19,
+          color: AppColors.colorFF8600,
+          fontWeight: FontWeight.w600,
+        ),
+        _buildAboutTile(
+          title: "Change Password",
+          onTap: () => Get.toNamed(Routes.CHANGE_PASSWORD),
+        ),
+        Divider(color: AppColors.color262626),
+      ],
+    );
+  }
+
+  Widget _aboutSection() {
+    return Column(
+      spacing: 2.h,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomText(
+          title: "About",
+          fontSize: 19,
+          color: AppColors.colorFF8600,
+          fontWeight: FontWeight.w600,
+        ),
+        _buildAboutTile(title: "Community Guidelines"),
+        _buildAboutTile(title: "Terms & Conditions"),
+        _buildAboutTile(title: "Feedback & Support"),
+        Divider(color: AppColors.color262626),
+      ],
+    );
+  }
+
+  // ------------------------------
+  // REUSABLE WIDGETS
+  // ------------------------------
+
+  Widget _buildSwitchTile({
+    required String tileText,
+    required bool currentValue,
+    required Function(bool) onChanged,
+  }) {
+    return Theme(
+      data: ThemeData(
+        visualDensity: VisualDensity.compact,
+        useMaterial3: false,
+      ),
+      child: SwitchListTile(
+        contentPadding: EdgeInsets.zero,
+        value: currentValue,
+        onChanged: onChanged,
+        activeColor: AppColors.colorFF8600,
+        title: CustomText(
+          title: tileText,
+          fontSize: 16,
+          color: AppColors.colorFFFFFF,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAboutTile({required String title, VoidCallback? onTap}) {
+    return ListTile(
+      dense: true,
+      onTap: onTap,
+      contentPadding: EdgeInsets.zero,
+      title: CustomText(
+        title: title,
+        fontSize: 16,
+        color: AppColors.colorFFFFFF,
+        fontWeight: FontWeight.w600,
+      ),
+      trailing: SvgPicture.asset(
+        AppAssets.arrowForwardIcon,
+        color: AppColors.colorFFFFFF,
+        height: 20.h,
+        width: 20.w,
       ),
     );
   }
@@ -82,131 +264,5 @@ class SettingsScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildAboutTile({required String title, VoidCallback? onTap}) {
-    return ListTile(
-      visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-      onTap: onTap,
-      contentPadding: EdgeInsets.zero,
-      title: CustomText(
-        title: title,
-        fontSize: 16,
-        color: AppColors.colorFFFFFF,
-        fontWeight: FontWeight.w600,
-      ),
-      trailing: SvgPicture.asset(
-        AppAssets.arrowForwardIcon,
-        color: AppColors.colorFFFFFF,
-        height: 20.h,
-        width: 20.w,
-        fit: BoxFit.cover,
-      ),
-    );
-  }
-
-  Theme _buildSwitchTile({required String tileText}) {
-    return Theme(
-      data: ThemeData(
-        useMaterial3: false,
-        switchTheme: SwitchThemeData(
-          thumbColor: MaterialStateProperty.all(Colors.white),
-          trackColor: MaterialStateProperty.all(Colors.grey),
-        ),
-      ),
-      child: SwitchListTile(
-        contentPadding: EdgeInsets.symmetric(),
-        value: true,
-        visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-        onChanged: (val) {},
-        title: CustomText(
-          title: tileText,
-          fontSize: 16,
-          color: AppColors.colorFFFFFF,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-    );
-  }
-
-  Widget _notificationSection() {
-    return Column(
-      spacing: 2.h,
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          title: "Notifications",
-          fontSize: 19,
-          color: AppColors.colorFF8600,
-          fontWeight: FontWeight.w600,
-        ),
-        _buildSwitchTile(tileText: "Receive Message"),
-        _buildSwitchTile(tileText: "Sound"),
-        _buildSwitchTile(tileText: "Vibrate"),
-        _buildSwitchTile(tileText: "Location"),
-        Divider(color: AppColors.color262626),
-      ],
-    );
-  }
-
-  Widget _displaySection() {
-    return Column(
-      spacing: 2.h,
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          title: "Display",
-          fontSize: 19,
-          color: AppColors.colorFF8600,
-          fontWeight: FontWeight.w600,
-        ),
-        _buildSwitchTile(tileText: "Show Distance"),
-        Divider(color: AppColors.color262626),
-      ],
-    );
-  }
-
-  Widget _accountSection() {
-    return Column(
-      spacing: 2.h,
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          title: "Account",
-          fontSize: 19,
-          color: AppColors.colorFF8600,
-          fontWeight: FontWeight.w600,
-        ),
-        // Change Password
-        _buildAboutTile(
-          title: "Change Password",
-          onTap: () => Get.toNamed(Routes.CHANGE_PASSWORD),
-        ),
-
-        Divider(color: AppColors.color262626),
-      ],
-    );
-  }
-
-  Widget _aboutSection() {
-    return Column(
-      spacing: 2.h,
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomText(
-          title: "About",
-          fontSize: 19,
-          color: AppColors.colorFF8600,
-          fontWeight: FontWeight.w600,
-        ),
-        _buildAboutTile(title: "Community Guidelines"),
-        _buildAboutTile(title: "Terms & Conditions"),
-        _buildAboutTile(title: "Feedback & Support"),
-        Divider(color: AppColors.color262626),
-      ],
-    );
-  }
 }
+

@@ -1,204 +1,337 @@
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
+import 'package:barbee_hive_app/data/model/experience_level_response.dart';
 import 'package:barbee_hive_app/data/model/job_list_response.dart';
-import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../../../data/api/job/job_api.dart';
 import '../../../../../../data/model/color_response.dart' as colorModel;
+import '../../../../../../data/model/country_response.dart';
+import '../../../../../../data/model/job_type_response.dart';
+import '../../../../../../data/model/salary_type_response.dart';
+import '../../../../../../data/model/state_response.dart';
+import '../../../../../../infrastructure/utils/utilities.dart';
+import '../../../controller/job_controller.dart';
 
 class JobUpdateController extends GetxController {
-  final TextEditingController jobRoleController = TextEditingController();
-  final TextEditingController experienceLevelController =
-      TextEditingController();
-  final TextEditingController salaryController = TextEditingController();
-  final TextEditingController countryController = TextEditingController();
-  final TextEditingController stateController = TextEditingController();
+  final TextEditingController minSalaryController = TextEditingController();
+  final TextEditingController maxSalaryController = TextEditingController();
+
   final TextEditingController cityController = TextEditingController();
   final TextEditingController recruiterController = TextEditingController();
   final TextEditingController jobDesController = TextEditingController();
 
+  // Loading & error
   final isLoading = false.obs;
+  final isSubmitting = false.obs;
   final errorMessage = ''.obs;
-  final RxString selectedSkill = ''.obs;
-  final RxString selectedJobType = ''.obs;
-  final Rx<File?> selectedImage = Rx<File?>(null);
-  final RxList<colorModel.Skill> skills = <colorModel.Skill>[].obs;
 
-  late JobData job; 
+  // Dropdown selections
+  final RxString selectedSkill = ''.obs;
+  final RxString selectedExperienceLevel = ''.obs;
+  final RxString selectedCountry = ''.obs;
+  final RxString selectedSalaryType = ''.obs;
+  final RxString selectedState = ''.obs;
+  final RxString selectedJobType = ''.obs;
+  final RxString imageUrl = ''.obs;
+
+  // Image
+  final Rx<File?> selectedImage = Rx<File?>(null);
+
+  // API Data
+  final RxList<colorModel.Skill> skills = <colorModel.Skill>[].obs;
+  final RxList<ExperienceLevel> experienceLevels = <ExperienceLevel>[].obs;
+  final RxList<Country> countries = <Country>[].obs;
+  final RxList<SalaryType> salaryTypes = <SalaryType>[].obs;
+  final RxList<JobType> jobTypes = <JobType>[].obs;
+  final RxList<StateModel> states = <StateModel>[].obs;
+
+  late JobListData job;
 
   @override
   void onInit() {
     super.onInit();
-    fetchSkills();
+    fetchAllDropdowns();
 
-    if (Get.arguments != null && Get.arguments is JobData) {
-      job = Get.arguments as JobData;
+    if (Get.arguments != null && Get.arguments is JobListData) {
+      job = Get.arguments as JobListData;
 
       /// Set controllers text with job data
-      jobRoleController.text = job.title;
-      experienceLevelController.text = job.experienceLevel;
-      salaryController.text = job.salaryRange.min;
-      countryController.text = job.country;
-      stateController.text = job.state;
+      // jobRoleController.text = job.title;
+      // experienceLevelController.text = job.experienceLevel;
+      minSalaryController.text = job.salaryRange.min;
+      maxSalaryController.text = job.salaryRange.max;
+      selectedCountry.value = job.country?.name ?? '';
+      selectedSalaryType.value = job.salaryRange.type.name;
+
+      selectedState.value = job.state?.name ?? '';
       cityController.text = job.city;
       recruiterController.text = job.recruiterName ?? "";
       jobDesController.text = job.description;
+      imageUrl.value = job.image ?? '';
+      selectedJobType.value = job.jobType.name;
 
-      selectedJobType.value = job.jobType;
-      selectedSkill.value = job.skills?.name ?? "";
+      selectedSkill.value = job.skills.name ?? "";
+      selectedExperienceLevel.value = job.experienceLevel ?? "";
     }
   }
 
   @override
   void onClose() {
-    jobRoleController.dispose();
-    experienceLevelController.dispose();
-    salaryController.dispose();
-    countryController.dispose();
-    stateController.dispose();
+    // jobRoleController.dispose();
+    // experienceLevelController.dispose();
+    minSalaryController.dispose();
+    maxSalaryController.dispose();
+    // countryController.dispose();
+    // stateController.dispose();
     cityController.dispose();
     recruiterController.dispose();
     jobDesController.dispose();
     super.onClose();
   }
 
-  void updateJobType(String? value) {
-    if (value != null) {
-      selectedJobType.value = value;
-    }
-  }
-
-  void updateSkill(String? value) {
-    if (value != null) {
-      selectedSkill.value = value;
-    }
-  }
-
-  void showErrorSnackbar(String title, String message) {
-    Get.snackbar(
-      title,
-      message,
-      backgroundColor: Colors.red,
-      colorText: Colors.white,
-    );
-  }
-
-  Future<void> showUpdateDialog(BuildContext context) async {
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return CustomDialog(
-          title: "Congratulations",
-          subTitle: "Your Job Application Has Been Updated",
-        );
-      },
-    );
+  Future<void> fetchAllDropdowns() async {
+    isLoading.value = true;
+    await Future.wait([
+      fetchSkills(),
+      fetchExperienceLevels(),
+      fetchCountries(),
+      fetchSalaryTypes(),
+      fetchStates(),
+      fetchJobTypes(),
+    ]);
+    isLoading.value = false;
   }
 
   Future<void> fetchSkills() async {
-    isLoading.value = true;
-
     try {
-      print('Fetching skills');
       final response = await AuthProvider.getSkills();
-      if (response.status) {
-        skills.assignAll(response.data);
-      } else {
-        debugPrint(response.message);
-        showErrorSnackbar('Error', 'Failed to fetch skills');
-      }
+      if (response.status) skills.assignAll(response.data);
+    } catch (_) {}
+  }
+
+  Future<void> fetchExperienceLevels() async {
+    try {
+      final response = await AuthProvider.getExperienceLevels();
+      if (response.status) experienceLevels.assignAll(response.data);
+    } catch (_) {}
+  }
+
+
+
+  Future<void> fetchSalaryTypes() async {
+    try {
+      final response = await AuthProvider.getSalaryTypes();
+      if (response.status) salaryTypes.assignAll(response.data);
+    } catch (_) {}
+  }
+
+  Future<void> fetchJobTypes() async {
+    try {
+      final response = await AuthProvider.getJobTypes();
+      if (response.status) jobTypes.assignAll(response.data);
+    } catch (_) {}
+  }
+
+  Future<void> fetchCountries() async {
+    try {
+      final response = await AuthProvider.getCountries();
+      if (response.status) countries.assignAll(response.data);
+    } catch (_) {}
+  }
+
+  Future<void> fetchStates() async {
+    try {
+      final response = await AuthProvider.getStates();
+      if (response.status) states.assignAll(response.data);
+    } catch (_) {}
+  }
+
+
+  Future<void> pickImage(BuildContext context) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+
+      final ImageSource? source = await showModalBottomSheet<ImageSource>(
+        context: context,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (ctx) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text("Camera"),
+                onTap: () => Navigator.pop(ctx, ImageSource.camera),
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text("Gallery"),
+                onTap: () => Navigator.pop(ctx, ImageSource.gallery),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (source == null) return;
+
+      final XFile? file = await picker.pickImage(
+        source: source,
+        imageQuality: 80,
+      );
+      if (file != null) selectedImage.value = File(file.path);
     } catch (e) {
-      print('Skills Error: $e');
-      debugPrint('Failed to fetch skills');
-      showErrorSnackbar('Error', 'Failed to fetch skills');
-    } finally {
-      isLoading.value = false;
+      Utilities.showSnackBar(
+        title: "Error",
+        message: "Image pick failed: $e",
+        isSuccess: false,
+      );
     }
   }
 
   Future<void> updateJob(BuildContext context) async {
-    if (jobRoleController.text.isEmpty ||
-        jobDesController.text.isEmpty ||
-        experienceLevelController.text.isEmpty ||
-        salaryController.text.isEmpty ||
-        selectedJobType.value.isEmpty ||
-        countryController.text.isEmpty ||
-        stateController.text.isEmpty ||
+    // Validate all fields
+    if (
+    // jobRoleController.text.isEmpty ||
+    jobDesController.text.isEmpty ||
+        // experienceLevelController.text.isEmpty ||
+        minSalaryController.text.isEmpty ||
+        maxSalaryController.text.isEmpty ||
+        selectedJobType.value == null ||
+        // countryController.text.isEmpty ||
+        // stateController.text.isEmpty ||
         cityController.text.isEmpty ||
         recruiterController.text.isEmpty ||
-        selectedSkill.value.isEmpty) {
-      Get.snackbar(
-        'Error',
-        'All fields are required',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+        selectedSkill.value == null) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'All fields are required',
+        isSuccess: false,
       );
       return;
     }
 
-    // if (selectedImage.value == null) {
-    //   Get.snackbar(
-    //     'Error',
-    //     'Please select an image',
-    //     backgroundColor: Colors.red,
-    //     colorText: Colors.white,
-    //   );
-    //   return;
-    // }
-    final userSkill = skills.firstWhere(
+    // Map selected skill to skill ID
+    final jobSkill = skills.firstWhere(
       (skill) => skill.name == selectedSkill.value,
-      orElse: () => throw Exception('Invalid eye color'),
+      orElse: () => throw Exception('Invalid skill selected'),
     );
 
+    final jobExperience = experienceLevels.firstWhere(
+      (exp) => exp.name == selectedExperienceLevel.value,
+      orElse: () => throw Exception('Invalid experience selected'),
+    );
+
+    final jobCountry = countries.firstWhere(
+      (count) => count.name == selectedCountry.value,
+      orElse: () => throw Exception('Invalid Country selected'),
+    );
+
+    final jobState = states.firstWhere(
+      (state) => state.name == selectedState.value,
+      orElse: () => throw Exception('Invalid State selected'),
+    );
+
+    final jobType = jobTypes.firstWhere(
+      (type) => type.name == selectedJobType.value,
+      orElse: () => throw Exception('Invalid State selected'),
+    );
+
+    final salaryType = salaryTypes.firstWhere(
+      (stype) => stype.name == selectedSalaryType.value,
+      orElse: () => throw Exception('Invalid Salary selected'),
+    );
+
+    // Start loading
     isLoading.value = true;
     errorMessage.value = '';
 
     try {
       final response = await JobApi.updateJob(
+        salaryType: salaryType.id,
         id: job.id,
-        title: jobRoleController.text,
-        description: jobDesController.text,
-        experienceLevel: experienceLevelController.text,
-        minSalary: salaryController.text,
-        maxSalary: salaryController.text,
-        jobType:
-            selectedJobType.value, // Assuming selectedJobType.value was a typo
-        country: countryController.text,
-        state: stateController.text,
+        skillId: jobSkill.id,
+        experienceLevel: jobExperience.id,
+        minSalary: minSalaryController.text,
+        maxSalary: maxSalaryController.text,
+        jobType: jobType.id,
+        country: jobCountry.id.toString(),
+        state: jobState.id.toString(),
         city: cityController.text,
         recruiterName: recruiterController.text,
-        //noOfDays: int.parse(noOfDaysController.text),
         noOfDays: 2,
-        image: selectedImage.value, // Pass selected image
-        skillId: userSkill.id,
+        // If you have a controller, replace this
+        image: selectedImage.value,
+        description: jobDesController.text,
       );
 
       if (response.status == true) {
-        print('Status is true, showing dialog');
-        await showUpdateDialog(context); // Wait for dialog to close
-        print('Dialog closed, navigating to SIGN_IN_VIEW');
-        Get.offAllNamed(Routes.CUSTOMDRAWER);
+        final controller = Get.find<JobController>();
+
+        controller.fetchEmployerJobs();
+
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder:
+              (_) => CustomDialog(
+                title: "Congratulations",
+                subTitle: "Your Job Application Has Been Updated",
+                onDone: () {
+                  Get.close(2);
+                },
+              ),
+        );
       } else {
         throw Exception(response.message);
       }
     } catch (e) {
-      print('Job Post Error: $e');
       errorMessage.value = e.toString().replaceFirst('Exception: ', '');
-      Get.snackbar(
-        'Error',
-        errorMessage.value,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: errorMessage.value,
+        isSuccess: false,
       );
     } finally {
       isLoading.value = false;
     }
   }
+
+  String get selectedImageName {
+    // If user picked a new image (File)
+    if (selectedImage.value != null) {
+      return selectedImage.value!.path.split('/').last;
+    }
+
+    // If job already has an image URL
+    if (job.image != null && job.image!.isNotEmpty) {
+      return job.image!.split('/').last;
+    }
+
+    return 'Upload Image';
+  }
+
+  // Update Dropdown Selections
+  void updateSkill(String? val) => selectedSkill.value = val ?? '';
+
+  void updateExperienceLevel(String? val) =>
+      selectedExperienceLevel.value = val ?? '';
+
+  void updateJobType(String? val) => selectedJobType.value = val ?? '';
+
+  void updateCountry(String? val) => selectedCountry.value = val ?? '';
+
+  void updateState(String? val) => selectedState.value = val ?? '';
+
+  void updateSalaryType(String? val) => selectedSalaryType.value = val ?? '';
 }
-  
- 
+
+

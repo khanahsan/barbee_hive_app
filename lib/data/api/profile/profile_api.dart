@@ -1,8 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
-
 import '../../model/user_profile_response.dart';
 import '../api_service.dart';
 import '../endpoint_constants.dart';
@@ -10,6 +8,7 @@ import '../endpoint_constants.dart';
 class ProfileApi {
   /// FETCH USER PROFILE DATA
   static Future<UserProfileResponse> getUserProfile(int userId) async {
+    log("USER ID: $userId");
     final data = await ApiService.get(
       '${ApiEndPoints.userProfile}/$userId',
       auth: true,
@@ -29,7 +28,7 @@ class ProfileApi {
     int? eyeColorId,
     int? hairColorId,
     int? height,
-    int? skillId,
+    List<int>? skillIds,
     File? resume,
     File? profileImage,
     File? coverImage,
@@ -45,8 +44,19 @@ class ProfileApi {
       if (eyeColorId != null) 'eye_color_id': '$eyeColorId',
       if (hairColorId != null) 'hair_color_id': '$hairColorId',
       if (height != null) 'height': '$height',
-      if (skillId != null) 'skill_id': '$skillId',
+      // if (skillId != null) 'skill_id': '$skillId',
     };
+
+    if (skillIds != null && skillIds.isNotEmpty) {
+      for (var i = 0; i < skillIds.length; i++) {
+        fields['skill_id[$i]'] = skillIds[i].toString();
+      }
+
+      // ✅ Print the skill IDs
+      log("Skills being sent: ${skillIds.join(', ')}");
+    } else {
+      log("No skills selected");
+    }
 
     log("RESUME PATH: ${resume?.path}");
     log("PROFILE IMAGE PATH: ${profileImage?.path}");

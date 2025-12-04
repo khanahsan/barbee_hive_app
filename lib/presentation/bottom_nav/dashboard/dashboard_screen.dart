@@ -24,6 +24,9 @@ class DashboardScreen extends GetView<DashboardController> {
     return Scaffold(
       appBar: customAppbar(
         showHexagon: true,
+        hexagonTapFunction: (){
+          Get.toNamed(Routes.PROFILE_SCREEN);
+        },
         profileImagePath: controller.userProfileImage.value,
         context: context,
         leadingTapFunction: () {

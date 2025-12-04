@@ -1,5 +1,6 @@
 import 'package:barbee_hive_app/data/model/job_list_response.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,7 +12,8 @@ import '../../../../../infrastructure/constants/app_images.dart';
 import '../../../../../infrastructure/navigation/routes.dart';
 
 class EmployeeCard extends StatefulWidget {
-  final JobData job;
+  final JobListData job;
+
   const EmployeeCard({required this.job, super.key});
 
   @override
@@ -59,13 +61,10 @@ class _EmployeeCardState extends State<EmployeeCard>
                     height: 80.h,
                   ),*/
                   HexagonAvatar(
-                    imagePath:
-                        widget.job.employer.profileImage ??
-                        '', // Pass empty string if null
-                    name:
-                        widget
-                            .job
-                            .recruiterName, // Pass recruiterName for fallback initial
+                    imagePath: widget.job.employer.profileImage ?? '',
+                    // Pass empty string if null
+                    name: widget.job.recruiterName,
+                    // Pass recruiterName for fallback initial
                     width: 70.w,
                     height: 80.h,
                   ),
@@ -98,18 +97,16 @@ class _EmployeeCardState extends State<EmployeeCard>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text(
-                      //   widget.job.skills?.map((skill) => skill.name).join(', ') ?? 'N/A',
-                      widget.job.skills?.name ?? 'N/A',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.colorFFFFFF,
-                      ),
-                      overflow: TextOverflow.ellipsis, // Truncate long text
-                      maxLines: 1, // Limit to one line
+                    child: CustomText(
+                      title: widget.job.skills.name,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.colorFFFFFF,
+                      textOverflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ),
+
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: 10.w,
@@ -120,7 +117,7 @@ class _EmployeeCardState extends State<EmployeeCard>
                       borderRadius: BorderRadius.circular(5.r),
                     ),
                     child: Text(
-                      widget.job.jobType,
+                      widget.job.jobType.name,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
@@ -171,11 +168,15 @@ class _EmployeeCardState extends State<EmployeeCard>
                 ),
               CustomButton(
                 buttonHeight: 60.h,
-                buttonText: isExpanded ? "Apply Now" : "View Detail",
+                buttonText: widget.job.isApplied == 1
+                    ? "Applied"
+                    : (isExpanded ? "Apply Now" : "View Detail"),
                 buttonWidth: double.infinity,
                 buttonColor: AppColors.color101010,
                 borderColor: AppColors.colorFF8600,
-                onTap: () {
+                onTap: widget.job.isApplied == 1
+                    ? null // disables the tap if already applied
+                    : () {
                   if (isExpanded) {
                     Get.toNamed(
                       Routes.APPLY_VIEW,
@@ -189,6 +190,7 @@ class _EmployeeCardState extends State<EmployeeCard>
                   }
                 },
               ),
+
             ],
           ),
         ),

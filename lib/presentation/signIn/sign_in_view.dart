@@ -12,10 +12,10 @@ import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/navigation/routes.dart';
 import '../../infrastructure/widgets/app_text_field.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
-import '../auth/controllers/auth.controller.dart';
 import '../signUp/views/select_role_view.dart';
+import 'controller/sign_in_controller.dart';
 
-class SignInView extends GetView<AuthController> {
+class SignInView extends GetView<SignInController> {
   const SignInView({super.key});
 
   @override
@@ -142,7 +142,7 @@ class SignInView extends GetView<AuthController> {
                                 fit: BoxFit.scaleDown,
                                 color: AppColors.color4C4C4C,
                               ),
-                              controller: controller.nameController,
+                              controller: controller.emailController,
                             ),
 
                             /// PASSWORD FIELD

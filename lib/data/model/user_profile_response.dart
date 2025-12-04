@@ -11,9 +11,9 @@ class UserProfileResponse {
 
   factory UserProfileResponse.fromJson(Map<String, dynamic> json) {
     return UserProfileResponse(
-      status: json['status'],
-      message: json['message'],
-      data: UserProfileData.fromJson(json['data']),
+      status: json['status'] ?? false,
+      message: json['message'] ?? '',
+      data: UserProfileData.fromJson(json['data'] ?? {}),
     );
   }
 }
@@ -27,6 +27,7 @@ class UserProfileData {
   final bool isActive;
   final String? profileImage;
   final String? coverPhoto;
+  final Subscription? subscription;
   final String createdAt;
   final String updatedAt;
   final Employer? employer;
@@ -41,6 +42,7 @@ class UserProfileData {
     required this.isActive,
     this.profileImage,
     this.coverPhoto,
+    this.subscription,
     required this.createdAt,
     required this.updatedAt,
     this.employer,
@@ -48,84 +50,84 @@ class UserProfileData {
   });
 
   factory UserProfileData.fromJson(Map<String, dynamic> json) {
-    final role = json['role'];
-
+    final role = json['role'] ?? 0;
     return UserProfileData(
-      id: json['id'],
-      uid: json['uid'],
-      email: json['email'],
+      id: json['id'] ?? 0,
+      uid: json['uid'] ?? '',
+      email: json['email'] ?? '',
       role: role,
-      isVerified: json['is_verified'],
-      isActive: json['is_active'],
+      isVerified: json['is_verified'] ?? false,
+      isActive: json['is_active'] ?? false,
       profileImage: json['profile_image'],
       coverPhoto: json['cover_photo'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
-      employer: role == 2 ? Employer.fromJson(json['employer']) : null,
-      employee: role == 3 ? Employee.fromJson(json['employee']) : null,
+      subscription:
+          json['subscription'] != null
+              ? Subscription.fromJson(json['subscription'])
+              : null,
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
+      employer:
+          role == 2 && json['employer'] != null
+              ? Employer.fromJson(json['employer'])
+              : null,
+      employee:
+          role == 3 && json['employee'] != null
+              ? Employee.fromJson(json['employee'])
+              : null,
     );
   }
 }
 
-// class Employee {
-//   final String name;
-//   final String initials;
-//   final String experienceYears;
-//   final String country;
-//   final String state;
-//   final String city;
-//   final String dob;
-//   final String gender;
-//   final int height;
-//   final EyeColor eyeColor;
-//   final HairColor hairColor;
-//   final bool isAvailable;
-//   final Skill skill;
-//   final String? resumePath;
-//
-//   Employee({
-//     required this.name,
-//     required this.initials,
-//     required this.experienceYears,
-//     required this.country,
-//     required this.state,
-//     required this.city,
-//     required this.dob,
-//     required this.gender,
-//     required this.height,
-//     required this.eyeColor,
-//     required this.hairColor,
-//     required this.isAvailable,
-//     required this.skill,
-//     this.resumePath,
-//   });
-//
-//   factory Employee.fromJson(Map<String, dynamic> json) {
-//     return Employee(
-//       name: json['name'],
-//       initials: json['initials'],
-//       experienceYears: json['experience_years'],
-//       country: json['country'],
-//       state: json['state'],
-//       city: json['city'],
-//       dob: json['dob'],
-//       gender: json['gender'],
-//       height: json['height'],
-//       eyeColor: EyeColor.fromJson(json['eye_color']),
-//       hairColor: HairColor.fromJson(json['hair_color']),
-//       isAvailable: json['is_available'],
-//       skill: Skill.fromJson(json['skill']),
-//       resumePath: json['resume_path'],
-//     );
-//   }
-// }
+class Subscription {
+  final int id;
+  final int planId;
+  final String planName;
+  final String planType;
+  final String startDate;
+  final String endDate;
+  final String status;
+  final String paymentStatus;
+  final int amountPaid;
+  final bool isActive;
+  final bool isExpired;
+
+  Subscription({
+    required this.id,
+    required this.planId,
+    required this.planName,
+    required this.planType,
+    required this.startDate,
+    required this.endDate,
+    required this.status,
+    required this.paymentStatus,
+    required this.amountPaid,
+    required this.isActive,
+    required this.isExpired,
+  });
+
+  factory Subscription.fromJson(Map<String, dynamic> json) {
+    return Subscription(
+      id: json['id'] ?? 0,
+      planId: json['plan_id'] ?? 0,
+      planName: json['plan_name'] ?? '',
+      planType: json['plan_type'] ?? '',
+      startDate: json['start_date'] ?? '',
+      endDate: json['end_date'] ?? '',
+      status: json['status'] ?? '',
+      paymentStatus: json['payment_status'] ?? '',
+      amountPaid: json['amount_paid'] ?? 0,
+      isActive: json['is_active'] ?? false,
+      isExpired: json['is_expired'] ?? false,
+    );
+  }
+}
 
 class Employee {
   final String name;
   final String initials;
   final String? experienceYears;
-  final String country;
-  final String state;
+  final ProfileCountry? country;
+  final ProfileState? state;
   final String city;
   final String dob;
   final String? gender;
@@ -133,15 +135,15 @@ class Employee {
   final EyeColor? eyeColor;
   final HairColor? hairColor;
   final bool isAvailable;
-  final Skill skill;
+  final List<Skill> skills;
   final String? resumePath;
 
   Employee({
     required this.name,
     required this.initials,
     this.experienceYears,
-    required this.country,
-    required this.state,
+    this.country,
+    this.state,
     required this.city,
     required this.dob,
     this.gender,
@@ -149,19 +151,23 @@ class Employee {
     this.eyeColor,
     this.hairColor,
     required this.isAvailable,
-    required this.skill,
+    required this.skills,
     this.resumePath,
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) {
     return Employee(
-      name: json['name'],
-      initials: json['initials'],
-      experienceYears: json['experience_years'] ?? '0',
-      country: json['country'],
-      state: json['state'],
-      city: json['city'],
-      dob: json['dob'],
+      name: json['name'] ?? '',
+      initials: json['initials'] ?? '',
+      experienceYears: json['experience_years']?.toString(),
+      country:
+          json['country'] != null
+              ? ProfileCountry.fromJson(json['country'])
+              : null,
+      state:
+          json['state'] != null ? ProfileState.fromJson(json['state']) : null,
+      city: json['city'] ?? '',
+      dob: json['dob'] ?? '',
       gender: json['gender'],
       height: json['height'],
       eyeColor:
@@ -172,8 +178,11 @@ class Employee {
           json['hair_color'] != null
               ? HairColor.fromJson(json['hair_color'])
               : null,
-      isAvailable: json['is_available'],
-      skill: Skill.fromJson(json['skill']),
+      isAvailable: json['is_available'] ?? false,
+      skills:
+          json['skills'] != null
+              ? List<Skill>.from(json['skills'].map((x) => Skill.fromJson(x)))
+              : [],
       resumePath: json['resume_path'],
     );
   }
@@ -182,28 +191,77 @@ class Employee {
 class Employer {
   final String businessName;
   final String initials;
-  final String country;
-  final String state;
-  final String city;
-  final Skill skill;
+  final ProfileCountry? country;
+  final ProfileState? state;
+  final String? city;
+  final List<Skill> skills;
 
   Employer({
     required this.businessName,
     required this.initials,
-    required this.country,
-    required this.state,
-    required this.city,
-    required this.skill,
+    this.country,
+    this.state,
+    this.city,
+    required this.skills,
   });
 
   factory Employer.fromJson(Map<String, dynamic> json) {
     return Employer(
-      businessName: json['business_name'],
-      initials: json['initials'],
-      country: json['country'],
-      state: json['state'],
+      businessName: json['business_name'] ?? '',
+      initials: json['initials'] ?? '',
+      country:
+          json['country'] != null
+              ? ProfileCountry.fromJson(json['country'])
+              : null,
+      state:
+          json['state'] != null ? ProfileState.fromJson(json['state']) : null,
       city: json['city'],
-      skill: Skill.fromJson(json['skill']),
+      skills:
+      json['skills'] != null
+          ? List<Skill>.from(json['skills'].map((x) => Skill.fromJson(x)))
+          : [],
+    );
+  }
+}
+
+class ProfileCountry {
+  final int id;
+  final String name;
+  final String code;
+
+  ProfileCountry({required this.id, required this.name, required this.code});
+
+  factory ProfileCountry.fromJson(Map<String, dynamic> json) {
+    return ProfileCountry(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      code: json['code'] ?? '',
+    );
+  }
+}
+
+class ProfileState {
+  final int id;
+  final int? countryId;
+  final String name;
+  final String code;
+  final String? status;
+
+  ProfileState({
+    required this.id,
+    this.countryId,
+    required this.name,
+    required this.code,
+    this.status,
+  });
+
+  factory ProfileState.fromJson(Map<String, dynamic> json) {
+    return ProfileState(
+      id: json['id'] ?? 0,
+      countryId: json['country_id'],
+      name: json['name'] ?? '',
+      code: json['code'] ?? '',
+      status: json['status'],
     );
   }
 }
@@ -237,6 +295,6 @@ class Skill {
   Skill({required this.id, required this.name});
 
   factory Skill.fromJson(Map<String, dynamic> json) {
-    return Skill(id: json['id'], name: json['name']);
+    return Skill(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }

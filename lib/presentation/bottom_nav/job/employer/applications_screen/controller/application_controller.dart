@@ -17,8 +17,8 @@ class ApplicationsController extends GetxController {
   final searchController = TextEditingController();
 
 
-  final applications = <JobApplicationData>[].obs;
-  final filteredApplications = <JobApplicationData>[].obs;
+  final applications = <JobApplyData>[].obs;
+  final filteredApplications = <JobApplyData>[].obs;
   final isLoading = false.obs;
   final errorMessage = ''.obs;
 
@@ -133,7 +133,7 @@ class ApplicationsController extends GetxController {
   }
 
   // Apply filters from dialog
-  List<JobApplicationData> applyDialogFilters(List<JobApplicationData> inputList) {
+  List<JobApplyData> applyDialogFilters(List<JobApplyData> inputList) {
     var filtered = inputList;
 
     // Filter by selected skill (position)

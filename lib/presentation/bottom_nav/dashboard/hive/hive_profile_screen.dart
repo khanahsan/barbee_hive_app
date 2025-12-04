@@ -4,7 +4,6 @@ import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/hive_profile_controller.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -50,7 +49,9 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
               height: 300.h,
               width: double.infinity,
               child: Image.network(
-                currentUser.profileImage ?? AppAssets.nullProfile,
+                currentUser.coverPhoto ??
+                    currentUser.profileImage ??
+                    AppAssets.nullProfile,
                 fit: BoxFit.cover,
               ),
             ),
@@ -108,7 +109,7 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
                           /// USER EXPERIENCE
                           _infoRow(
                             "Experience",
-                            currentUser.employee?.skill?.name ?? "",
+                            currentUser.employee?.skills.first.name ?? "",
                           ),
 
                           /// USER GENDER

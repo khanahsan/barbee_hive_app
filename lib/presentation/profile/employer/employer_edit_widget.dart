@@ -92,6 +92,7 @@ import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/widgets/app_text_field.dart';
 import '../../../infrastructure/widgets/custom_dropdown.dart';
+import '../../../infrastructure/widgets/custom_multi_select_dropdown.dart';
 
 class EmployerEditWidget extends GetView<ProfileController> {
   const EmployerEditWidget({super.key});
@@ -123,113 +124,160 @@ class EmployerEditWidget extends GetView<ProfileController> {
             ),
 
             /// PASSWORD FIELD
-            Obx(
-                  () =>
-                  AppTextField(
-                    fontSize: 16,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 10.h,
-                      horizontal: 16.w,
-                    ),
-                    validator: (value) {
-                      if (value != null && value.isNotEmpty) {
-                        return FormValidators.validatePassword(value);
-                      }
-                      return null;
-                    },
-                    // fontColor: AppColors.color4C4C4C,
-                    controller: controller.passController,
-                    filled: true,
-                    fillColor: AppColors.textFieldBackground,
-                    enabledBorderColor: Colors.transparent,
-                    hintText: "Password",
-                    isObscuredText: controller.passwordObscure.value,
-                    prefixIcon: SvgPicture.asset(
-                      AppAssets.lockIcon,
-                      fit: BoxFit.scaleDown,
-                      color: AppColors.color4C4C4C,
-                    ),
-                    suffixIcon: GestureDetector(
-                      onTap:
-                          () =>
-                      controller.passwordObscure.value =
-                      !controller.passwordObscure.value,
-                      child: Icon(
-                        controller.passwordObscure.value
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: AppColors.color4C4C4C,
-                      ),
-                    ),
-                  ),
-            ),
+            // Obx(
+            //   () => AppTextField(
+            //     fontSize: 16,
+            //     contentPadding: EdgeInsets.symmetric(
+            //       vertical: 10.h,
+            //       horizontal: 16.w,
+            //     ),
+            //     validator: (value) {
+            //       if (value != null && value.isNotEmpty) {
+            //         return FormValidators.validatePassword(value);
+            //       }
+            //       return null;
+            //     },
+            //     // fontColor: AppColors.color4C4C4C,
+            //     controller: controller.passController,
+            //     filled: true,
+            //     fillColor: AppColors.textFieldBackground,
+            //     enabledBorderColor: Colors.transparent,
+            //     hintText: "Password",
+            //     isObscuredText: controller.passwordObscure.value,
+            //     prefixIcon: SvgPicture.asset(
+            //       AppAssets.lockIcon,
+            //       fit: BoxFit.scaleDown,
+            //       color: AppColors.color4C4C4C,
+            //     ),
+            //     suffixIcon: GestureDetector(
+            //       onTap:
+            //           () =>
+            //               controller.passwordObscure.value =
+            //                   !controller.passwordObscure.value,
+            //       child: Icon(
+            //         controller.passwordObscure.value
+            //             ? Icons.visibility_off
+            //             : Icons.visibility,
+            //         color: AppColors.color4C4C4C,
+            //       ),
+            //     ),
+            //   ),
+            // ),
 
             /// CONFIRM PASSWORD FIELD
-            Obx(
-                  () =>
-                  AppTextField(
-                    fontSize: 16,
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 10.h,
-                      horizontal: 16.w,
-                    ),
-                    validator: (value) {
-                      if (controller.passController.text.isNotEmpty) {
-                        return FormValidators.validateConfirmPassword(
-                          value,
-                          controller.passController.text,
-                        );
-                      }
-                      return null;
-                    },
-                    // fontColor: AppColors.color4C4C4C,
-                    controller: controller.confirmPassController,
-                    filled: true,
-                    fillColor: AppColors.textFieldBackground,
-                    enabledBorderColor: Colors.transparent,
-                    hintText: "Confirm Password",
-                    isObscuredText: controller.confirmPasswordObscure.value,
-                    prefixIcon: SvgPicture.asset(
-                      AppAssets.lockIcon,
-                      fit: BoxFit.scaleDown,
-                      color: AppColors.color4C4C4C,
-                    ),
-                    suffixIcon: GestureDetector(
-                      onTap:
-                          () =>
-                      controller.confirmPasswordObscure.value =
-                      !controller.confirmPasswordObscure.value,
-                      child: Icon(
-                        controller.confirmPasswordObscure.value
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: AppColors.color4C4C4C,
-                      ),
-                    ),
-                  ),
-            ),
+            // Obx(
+            //   () => AppTextField(
+            //     fontSize: 16,
+            //     contentPadding: EdgeInsets.symmetric(
+            //       vertical: 10.h,
+            //       horizontal: 16.w,
+            //     ),
+            //     validator: (value) {
+            //       if (controller.passController.text.isNotEmpty) {
+            //         return FormValidators.validateConfirmPassword(
+            //           value,
+            //           controller.passController.text,
+            //         );
+            //       }
+            //       return null;
+            //     },
+            //     // fontColor: AppColors.color4C4C4C,
+            //     controller: controller.confirmPassController,
+            //     filled: true,
+            //     fillColor: AppColors.textFieldBackground,
+            //     enabledBorderColor: Colors.transparent,
+            //     hintText: "Confirm Password",
+            //     isObscuredText: controller.confirmPasswordObscure.value,
+            //     prefixIcon: SvgPicture.asset(
+            //       AppAssets.lockIcon,
+            //       fit: BoxFit.scaleDown,
+            //       color: AppColors.color4C4C4C,
+            //     ),
+            //     suffixIcon: GestureDetector(
+            //       onTap:
+            //           () =>
+            //               controller.confirmPasswordObscure.value =
+            //                   !controller.confirmPasswordObscure.value,
+            //       child: Icon(
+            //         controller.confirmPasswordObscure.value
+            //             ? Icons.visibility_off
+            //             : Icons.visibility,
+            //         color: AppColors.color4C4C4C,
+            //       ),
+            //     ),
+            //   ),
+            // ),
 
             /// COUNTRY FIELD
-            _buildCustomTextField(
-              hintText: 'Country',
-              controller: controller.countryController,
-              prefixIconPath: AppAssets.countryIcon,
-              validator: (v) => FormValidators.validateRequired(v, 'Country'),
+            CustomDropdown(
+              validator:
+                  (value) => FormValidators.validateRequired(value, "Country"),
+              hint: "Country",
+              iconPath: AppAssets.countryIcon,
+              selectedValue: controller.currentCountryName,
+              items:
+              controller.countries
+                  .map(
+                    (e) => DropdownMenuItem<String>(
+                  value: e.name,
+                  child: Text(e.name),
+                ),
+              )
+                  .toList(),
+              onChanged: (val) {
+                controller.currentCountryName.value = val ?? '';
+                final selected = controller.countries.firstWhereOrNull(
+                      (e) => e.name == val,
+                );
+                controller.currentCountryId.value = selected?.id ?? 0;
+              },
             ),
+            // _buildCustomTextField(
+            //   hintText: 'Country',
+            //   controller: controller.countryController,
+            //   prefixIconPath: AppAssets.countryIcon,
+            //   validator: (v) => FormValidators.validateRequired(v, 'Country'),
+            // ),
 
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 15.w,
               children: [
                 Expanded(
-                  child: _buildCustomTextField(
-                    hintText: 'State',
-                    controller: controller.stateController,
-                    prefixIconPath: AppAssets.stateIcon,
+                  child: CustomDropdown(
                     validator:
-                        (v) => FormValidators.validateRequired(v, 'State'),
+                        (value) =>
+                        FormValidators.validateRequired(value, "State"),
+                    hint: "State",
+                    iconPath: AppAssets.stateIcon,
+                    selectedValue: controller.currentStateName,
+                    items:
+                    controller.states
+                        .map(
+                          (e) => DropdownMenuItem<String>(
+                        value: e.name,
+                        child: Text(e.name),
+                      ),
+                    )
+                        .toList(),
+                    onChanged: (val) {
+                      controller.currentStateName.value = val ?? '';
+                      final selected = controller.states.firstWhereOrNull(
+                            (e) => e.name == val,
+                      );
+                      controller.currentStateId.value = selected?.id ?? 0;
+                    },
                   ),
                 ),
+                // Expanded(
+                //   child: _buildCustomTextField(
+                //     hintText: 'State',
+                //     controller: controller.stateController,
+                //     prefixIconPath: AppAssets.stateIcon,
+                //     validator:
+                //         (v) => FormValidators.validateRequired(v, 'State'),
+                //   ),
+                // ),
                 Expanded(
                   child: _buildCustomTextField(
                     hintText: 'City',
@@ -243,30 +291,46 @@ class EmployerEditWidget extends GetView<ProfileController> {
             ),
 
             /// EXPERIENCE FIELD
-            Obx(
-              () => CustomDropdown(
-                validator: (value) => FormValidators.validateRequired(value, "Position Seeking"),
-                hint: "Position Seeking",
-                iconPath: AppAssets.cardIcon,
-                selectedValue: controller.currentSkillName,
-                items:
-                    controller.skills
-                        .map(
-                          (skill) => DropdownMenuItem<String>(
-                            value: skill.name,
-                            child: Text(skill.name),
-                          ),
-                        )
-                        .toList(),
-                onChanged: (val) {
-                  controller.currentSkillName.value = val ?? '';
-                  final selected = controller.skills.firstWhereOrNull(
-                        (e) => e.name == val,
-                  );
-                  controller.currentSkillId.value = selected?.id ?? 0;
-                },
-              ),
+            CustomMultiSelectDropdown(
+              hint: "Position Seeking",
+              iconPath: AppAssets.cardIcon,
+              selectedValues: controller.selectedSkills,
+              items: controller.skills.map((s) => s.name).toList(),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Position Seeking required";
+                }
+                return null;
+              },
             ),
+            // Obx(
+            //   () => CustomDropdown(
+            //     validator:
+            //         (value) => FormValidators.validateRequired(
+            //           value,
+            //           "Position Seeking",
+            //         ),
+            //     hint: "Position Seeking",
+            //     iconPath: AppAssets.cardIcon,
+            //     selectedValue: controller.currentSkillName,
+            //     items:
+            //         controller.skills
+            //             .map(
+            //               (skill) => DropdownMenuItem<String>(
+            //                 value: skill.name,
+            //                 child: Text(skill.name),
+            //               ),
+            //             )
+            //             .toList(),
+            //     onChanged: (val) {
+            //       controller.currentSkillName.value = val ?? '';
+            //       final selected = controller.skills.firstWhereOrNull(
+            //         (e) => e.name == val,
+            //       );
+            //       controller.currentSkillId.value = selected?.id ?? 0;
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),

@@ -5,20 +5,20 @@ import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/controller/application_controller.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
+import '../../../../../infrastructure/widgets/custom_profile_image.dart';
+
 class ApplicationsScreen extends GetView<ApplicationsController> {
   final int jobId;
 
-  ApplicationsScreen({required this.jobId, super.key});
+  const ApplicationsScreen({required this.jobId, super.key});
 
-  // final ChatController chatController = Get.put(ChatController());
 
   @override
   Widget build(BuildContext context) {
@@ -290,7 +290,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
 
   Widget _applicationsCard({
     required BuildContext context,
-    required JobApplicationData application,
+    required JobApplyData application,
   }) {
     print('Rendering card for: ${application.applicant.email}');
     print('Application details: $application');
@@ -306,38 +306,51 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
+            spacing: 15.w,
             mainAxisSize: MainAxisSize.min,
             children: [
-              HexagonAvatar(
+              CustomProfileImage(
                 imagePath:
                     application.applicant.profileImage ??
                     AppAssets.profileImage,
-                width: 80.w,
-                height: 90.h,
+                width: 100.w,
+                height: 110.h,
+                borderColor: AppColors.colorFF8600,
+                isEditMode: false,
+                // set to true if you want edit functionality
+                wholeAvatarClickable: false,
+                testIcon: '',
+                // optional, if you want to show an icon when no image
+                text:
+                    application.applicant.name != null
+                        ? application.applicant.name![0].toUpperCase()
+                        : '', // initial
               ),
-              SizedBox(width: 15.w),
+
               Column(
+                spacing: 5.h,
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    application.applicant.name ?? application.applicant.email,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 22.sp,
-                      color: AppColors.colorFFFFFF,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  CustomText(
+                    title:
+                        application.applicant.name ??
+                        application.applicant.email,
+                    fontSize: 20,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w800,
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: 5.w,
-                      vertical: 2.h,
+                      vertical: 3.h,
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4.r),
                       border: Border.all(color: AppColors.colorE0E0E0),
                     ),
                     child: Row(
+                      spacing: 3.w,
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -347,16 +360,13 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                           width: 15.w,
                           fit: BoxFit.cover,
                         ),
-                        SizedBox(width: 2.w),
-                        Text(
-                          application.applicant.country ?? 'Unknown',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium?.copyWith(
-                            fontSize: 10.sp,
-                            color: AppColors.colorFFFFFF,
-                            fontWeight: FontWeight.w800,
-                          ),
+                        CustomText(
+                          title:
+                              application.applicant.country?.name ?? 'Unknown',
+
+                          fontSize: 10,
+                          color: AppColors.colorFFFFFF,
+                          fontWeight: FontWeight.w800,
                         ),
                       ],
                     ),
@@ -367,94 +377,81 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
           ),
           SizedBox(height: 12.h),
           Row(
+            spacing: 15.w,
             mainAxisSize: MainAxisSize.min,
             children: [
               Column(
+                spacing: 10.h,
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    'Job Role',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 13.sp,
-                      color: AppColors.colorFFFFFF,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  CustomText(
+                    title: 'Job Role',
+                    fontSize: 14,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w800,
                   ),
-                  SizedBox(height: 10.h),
-                  Text(
-                    'Years of Experience',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 13.sp,
-                      color: AppColors.colorFFFFFF,
-                      fontWeight: FontWeight.w800,
-                    ),
+
+                  CustomText(
+                    title: 'Years of Experience',
+                    fontSize: 14,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w800,
                   ),
-                  SizedBox(height: 10.h),
-                  Text(
-                    'Expected Salary',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 13.sp,
-                      color: AppColors.colorFFFFFF,
-                      fontWeight: FontWeight.w800,
-                    ),
+
+                  CustomText(
+                    title: 'Expected Salary',
+                    fontSize: 14,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w800,
                   ),
-                  SizedBox(height: 10.h),
-                  Text(
-                    'Experience Level',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 13.sp,
-                      color: AppColors.colorFFFFFF,
-                      fontWeight: FontWeight.w800,
-                    ),
+
+                  CustomText(
+                    title: 'Experience Level',
+                    fontSize: 14,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w800,
                   ),
                 ],
               ),
-              SizedBox(width: 15.w),
+
               Column(
+                spacing: 10.h,
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    application.applicant.skills!.name,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 13.sp,
-                      color: AppColors.colorFFFFFF,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  CustomText(
+                    title: application.applicant.skills!.name,
+                    fontSize: 14,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w800,
                   ),
-                  SizedBox(height: 10.h),
-                  Text(
-                    '${application.yearsOfExperience} Years',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 13.sp,
-                      color: AppColors.colorFFFFFF,
-                      fontWeight: FontWeight.w800,
-                    ),
+
+                  CustomText(
+                    title: '${application.yearsOfExperience} Years',
+                    fontSize: 14,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w800,
                   ),
-                  SizedBox(height: 10.h),
-                  Text(
-                    '\$${application.expectedSalary}',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 13.sp,
-                      color: AppColors.colorFFFFFF,
-                      fontWeight: FontWeight.w800,
-                    ),
+
+                  CustomText(
+                    title: '\$${application.expectedSalary}',
+                    fontSize: 14,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w800,
                   ),
-                  SizedBox(height: 10.h),
-                  Text(
-                    application.experienceLevel,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontSize: 13.sp,
-                      color: AppColors.colorFFFFFF,
-                      fontWeight: FontWeight.w800,
-                    ),
+
+                  CustomText(
+                    title: application.experienceLevel.name,
+                    fontSize: 14,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w800,
                   ),
                 ],
               ),
             ],
           ),
-          SizedBox(height: 12.h),
+          SizedBox(height: 20.h),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -466,17 +463,16 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                   borderColor: AppColors.colorFF8600,
                   buttonTextSize: 15.sp,
                   buttonHeight: 55.h,
+                  onTap: () => Get.toNamed(
+                    Routes.applicantProfile,
+                    arguments: {'applicationData': application},
+                  ),
 
-                  /*onTap: () {
-                    print('View Profile: ${application.applicant.id}');
-                    // Get.toNamed('/profile/${application.applicant.id}');
-
-                  },*/
-                  onTap:
-                      () => Get.toNamed(
-                        Routes.applicantProfile,
-                        arguments: {'userId': application.applicant.id},
-                      ),
+                  // onTap:
+                  //     () => Get.toNamed(
+                  //       Routes.applicantProfile,
+                  //       arguments: {'userId': application.applicant.id},
+                  //     ),
                 ),
               ),
               SizedBox(width: 8.w),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -21,15 +23,16 @@ class ChangePasswordController extends GetxController {
       final result = await AuthApi.changePassword(
         currentPass: currentPassController.text.trim(),
         newPass: newPassController.text.trim(),
+        confirmPass: confirmPassController.text.trim(),
       );
 
       if (result['status'] == true) {
+        Get.back<void>();
         Utilities.showSnackBar(
           title: "Success",
           message: result['message'],
           isSuccess: true,
         );
-        Get.back<void>();
       } else {
         Utilities.showSnackBar(
           title: "Failed",

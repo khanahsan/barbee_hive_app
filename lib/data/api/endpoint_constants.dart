@@ -6,6 +6,8 @@ class ApiEndPoints {
   static const String forgotPassword = 'forgot-password';
   static const String changePassword = 'change-password';
   static const String dashboardUsers = 'dashboard/nearest-users';
+
+  /// COMMON
   static const String eyeColors = 'dashboard/eye-colors';
   static const String hairColors = 'dashboard/hair-colors';
   static const String getSkills = 'dashboard/skills';
@@ -13,6 +15,10 @@ class ApiEndPoints {
   static const String getJobTypes = 'dashboard/job-types';
   static const String getGenders = 'dashboard/genders';
   static const String getHeights = 'dashboard/heights';
+  static const String getCountries = 'dashboard/countries';
+  static const String getStates = 'dashboard/states';
+  static const String getSalaryTypes = 'dashboard/salary-types';
+
   static const String registerEmployee = 'register';
   static const String userProfile = 'profiles';
   static const String jobStore = 'jobs/store';
@@ -22,7 +28,10 @@ class ApiEndPoints {
   static const String appliedJobs = 'jobs/applied';
   static const String applyJob = 'jobs/applications/store';
   static const String jobApplications = 'jobs/applications/show';
-  static const String setting = 'setting';
+
+  /// SETTINGS
+  static const String setting = 'settings';
+  static const String updateSettings = 'settings/update';
 
   /// SUBSCRIPTION
   static const String subscriptionPlans = 'subscription/plans';

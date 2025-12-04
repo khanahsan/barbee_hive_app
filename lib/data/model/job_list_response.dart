@@ -1,52 +1,48 @@
+
+
 class JobListResponse {
   final bool status;
   final String message;
-  final List<JobData> data;
-  final Meta meta;
+  final List<JobListData> data;
 
   JobListResponse({
     required this.status,
     required this.message,
     required this.data,
-    required this.meta,
   });
 
   factory JobListResponse.fromJson(Map<String, dynamic> json) {
     return JobListResponse(
       status: json['status'] ?? false,
-      message: json['message'] ?? '',
+      message: json['message'] ?? "",
       data:
-          (json['data'] as List<dynamic>?)
-              ?.map((item) => JobData.fromJson(item))
-              .toList() ??
-          [],
-      meta: Meta.fromJson(json['meta']),
+          (json['data'] as List<dynamic>)
+              .map((e) => JobListData.fromJson(e))
+              .toList(),
     );
   }
 }
 
-class JobData {
+class JobListData {
   final int id;
   final String title;
   final String description;
   final String experienceLevel;
-  final SalaryRange salaryRange;
-  final String jobType;
-  final String country;
-  final String state;
+  final JobListSalaryRange salaryRange;
+  final JobListJobType jobType;
+  final JobListCountry? country;
+  final JobListState? state;
   final String city;
   final String recruiterName;
   final String? image;
   final bool isActive;
   final String expiresAt;
   final int remainingHours;
-  final Employer employer;
-  final String createdAt;
-  final String updatedAt;
-  final Skill? skills;
-  //final List<Skill>? skills;
+  final JobListEmployer employer;
+  final JobListSkills skills;
+  final int isApplied;
 
-  JobData({
+  JobListData({
     required this.id,
     required this.title,
     required this.description,
@@ -57,129 +53,188 @@ class JobData {
     required this.state,
     required this.city,
     required this.recruiterName,
-    this.image,
+    required this.image,
     required this.isActive,
     required this.expiresAt,
     required this.remainingHours,
     required this.employer,
-    required this.createdAt,
-    required this.updatedAt,
-    this.skills,
+    required this.skills,
+    required this.isApplied,
   });
 
-  factory JobData.fromJson(Map<String, dynamic> json) {
-    return JobData(
-      id: json['id'] ?? 0,
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      experienceLevel: json['experience_level'] ?? '',
-      salaryRange: SalaryRange.fromJson(json['salary_range']),
-      jobType: json['job_type'] ?? '',
-      country: json['country'] ?? '',
-      state: json['state'] ?? '',
-      city: json['city'] ?? '',
-      recruiterName: json['recruiter_name'] ?? '',
+  factory JobListData.fromJson(Map<String, dynamic> json) {
+    return JobListData(
+      id: json['id'],
+      title: json['title'] ?? "",
+      description: json['description'] ?? "",
+      experienceLevel: json['experience_level'] ?? "",
+      salaryRange: JobListSalaryRange.fromJson(json['salary_range']),
+      jobType: JobListJobType.fromJson(json['job_type']),
+      country:
+          json['country'] != null
+              ? JobListCountry.fromJson(json['country'])
+              : null,
+      state:
+          json['state'] != null ? JobListState.fromJson(json['state']) : null,
+      city: json['city'] ?? "",
+      recruiterName: json['recruiter_name'] ?? "",
       image: json['image'],
       isActive: json['is_active'] ?? false,
-      expiresAt: json['expires_at'] ?? '',
+      expiresAt: json['expires_at'] ?? "",
       remainingHours: json['remaining_hours'] ?? 0,
-      employer: Employer.fromJson(json['employer']),
-      createdAt: json['created_at'] ?? '',
-      updatedAt: json['updated_at'] ?? '',
-      skills:
-          json['skills'] != null ? Skill.fromJson(json['skills']) : null, // ✅
-      // skills:
-      //     (json['skills'] as List<dynamic>?)
-      //         ?.map((item) => Skill.fromJson(item))
-      //         .toList(),
+      employer: JobListEmployer.fromJson(json['employer']),
+      skills: JobListSkills.fromJson(json['skills']),
+      isApplied: json['is_applied'] ?? 0,
     );
   }
 }
 
-class SalaryRange {
+class JobListSalaryRange {
   final String min;
   final String max;
+  final JobListSalaryType type;
 
-  SalaryRange({required this.min, required this.max});
+  JobListSalaryRange({
+    required this.min,
+    required this.max,
+    required this.type,
+  });
 
-  factory SalaryRange.fromJson(Map<String, dynamic> json) {
-    return SalaryRange(min: json['min'] ?? '0.00', max: json['max'] ?? '0.00');
+  factory JobListSalaryRange.fromJson(Map<String, dynamic> json) {
+    final typeData = json['type'];
+
+    return JobListSalaryRange(
+      min: json['min'] ?? "",
+      max: json['max'] ?? "",
+      type: JobListSalaryType.fromDynamic(typeData),
+    );
   }
 }
 
-class Employer {
+class JobListSalaryType {
+  final String id;
+  final String name;
+
+  JobListSalaryType({required this.id, required this.name});
+
+  factory JobListSalaryType.fromDynamic(dynamic data) {
+    // Case 1: employer response -> string
+    if (data is String) {
+      return JobListSalaryType(id: data, name: _capitalize(data));
+    }
+
+    // Case 2: employee response -> object
+    if (data is Map<String, dynamic>) {
+      return JobListSalaryType(id: data['id'] ?? "", name: data['name'] ?? "");
+    }
+
+    return JobListSalaryType(id: "", name: "");
+  }
+}
+
+/// helper
+String _capitalize(String s) {
+  if (s.isEmpty) return s;
+  return "${s[0].toUpperCase()}${s.substring(1)}";
+}
+
+class JobListJobType {
+  final String id;
+  final String name;
+
+  JobListJobType({required this.id, required this.name});
+
+  factory JobListJobType.fromJson(Map<String, dynamic> json) =>
+      JobListJobType(id: json['id'], name: json['name']);
+}
+
+class JobListCountry {
+  final int id;
+  final String name;
+  final String code;
+
+  JobListCountry({required this.id, required this.name, required this.code});
+
+  factory JobListCountry.fromJson(Map<String, dynamic> json) {
+    return JobListCountry(
+      id: json['id'],
+      name: json['name'] ?? "",
+      code: json['code'] ?? "",
+    );
+  }
+}
+
+class JobListState {
+  final int id;
+  final int countryId;
+  final String name;
+  final String code;
+
+  JobListState({
+    required this.id,
+    required this.countryId,
+    required this.name,
+    required this.code,
+  });
+
+  factory JobListState.fromJson(Map<String, dynamic> json) {
+    return JobListState(
+      id: json['id'],
+      countryId: json['country_id'],
+      name: json['name'] ?? "",
+      code: json['code'] ?? "",
+    );
+  }
+}
+
+class JobListEmployer {
   final int id;
   final String businessName;
   final String? businessType;
-  final String country;
-  final String state;
+  final JobListCountry country;
+  final JobListState state;
   final String city;
-  final String? profileImage;
+  final String profileImage;
 
-  Employer({
+  JobListEmployer({
     required this.id,
     required this.businessName,
-    this.businessType,
+    required this.businessType,
     required this.country,
     required this.state,
     required this.city,
-    this.profileImage,
+    required this.profileImage,
   });
 
-  factory Employer.fromJson(Map<String, dynamic> json) {
-    return Employer(
-      id: json['id'] ?? 0,
-      businessName: json['business_name'] ?? '',
+  factory JobListEmployer.fromJson(Map<String, dynamic> json) {
+    return JobListEmployer(
+      id: json['id'],
+      businessName: json['business_name'] ?? "",
       businessType: json['business_type'],
-      country: json['country'] ?? '',
-      state: json['state'] ?? '',
-      city: json['city'] ?? '',
-      profileImage: json['profile_image'],
+      country: JobListCountry.fromJson(json['country']),
+      state: JobListState.fromJson(json['state']),
+      city: json['city'] ?? "",
+      profileImage: json['profile_image'] ?? "",
     );
   }
 }
 
-class Skill {
+class JobListSkills {
   final int id;
   final String name;
   final int isRequired;
 
-  Skill({required this.id, required this.name, required this.isRequired});
-
-  factory Skill.fromJson(Map<String, dynamic> json) {
-    return Skill(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      isRequired: json['is_required'] ?? 0,
-    );
-  }
-}
-
-class Meta {
-  final int currentPage;
-  final int perPage;
-  final int total;
-  final int lastPage;
-  final int from;
-  final int to;
-
-  Meta({
-    required this.currentPage,
-    required this.perPage,
-    required this.total,
-    required this.lastPage,
-    required this.from,
-    required this.to,
+  JobListSkills({
+    required this.id,
+    required this.name,
+    required this.isRequired,
   });
 
-  factory Meta.fromJson(Map<String, dynamic> json) {
-    return Meta(
-      currentPage: json['current_page'] ?? 1,
-      perPage: json['per_page'] ?? 10000,
-      total: json['total'] ?? 0,
-      lastPage: json['last_page'] ?? 1,
-      from: json['from'] ?? 1,
-      to: json['to'] ?? 0,
+  factory JobListSkills.fromJson(Map<String, dynamic> json) {
+    return JobListSkills(
+      id: json['id'],
+      name: json['name'] ?? "",
+      isRequired: json['is_required'] ?? 0,
     );
   }
 }

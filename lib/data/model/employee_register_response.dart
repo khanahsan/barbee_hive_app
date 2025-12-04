@@ -38,44 +38,7 @@ class RegisterData {
   }
 }
 
-// class User {
-//   final int id;
-//   final String email;
-//   final int role;
-//   final bool? isVerified;
-//   final bool? isActive;
-//   final String createdAt;
-//   final String updatedAt;
-//   final Employee employee;
-//   final String? profileImage;
-//
-//   User({
-//     required this.id,
-//     required this.email,
-//     required this.role,
-//     this.isVerified,
-//     this.isActive,
-//     required this.createdAt,
-//     required this.updatedAt,
-//     required this.employee,
-//     required this.profileImage,
-//   });
-//
-//   factory User.fromJson(Map<String, dynamic> json) {
-//     return User(
-//       id: json['id'] ?? 0,
-//       email: json['email'] ?? '',
-//       role: json['role'] ?? 0,
-//       isVerified: json['is_verified'],
-//       isActive: json['is_active'],
-//       createdAt: json['created_at'] ?? '',
-//       updatedAt: json['updated_at'] ?? '',
-//       profileImage: json['profile_image'],
-//       employee: Employee.fromJson(json['employee'] ?? {}
-//       ),
-//     );
-//   }
-// }
+
 
 
 class User {
@@ -126,9 +89,9 @@ class User {
 class Employee {
   final String name;
   final String experienceYears;
-  final String country;
-  final String state;
-  final String city;
+  final EmployeeRegisterCountry? country;
+  final EmployeeRegisterState? state;
+  final dynamic city;
   final String dob;
   final String gender;
   final int height;
@@ -141,9 +104,9 @@ class Employee {
   Employee({
     required this.name,
     required this.experienceYears,
-    required this.country,
-    required this.state,
-    required this.city,
+    this.country,
+    this.state,
+    this.city,
     required this.dob,
     required this.gender,
     required this.height,
@@ -158,9 +121,9 @@ class Employee {
     return Employee(
       name: json['name'] ?? '',
       experienceYears: json['experience_years'] ?? '',
-      country: json['country'] ?? '',
-      state: json['state'] ?? '',
-      city: json['city'] ?? '',
+      country: json['country'] != null ? EmployeeRegisterCountry.fromJson(json['country']) : null,
+      state: json['state'] != null ? EmployeeRegisterState.fromJson(json['state']) : null,
+      city: json['city'],
       dob: json['dob'] ?? '',
       gender: json['gender'] ?? '',
       height: json['height'] ?? 0,
@@ -173,11 +136,12 @@ class Employee {
   }
 }
 
+
 class Employer {
   final String businessName;
   final String initials;
-  final String country;
-  final String state;
+  final EmployeeRegisterCountry country;
+  final EmployeeRegisterState state;
   final String city;
   final Skill skill;
 
@@ -194,14 +158,57 @@ class Employer {
     return Employer(
       businessName: json['business_name'] ?? '',
       initials: json['initials'] ?? '',
-      country: json['country'] ?? '',
-      state: json['state'] ?? '',
+      country: EmployeeRegisterCountry.fromJson(json['country'] ?? {}),
+      state: EmployeeRegisterState.fromJson(json['state'] ?? {}),
       city: json['city'] ?? '',
       skill: Skill.fromJson(json['skill'] ?? {}),
     );
   }
 }
 
+
+class EmployeeRegisterCountry {
+  final int id;
+  final String name;
+  final String code;
+
+  EmployeeRegisterCountry({
+    required this.id,
+    required this.name,
+    required this.code,
+  });
+
+  factory EmployeeRegisterCountry.fromJson(Map<String, dynamic> json) {
+    return EmployeeRegisterCountry(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      code: json['code'] ?? '',
+    );
+  }
+}
+
+class EmployeeRegisterState {
+  final int id;
+  final int countryId;
+  final String name;
+  final String code;
+
+  EmployeeRegisterState({
+    required this.id,
+    required this.countryId,
+    required this.name,
+    required this.code,
+  });
+
+  factory EmployeeRegisterState.fromJson(Map<String, dynamic> json) {
+    return EmployeeRegisterState(
+      id: json['id'] ?? 0,
+      countryId: json['country_id'] ?? 0,
+      name: json['name'] ?? '',
+      code: json['code'] ?? '',
+    );
+  }
+}
 
 class Skill {
   final int id;

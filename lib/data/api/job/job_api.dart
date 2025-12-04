@@ -19,6 +19,7 @@ class JobApi {
     required String state,
     required String city,
     required String recruiterName,
+    required String salaryType,
     required int noOfDays,
     required int skillId,
     File? image,
@@ -29,10 +30,11 @@ class JobApi {
       'min_salary': minSalary,
       'max_salary': maxSalary,
       'job_type': jobType,
-      'country': country,
-      'state': state,
+      'country_id': country,
+      'state_id': state,
       'city': city,
       'recruiter_name': recruiterName,
+      'salary_type': salaryType,
       'no_of_days': '$noOfDays',
       'skill_id': '$skillId',
     };
@@ -119,7 +121,7 @@ class JobApi {
     return AppliedJobsResponse.fromJson(data);
   }
 
-  static Future<JobApplicationResponse> applyJob({
+  static Future<JobApplyResponse> applyJob({
     required int jobId,
     required String experienceLevel,
     required int yearsOfExperience,
@@ -139,10 +141,10 @@ class JobApi {
       fields,
       auth: true,
     );
-    return JobApplicationResponse.fromJson(data);
+    return JobApplyResponse.fromJson(data);
   }
 
-  static Future<JobApplicationResponse> getJobApplications(
+  static Future<JobApplyResponse> getJobApplications(
     int jobId, {
     Map<String, dynamic>? filters,
   }) async {
@@ -157,7 +159,7 @@ class JobApi {
       print('GET Request URL: ${ApiEndPoints.baseUrl}$endpoint');
       final data = await ApiService.get(endpoint, auth: true);
       print('GET Response: $data');
-      return JobApplicationResponse.fromJson(data);
+      return JobApplyResponse.fromJson(data);
     } catch (e) {
       print('Get Job Applications Error: $e');
       LogUtil.logError('getJobApplications: $e');
@@ -176,7 +178,6 @@ class JobApi {
 
   static Future<JobPostResponse> updateJob({
     required int id,
-    required String title,
     required String description,
     required String experienceLevel,
     required String minSalary,
@@ -186,24 +187,29 @@ class JobApi {
     required String state,
     required String city,
     required String recruiterName,
+    required String salaryType,
     required int noOfDays,
     required int skillId,
     File? image, // Added image parameter
   }) async {
+
+
+
+
     final fields = <String, String>{
       'id': id.toString(),
-      'title': title,
-      'description': description,
+      'skill_id': '$skillId',
       'experience_level': experienceLevel,
       'min_salary': minSalary,
       'max_salary': maxSalary,
-      'job_type': jobType,
-      'country': country,
-      'state': state,
+      'salary_type': salaryType,
+      'country_id': country,
+      'state_id': state,
       'city': city,
       'recruiter_name': recruiterName,
+      'description': description,
+      'job_type': jobType,
       'no_of_days': noOfDays.toString(),
-      'skill_id': skillId.toString(),
     };
 
     print('Job Post Payload: $fields, Image: ${image?.path}');

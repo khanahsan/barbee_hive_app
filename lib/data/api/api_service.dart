@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/api/token_storage.dart';
@@ -33,6 +34,8 @@ class ApiService {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
+
+    log('TOKEN: $_token');
     if (includeAuth && _token != null) {
       headers['Authorization'] = 'Bearer $_token';
     }
@@ -174,6 +177,8 @@ class ApiService {
       final uri = Uri.parse('${ApiEndPoints.baseUrl}$endpoint');
 
       final request = http.MultipartRequest('POST', uri);
+
+      log("TOKEN: $_token");
 
       if (auth && _token != null) {
         request.headers['Authorization'] = 'Bearer $_token';

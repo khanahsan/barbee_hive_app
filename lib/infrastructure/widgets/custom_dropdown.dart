@@ -1,4 +1,3 @@
-/*
 
 
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
@@ -11,7 +10,7 @@ import '../../infrastructure/constants/app_colors.dart';
 
 class CustomDropdown extends StatelessWidget {
   final String hint;
-  final String iconPath;
+  final String? iconPath; // Nullable now
   final RxString selectedValue;
   final Function(String?) onChanged;
   final List<DropdownMenuItem<String>> items;
@@ -21,12 +20,13 @@ class CustomDropdown extends StatelessWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final Color? dropdownColor;
-  final String? Function(String?)? validator; // 👈 added
+  final Color? borderColor;
+  final String? Function(String?)? validator;
 
   const CustomDropdown({
     super.key,
     required this.hint,
-    required this.iconPath,
+    this.iconPath, // Nullable
     required this.selectedValue,
     required this.onChanged,
     required this.items,
@@ -36,80 +36,88 @@ class CustomDropdown extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.dropdownColor,
-    this.validator, // 👈 added
+    this.borderColor,
+    this.validator,
   });
 
   @override
   Widget build(BuildContext context) {
-    Widget iconWidget;
+    Widget? iconWidget;
 
-    // Check file extension
-    if (iconPath.toLowerCase().endsWith('.svg')) {
-      iconWidget = SvgPicture.asset(
-        iconPath,
-        color: textColor ?? AppColors.textFieldTextColor,
-        width: iconSize ?? 20.w,
-        height: iconSize ?? 20.h,
-      );
-    } else {
-      iconWidget = Image.asset(
-        iconPath,
-        color: textColor ?? AppColors.textFieldTextColor,
-        width: iconSize ?? 20.w,
-        height: iconSize ?? 20.h,
-      );
+    if (iconPath != null && iconPath!.isNotEmpty) {
+      if (iconPath!.toLowerCase().endsWith('.svg')) {
+        iconWidget = SvgPicture.asset(
+          iconPath!,
+          color: textColor ?? AppColors.textFieldTextColor,
+          width: iconSize ?? 24.w,
+          height: iconSize ?? 24.h,
+        );
+      } else {
+        iconWidget = Image.asset(
+          iconPath!,
+          color: textColor ?? AppColors.textFieldTextColor,
+          width: iconSize ?? 20.w,
+          height: iconSize ?? 20.h,
+        );
+      }
     }
 
     return FormField<String>(
-      validator: validator, // 👈 validation handled here
+      initialValue: selectedValue.value.isEmpty ? null : selectedValue.value,
+      validator: validator,
       builder: (FormFieldState<String> state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 20.w),
+              height: 56.h,
+              padding: EdgeInsets.symmetric(vertical: 0.2.h, horizontal: 20.w),
               decoration: BoxDecoration(
                 color: backgroundColor ?? AppColors.textFieldBackground,
                 borderRadius: BorderRadius.circular(borderRadius ?? 10.r),
                 border: Border.all(
-                  color: state.hasError ? Colors.red : Colors.transparent, // 👈 red border if error
+                  color: state.hasError
+                      ? Colors.red
+                      : borderColor ?? Colors.black,
                   width: 1.2,
                 ),
               ),
               child: Row(
                 spacing: 20.w,
                 children: [
-                  iconWidget,
+                  if (iconWidget != null) iconWidget, // Only show if not null
                   Expanded(
                     child: Obx(
                           () => DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           isExpanded: true,
-                          dropdownColor: dropdownColor ?? Colors.grey[900],
+                          dropdownColor: dropdownColor ?? Colors.white,
                           style: TextStyle(
-                            fontSize: 16.sp,
+                            fontSize: fontSize ?? 16.sp,
                             overflow: TextOverflow.ellipsis,
-                            color: textColor ?? AppColors.color4C4C4C,
+                            color: textColor ?? Colors.black,
+                            fontWeight: FontWeight.w400,
                           ),
                           hint: Text(
-                            overflow: TextOverflow.ellipsis,
                             selectedValue.value.isEmpty
                                 ? hint
                                 : selectedValue.value,
                             style: TextStyle(
-                              color: textColor ?? AppColors.color4C4C4C,
+                              color: textColor ?? Colors.black,
                               fontSize: fontSize ?? 16.sp,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
                           iconEnabledColor: Colors.grey,
                           items: items,
-                          onChanged: (value) {
-                            onChanged(value);
-                            state.didChange(value); // 👈 updates FormField state
-                          },
                           value: selectedValue.value.isEmpty
                               ? null
                               : selectedValue.value,
+                          onChanged: (value) {
+                            selectedValue.value = value ?? '';
+                            onChanged(value);
+                            state.didChange(value);
+                          },
                           menuMaxHeight: 250.h,
                         ),
                       ),
@@ -120,10 +128,9 @@ class CustomDropdown extends StatelessWidget {
             ),
             if (state.hasError)
               CustomText(
-                title:
-                state.errorText ?? '',
-                  color: AppColors.colorFF3B30,
-                  fontSize: 13,
+                title: state.errorText ?? '',
+                color: AppColors.colorFF3B30,
+                fontSize: 13,
               ).paddingSymmetric(horizontal: 20.w, vertical: 5.h),
           ],
         );
@@ -133,26 +140,9 @@ class CustomDropdown extends StatelessWidget {
 }
 
 
-
-
-
-
-
-
-*/
-
-
-import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
-import 'package:my_responsive_ui/my_responsive_ui.dart';
-
-import '../../infrastructure/constants/app_colors.dart';
-
-class CustomDropdown extends StatelessWidget {
+/*class CustomDropdown extends StatelessWidget {
   final String hint;
-  final String iconPath;
+  final String? iconPath;
   final RxString selectedValue;
   final Function(String?) onChanged;
   final List<DropdownMenuItem<String>> items;
@@ -162,6 +152,7 @@ class CustomDropdown extends StatelessWidget {
   final Color? backgroundColor;
   final Color? textColor;
   final Color? dropdownColor;
+  final Color? borderColor;
   final String? Function(String?)? validator;
 
   const CustomDropdown({
@@ -177,6 +168,7 @@ class CustomDropdown extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.dropdownColor,
+    this.borderColor,
     this.validator,
   });
 
@@ -188,8 +180,8 @@ class CustomDropdown extends StatelessWidget {
       iconWidget = SvgPicture.asset(
         iconPath,
         color: textColor ?? AppColors.textFieldTextColor,
-        width: iconSize ?? 25.w,
-        height: iconSize ?? 25.h,
+        width: iconSize ?? 24.w,
+        height: iconSize ?? 24.h,
       );
     } else {
       iconWidget = Image.asset(
@@ -208,12 +200,16 @@ class CustomDropdown extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(vertical: 1.h, horizontal: 20.w),
+              height: 56.h,
+              padding: EdgeInsets.symmetric(vertical: 0.2.h, horizontal: 20.w),
               decoration: BoxDecoration(
                 color: backgroundColor ?? AppColors.textFieldBackground,
                 borderRadius: BorderRadius.circular(borderRadius ?? 10.r),
                 border: Border.all(
-                  color: state.hasError ? Colors.red : Colors.transparent,
+                  color:
+                      state.hasError
+                          ? Colors.red
+                          : borderColor ?? Colors.transparent,
                   width: 1.2,
                 ),
               ),
@@ -223,7 +219,7 @@ class CustomDropdown extends StatelessWidget {
                   iconWidget,
                   Expanded(
                     child: Obx(
-                          () => DropdownButtonHideUnderline(
+                      () => DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           isExpanded: true,
                           dropdownColor: dropdownColor ?? Colors.grey[900],
@@ -234,7 +230,9 @@ class CustomDropdown extends StatelessWidget {
                             fontWeight: FontWeight.w400,
                           ),
                           hint: Text(
-                            selectedValue.value.isEmpty ? hint : selectedValue.value,
+                            selectedValue.value.isEmpty
+                                ? hint
+                                : selectedValue.value,
                             style: TextStyle(
                               color: textColor ?? AppColors.colorA3A3A3,
                               fontSize: fontSize ?? 16.sp,
@@ -243,7 +241,10 @@ class CustomDropdown extends StatelessWidget {
                           ),
                           iconEnabledColor: Colors.grey,
                           items: items,
-                          value: selectedValue.value.isEmpty ? null : selectedValue.value,
+                          value:
+                              selectedValue.value.isEmpty
+                                  ? null
+                                  : selectedValue.value,
                           onChanged: (value) {
                             // ✅ Update RxString value
                             selectedValue.value = value ?? '';
@@ -269,4 +270,4 @@ class CustomDropdown extends StatelessWidget {
       },
     );
   }
-}
+}*/

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
+
 import '../constants/app_colors.dart';
 import '../constants/app_images.dart';
 import 'hexagon_clipper.dart';
@@ -16,6 +17,7 @@ PreferredSizeWidget customAppbar({
   bool? showActions,
   List<Widget>? actions,
   bool? showHexagon = true,
+  VoidCallback? hexagonTapFunction,
 }) {
   return PreferredSize(
     preferredSize: Size.fromHeight(90.h),
@@ -41,12 +43,15 @@ PreferredSizeWidget customAppbar({
               iconWidth: 18.w,
             ),
           ),
-          if(showHexagon == true)
-          HexagonAvatar(
-            imagePath: profileImagePath ?? '',
-            width: 40.w,
-            height: 50.h,
-          ),
+          if (showHexagon == true)
+            GestureDetector(
+              onTap: hexagonTapFunction?.call,
+              child: HexagonAvatar(
+                imagePath: profileImagePath ?? '',
+                width: 40.w,
+                height: 50.h,
+              ),
+            ),
         ],
       ).paddingSymmetric(horizontal: 15.w),
       leadingWidth: 120.w,

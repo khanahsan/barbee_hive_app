@@ -268,9 +268,11 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
+import 'package:barbee_hive_app/data/model/country_response.dart';
 import 'package:barbee_hive_app/data/model/experience_level_response.dart';
 import 'package:barbee_hive_app/data/model/job_type_response.dart';
-import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/data/model/salary_type_response.dart';
+import 'package:barbee_hive_app/data/model/state_response.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
@@ -285,8 +287,9 @@ class JobPostingController extends GetxController {
   /// TEXT CONTROLLERS
   final TextEditingController minSalaryController = TextEditingController();
   final TextEditingController maxSalaryController = TextEditingController();
-  final TextEditingController countryController = TextEditingController();
-  final TextEditingController stateController = TextEditingController();
+
+  // final TextEditingController countryController = TextEditingController();
+  // final TextEditingController stateController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController recruiterController = TextEditingController();
   final TextEditingController jobDesController = TextEditingController();
@@ -299,6 +302,9 @@ class JobPostingController extends GetxController {
   final RxString selectedSkill = ''.obs;
   final RxString selectedExperienceLevel = ''.obs;
   final RxString selectedJobType = ''.obs;
+  final RxString selectedSalaryType = ''.obs;
+  final RxString selectedCountry = ''.obs;
+  final RxString selectedState = ''.obs;
 
   /// IMAGE
   final Rx<File?> selectedImage = Rx<File?>(null);
@@ -307,6 +313,9 @@ class JobPostingController extends GetxController {
   final RxList<colorModel.Skill> skills = <colorModel.Skill>[].obs;
   final RxList<ExperienceLevel> experienceLevels = <ExperienceLevel>[].obs;
   final RxList<JobType> jobTypes = <JobType>[].obs;
+  final RxList<SalaryType> salaryTypes = <SalaryType>[].obs;
+  final RxList<Country> countries = <Country>[].obs;
+  final RxList<StateModel> states = <StateModel>[].obs;
 
   final formKey = GlobalKey<FormState>();
 
@@ -324,6 +333,9 @@ class JobPostingController extends GetxController {
         fetchSkills(),
         fetchExperienceLevels(),
         fetchJobTypes(),
+        fetchAllSalaryTypes(),
+        fetchCountries(),
+        fetchStates(),
       ]);
 
       /// SET DEFAULT SELECTIONS (Fix for null value crashes)
@@ -337,12 +349,78 @@ class JobPostingController extends GetxController {
     }
   }
 
+  Future<void> fetchAllSalaryTypes() async {
+    isLoading.value = true;
+
+    try {
+      print('Fetching Salary Types');
+      final response = await AuthProvider.getSalaryTypes();
+      if (response.status) {
+        salaryTypes.assignAll(response.data);
+      } else {}
+    } catch (e) {
+      log('Failed to States');
+
+      Utilities.showSnackBar(
+        message: 'Failed to Fetch Salary Types',
+        title: 'Error',
+        isSuccess: false,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchCountries() async {
+    isLoading.value = true;
+
+    try {
+      print('Fetching Countries');
+      final response = await AuthProvider.getCountries();
+      if (response.status) {
+        countries.assignAll(response.data);
+      } else {}
+    } catch (e) {
+      log('Failed to Countries');
+
+      Utilities.showSnackBar(
+        message: 'Failed to Fetch Countries',
+        title: 'Error',
+        isSuccess: false,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchStates() async {
+    isLoading.value = true;
+
+    try {
+      print('Fetching States');
+      final response = await AuthProvider.getStates();
+      if (response.status) {
+        states.assignAll(response.data);
+      } else {}
+    } catch (e) {
+      log('Failed to States');
+
+      Utilities.showSnackBar(
+        message: 'Failed to Fetch States',
+        title: 'Error',
+        isSuccess: false,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   @override
   void onClose() {
     minSalaryController.dispose();
     maxSalaryController.dispose();
-    countryController.dispose();
-    stateController.dispose();
+    // countryController.dispose();
+    // stateController.dispose();
     cityController.dispose();
     recruiterController.dispose();
     jobDesController.dispose();
@@ -356,6 +434,13 @@ class JobPostingController extends GetxController {
 
   void updateExperienceLevel(String? value) =>
       selectedExperienceLevel.value = value ?? '';
+
+  void updateSalaryType(String? value) =>
+      selectedSalaryType.value = value ?? '';
+
+  void updateCountry(String? value) => selectedCountry.value = value ?? '';
+
+  void updateState(String? value) => selectedState.value = value ?? '';
 
   /// FETCHING API DATA
   Future<void> fetchSkills() async {
@@ -484,8 +569,6 @@ class JobPostingController extends GetxController {
 
       if (jobDesController.text.isEmpty ||
           recruiterController.text.isEmpty ||
-          countryController.text.isEmpty ||
-          stateController.text.isEmpty ||
           cityController.text.isEmpty) {
         Utilities.showSnackBar(
           title: "Missing Fields",
@@ -499,8 +582,6 @@ class JobPostingController extends GetxController {
       print("Description: ${jobDesController.text}");
       print("Min Salary: ${minSalaryController.text}");
       print("Max Salary: ${maxSalaryController.text}");
-      print("Country: ${countryController.text}");
-      print("State: ${stateController.text}");
       print("City: ${cityController.text}");
       print("Recruiter: ${recruiterController.text}");
       print("Selected Skill: ${selectedSkill.value}");
@@ -524,6 +605,21 @@ class JobPostingController extends GetxController {
         orElse: () => throw Exception("Invalid Job Type Selected"),
       );
 
+      final salaryType = salaryTypes.firstWhere(
+        (j) => (j.name ?? "") == selectedSalaryType.value,
+        orElse: () => throw Exception("Invalid Salary Type Selected"),
+      );
+
+      final country = countries.firstWhere(
+        (j) => (j.name ?? "") == selectedCountry.value,
+        orElse: () => throw Exception("Invalid Country Selected"),
+      );
+
+      final state = states.firstWhere(
+        (j) => (j.name ?? "") == selectedState.value,
+        orElse: () => throw Exception("Invalid State Selected"),
+      );
+
       isLoading.value = true;
 
       /// API CALL
@@ -533,13 +629,14 @@ class JobPostingController extends GetxController {
         minSalary: minSalaryController.text,
         maxSalary: maxSalaryController.text,
         jobType: userJob.id,
-        country: countryController.text,
-        state: stateController.text,
+        country: country.id.toString(),
+        state: state.id.toString(),
         city: cityController.text,
         recruiterName: recruiterController.text,
         noOfDays: 2,
         skillId: userSkill.id,
         image: selectedImage.value,
+        salaryType: salaryType.id,
       );
 
       if (response.status) {
@@ -553,12 +650,11 @@ class JobPostingController extends GetxController {
               (_) => CustomDialog(
                 title: "Congratulations",
                 subTitle: "Your Job Application Has Been Submitted",
-                onDone: (){
+                onDone: () {
                   Get.close(3);
                 },
               ),
         );
-
       } else {
         throw Exception(response.message);
       }

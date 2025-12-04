@@ -236,7 +236,7 @@ class AuthController extends GetxController {
       );
 
       // navigate
-      Get.offAllNamed<void>(Routes.HOME);
+      Get.offAllNamed<void>(Routes.SIGN_IN_VIEW);
     } catch (e) {
       Get.back<void>(); // close dialog
 

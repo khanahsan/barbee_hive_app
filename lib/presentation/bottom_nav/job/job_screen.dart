@@ -11,8 +11,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
+import '../../../infrastructure/widgets/custom_btn.dart';
+import '../../../infrastructure/widgets/custom_dropdown.dart';
 import 'controller/job_controller.dart';
 import 'employee/component/employee_card.dart';
+import 'employee/component/job_filter_dialog.dart';
 import 'employer/component/employer_card.dart';
 
 class JobScreen extends GetView<JobController> {
@@ -37,37 +40,21 @@ class JobScreen extends GetView<JobController> {
               if (onMenuPressed != null) onMenuPressed!();
             }
           },
-          leadingIconPath: showBackButton == true
-              ? AppAssets.backIcon
-              : null,
+          leadingIconPath: showBackButton == true ? AppAssets.backIcon : null,
           title: isEmployer ? 'Job Applications' : 'Find Jobs',
           profileImagePath: controller.userProfileImage.value,
         ),
 
-        // appBar: customAppbar(
-        //   context: context,
-        //   leadingTapFunction: () {
-        //     if (onMenuPressed != null) onMenuPressed!();
-        //   },
-        //   title: isEmployer ? 'Job Applications' : 'Find Jobs',
-        //   profileImagePath: controller.userProfileImage.value,
-        //   // actions: [
-        //   //   SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
-        //   // ],
-        // ),
         backgroundColor: AppColors.black,
         body: Column(
-          spacing: 15.h,
+          spacing: 5.h,
           mainAxisSize: MainAxisSize.min,
           children: [
             /// SEARCH FIELD
-            if (!isEmployer)
+            if (!isEmployer) ...[
               AppTextField(
                 hintText: "Search jobs here...",
                 fillColor: AppColors.color101010,
-                // cursorColor: AppColors.grey,
-                // focusedBorderColor: AppColors.grey,
-                // hintStyle: TextStyle(color: Colors.grey.shade700),
                 fontColor: Colors.white,
                 filled: true,
                 controller: controller.searchController,
@@ -79,21 +66,33 @@ class JobScreen extends GetView<JobController> {
                   height: 10.h,
                   fit: BoxFit.scaleDown,
                 ),
-                suffixIcon: SvgPicture.asset(
-                  AppAssets.searchFilterIcon,
-                  width: 10.w,
-                  height: 10.h,
-                  fit: BoxFit.scaleDown,
+                suffixIcon: GestureDetector(
+                  onTap: () async {
+                    // Fetch all dropdown data before opening
+                    await controller.fetchAllDropdowns();
+
+                    Get.dialog(JobFilterDialog(), barrierDismissible: true);
+                  },
+                  child: SvgPicture.asset(
+                    AppAssets.searchFilterIcon,
+                    width: 10.w,
+                    height: 10.h,
+                    fit: BoxFit.scaleDown,
+                  ),
                 ),
               ),
-            if (!isEmployer) SizedBox(height: 15.h),
+              SizedBox(height: 10.h),
+            ],
 
             /// EMPLOYEE SECTION
             if (!isEmployer)
               Flexible(
                 child: Obx(
                   () => RefreshIndicator(
-                    onRefresh: controller.fetchEmployeeJobs,
+                    onRefresh: () async {
+                      await controller.fetchAllDropdowns();
+                      await controller.fetchEmployeeJobs();
+                    },
                     // Refresh function
                     color: AppColors.colorFF8600,
                     child:
@@ -130,6 +129,7 @@ class JobScreen extends GetView<JobController> {
                             )
                             /// LIST NOT EMPTY
                             : ListView.separated(
+                              padding: EdgeInsets.zero,
                               physics: const AlwaysScrollableScrollPhysics(),
                               separatorBuilder:
                                   (context, index) => SizedBox(height: 18.h),
@@ -149,7 +149,10 @@ class JobScreen extends GetView<JobController> {
               Flexible(
                 child: Obx(
                   () => RefreshIndicator(
-                    onRefresh: controller.fetchEmployerJobs,
+                    onRefresh: () async {
+                      await controller.fetchAllDropdowns();
+                      controller.fetchEmployerJobs();
+                    },
                     // Refresh function
                     color: AppColors.colorFF8600,
                     child:
@@ -210,5 +213,23 @@ class JobScreen extends GetView<JobController> {
         ).paddingOnly(left: 15.w, right: 15.w, top: 15.h),
       );
     });
+  }
+
+  Widget _buildDropdown({
+    required String hint,
+    required String iconPath,
+    required RxString selectedValue,
+    required List<DropdownMenuItem<String>> items,
+    required Function(String?) onChanged,
+    String? Function(String?)? validator,
+  }) {
+    return CustomDropdown(
+      hint: hint,
+      iconPath: iconPath,
+      selectedValue: selectedValue,
+      onChanged: onChanged,
+      validator: validator,
+      items: items,
+    );
   }
 }

@@ -10,6 +10,7 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../infrastructure/widgets/app_text_field.dart';
 import '../../infrastructure/widgets/custom_dropdown.dart';
+import '../../infrastructure/widgets/custom_multi_select_dropdown.dart';
 import '../../infrastructure/widgets/custom_profile_image.dart';
 import '../../infrastructure/widgets/custom_resume_widget.dart';
 import 'component/agree_terms_tile.dart';
@@ -159,24 +160,70 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                   SizedBox(height: 15.h),
 
                                   /// EXPERIENCE
-                                  _buildDropdown(
+                                  CustomMultiSelectDropdown(
                                     hint: 'Experience',
                                     iconPath: AppAssets.cardIcon,
-                                    selectedValue: controller.selectedSkill,
-                                    onChanged: controller.updateSkill,
-                                    validator:
-                                        (value) =>
-                                            FormValidators.validateRequired(
-                                              value,
-                                              'Experience',
-                                            ),
+                                    selectedValues: controller.selectedSkills,
                                     items:
                                         controller.skills
+                                            .map((s) => s.name)
+                                            .toList(),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return "Please select at least one experience";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+
+                                  // _buildDropdown(
+                                  //   hint: 'Experience',
+                                  //   iconPath: AppAssets.cardIcon,
+                                  //   selectedValue: controller.selectedSkill,
+                                  //   onChanged: controller.updateSkill,
+                                  //   validator:
+                                  //       (value) =>
+                                  //           FormValidators.validateRequired(
+                                  //             value,
+                                  //             'Experience',
+                                  //           ),
+                                  //   items:
+                                  //       controller.skills
+                                  //           .map(
+                                  //             (skill) => DropdownMenuItem(
+                                  //               value: skill.name,
+                                  //               child: CustomText(
+                                  //                 title: skill.name,
+                                  //                 color: AppColors.color4C4C4C,
+                                  //                 fontSize: 16,
+                                  //               ),
+                                  //             ),
+                                  //           )
+                                  //           .toList(),
+                                  // ),
+                                  SizedBox(height: 15.h),
+
+                                  /// COUNTRY
+                                  _buildDropdown(
+                                    hint: 'Country',
+                                    iconPath: AppAssets.countryIcon,
+                                    selectedValue: controller.selectedCountry,
+                                    // new RxString
+                                    onChanged: (value) {
+                                      controller.updateCountry(value);
+                                    },
+                                    validator:
+                                        (v) => FormValidators.validateRequired(
+                                          v,
+                                          'Country',
+                                        ),
+                                    items:
+                                        controller.countries
                                             .map(
-                                              (skill) => DropdownMenuItem(
-                                                value: skill.name,
+                                              (country) => DropdownMenuItem(
+                                                value: country.name,
                                                 child: CustomText(
-                                                  title: skill.name,
+                                                  title: country.name,
                                                   color: AppColors.color4C4C4C,
                                                   fontSize: 16,
                                                 ),
@@ -184,19 +231,17 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                             )
                                             .toList(),
                                   ),
-                                  SizedBox(height: 15.h),
 
-                                  /// COUNTRY
-                                  _buildTextField(
-                                    'Country',
-                                    controller.countryController,
-                                    prefixIconPath: AppAssets.countryIcon,
-                                    validator:
-                                        (v) => FormValidators.validateRequired(
-                                          v,
-                                          'Country',
-                                        ),
-                                  ),
+                                  // _buildTextField(
+                                  //   'Country',
+                                  //   controller.countryController,
+                                  //   prefixIconPath: AppAssets.countryIcon,
+                                  //   validator:
+                                  //       (v) => FormValidators.validateRequired(
+                                  //         v,
+                                  //         'Country',
+                                  //       ),
+                                  // ),
                                   SizedBox(height: 15.h),
 
                                   /// STATE & CITY FIELD
@@ -205,17 +250,50 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                         CrossAxisAlignment.start,
                                     spacing: 10.w,
                                     children: [
+                                      // Expanded(
+                                      //   child: _buildTextField(
+                                      //     'State',
+                                      //     controller.stateController,
+                                      //     prefixIconPath: AppAssets.stateIcon,
+                                      //     validator:
+                                      //         (v) =>
+                                      //             FormValidators.validateRequired(
+                                      //               v,
+                                      //               'State',
+                                      //             ),
+                                      //   ),
+                                      // ),
                                       Expanded(
-                                        child: _buildTextField(
-                                          'State',
-                                          controller.stateController,
-                                          prefixIconPath: AppAssets.stateIcon,
+                                        child: _buildDropdown(
+                                          hint: 'State',
+                                          iconPath: AppAssets.stateIcon,
+                                          selectedValue:
+                                              controller.selectedState,
+                                          // new RxString
+                                          onChanged: (value) {
+                                            controller.updateState(value);
+                                          },
                                           validator:
                                               (v) =>
                                                   FormValidators.validateRequired(
                                                     v,
                                                     'State',
                                                   ),
+                                          items:
+                                              controller.states
+                                                  .map(
+                                                    (state) => DropdownMenuItem(
+                                                      value: state.name,
+                                                      child: CustomText(
+                                                        title: state.name,
+                                                        color:
+                                                            AppColors
+                                                                .color4C4C4C,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .toList(),
                                         ),
                                       ),
                                       Expanded(

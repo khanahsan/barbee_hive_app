@@ -21,6 +21,7 @@ class CustomBtn extends StatelessWidget {
     this.borderColor = Colors.transparent,
     this.borderWidth = 0.0,
     this.iconPath, // New optional image path parameter
+    this.borderRadius, // New optional image path parameter
   });
 
   final String btnTitle;
@@ -36,6 +37,7 @@ class CustomBtn extends StatelessWidget {
   final bool isLoading;
   final EdgeInsets titlePadding;
   final String? iconPath; // Optional image path
+  final double? borderRadius; // Optional image path
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,7 @@ class CustomBtn extends StatelessWidget {
         // minimumSize: Size(buttonWidth!.w, buttonHeight ?? 45.h),
         backgroundColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: BorderRadius.circular(borderRadius?.r ?? 10.r),
         ),
         shadowColor: const Color(0xff000000).withOpacity(0.25),
         elevation: 4,
@@ -57,47 +59,48 @@ class CustomBtn extends StatelessWidget {
         width: buttonWidth!.w,
         height: buttonHeight ?? 80.h,
         decoration: BoxDecoration(
-            color: btnBackgroundColor,
+          color: btnBackgroundColor,
           border: Border.all(width: borderWidth, color: borderColor),
-        borderRadius: BorderRadius.circular(10.r),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: const Color(0xff000000).withOpacity(0.25),
-            blurRadius: 4.r,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: isLoading
-          ? SizedBox(
-        width: 25.w,
-        height: 25.h,
-        child: const CircularProgressIndicator.adaptive(
-          backgroundColor: AppColors.colorFFFFFF,
-          valueColor: AlwaysStoppedAnimation(AppColors.colorFF8600),
-          strokeWidth: 5.0,
-        ),
-      )
-          : Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (iconPath != null) ...[
-            Image.asset(
-              iconPath!,
-              width: 20.w, // Adjust size as needed
-              height: 20.h,
+          borderRadius: BorderRadius.circular(borderRadius?.r ?? 10.r),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: const Color(0xff000000).withOpacity(0.25),
+              blurRadius: 4.r,
+              offset: const Offset(0, 4),
             ),
-            SizedBox(width: 8.w), // Space between image and text
           ],
-          CustomText(
-            title: btnTitle,
-            color: btnTxtColor,
-            fontSize: fontSize ?? AppFontSize.small,
-            fontWeight: fontWeight,
-          ),
-        ],
+        ),
+        child:
+            isLoading
+                ? SizedBox(
+                  width: 25.w,
+                  height: 25.h,
+                  child: const CircularProgressIndicator.adaptive(
+                    backgroundColor: AppColors.colorFFFFFF,
+                    valueColor: AlwaysStoppedAnimation(AppColors.colorFF8600),
+                    strokeWidth: 5.0,
+                  ),
+                )
+                : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (iconPath != null) ...[
+                      Image.asset(
+                        iconPath!,
+                        width: 20.w, // Adjust size as needed
+                        height: 20.h,
+                      ),
+                      SizedBox(width: 8.w), // Space between image and text
+                    ],
+                    CustomText(
+                      title: btnTitle,
+                      color: btnTxtColor,
+                      fontSize: fontSize ?? AppFontSize.small,
+                      fontWeight: fontWeight,
+                    ),
+                  ],
+                ),
       ),
-    ),
     );
   }
 }

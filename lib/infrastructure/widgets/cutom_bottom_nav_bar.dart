@@ -19,7 +19,7 @@ class CustomBottomNavBar extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(30.r),
       child: Container(
-        height: 110.h,
+        height: 90.h,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.black, AppColors.boxBorder, AppColors.black],
@@ -28,69 +28,71 @@ class CustomBottomNavBar extends StatelessWidget {
             end: Alignment.centerRight,
           ),
         ),
-        child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: onTap,
-          backgroundColor: Colors.transparent,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: AppColors.colorFF8600,
-          unselectedItemColor: Colors.white,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          items: [
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(
-                AppAssets.beeIcon,
-                colorFilter: ColorFilter.mode(
-                  currentIndex == 0 ? AppColors.colorFF8600 : Colors.white,
-                  BlendMode.srcIn,
+        child: SafeArea(
+          child: BottomNavigationBar(
+            currentIndex: currentIndex,
+            onTap: onTap,
+            backgroundColor: Colors.transparent,
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: AppColors.colorFF8600,
+            unselectedItemColor: Colors.white,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            items: [
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  AppAssets.beeIcon,
+                  colorFilter: ColorFilter.mode(
+                    currentIndex == 0 ? AppColors.colorFF8600 : Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                  height: 30.h,
+                  width: 30.w,
+                  fit: BoxFit.cover,
                 ),
-                height: 30.h,
-                width: 30.w,
-                fit: BoxFit.cover,
+                label: "",
               ),
-              label: "",
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(
-                AppAssets.chatIcon,
-                colorFilter: ColorFilter.mode(
-                  currentIndex == 1 ? AppColors.colorFF8600 : Colors.white,
-                  BlendMode.srcIn,
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  AppAssets.chatIcon,
+                  colorFilter: ColorFilter.mode(
+                    currentIndex == 1 ? AppColors.colorFF8600 : Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                  height: 25.h,
+                  width: 25.w,
+                  fit: BoxFit.cover,
                 ),
-                height: 25.h,
-                width: 25.w,
-                fit: BoxFit.cover,
+                label: "",
               ),
-              label: "",
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(
-                AppAssets.findIcon,
-                colorFilter: ColorFilter.mode(
-                  currentIndex == 2 ? AppColors.colorFF8600 : Colors.white,
-                  BlendMode.srcIn,
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  AppAssets.findIcon,
+                  colorFilter: ColorFilter.mode(
+                    currentIndex == 2 ? AppColors.colorFF8600 : Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                  height: 25.h,
+                  width: 25.w,
+                  fit: BoxFit.cover,
                 ),
-                height: 25.h,
-                width: 25.w,
-                fit: BoxFit.cover,
+                label: "",
               ),
-              label: "",
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset(
-                currentIndex == 3 ? AppAssets.premiumActiveIcon : AppAssets.premiumIcon,
-                // colorFilter: ColorFilter.mode(
-                //   currentIndex == 3 ? AppColors.primary : Colors.white,
-                //   BlendMode.srcIn,
-                // ),
-                height: 45.h,
-                width: 45.w,
-                fit: BoxFit.fill,
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  currentIndex == 3 ? AppAssets.premiumActiveIcon : AppAssets.premiumIcon,
+                  // colorFilter: ColorFilter.mode(
+                  //   currentIndex == 3 ? AppColors.primary : Colors.white,
+                  //   BlendMode.srcIn,
+                  // ),
+                  height: 45.h,
+                  width: 45.w,
+                  fit: BoxFit.fill,
+                ),
+                label: "",
               ),
-              label: "",
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

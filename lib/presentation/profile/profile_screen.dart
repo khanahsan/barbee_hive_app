@@ -63,20 +63,6 @@ class ProfileScreen extends GetView<ProfileController> {
                 : Stack(
                   alignment: Alignment.topCenter,
                   children: [
-                    // Image.network(controller.userCoverImage.value),
-                    // Positioned(
-                    //   left: 0,
-                    //   right: 0,
-                    //   top: 0,
-                    //   child: ClipRRect(
-                    //     borderRadius: BorderRadius.circular(30.r),
-                    //     child: Image.asset(
-                    //       AppAssets.exampleCoverPhoto,
-                    //       fit: BoxFit.cover,
-                    //     ),
-                    //   ),
-                    // ),
-
                     // COVER IMAGE
                     Positioned(
                       left: 0,
@@ -156,31 +142,7 @@ class ProfileScreen extends GetView<ProfileController> {
                       ),
                     ),
 
-                    // Positioned(
-                    //   left: 0,
-                    //   right: 0,
-                    //   top: 0,
-                    //   child: ClipRRect(
-                    //     borderRadius: BorderRadius.circular(30.r),
-                    //     child:
-                    //         controller.userCoverImage.value.isEmpty
-                    //             ? Image.asset(
-                    //               AppAssets.exampleCoverPhoto,
-                    //               fit: BoxFit.cover,
-                    //             )
-                    //             : Image.network(
-                    //               controller.userCoverImage.value,
-                    //               fit: BoxFit.cover,
-                    //               height: 200.h,
-                    //               width: double.infinity,
-                    //               errorBuilder:
-                    //                   (context, error, stackTrace) =>
-                    //                       Image.asset(
-                    //                         AppAssets.exampleCoverPhoto,
-                    //                       ),
-                    //             ),
-                    //   ),
-                    // ),
+
                     Positioned(
                       top: topOffset,
                       // 50.h
@@ -244,18 +206,19 @@ class ProfileScreen extends GetView<ProfileController> {
                                           ),
                                           TextSpan(text: " "),
                                           TextSpan(
-                                            text: controller.currentUserSkill,
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.titleMedium?.copyWith(
+                                            text: controller.selectedSkills.isNotEmpty
+                                                ? controller.selectedSkills.first
+                                                : "No skills selected",
+                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                               fontSize: 16.sp,
                                               fontWeight: FontWeight.w600,
-                                              color:
-                                                  controller.isEditing.value
-                                                      ? AppColors.colorFF8600
-                                                      : AppColors.colorFFFFFF,
+                                              color: controller.isEditing.value
+                                                  ? AppColors.colorFF8600
+                                                  : AppColors.colorFFFFFF,
                                             ),
                                           ),
+
+
                                         ],
                                       ),
                                     ),

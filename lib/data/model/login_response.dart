@@ -59,8 +59,10 @@ class User {
       coverPhoto: json['cover_photo'] ?? '',
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
-      employee: json['employee'] != null ? Employee.fromJson(json['employee']) : null,
-      employer: json['employer'] != null ? Employer.fromJson(json['employer']) : null,
+      employee:
+          json['employee'] != null ? Employee.fromJson(json['employee']) : null,
+      employer:
+          json['employer'] != null ? Employer.fromJson(json['employer']) : null,
     );
   }
 }
@@ -68,8 +70,8 @@ class User {
 class Employee {
   final String name;
   final String experienceYears;
-  final String country;
-  final String state;
+  final Country country;
+  final StateModel state;
   final String city;
   final String dob;
   final String gender;
@@ -100,14 +102,20 @@ class Employee {
     return Employee(
       name: json['name'] ?? '',
       experienceYears: json['experience_years'] ?? '',
-      country: json['country'] ?? '',
-      state: json['state'] ?? '',
+      country: Country.fromJson(json['country']),
+      state: StateModel.fromJson(json['state']),
       city: json['city'] ?? '',
       dob: json['dob'] ?? '',
       gender: json['gender'] ?? '',
       height: json['height'] ?? 0,
-      eyeColor: json['eye_color'] != null ? EyeColor.fromJson(json['eye_color']) : null,
-      hairColor: json['hair_color'] != null ? HairColor.fromJson(json['hair_color']) : null,
+      eyeColor:
+          json['eye_color'] != null
+              ? EyeColor.fromJson(json['eye_color'])
+              : null,
+      hairColor:
+          json['hair_color'] != null
+              ? HairColor.fromJson(json['hair_color'])
+              : null,
       resumePath: json['resume_path'],
       isAvailable: json['is_available'] ?? false,
       skill: json['skill'] != null ? Skill.fromJson(json['skill']) : null,
@@ -122,10 +130,7 @@ class EyeColor {
   EyeColor({required this.id, required this.name});
 
   factory EyeColor.fromJson(Map<String, dynamic> json) {
-    return EyeColor(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-    );
+    return EyeColor(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }
 
@@ -136,10 +141,7 @@ class HairColor {
   HairColor({required this.id, required this.name});
 
   factory HairColor.fromJson(Map<String, dynamic> json) {
-    return HairColor(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-    );
+    return HairColor(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }
 
@@ -150,10 +152,7 @@ class Skill {
   Skill({required this.id, required this.name});
 
   factory Skill.fromJson(Map<String, dynamic> json) {
-    return Skill(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-    );
+    return Skill(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }
 
@@ -164,19 +163,17 @@ class PositionSeeking {
   PositionSeeking({required this.id, required this.name});
 
   factory PositionSeeking.fromJson(Map<String, dynamic> json) {
-    return PositionSeeking(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-    );
+    return PositionSeeking(id: json['id'] ?? 0, name: json['name'] ?? '');
   }
 }
 
 class Employer {
   final String businessName;
-  final String country;
-  final String state;
+  final Country country;
+  final StateModel state;
   final String city;
-  final PositionSeeking? positionSeeking; // Changed from String to PositionSeeking
+  final PositionSeeking?
+  positionSeeking; // Changed from String to PositionSeeking
 
   Employer({
     required this.businessName,
@@ -189,12 +186,62 @@ class Employer {
   factory Employer.fromJson(Map<String, dynamic> json) {
     return Employer(
       businessName: json['business_name'] ?? '',
-      country: json['country'] ?? '',
-      state: json['state'] ?? '',
+      country: Country.fromJson(json['country']),
+      state: StateModel.fromJson(json['state']),
       city: json['city'] ?? '',
-      positionSeeking: json['position_seeking'] != null
-          ? PositionSeeking.fromJson(json['position_seeking'])
-          : null,
+      positionSeeking:
+          json['position_seeking'] != null
+              ? PositionSeeking.fromJson(json['position_seeking'])
+              : null,
+    );
+  }
+}
+
+class StateModel {
+  final int id;
+  final int countryID;
+  final String name;
+  final String code;
+  final String status;
+
+  StateModel({
+    required this.id,
+    required this.countryID,
+    required this.name,
+    required this.code,
+    required this.status,
+  });
+
+  factory StateModel.fromJson(Map<String, dynamic> json) {
+    return StateModel(
+      id: json['id'] ?? 0,
+      countryID: json['country_id'] ?? 0,
+      name: json['name'] ?? '',
+      code: json['code'] ?? '',
+      status: json['status'] ?? '',
+    );
+  }
+}
+
+class Country {
+  final int id;
+  final String name;
+  final String code;
+  final String active;
+
+  Country({
+    required this.id,
+    required this.name,
+    required this.code,
+    required this.active,
+  });
+
+  factory Country.fromJson(Map<String, dynamic> json) {
+    return Country(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      code: json['code'] ?? '',
+      active: json['active'] ?? '',
     );
   }
 }

@@ -86,6 +86,10 @@ class DashboardController extends GetxController {
     try {
       employers.clear();
       print('Fetching dashboard users');
+
+      log("LATITUDE: ${currentLatitude.value.toString()}");
+      log("LONGITUDE: ${currentLongitude.value.toString()}");
+
       final response = await AuthProvider.getDashboardUsers(
         currentLatitude: currentLatitude.value.toString(),
         currentLongitude: currentLongitude.value.toString(),

@@ -20,6 +20,7 @@ class CustomText extends StatelessWidget {
     this.fontFamily = 'Inter',
     this.maxLines = 1,
     this.textOverflow,
+    this.softWrap,
     super.key,
   });
 
@@ -32,13 +33,12 @@ class CustomText extends StatelessWidget {
   final TextAlign textAlign;
   final FontStyle fontStyle;
   final String fontFamily;
-
+  final bool? softWrap;
   final int maxLines;
   final TextOverflow? textOverflow;
 
   @override
   Widget build(BuildContext context) {
-
     // Shared text style
     final TextStyle textStyle = TextStyle(
       fontSize: fontSize.sp,
@@ -54,11 +54,12 @@ class CustomText extends StatelessWidget {
     );
 
     return Text(
-            title,
-            textAlign: textAlign,
-            style: textStyle,
-            maxLines: maxLines,
-            overflow: textOverflow,
-          );
+      title,
+      textAlign: textAlign,
+      style: textStyle,
+      maxLines: maxLines,
+      overflow: textOverflow,
+      softWrap: softWrap,
+    );
   }
 }

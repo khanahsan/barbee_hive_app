@@ -175,8 +175,58 @@ class ChatScreen extends StatelessWidget {
                                   ),
                                   SizedBox(width: 5.w),
                                 ],
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10.w,
+                                    vertical: 10.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isMe
+                                            ? AppColors.colorFF8600
+                                            : AppColors.color27272A,
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    // Wrap content
+                                    children: [
+                                      if (!isMe)
+                                        CustomText(
+                                          title: otherUserName,
+                                          color: AppColors.colorFF8600,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      CustomText(
+                                        title: msg["text"] ?? "",
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                        softWrap: true,
+                                      ),
+                                      SizedBox(height: 5.h),
 
-                                ConstrainedBox(
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: CustomText(
+                                          title:
+                                              msg["timestamp"] != null
+                                                  ? formatTimestamp(
+                                                    msg["timestamp"],
+                                                  )
+                                                  : "",
+
+                                          color: Colors.white70,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                /*      ConstrainedBox(
                                   constraints: BoxConstraints(
                                     maxWidth:
                                         MediaQuery.of(context).size.width * 0.6,
@@ -230,7 +280,7 @@ class ChatScreen extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                ),
+                                ),*/
                               ],
                             );
                           },

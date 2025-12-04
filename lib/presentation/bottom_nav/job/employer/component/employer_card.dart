@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 class EmployerCard extends StatelessWidget {
-  final JobData job;
+  final JobListData job;
 
   const EmployerCard({required this.job, super.key});
 
@@ -88,39 +88,6 @@ class EmployerCard extends StatelessWidget {
           // Info Tile
           _buildRow(context: context),
           SizedBox(height: 20.h),
-
-          //Buttons
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     CustomButton(
-          //       onTap: () {
-          //         LogUtil.logError('job.id ${job.id}');
-          //         Get.toNamed(
-          //           Routes.applicationsScreen,
-          //           arguments: {'jobId': job.id},
-          //         );
-          //       },
-          //       buttonText: "View Applications",
-          //       buttonWidth: 185.w,
-          //       buttonColor: AppColors.color101010,
-          //       borderColor: AppColors.colorFF8600,
-          //       buttonHeight: 50.h,
-          //       buttonTextSize: 15.sp,
-          //     ),
-          //     CustomButton(
-          //       onTap: () {
-          //         Get.toNamed(Routes.jobUpdateScreen, arguments: job);
-          //       },
-          //       buttonText: "Edit Job",
-          //       buttonWidth: 185.w,
-          //       buttonColor: AppColors.color101010,
-          //       borderColor: AppColors.colorFF8600,
-          //       buttonHeight: 50.h,
-          //       buttonTextSize: 15.sp,
-          //     ),
-          //   ],
-          // ),
           Row(
             children: [
               Expanded(
@@ -241,18 +208,23 @@ class EmployerCard extends StatelessWidget {
               SizedBox(height: 15.h),
 
               CustomText(
-                title: job.jobType,
+                title: job.jobType.name,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: AppColors.grey,
               ),
               SizedBox(height: 15.h),
 
-              CustomText(
-                title: '${job.country}, ${job.state}, ${job.city}',
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppColors.grey,
+              SizedBox(
+                width: 150.w,
+                child: CustomText(
+                  textOverflow: TextOverflow.ellipsis,
+                  title:
+                      '${job.country?.name}, ${job.state?.name}, ${job.city}',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.grey,
+                ),
               ),
             ],
           ),

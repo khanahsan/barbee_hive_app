@@ -34,11 +34,13 @@ class AuthApi {
   static Future<Map<String, dynamic>> changePassword({
     required String currentPass,
     required String newPass,
+    required String confirmPass,
   }) async {
     final response = await ApiService.post(ApiEndPoints.changePassword, {
       'current_password': currentPass,
       'password': newPass,
-    }, auth: false);
+      'password_confirmation': confirmPass,
+    }, auth: true);
     return {
       'status': response['status'] ?? false,
       'message': response['message'] ?? 'Request processed',
@@ -62,7 +64,8 @@ class AuthApi {
     int? hairColorId,
     int? height,
     File? resume,
-    int? skillId,
+    // int? skillId,
+    List<int>? skillIds,
     File? profileImage,
   }) async {
     final fields = <String, String>{
@@ -72,8 +75,8 @@ class AuthApi {
       'password': password,
       'password_confirmation': passwordConfirmation,
       'role': role.toString(),
-      'country': country,
-      'state': state,
+      'country_id': country,
+      'state_id': state,
       'city': city,
     };
 
@@ -83,7 +86,14 @@ class AuthApi {
     if (eyeColorId != null) fields['eye_color_id'] = eyeColorId.toString();
     if (hairColorId != null) fields['hair_color_id'] = hairColorId.toString();
     if (height != null) fields['height'] = height.toString();
-    if (skillId != null) fields['skill_id'] = skillId.toString();
+    // if (skillId != null) fields['skill_id'] = skillId.toString();
+
+    if (skillIds != null && skillIds.isNotEmpty) {
+      // For APIs that accept multiple values as skill_ids[]
+      for (var i = 0; i < skillIds.length; i++) {
+        fields['skill_id[$i]'] = skillIds[i].toString();
+      }
+    }
 
     print(
       'Register Payload: $fields, Resume: ${resume?.path}, ProfileImage: ${profileImage?.path}',
@@ -102,6 +112,8 @@ class AuthApi {
       files: files.isNotEmpty ? files : null,
       auth: false,
     );
+
+    print("🔥 FULL RAW REGISTER RESPONSE:\n$data\n");
 
     return RegisterResponse.fromJson(data);
   }

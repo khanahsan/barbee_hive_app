@@ -10,7 +10,9 @@ import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/widgets/app_text_field.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
 import '../../infrastructure/widgets/custom_dropdown.dart';
+import '../../infrastructure/widgets/custom_multi_select_dropdown.dart';
 import '../../infrastructure/widgets/custom_profile_image.dart';
+import '../../infrastructure/widgets/custom_text.dart';
 import 'controllers/sign_up_employer_controller.dart';
 
 class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
@@ -177,17 +179,44 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                   ),
 
                                   /// Country Field
-                                  _buildTextField(
+                                  CustomDropdown(
                                     hint: 'Country',
-                                    controller: controller.countryController,
-                                    icon: AppAssets.countryIcon,
+                                    iconPath: AppAssets.countryIcon,
+                                    selectedValue: controller.selectedCountry,
+                                    // new RxString
+                                    onChanged: (value) {
+                                      controller.updateCountry(value);
+                                    },
                                     validator:
-                                        (value) =>
-                                            FormValidators.validateRequired(
-                                              value,
-                                              "Country",
-                                            ),
+                                        (v) => FormValidators.validateRequired(
+                                          v,
+                                          'Country',
+                                        ),
+                                    items:
+                                        controller.countries
+                                            .map(
+                                              (country) => DropdownMenuItem(
+                                                value: country.name,
+                                                child: CustomText(
+                                                  title: country.name,
+                                                  color: AppColors.color4C4C4C,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
                                   ),
+                                  // _buildTextField(
+                                  //   hint: 'Country',
+                                  //   controller: controller.countryController,
+                                  //   icon: AppAssets.countryIcon,
+                                  //   validator:
+                                  //       (value) =>
+                                  //           FormValidators.validateRequired(
+                                  //             value,
+                                  //             "Country",
+                                  //           ),
+                                  // ),
 
                                   /// State and City Field
                                   Row(
@@ -196,19 +225,52 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                     spacing: 10.w,
                                     children: [
                                       Expanded(
-                                        child: _buildTextField(
+                                        child: CustomDropdown(
                                           hint: 'State',
-                                          controller:
-                                              controller.stateController,
-                                          icon: AppAssets.stateIcon,
+                                          iconPath: AppAssets.stateIcon,
+                                          selectedValue:
+                                          controller.selectedState,
+                                          // new RxString
+                                          onChanged: (value) {
+                                            controller.updateState(value);
+                                          },
                                           validator:
-                                              (value) =>
-                                                  FormValidators.validateRequired(
-                                                    value,
-                                                    "State",
-                                                  ),
+                                              (v) =>
+                                              FormValidators.validateRequired(
+                                                v,
+                                                'State',
+                                              ),
+                                          items:
+                                          controller.states
+                                              .map(
+                                                (state) => DropdownMenuItem(
+                                              value: state.name,
+                                              child: CustomText(
+                                                title: state.name,
+                                                color:
+                                                AppColors
+                                                    .color4C4C4C,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          )
+                                              .toList(),
                                         ),
                                       ),
+                                      // Expanded(
+                                      //   child: _buildTextField(
+                                      //     hint: 'State',
+                                      //     controller:
+                                      //         controller.stateController,
+                                      //     icon: AppAssets.stateIcon,
+                                      //     validator:
+                                      //         (value) =>
+                                      //             FormValidators.validateRequired(
+                                      //               value,
+                                      //               "State",
+                                      //             ),
+                                      //   ),
+                                      // ),
 
                                       Expanded(
                                         child: _buildTextField(
@@ -226,43 +288,20 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                     ],
                                   ),
 
-                                  /// Position Seeking Field
-                                  CustomDropdown(
-                                    validator:
-                                        (value) =>
-                                            FormValidators.validateRequired(
-                                              value,
-                                              "Position Seeking",
-                                            ),
-                                    hint: 'Position Seeking',
+                                  CustomMultiSelectDropdown(
+                                    hint: "Position Seeking",
                                     iconPath: AppAssets.experienceLogo,
-                                    selectedValue: controller.selectedSkill,
-                                    onChanged: controller.updateSkill,
+                                    selectedValues: controller.selectedSkills,
                                     items:
                                         controller.skills
-                                            .asMap()
-                                            .entries
-                                            .where(
-                                              (entry) =>
-                                                  !controller.skills
-                                                      .sublist(0, entry.key)
-                                                      .map((e) => e.name)
-                                                      .contains(
-                                                        entry.value.name,
-                                                      ),
-                                            )
-                                            .map(
-                                              (entry) => DropdownMenuItem(
-                                                value: entry.value.name,
-                                                child: Text(
-                                                  entry.value.name,
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            )
+                                            .map((s) => s.name)
                                             .toList(),
+                                    validator: (value) {
+                                      if (controller.selectedSkills.isEmpty) {
+                                        return "Please select at least one skill";
+                                      }
+                                      return null;
+                                    },
                                   ),
 
                                   /// TERMS SECTION

@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:545979703872:android:d4ee853875e9208e7db5a5",
+        "android_client_info": {
+          "package_name": "com.barbeeinc.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxM2cUz_nFmqdyVn0xlS0_sJ1KVpf5z2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:545979703872:android:756f6980c1700bce7db5a5",
         "android_client_info": {
           "package_name": "com.example.barbee_hive_app"

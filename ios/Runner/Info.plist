@@ -45,5 +45,25 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- Add the permissions for camera and gallery -->
+    <key>NSCameraUsageDescription</key>
+    <string>Barbee Inc. needs permission to register and edit profile.</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Barbee Inc. needs permission to register and edit profile.</string>
+
+    <!-- Add the permissions for camera and gallery -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Barbee Inc needs permission to find nearby users.</string>
+
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Barbee Inc needs permission to find nearby users.</string>
+
+
+	<!-- Add the AdMob Application ID here -->
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-7197948477323178~9756279016</string>
+
 </dict>
 </plist>

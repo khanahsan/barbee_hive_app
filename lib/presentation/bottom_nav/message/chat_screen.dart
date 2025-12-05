@@ -153,7 +153,73 @@ class ChatScreen extends StatelessWidget {
                           reverse: true,
                           separatorBuilder: (_, __) => SizedBox(height: 15.h),
                           itemCount: messages.length,
-                          itemBuilder: (context, index) {
+                            itemBuilder: (context, index) {
+                              final msg = messages[index].data() as Map<String, dynamic>;
+                              final isMe = msg["senderId"] == chatController.currentUserId.value;
+
+                              return Row(
+                                mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  if (!isMe) ...[
+                                    HexagonAvatar(
+                                      imagePath: otherUserImage,
+                                      width: 50.w,
+                                      height: 60.h,
+                                    ),
+                                    SizedBox(width: 5.w),
+                                  ],
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: isMe ? 10.w : 20.w, // Add more padding on left for "me"
+                                      vertical: 10.h,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: isMe ? AppColors.colorFF8600 : AppColors.color27272A,
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (!isMe)
+                                          CustomText(
+                                            title: otherUserName,
+                                            color: AppColors.colorFF8600,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                        // Align text to the left for "me" messages
+                                        Align(
+                                          alignment: isMe ? Alignment.centerLeft : Alignment.centerLeft, // Align to left for both cases
+                                          child: CustomText(
+                                            title: msg["text"] ?? "",
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                            softWrap: true,
+                                          ),
+                                        ),
+                                        SizedBox(height: 5.h),
+
+                                        // Align timestamp to the right for "me" messages
+                                        Align(
+                                          alignment: isMe ? Alignment.centerRight : Alignment.centerRight, // Align timestamp to the right
+                                          child: CustomText(
+                                            title: msg["timestamp"] != null
+                                                ? formatTimestamp(msg["timestamp"])
+                                                : "",
+                                            color: Colors.white70,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+
+                          /*   itemBuilder: (context, index) {
                             final msg =
                                 messages[index].data() as Map<String, dynamic>;
                             final isMe =
@@ -177,7 +243,7 @@ class ChatScreen extends StatelessWidget {
                                 ],
                                 Container(
                                   padding: EdgeInsets.symmetric(
-                                    horizontal: 10.w,
+                                    horizontal: isMe ? 25.w : 10.w, // Add more padding on left for "me"
                                     vertical: 10.h,
                                   ),
                                   decoration: BoxDecoration(
@@ -200,11 +266,14 @@ class ChatScreen extends StatelessWidget {
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12,
                                         ),
-                                      CustomText(
-                                        title: msg["text"] ?? "",
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                        softWrap: true,
+                                      Align(
+                                        alignment: isMe ? Alignment.topLeft : Alignment.topRight,
+                                        child: CustomText(
+                                          title: msg["text"] ?? "",
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          softWrap: true,
+                                        ),
                                       ),
                                       SizedBox(height: 5.h),
 
@@ -226,7 +295,7 @@ class ChatScreen extends StatelessWidget {
                                   ),
                                 ),
 
-                                /*      ConstrainedBox(
+                                *//*      ConstrainedBox(
                                   constraints: BoxConstraints(
                                     maxWidth:
                                         MediaQuery.of(context).size.width * 0.6,
@@ -276,14 +345,13 @@ class ChatScreen extends StatelessWidget {
                                               fontSize: 10.sp,
                                             ),
                                           ),
-                                        ),
                                       ],
                                     ),
                                   ),
-                                ),*/
+                                ),*//*
                               ],
                             );
-                          },
+                          },*/
                         );
                       },
                     ),

@@ -24,7 +24,7 @@ class DashboardScreen extends GetView<DashboardController> {
     return Scaffold(
       appBar: customAppbar(
         showHexagon: true,
-        hexagonTapFunction: (){
+        hexagonTapFunction: () {
           Get.toNamed(Routes.PROFILE_SCREEN);
         },
         profileImagePath: controller.userProfileImage.value,
@@ -76,7 +76,8 @@ class DashboardScreen extends GetView<DashboardController> {
 
                   /// BANNER AD SECTION
                   Obx(() {
-                    if (!controller.isBannerLoaded.value || controller.bannerAd == null) {
+                    if (!controller.isBannerLoaded.value ||
+                        controller.bannerAd == null) {
                       return AppShimmer(height: 80.h, width: double.infinity);
                     }
 
@@ -89,8 +90,6 @@ class DashboardScreen extends GetView<DashboardController> {
                       ),
                     );
                   }),
-
-
 
                   /// HIVE SECTION
                   hiveSection(context),
@@ -170,8 +169,8 @@ class DashboardScreen extends GetView<DashboardController> {
                         child: SingleChildScrollView(
                           child: HexagonAvatar(
                             imagePath:
-                                users[index].profileImage!.isNotEmpty == true
-                                    ? users[index].profileImage!
+                                users[index].profileImage?.isNotEmpty == true
+                                    ? users[index].profileImage ?? ''
                                     : '',
                             // Set to null to trigger name-based avatar
                             width: itemWidth,
@@ -374,44 +373,46 @@ class DashboardScreen extends GetView<DashboardController> {
 
             controller.employers.isEmpty
                 ? Text(
-              'No B2B users found',
-              style: TextStyle(
-                color: AppColors.colorFFFFFF,
-                fontSize: 16.sp,
-              ),
-            )
+                  'No B2B users found',
+                  style: TextStyle(
+                    color: AppColors.colorFFFFFF,
+                    fontSize: 16.sp,
+                  ),
+                )
                 : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children:
-                controller.employers.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final user = entry.value;
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children:
+                        controller.employers.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final user = entry.value;
 
-                  return GestureDetector(
-                    onTap: () => Get.toNamed(
-                      Routes.b2bScreen,
-                      arguments: {'currentUser': user},
-                    ),
-                    child: HexagonAvatar(
-                      imagePath: user.profileImage ?? "",
-                      width: 90.w,
-                      height: 100.h,
-                      borderColor: index % 2 == 0
-                          ? AppColors.colorFFFFFF
-                          : AppColors.colorFF8600,
-                      name: user.employer?.businessName ??
-                          user.email.split('@').first,
-                      totalMl: "aa",
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
+                          return GestureDetector(
+                            onTap:
+                                () => Get.toNamed(
+                                  Routes.b2bScreen,
+                                  arguments: {'currentUser': user},
+                                ),
+                            child: HexagonAvatar(
+                              imagePath: user.profileImage ?? "",
+                              width: 90.w,
+                              height: 100.h,
+                              borderColor:
+                                  index % 2 == 0
+                                      ? AppColors.colorFFFFFF
+                                      : AppColors.colorFF8600,
+                              name:
+                                  user.employer?.businessName ??
+                                  user.email.split('@').first,
+                              totalMl: "aa",
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ),
           ],
         ),
       );
     });
   }
-
 }

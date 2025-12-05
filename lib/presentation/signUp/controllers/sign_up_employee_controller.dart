@@ -156,11 +156,10 @@ class SignUpEmployeeController extends GetxController {
         selectedImage.value = File(pickedFile.path);
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to pick image: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Failed to pick image: $e',
+        isSuccess: false,
       );
     }
   }
@@ -217,11 +216,10 @@ class SignUpEmployeeController extends GetxController {
         selectedResume.value = File(result.files.single.path!);
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to pick resume: $e',
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Failed to pick resume: $e',
+        isSuccess: false,
       );
     }
   }
@@ -424,165 +422,18 @@ class SignUpEmployeeController extends GetxController {
     }
   }
 
-  // ======== Registration ========
-  // Future<void> registerEmployee() async {
-  //   // 1️⃣ Validate Terms, Resume, and Profile Image
-  //   if (!isChecked.value)
-  //     return _showError('Please agree to the Terms of Service');
-  //   if (selectedResume.value == null)
-  //     return _showError('Please upload your resume');
-  //   if (selectedImage.value == null)
-  //     return _showError('Please upload a profile image');
-  //
-  //   // 2️⃣ Validate Dropdown selections
-  //   if (selectedSkills.isEmpty)
-  //     return _showError('Please select at least one skill');
-  //
-  //   late List<Skill> userSkills;
-  //   late EyeColor eyeColor;
-  //   late HairColor hairColor;
-  //   late Gender userGender;
-  //   late Height userHeight;
-  //   late int countryId;
-  //   late int stateId;
-  //
-  //   try {
-  //     // ✅ Map selected skills to Skill objects
-  //     userSkills =
-  //         skills.where((skill) => selectedSkills.contains(skill.name)).toList();
-  //     if (userSkills.isEmpty) throw Exception('Please select valid skills');
-  //
-  //     // ✅ Map selected eye color
-  //     eyeColor = eyeColors.firstWhere(
-  //       (color) => color.name == selectedEyeColor.value,
-  //       orElse: () => throw Exception('Please select an eye color'),
-  //     );
-  //
-  //     // ✅ Map selected hair color
-  //     hairColor = hairColors.firstWhere(
-  //       (color) => color.name == selectedHairColor.value,
-  //       orElse: () => throw Exception('Please select a hair color'),
-  //     );
-  //
-  //     // ✅ Map selected gender
-  //     userGender = genders.firstWhere(
-  //       (gender) => gender.name == selectedGender.value,
-  //       orElse: () => throw Exception('Please select a gender'),
-  //     );
-  //
-  //     // ✅ Map selected height
-  //     userHeight = heights.firstWhere(
-  //       (height) => height.name == selectedHeight.value,
-  //       orElse: () => throw Exception('Please select a height'),
-  //     );
-  //
-  //     // ✅ Map country name to ID
-  //     countryId =
-  //         countries
-  //             .firstWhere(
-  //               (c) => c.name == selectedCountry.value,
-  //               orElse: () => throw Exception('Please select a country'),
-  //             )
-  //             .id;
-  //
-  //     // ✅ Map state name to ID
-  //     stateId =
-  //         states
-  //             .firstWhere(
-  //               (s) => s.name == selectedState.value,
-  //               orElse: () => throw Exception('Please select a state'),
-  //             )
-  //             .id;
-  //   } catch (e) {
-  //     return _showError(e.toString().replaceFirst('Exception: ', ''));
-  //   }
-  //
-  //   isLoading.value = true;
-  //
-  //   try {
-  //     // 3️⃣ Create Firebase User
-  //     final userCredential = await FirebaseAuth.instance
-  //         .createUserWithEmailAndPassword(
-  //           email: emailController.text.trim(),
-  //           password: passwordController.text.trim(),
-  //         );
-  //
-  //     final uid = userCredential.user!.uid;
-  //
-  //     // 4️⃣ Register with Backend API
-  //     final response = await AuthApi.register(
-  //       uid: uid,
-  //       name: nameController.text,
-  //       email: emailController.text,
-  //       password: passwordController.text,
-  //       passwordConfirmation: confirmPasswordController.text,
-  //       role: 3,
-  //       country: countryId.toString(),
-  //       // ✅ Pass ID
-  //       state: stateId.toString(),
-  //       // ✅ Pass ID
-  //       city: cityController.text,
-  //       dob: selectedDate.value,
-  //       gender: userGender.id,
-  //       eyeColorId: eyeColor.id,
-  //       hairColorId: hairColor.id,
-  //       height: userHeight.id,
-  //       resume: selectedResume.value,
-  //       skillIds: userSkills.map((s) => s.id).toList(),
-  //       profileImage: selectedImage.value,
-  //     );
-  //
-  //     print("🔥 FULL RESPONSE DATA: ${response.data.user}");
-  //
-  //     if (!response.status) throw Exception(response.message);
-  //
-  //     ApiService.setToken(response.data.token);
-  //
-  //     if (response.data.user.profileImage != null) {
-  //       profileImageUrl.value = response.data.user.profileImage!;
-  //     }
-  //
-  //     // 5️⃣ Create Firestore document
-  //     await FirebaseFirestore.instance.collection('users').doc(uid).set({
-  //       'uid': uid,
-  //       'apiUserId': response.data.user.id ?? '',
-  //       'name': nameController.text.trim(),
-  //       'email': emailController.text.trim(),
-  //       'role': 'employee',
-  //       'profileImage': response.data.user.profileImage ?? '',
-  //       'createdAt': FieldValue.serverTimestamp(),
-  //     });
-  //
-  //     Utilities.showSnackBar(
-  //       title: 'Success',
-  //       message: response.message,
-  //       isSuccess: true,
-  //     );
-  //
-  //     Get.offAllNamed(Routes.SIGN_IN_VIEW);
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'email-already-in-use') {
-  //       return _showError('Email already exists in Firebase');
-  //     }
-  //     if (e.code == 'weak-password') return _showError('Password is too weak');
-  //     if (e.code == 'invalid-email') return _showError('Invalid email format');
-  //     return _showError('${e.code}: ${e.message}');
-  //   } catch (e) {
-  //
-  //     log("EXCEPTION: ${e.toString()}");
-  //     return _showError(e.toString().replaceFirst('Exception: ', ''));
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
 
-  // ======== Registration ========
   Future<void> registerEmployee() async {
     // 1️⃣ Validate Terms, Resume, Profile Image, and Skills
-    if (!isChecked.value) return _showError('Please agree to the Terms of Service');
-    if (selectedResume.value == null) return _showError('Please upload your resume');
-    if (selectedImage.value == null) return _showError('Please upload a profile image');
-    if (selectedSkills.isEmpty) return _showError('Please select at least one skill');
+    if (!isChecked.value) {
+      return _showError('Please agree to the Terms of Service');
+    }
+    if (selectedResume.value == null) {
+      return _showError('Please upload your resume');
+    }
+    if (selectedImage.value == null) {
+      return _showError('Please upload a profile image');
+    }
 
     late List<Skill> userSkills;
     late EyeColor eyeColor;
@@ -594,44 +445,51 @@ class SignUpEmployeeController extends GetxController {
 
     try {
       // ✅ Map selected skills to Skill objects
-      userSkills = skills.where((skill) => selectedSkills.contains(skill.name)).toList();
+      userSkills =
+          skills.where((skill) => selectedSkills.contains(skill.name)).toList();
       if (userSkills.isEmpty) throw Exception('Please select valid skills');
 
       // ✅ Map selected eye color
       eyeColor = eyeColors.firstWhere(
-            (color) => color.name == selectedEyeColor.value,
+        (color) => color.name == selectedEyeColor.value,
         orElse: () => throw Exception('Please select an eye color'),
       );
 
       // ✅ Map selected hair color
       hairColor = hairColors.firstWhere(
-            (color) => color.name == selectedHairColor.value,
+        (color) => color.name == selectedHairColor.value,
         orElse: () => throw Exception('Please select a hair color'),
       );
 
       // ✅ Map selected gender
       userGender = genders.firstWhere(
-            (gender) => gender.name == selectedGender.value,
+        (gender) => gender.name == selectedGender.value,
         orElse: () => throw Exception('Please select a gender'),
       );
 
       // ✅ Map selected height
       userHeight = heights.firstWhere(
-            (height) => height.name == selectedHeight.value,
+        (height) => height.name == selectedHeight.value,
         orElse: () => throw Exception('Please select a height'),
       );
 
       // ✅ Map country name to ID
-      countryId = countries.firstWhere(
-            (c) => c.name == selectedCountry.value,
-        orElse: () => throw Exception('Please select a country'),
-      ).id;
+      countryId =
+          countries
+              .firstWhere(
+                (c) => c.name == selectedCountry.value,
+                orElse: () => throw Exception('Please select a country'),
+              )
+              .id;
 
       // ✅ Map state name to ID
-      stateId = states.firstWhere(
-            (s) => s.name == selectedState.value,
-        orElse: () => throw Exception('Please select a state'),
-      ).id;
+      stateId =
+          states
+              .firstWhere(
+                (s) => s.name == selectedState.value,
+                orElse: () => throw Exception('Please select a state'),
+              )
+              .id;
     } catch (e) {
       return _showError(e.toString().replaceFirst('Exception: ', ''));
     }
@@ -640,10 +498,11 @@ class SignUpEmployeeController extends GetxController {
 
     try {
       // 2️⃣ Create Firebase Auth User
-      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          );
       final uid = userCredential.user!.uid;
 
       // 3️⃣ Register with Backend API
@@ -683,11 +542,16 @@ class SignUpEmployeeController extends GetxController {
       });
 
       // 5️⃣ Success feedback
-      Utilities.showSnackBar(title: 'Success', message: response.message, isSuccess: true);
+      Utilities.showSnackBar(
+        title: 'Success',
+        message: response.message,
+        isSuccess: true,
+      );
       Get.offAllNamed(Routes.SIGN_IN_VIEW);
-
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') return _showError('Email already exists in Firebase');
+      if (e.code == 'email-already-in-use') {
+        return _showError('Email already exists in Firebase');
+      }
       if (e.code == 'weak-password') return _showError('Password is too weak');
       if (e.code == 'invalid-email') return _showError('Invalid email format');
       return _showError('${e.code}: ${e.message}');
@@ -809,7 +673,6 @@ class SignUpEmployeeController extends GetxController {
       isLoading.value = false;
     }
   }*/
-
 
   // ======== Helper Method for Error SnackBar ========
   void _showError(String message) {

@@ -103,7 +103,7 @@ class CustomDropdown extends StatelessWidget {
                                 ? hint
                                 : selectedValue.value,
                             style: TextStyle(
-                              color: textColor ?? Colors.black,
+                              color: textColor ?? AppColors.color4C4C4C,
                               fontSize: fontSize ?? 16.sp,
                               fontWeight: FontWeight.w400,
                             ),

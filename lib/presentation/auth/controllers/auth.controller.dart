@@ -224,7 +224,15 @@ class AuthController extends GetxController {
 
       // 🔐 Clear tokens (from Function 2)
       await TokenStorage.clearToken();
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userRole);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.authToken);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userId);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userProfileImage);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userName);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
       ApiService.clearToken();
+      nameController.clear();
+      passwordController.clear();
 
       Get.back<void>(); // close dialog
 

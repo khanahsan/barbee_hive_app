@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/infrastructure/widgets/custom_profile_image.dart';
@@ -53,6 +52,29 @@ class ProfileScreen extends GetView<ProfileController> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: Obx(
+        () =>
+            controller.isEditing.value && controller.isLoading.value == false
+                ? Padding(
+                  padding: EdgeInsets.only(
+                    left: 15.w,
+                    right: 15.w,
+                    bottom: 20.h,
+                  ),
+                  child: CustomBtn(
+                    buttonHeight: 58.h,
+                    btnTitle: "Submit Now",
+                    btnBackgroundColor: AppColors.colorFF8600,
+                    btnTxtColor: Colors.white,
+                    onPressed: () {
+                      if (controller.formKey.currentState!.validate()) {
+                        controller.updateUserProfile();
+                      }
+                    },
+                  ),
+                )
+                : SizedBox.shrink(), // nothing at bottom if not editing
       ),
 
       backgroundColor: Colors.black,
@@ -142,7 +164,6 @@ class ProfileScreen extends GetView<ProfileController> {
                       ),
                     ),
 
-
                     Positioned(
                       top: topOffset,
                       // 50.h
@@ -206,19 +227,25 @@ class ProfileScreen extends GetView<ProfileController> {
                                           ),
                                           TextSpan(text: " "),
                                           TextSpan(
-                                            text: controller.selectedSkills.isNotEmpty
-                                                ? controller.selectedSkills.first
-                                                : "No skills selected",
-                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                            text:
+                                                controller
+                                                        .selectedSkills
+                                                        .isNotEmpty
+                                                    ? controller
+                                                        .selectedSkills
+                                                        .first
+                                                    : "No skills selected",
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.titleMedium?.copyWith(
                                               fontSize: 16.sp,
                                               fontWeight: FontWeight.w600,
-                                              color: controller.isEditing.value
-                                                  ? AppColors.colorFF8600
-                                                  : AppColors.colorFFFFFF,
+                                              color:
+                                                  controller.isEditing.value
+                                                      ? AppColors.colorFF8600
+                                                      : AppColors.colorFFFFFF,
                                             ),
                                           ),
-
-
                                         ],
                                       ),
                                     ),
@@ -232,37 +259,50 @@ class ProfileScreen extends GetView<ProfileController> {
                                       if (controller.currentUserRole.value == 3)
                                         EmployeeEditWidget(),
 
-                                      SizedBox(height: 20.h),
+                                      SizedBox(height: 5.h),
                                     ],
-                                    Obx(
-                                      () => CustomBtn(
+
+                                    if (!controller.isEditing.value)
+                                      CustomBtn(
                                         buttonHeight: 58.h,
-                                        btnTitle:
-                                            controller.isEditing.value == true
-                                                ? "Submit Now"
-                                                : 'Edit Profile',
+                                        btnTitle: 'Edit Profile',
                                         btnBackgroundColor:
                                             AppColors.colorFF8600,
                                         btnTxtColor: Colors.white,
-                                        // width: double.infinity,
                                         onPressed: () {
-                                          log(
-                                            "BUTTON PRESSED ${!controller.isEditing.value}",
-                                          );
-
-                                          if (!controller.isEditing.value) {
-                                            controller.toggleEditing();
-                                            return;
-                                          }
-
-                                          if (controller.formKey.currentState!
-                                              .validate()) {
-                                            log("Calling updateUserProfile()");
-                                            controller.updateUserProfile();
-                                          }
+                                          controller.toggleEditing();
                                         },
                                       ),
-                                    ),
+
+                                    // Obx(
+                                    //   () => CustomBtn(
+                                    //     buttonHeight: 58.h,
+                                    //     btnTitle:
+                                    //         controller.isEditing.value == true
+                                    //             ? "Submit Now"
+                                    //             : 'Edit Profile',
+                                    //     btnBackgroundColor:
+                                    //         AppColors.colorFF8600,
+                                    //     btnTxtColor: Colors.white,
+                                    //     // width: double.infinity,
+                                    //     onPressed: () {
+                                    //       log(
+                                    //         "BUTTON PRESSED ${!controller.isEditing.value}",
+                                    //       );
+                                    //
+                                    //       if (!controller.isEditing.value) {
+                                    //         controller.toggleEditing();
+                                    //         return;
+                                    //       }
+                                    //
+                                    //       if (controller.formKey.currentState!
+                                    //           .validate()) {
+                                    //         log("Calling updateUserProfile()");
+                                    //         controller.updateUserProfile();
+                                    //       }
+                                    //     },
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                               ),

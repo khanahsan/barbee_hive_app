@@ -86,6 +86,8 @@ class CustomDrawerController extends GetxController
 
   @override
   void onClose() {
+    userName.value = '';
+    userProfileImage.value = '';
     animationController.dispose();
     super.onClose();
   }

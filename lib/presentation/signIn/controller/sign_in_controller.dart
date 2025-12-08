@@ -33,10 +33,14 @@ class SignInController extends GetxController {
     String savedPassword =
         SharedPreferenceHelper.getString(SharedPrefKeys.savedPassword) ?? '';
 
-    if (savedEmail.isNotEmpty && savedPassword.isNotEmpty) {
-      emailController.text = savedEmail;
+    emailController.text = savedEmail;
+
+    if (savedPassword.isNotEmpty) {
       passwordController.text = savedPassword;
       rememberMe.value = true;
+    } else {
+      passwordController.clear();
+      rememberMe.value = false;
     }
   }
 

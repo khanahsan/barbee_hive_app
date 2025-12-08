@@ -7,7 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 class EmployeeCard2 extends StatefulWidget {
-  final JobData job;
+  final AppliedJobData job;
   const EmployeeCard2({required this.job, super.key});
 
   @override
@@ -111,7 +111,7 @@ class _EmployeeCard2State extends State<EmployeeCard2>
                       borderRadius: BorderRadius.circular(5.r),
                     ),
                     child: Text(
-                      widget.job.jobType,
+                      widget.job.jobType.name,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,

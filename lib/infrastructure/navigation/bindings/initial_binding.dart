@@ -33,9 +33,10 @@ class InitialBindings implements Bindings {
     Get.lazyPut<DashboardController>(() => DashboardController());
     Get.lazyPut<B2BController>(() => B2BController());
     Get.lazyPut<HiveProfileController>(() => HiveProfileController());
-    Get.lazyPut<CustomDrawerController>(() => CustomDrawerController());
-    Get.lazyPut<AuthController>(() => AuthController());
-    Get.lazyPut<SignInController>(() => SignInController());
+    Get.lazyPut<CustomDrawerController>(() => CustomDrawerController(),
+        fenix: true);
+    Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
+    Get.lazyPut<SignInController>(() => SignInController(), fenix: true);
     Get.lazyPut<ChangePasswordController>(() => ChangePasswordController());
     Get.lazyPut<SignUpEmployeeController>(() => SignUpEmployeeController());
     Get.lazyPut<SplashController>(() => SplashController());

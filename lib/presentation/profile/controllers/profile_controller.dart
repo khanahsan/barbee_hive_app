@@ -485,6 +485,11 @@ class ProfileController extends GetxController {
   Future<void> updateUserProfile() async {
     log("updateUserProfile called");
 
+    // final state = states.firstWhere(
+    //       (j) => (j.name ?? "") == selectedState.value,
+    //   orElse: () => throw Exception("Invalid State Selected"),
+    // );
+
     try {
       isLoading.value = true;
 
@@ -504,8 +509,8 @@ class ProfileController extends GetxController {
       // ========== 1️⃣ API CALL ==========
       final response = await ProfileApi.updateUserProfile(
         city: city,
-        country: country,
-        state: state,
+        country: currentCountryId.value.toString(),
+        state: currentStateId.value.toString(),
         resume: selectedResumeFile.value,
         profileImage: profileImageFile,
         coverImage: coverImageFile.value,

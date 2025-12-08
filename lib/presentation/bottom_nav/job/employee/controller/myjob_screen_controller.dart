@@ -10,7 +10,7 @@ class MyjobsController extends GetxController {
   final isLoading = false.obs;
   final errorMessage = ''.obs;
   String? userProfileImage = '';
-  final appliedJobs = <JobData>[].obs;
+  final appliedJobs = <AppliedJobData>[].obs;
 
   @override
   void onInit() {

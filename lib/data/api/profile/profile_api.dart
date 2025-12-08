@@ -36,8 +36,8 @@ class ProfileApi {
     final fields = <String, String>{
       'name': name,
       'email': email,
-      'country': country,
-      'state': state,
+      'country_id': country,
+      'state_id': state,
       'city': city,
       if (dob != null) 'dob': dob,
       if (gender != null) 'gender': gender,
@@ -59,6 +59,8 @@ class ProfileApi {
     }
 
     log("RESUME PATH: ${resume?.path}");
+    log("COUNTRY ID: $country");
+    log("STATE ID: $state");
     log("PROFILE IMAGE PATH: ${profileImage?.path}");
     log("COVER IMAGE PATH: ${coverImage?.path}");
 

@@ -12,12 +12,11 @@ import '../../constants/app_images.dart';
 import '../../navigation/routes.dart';
 import 'controller/custom_drawer_controller.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends GetView<CustomDrawerController> {
   const CustomDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CustomDrawerController());
 
     return Scaffold(
       backgroundColor: Colors.transparent,

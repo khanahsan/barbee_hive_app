@@ -8,7 +8,7 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../infrastructure/constants/app_colors.dart';
 
-class CustomDropdown extends StatelessWidget {
+/*class CustomDropdown extends StatelessWidget {
   final String hint;
   final String? iconPath; // Nullable now
   final RxString selectedValue;
@@ -137,12 +137,13 @@ class CustomDropdown extends StatelessWidget {
       },
     );
   }
-}
+}*/
 
 
-/*class CustomDropdown extends StatelessWidget {
+
+class CustomDropdown extends StatelessWidget {
   final String hint;
-  final String? iconPath;
+  final String? iconPath; // Nullable now
   final RxString selectedValue;
   final Function(String?) onChanged;
   final List<DropdownMenuItem<String>> items;
@@ -158,7 +159,7 @@ class CustomDropdown extends StatelessWidget {
   const CustomDropdown({
     super.key,
     required this.hint,
-    required this.iconPath,
+    this.iconPath, // Nullable
     required this.selectedValue,
     required this.onChanged,
     required this.items,
@@ -174,22 +175,24 @@ class CustomDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget iconWidget;
+    Widget? iconWidget;
 
-    if (iconPath.toLowerCase().endsWith('.svg')) {
-      iconWidget = SvgPicture.asset(
-        iconPath,
-        color: textColor ?? AppColors.textFieldTextColor,
-        width: iconSize ?? 24.w,
-        height: iconSize ?? 24.h,
-      );
-    } else {
-      iconWidget = Image.asset(
-        iconPath,
-        color: textColor ?? AppColors.textFieldTextColor,
-        width: iconSize ?? 20.w,
-        height: iconSize ?? 20.h,
-      );
+    if (iconPath != null && iconPath!.isNotEmpty) {
+      if (iconPath!.toLowerCase().endsWith('.svg')) {
+        iconWidget = SvgPicture.asset(
+          iconPath!,
+          color: textColor ?? AppColors.textFieldTextColor,
+          width: iconSize ?? 24.w,
+          height: iconSize ?? 24.h,
+        );
+      } else {
+        iconWidget = Image.asset(
+          iconPath!,
+          color: textColor ?? AppColors.textFieldTextColor,
+          width: iconSize ?? 20.w,
+          height: iconSize ?? 20.h,
+        );
+      }
     }
 
     return FormField<String>(
@@ -207,52 +210,115 @@ class CustomDropdown extends StatelessWidget {
                 borderRadius: BorderRadius.circular(borderRadius ?? 10.r),
                 border: Border.all(
                   color:
-                      state.hasError
-                          ? Colors.red
-                          : borderColor ?? Colors.transparent,
+                  state.hasError ? Colors.red : borderColor ?? Colors.black,
                   width: 1.2,
                 ),
               ),
               child: Row(
                 spacing: 20.w,
                 children: [
-                  iconWidget,
+                  if (iconWidget != null) iconWidget, // Only show if not null
                   Expanded(
                     child: Obx(
-                      () => DropdownButtonHideUnderline(
+                          () => DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           isExpanded: true,
-                          dropdownColor: dropdownColor ?? Colors.grey[900],
+                          dropdownColor: dropdownColor ?? AppColors.textFieldBackground,
+                          // dropdown background = black
                           style: TextStyle(
-                            fontSize: 16.sp,
+                            fontSize: fontSize ?? 16.sp,
                             overflow: TextOverflow.ellipsis,
-                            color: textColor ?? AppColors.colorA3A3A3,
+                            color: textColor ?? AppColors.color4C4C4C,
+                            // selected text = white
                             fontWeight: FontWeight.w400,
                           ),
+
                           hint: Text(
                             selectedValue.value.isEmpty
                                 ? hint
                                 : selectedValue.value,
                             style: TextStyle(
-                              color: textColor ?? AppColors.colorA3A3A3,
+                              color: textColor ?? AppColors.color4C4C4C,
+                              // hint text color = white
                               fontSize: fontSize ?? 16.sp,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
-                          iconEnabledColor: Colors.grey,
-                          items: items,
+
+                          iconEnabledColor: Colors.white,
+                          // dropdown arrow white
                           value:
-                              selectedValue.value.isEmpty
-                                  ? null
-                                  : selectedValue.value,
+                          selectedValue.value.isEmpty
+                              ? null
+                              : selectedValue.value,
+
+                          items: items.map((item) {
+                            return DropdownMenuItem<String>(
+                              value: item.value,
+                              child: DefaultTextStyle(
+                                style: TextStyle(
+                                  color: AppColors.categorybordergrey,
+                                  fontSize: fontSize ?? 16.sp,
+                                ),
+                                child: item.child, // <-- Correct way
+                              ),
+                            );
+                          }).toList(),
+
+
+                          // items:
+                          //     items.map((item) {
+                          //       return DropdownMenuItem<String>(
+                          //         value: item.value,
+                          //         child: Text(
+                          //           item.child.toString(), // ensure same text
+                          //           style: TextStyle(
+                          //             color: Colors.white,
+                          //             // dropdown item text = white
+                          //             fontSize: fontSize ?? 16.sp,
+                          //           ),
+                          //         ),
+                          //       );
+                          //     }).toList(),
+
                           onChanged: (value) {
-                            // ✅ Update RxString value
                             selectedValue.value = value ?? '';
                             onChanged(value);
                             state.didChange(value);
                           },
                           menuMaxHeight: 250.h,
                         ),
+                        // child: DropdownButton<String>(
+                        //   isExpanded: true,
+                        //   dropdownColor: dropdownColor ?? Colors.white,
+                        //   style: TextStyle(
+                        //     fontSize: fontSize ?? 16.sp,
+                        //     overflow: TextOverflow.ellipsis,
+                        //     color: textColor ?? Colors.black,
+                        //     fontWeight: FontWeight.w400,
+                        //   ),
+                        //   hint: Text(
+                        //     selectedValue.value.isEmpty
+                        //         ? hint
+                        //         : selectedValue.value,
+                        //     style: TextStyle(
+                        //       color: textColor ?? Colors.black,
+                        //       fontSize: fontSize ?? 16.sp,
+                        //       fontWeight: FontWeight.w400,
+                        //     ),
+                        //   ),
+                        //   iconEnabledColor: Colors.grey,
+                        //   items: items,
+                        //   value: selectedValue.value.isEmpty
+                        //       ? null
+                        //       : selectedValue.value,
+                        //   onChanged: (value) {
+                        //     selectedValue.value = value ?? '';
+                        //     onChanged(value);
+                        //     state.didChange(value);
+                        //   },
+                        //   menuMaxHeight: 250.h,
+                        // ),
                       ),
                     ),
                   ),
@@ -270,4 +336,4 @@ class CustomDropdown extends StatelessWidget {
       },
     );
   }
-}*/
+}

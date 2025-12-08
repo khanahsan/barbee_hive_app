@@ -9,5 +9,6 @@ class SharedPrefKeys {
   static const String userRole = 'user_role';
   static const String userName = 'user_name';
   static const String userProfileImage = 'user_profile_image';
+  static const String activatedSubscriptionId = 'activated_subscription_id';
 
 }

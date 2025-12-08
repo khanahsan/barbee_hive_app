@@ -13,6 +13,18 @@ class PricingPlansController extends GetxController {
   /// Observable list of subscription plans
   var plans = <SubscriptionPlan>[].obs;
 
+  RxInt activePlanId = 0.obs;
+
+  Future<void> loadActivePlan() async {
+    final savedId = SharedPreferenceHelper.getInt(
+      SharedPrefKeys.activatedSubscriptionId,
+    );
+
+    log("SAVED ID: $savedId");
+
+    activePlanId.value = savedId ?? 0;
+  }
+
   /// Loading state
   RxBool isLoading = true.obs;
   RxBool isEmployer = false.obs;
@@ -25,7 +37,7 @@ class PricingPlansController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Future.wait([loadRoleAsync(), fetchSubscriptionPlans()]);
+    Future.wait([loadRoleAsync(), loadActivePlan(), fetchSubscriptionPlans()]);
   }
 
   /// Fetch Role Value From Local Storage
@@ -92,11 +104,11 @@ class PricingPlansController extends GetxController {
 
           paymentIntentID = data.paymentIntentId;
 
-          Utilities.showSnackBar(
+          /*    Utilities.showSnackBar(
             title: 'Success',
             message: 'Payment completed successfully',
             isSuccess: true,
-          );
+          );*/
         } catch (e) {
           Utilities.showSnackBar(
             title: 'Error',
@@ -143,7 +155,69 @@ class PricingPlansController extends GetxController {
       );
 
       if (finalizeResponse.status) {
-        Get.back();
+
+        final membershipId = finalizeResponse.data?.planId;
+
+        if (membershipId != null) {
+          await SharedPreferenceHelper.saveInt(
+            SharedPrefKeys.activatedSubscriptionId,
+            membershipId,
+          );
+
+          activePlanId.value = membershipId;  // ← update instantly
+        }
+
+        // Now refresh plans
+        await fetchSubscriptionPlans();
+
+        Get.close(1);
+
+        Utilities.showSnackBar(
+          title: 'Success',
+          message: finalizeResponse.message,
+          isSuccess: true,
+        );
+
+      } else {
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: finalizeResponse.message,
+          isSuccess: false,
+        );
+      }
+    }
+    catch (e) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Failed to finalize subscription: $e',
+        isSuccess: false,
+      );
+    }
+  }
+
+/*  Future<void> finalizeSubscription({
+    required int planId,
+    String? paymentIntentID,
+  }) async {
+    try {
+      final finalizeResponse = await SubscriptionApi.finalizeSubscription(
+        planID: planId,
+        paymentIntentID: paymentIntentID,
+      );
+
+      if (finalizeResponse.status) {
+        final membershipId = finalizeResponse.data?.planId;
+
+        fetchSubscriptionPlans();
+        loadActivePlan();
+
+        if (membershipId != null) {
+          await SharedPreferenceHelper.saveInt(
+            SharedPrefKeys.activatedSubscriptionId,
+            membershipId,
+          );
+        }
+        Get.close(1);
 
         Utilities.showSnackBar(
           title: 'Success',
@@ -165,5 +239,5 @@ class PricingPlansController extends GetxController {
         isSuccess: false,
       );
     }
-  }
+  }*/
 }

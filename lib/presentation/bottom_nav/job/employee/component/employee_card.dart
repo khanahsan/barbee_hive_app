@@ -51,15 +51,56 @@ class _EmployeeCardState extends State<EmployeeCard>
             spacing: 14.h,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  HexagonAvatar(
+                    imagePath: widget.job.employer.profileImage ?? '',
+                    name: widget.job.recruiterName,
+                    width: 70.w,
+                    height: 80.h,
+                  ),
+
+                  SizedBox(width: 8.w),
+
+                  Expanded(   // 👈 THIS FIXES THE OVERFLOW
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Job Posted By",
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.colorFF8600,
+                          ),
+                        ),
+
+                        Text(
+                          widget.job.recruiterName,
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.colorFFFFFF,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis, // 👈 Add ellipsis
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              /*   Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 8.w,
                 children: [
-                  /*HexagonAvatar(
+                  *//*HexagonAvatar(
                     imagePath: AppAssets.profileImage,
                     width: 70.w,
                     height: 80.h,
-                  ),*/
+                  ),*//*
                   HexagonAvatar(
                     imagePath: widget.job.employer.profileImage ?? '',
                     // Pass empty string if null
@@ -91,7 +132,7 @@ class _EmployeeCardState extends State<EmployeeCard>
                     ],
                   ),
                 ],
-              ),
+              ),*/
               Divider(color: AppColors.textFieldBackground),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

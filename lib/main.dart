@@ -87,6 +87,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart'; // To load environment variables
@@ -108,6 +109,18 @@ void main() async {
 
   // Load environment variables (if you're using .env file for sensitive keys)
   await dotenv.load(fileName: ".env");
+
+  /// ------------- STRIPE INITIALIZATION (APPLE PAY FIX) ---------------
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
+
+  // Set Apple Pay merchant ID
+  Stripe.merchantIdentifier = 'merchant.app.barbeeinc';
+
+  // Required for redirect handling
+  Stripe.urlScheme = 'stripe';
+
+  // Apply Stripe settings
+  await Stripe.instance.applySettings();
 
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

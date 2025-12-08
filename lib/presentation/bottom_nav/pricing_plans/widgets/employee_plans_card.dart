@@ -3,13 +3,16 @@ import 'dart:developer';
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller/pricing_plans_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/model/pricing_plans_model.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/widgets/plan_details_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-class EmployeePlansCard extends StatelessWidget {
+import '../../../../infrastructure/widgets/custom_btn.dart';
+
+class EmployeePlansCard extends GetView<PricingPlansController> {
   final SubscriptionPlan plan;
   final int index;
 
@@ -27,6 +30,8 @@ class EmployeePlansCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final gradient = planGradients[index % planGradients.length];
     final primaryColor = gradient.first;
+
+    final bool isPurchased = controller.activePlanId.value == plan.id;
 
     return Container(
       padding: EdgeInsets.all(1), // Thickness of the border
@@ -95,8 +100,36 @@ class EmployeePlansCard extends StatelessWidget {
               ),
 
             /// TRY PLAN OPTION
-            if (plan.price != 0)
-              CustomButton(
+            if (plan.price != 0)...[
+              if (isPurchased)
+                CustomBtn(
+                  btnTitle: "Purchased",
+                  onPressed: () {},
+                  buttonHeight: 54.h,
+
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  btnBackgroundColor: AppColors.color000000,
+                  borderColor: AppColors.colorFF8600,
+                )
+              else
+                CustomBtn(
+                  onPressed: () {
+                    Get.bottomSheet(
+                      PlanDetailsBottomSheet(plan: plan),
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                    );
+                  },
+                  btnTitle: "Get Started",
+                  buttonWidth: double.infinity,
+                  buttonHeight: 54.h,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  btnBackgroundColor: AppColors.colorFF8600,
+                ),
+            ],
+          /*    CustomButton(
                 onTap: () {
                   log('CALLING');
                   if (plan == null) {
@@ -117,7 +150,7 @@ class EmployeePlansCard extends StatelessWidget {
                 buttonTextSize: 16.sp,
                 buttonTextWeight: FontWeight.w600,
                 buttonColor: AppColors.colorFF8600,
-              ),
+              ),*/
           ],
         ),
       ),

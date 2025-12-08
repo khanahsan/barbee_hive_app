@@ -20,6 +20,42 @@ class StripeService {
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
+
+          // Optional but usually passed by backend
+          customerId: customerId,
+          customerEphemeralKeySecret: ephemeralKey,
+
+          merchantDisplayName: merchantDisplayName,
+
+          /// REQUIRED FOR IOS
+          // merchantCountryCode: 'US',
+
+          /// REQUIRED FOR IOS APPLE PAY SUPPORT
+          applePay: const PaymentSheetApplePay(
+            merchantCountryCode: 'US',
+          ),
+
+          style: ThemeMode.dark,
+        ),
+      );
+
+      log('✅ Stripe PaymentSheet initialized');
+    } catch (e) {
+      log('Stripe initPaymentSheet error: $e');
+      rethrow;
+    }
+  }
+
+  /* Future<void> initPaymentSheet({
+    required String clientSecret,
+    String? customerId,
+    String? ephemeralKey,
+    String merchantDisplayName = 'Barbee Hive',
+  }) async {
+    try {
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: clientSecret,
           customerId: customerId,
           customerEphemeralKeySecret: ephemeralKey,
           merchantDisplayName: merchantDisplayName,
@@ -32,7 +68,7 @@ class StripeService {
       log('Stripe initPaymentSheet error: $e');
       rethrow;
     }
-  }
+  }*/
 
   /// Present Payment Sheet
   Future<bool> presentPaymentSheet() async {

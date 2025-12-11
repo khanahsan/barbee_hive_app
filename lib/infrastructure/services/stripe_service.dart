@@ -10,7 +10,7 @@ class StripeService {
   static final StripeService instance = StripeService._privateConstructor();
 
   /// Initialize Stripe Payment Sheet
-  Future<void> initPaymentSheet({
+  Future<void> initPaymentSheetIOS({
     required String clientSecret,
     String? customerId,
     String? ephemeralKey,
@@ -46,13 +46,15 @@ class StripeService {
     }
   }
 
-  /* Future<void> initPaymentSheet({
+   Future<void> initPaymentSheetAndroid({
     required String clientSecret,
     String? customerId,
     String? ephemeralKey,
     String merchantDisplayName = 'Barbee Hive',
   }) async {
     try {
+
+      log("CLIENT SECRET: $clientSecret");
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
@@ -68,7 +70,7 @@ class StripeService {
       log('Stripe initPaymentSheet error: $e');
       rethrow;
     }
-  }*/
+  }
 
   /// Present Payment Sheet
   Future<bool> presentPaymentSheet() async {

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:get/get.dart';
@@ -91,10 +92,19 @@ class PricingPlansController extends GetxController {
 
         try {
           // Initialize PaymentSheet
-          await StripeService.instance.initPaymentSheet(
-            clientSecret: clientSecret ?? '',
-            merchantDisplayName: 'Barbee Hive',
-          );
+
+          if(Platform.isIOS){
+            await StripeService.instance.initPaymentSheetIOS(
+              clientSecret: clientSecret ?? '',
+              merchantDisplayName: 'Barbee Hive',
+            );
+          }
+
+          if(Platform.isAndroid){
+            await StripeService.instance.initPaymentSheetAndroid(
+              clientSecret: clientSecret ?? '',
+            );
+          }
 
           // Present PaymentSheet
           bool paymentSuccess =

@@ -1,7 +1,9 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_pdf_view.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -74,11 +76,19 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
             profile.applicant.email;
         final location =
             '${profile.applicant.country?.name ?? 'Unknown'}, ${profile.applicant.city ?? 'Unknown'}';
-        final jobRole = profile.applicant.skills?.name ?? 'N/A';
+        final jobRole =
+            profile.applicant.skills != null &&
+                    profile.applicant.skills!.isNotEmpty
+                ? profile.applicant.skills!
+                    .map((skill) => skill.name)
+                    .join(', ')
+                : 'N/A';
+
         final expLevel = profile.experienceLevel.name ?? 'N/A';
         final yearsExp = '${profile.yearsOfExperience ?? 'N/A'} Years';
         final expectedSalary = '\$${profile.expectedSalary ?? 'N/A'}';
         final jobType = profile.jobType.name ?? 'N/A';
+        final resume = profile.applicant.resumeUrl ?? '';
 
         return Stack(
           children: [
@@ -91,7 +101,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                 height: 300.h,
                 width: double.infinity,
                 child: Image.network(
-                  profile.applicant?.profileImage ?? AppAssets.nullProfile,
+                  profile.applicant.profileImage ?? AppAssets.nullProfile,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
                     return Image.asset(
@@ -159,6 +169,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                             _infoRow('Years Of Experience', yearsExp),
                             _infoRow('Expected Salary', expectedSalary),
                             _infoRow('Job Type', jobType),
+                            _resumeRow(resume),
                           ],
                         ),
                         SizedBox(height: 20.h),
@@ -201,6 +212,37 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
     );
   }
 
+  Widget _resumeRow(String value) {
+    return Row(
+      spacing: 1.5.w,
+      children: [
+        Expanded(
+          child: _infoTile(
+            "Resume/Certification",
+            AppColors.colorFFFFFF,
+            false,
+          ),
+        ),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              if (value.isNotEmpty) {
+                Get.to(() => CustomPdfView(pdfUrl: value));
+              } else {
+                Utilities.showSnackBar(
+                  title: 'Error',
+                  message: 'No Resume Available',
+                  isSuccess: false,
+                );
+              }
+            },
+            child: _infoTile("Click View", AppColors.color8690FF, true),
+          ),
+        ),
+      ],
+    );
+  }
+
   /// Info Tile
   Widget _infoTile(String text, Color color, bool isLeftAligned) {
     return Container(
@@ -212,6 +254,8 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
       height: 50.h,
       color: AppColors.color111111,
       child: CustomText(
+        maxLines: 1,
+        textOverflow: TextOverflow.ellipsis,
         title: text,
         fontSize: 14,
         fontWeight: FontWeight.w600,

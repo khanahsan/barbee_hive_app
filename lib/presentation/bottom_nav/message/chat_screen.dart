@@ -169,6 +169,73 @@ class ChatScreen extends StatelessWidget {
                                     ),
                                     SizedBox(width: 5.w),
                                   ],
+
+                                  // This ensures the bubble takes only necessary width
+                                  IntrinsicWidth(
+                                    stepWidth: 0,
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: MediaQuery.of(context).size.width * 0.6, // max 70% width
+                                      ),
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 12.w,
+                                          vertical: 10.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: isMe ? AppColors.colorFF8600 : AppColors.color27272A,
+                                          borderRadius: BorderRadius.circular(10.r),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if (!isMe)
+                                              CustomText(
+                                                title: otherUserName,
+                                                color: AppColors.colorFF8600,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                              ),
+                                            SizedBox(height: 3.h),
+                                            CustomText(
+                                              title: msg["text"] ?? "",
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                              maxLines: null,
+                                              softWrap: true,
+                                            ),
+                                            SizedBox(height: 5.h),
+                                            Align(
+                                              alignment: Alignment.centerRight,
+                                              child: CustomText(
+                                                title: msg["timestamp"] != null
+                                                    ? formatTimestamp(msg["timestamp"])
+                                                    : "",
+                                                color: Colors.white70,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+
+                              /*        return Row(
+                                mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  if (!isMe) ...[
+                                    HexagonAvatar(
+                                      imagePath: otherUserImage,
+                                      width: 50.w,
+                                      height: 60.h,
+                                    ),
+                                    SizedBox(width: 5.w),
+                                  ],
                                   Container(
                                     padding: EdgeInsets.symmetric(
                                       horizontal: isMe ? 10.w : 20.w, // Add more padding on left for "me"
@@ -216,142 +283,10 @@ class ChatScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ],
-                              );
+                              );*/
                             }
 
-                          /*   itemBuilder: (context, index) {
-                            final msg =
-                                messages[index].data() as Map<String, dynamic>;
-                            final isMe =
-                                msg["senderId"] ==
-                                chatController.currentUserId.value;
 
-                            return Row(
-                              mainAxisAlignment:
-                                  isMe
-                                      ? MainAxisAlignment.end
-                                      : MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                if (!isMe) ...[
-                                  HexagonAvatar(
-                                    imagePath: otherUserImage,
-                                    width: 50.w,
-                                    height: 60.h,
-                                  ),
-                                  SizedBox(width: 5.w),
-                                ],
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: isMe ? 25.w : 10.w, // Add more padding on left for "me"
-                                    vertical: 10.h,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color:
-                                        isMe
-                                            ? AppColors.colorFF8600
-                                            : AppColors.color27272A,
-                                    borderRadius: BorderRadius.circular(10.r),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    // Wrap content
-                                    children: [
-                                      if (!isMe)
-                                        CustomText(
-                                          title: otherUserName,
-                                          color: AppColors.colorFF8600,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12,
-                                        ),
-                                      Align(
-                                        alignment: isMe ? Alignment.topLeft : Alignment.topRight,
-                                        child: CustomText(
-                                          title: msg["text"] ?? "",
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                          softWrap: true,
-                                        ),
-                                      ),
-                                      SizedBox(height: 5.h),
-
-                                      Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: CustomText(
-                                          title:
-                                              msg["timestamp"] != null
-                                                  ? formatTimestamp(
-                                                    msg["timestamp"],
-                                                  )
-                                                  : "",
-
-                                          color: Colors.white70,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                                *//*      ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width * 0.6,
-                                  ),
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 10.w,
-                                      vertical: 10.h,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          isMe
-                                              ? AppColors.colorFF8600
-                                              : AppColors.color27272A,
-                                      borderRadius: BorderRadius.circular(10.r),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        if (!isMe)
-                                          Text(
-                                            otherUserName,
-                                            style: TextStyle(
-                                              color: AppColors.colorFF8600,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12.sp,
-                                            ),
-                                          ),
-                                        Text(
-                                          msg["text"] ?? "",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.sp,
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: Text(
-                                            msg["timestamp"] != null
-                                                ? formatTimestamp(
-                                                  msg["timestamp"],
-                                                )
-                                                : "",
-                                            style: TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 10.sp,
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ),*//*
-                              ],
-                            );
-                          },*/
                         );
                       },
                     ),

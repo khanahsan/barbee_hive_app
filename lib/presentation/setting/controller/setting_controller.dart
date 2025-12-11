@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:get/get.dart';
 
 import '../../../data/api/auth_provider.dart';
@@ -49,6 +50,8 @@ class SettingController extends GetxController {
 
   // UPDATE SETTINGS API CALL
   Future<void> updateSettings() async {
+    isLoading.value = true;
+
     try {
       final response = await AuthProvider.updateSetting(
         receiveMessages: receiveMessage.value,
@@ -70,6 +73,8 @@ class SettingController extends GetxController {
         title: "Error",
         message: e.toString().replaceFirst("Exception: ", ""),
       );
+    } finally {
+      isLoading.value = false;
     }
   }
 }

@@ -97,7 +97,7 @@ class ApplicationsController extends GetxController {
     try {
       print('Fetching applications for jobId: $jobId, Filters: $filters');
       final response = await JobApi.getJobApplications(jobId, filters: filters);
-      print('API Response: status=${response.status}, message=${response.message}, data=${response.data.length} applications');
+      print('API Response: status=${response.status}, message=${response.message}, applications');
       if (response.status) {
         applications.assignAll(response.data); // Fixed: response.data is List<JobApplicationData>
         filteredApplications.assignAll(response.data); // Update filtered list
@@ -139,9 +139,13 @@ class ApplicationsController extends GetxController {
     // Filter by selected skill (position)
     if (selectedSkill.value.isNotEmpty) {
       filtered = filtered.where((app) {
-        return app.applicant.skills?.name.toLowerCase() == selectedSkill.value.toLowerCase();
+        return app.applicant.skills != null &&
+            app.applicant.skills!.any(
+                  (skill) => skill.name.toLowerCase() == selectedSkill.value.toLowerCase(),
+            );
       }).toList();
     }
+
 
     // Filter by age
     if (ageController.text.isNotEmpty) {

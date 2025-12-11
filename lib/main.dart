@@ -83,6 +83,8 @@ class Main extends StatelessWidget {
 }
 */
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -111,16 +113,18 @@ void main() async {
   await dotenv.load(fileName: ".env");
 
   /// ------------- STRIPE INITIALIZATION (APPLE PAY FIX) ---------------
-  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
+  if(Platform.isIOS){
+    Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
 
-  // Set Apple Pay merchant ID
-  Stripe.merchantIdentifier = 'merchant.app.barbeeinc';
+    // Set Apple Pay merchant ID
+    Stripe.merchantIdentifier = 'merchant.app.barbeeinc';
 
-  // Required for redirect handling
-  Stripe.urlScheme = 'stripe';
+    // Required for redirect handling
+    Stripe.urlScheme = 'stripe';
 
-  // Apply Stripe settings
-  await Stripe.instance.applySettings();
+    // Apply Stripe settings
+    await Stripe.instance.applySettings();
+  }
 
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

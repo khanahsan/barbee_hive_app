@@ -112,9 +112,10 @@ void main() async {
   // Load environment variables (if you're using .env file for sensitive keys)
   await dotenv.load(fileName: ".env");
 
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
+
   /// ------------- STRIPE INITIALIZATION (APPLE PAY FIX) ---------------
   if(Platform.isIOS){
-    Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
 
     // Set Apple Pay merchant ID
     Stripe.merchantIdentifier = 'merchant.app.barbeeinc';

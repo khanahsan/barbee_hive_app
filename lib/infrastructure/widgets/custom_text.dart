@@ -18,7 +18,8 @@ class CustomText extends StatelessWidget {
     this.height = 0.0,
     this.fontStyle = FontStyle.normal,
     this.fontFamily = 'Inter',
-    this.maxLines = 1,
+    // this.maxLines = 1,
+    this.maxLines,
     this.textOverflow,
     this.softWrap,
     super.key,
@@ -34,7 +35,8 @@ class CustomText extends StatelessWidget {
   final FontStyle fontStyle;
   final String fontFamily;
   final bool? softWrap;
-  final int maxLines;
+  // final int maxLines;
+  final int? maxLines;
   final TextOverflow? textOverflow;
 
   @override

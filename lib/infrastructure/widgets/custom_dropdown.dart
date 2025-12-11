@@ -228,7 +228,7 @@ class CustomDropdown extends StatelessWidget {
                           style: TextStyle(
                             fontSize: fontSize ?? 16.sp,
                             overflow: TextOverflow.ellipsis,
-                            color: textColor ?? AppColors.color4C4C4C,
+                            color: textColor ?? AppColors.colorA3A3A3,
                             // selected text = white
                             fontWeight: FontWeight.w400,
                           ),
@@ -238,7 +238,7 @@ class CustomDropdown extends StatelessWidget {
                                 ? hint
                                 : selectedValue.value,
                             style: TextStyle(
-                              color: textColor ?? AppColors.color4C4C4C,
+                              color: textColor ?? AppColors.colorA3A3A3,
                               // hint text color = white
                               fontSize: fontSize ?? 16.sp,
                               fontWeight: FontWeight.w400,
@@ -257,7 +257,7 @@ class CustomDropdown extends StatelessWidget {
                               value: item.value,
                               child: DefaultTextStyle(
                                 style: TextStyle(
-                                  color: AppColors.categorybordergrey,
+                                  color: AppColors.colorA3A3A3,
                                   fontSize: fontSize ?? 16.sp,
                                 ),
                                 child: item.child, // <-- Correct way
@@ -280,6 +280,35 @@ class CustomDropdown extends StatelessWidget {
                           //         ),
                           //       );
                           //     }).toList(),
+                          // items:
+                          //     items.map((item) {
+                          //       return DropdownMenuItem<String>(
+                          //         value: item.value,
+                          //         child: CustomText(
+                          //           title: (item.child as CustomText).title ?? "",
+                          //
+                          //           color: AppColors.colorA3A3A3,
+                          //           fontSize: fontSize ?? 18.sp,
+                          //           fontWeight: FontWeight.w400,
+                          //         ),
+                          //       );
+                          //     }).toList(),
+
+                        /*  items:
+                          items.map((item) {
+                            return DropdownMenuItem<String>(
+                              value: item.value,
+                              child: Text(
+                                item.child.toString(), // ensure same text
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  // dropdown item text = white
+                                  fontSize: fontSize ?? 16.sp,
+                                ),
+                              ),
+                            );
+                          }).toList(),*/
+
 
                           onChanged: (value) {
                             selectedValue.value = value ?? '';

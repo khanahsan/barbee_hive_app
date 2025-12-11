@@ -2,7 +2,7 @@ import 'package:barbee_hive_app/infrastructure/navigation/bindings/initial_bindi
 import 'package:barbee_hive_app/infrastructure/widgets/customDrawer/custom_drawer.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/b2b/b2b_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/hive/hive_profile_screen.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/myjobs_screen.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/myApplications/my_applications_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applicant_profile/applicant_profile_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/applications_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/create%20job%20_screen.dart';
@@ -177,7 +177,7 @@ class Nav {
     ),
     GetPage(
       name: Routes.myJobs,
-      page: () => MyJobsScreen(),
+      page: () => MyApplicationsScreen(),
       binding: InitialBindings(),
     ),
     GetPage(

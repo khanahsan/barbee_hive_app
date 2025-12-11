@@ -75,7 +75,7 @@ class CustomDrawer extends GetView<CustomDrawerController> {
                           SizedBox(height: 60.h),
 
                           drawerMenuTile(
-                            title: "Edit Profile",
+                            title: "My Profile",
                             iconPath: AppAssets.editIcon,
                             controller: controller,
                             onTap: () {

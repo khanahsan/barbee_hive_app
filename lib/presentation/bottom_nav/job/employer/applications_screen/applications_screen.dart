@@ -420,12 +420,19 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomText(
-                    title: application.applicant.skills!.name,
-                    fontSize: 14,
-                    color: AppColors.colorFFFFFF,
-                    fontWeight: FontWeight.w800,
+                  SizedBox(
+                    width: 150.w,
+                    child: CustomText(
+                      title: application.applicant.skills != null && application.applicant.skills!.isNotEmpty
+                          ? application.applicant.skills!.map((skill) => skill.name).join(', ')
+                          : 'N/A',
+                      fontSize: 14,
+                      color: AppColors.colorFFFFFF,
+                      fontWeight: FontWeight.w800,
+                      textOverflow: TextOverflow.ellipsis,
+                    ),
                   ),
+
 
                   CustomText(
                     title: '${application.yearsOfExperience} Years',

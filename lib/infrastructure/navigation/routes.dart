@@ -12,6 +12,7 @@ class Routes {
 
   static const AUTH = '/auth';
   static const HOME = '/home';
+  static const selectRole = '/select_role';
   static const SPLASH = '/splash';
   static const FORGOT_PASSWORD = '/forgot_password';
   static const SIGN_UP_VIEW = '/sign_up_view';

@@ -59,7 +59,93 @@ class SignInController extends GetxController {
     isLoading.value = true;
 
     try {
-      print('Attempting login with email: $email');
+      // LOGIN API
+      final response = await AuthApi.login(email, password);
+
+      // Save most values in parallel
+      await Future.wait([
+        TokenStorage.saveToken(response.token),
+        SharedPreferenceHelper.saveInt(
+          SharedPrefKeys.userRole,
+          response.user.role,
+        ),
+        SharedPreferenceHelper.saveString(
+          SharedPrefKeys.authToken,
+          response.token,
+        ),
+        SharedPreferenceHelper.saveInt(
+          SharedPrefKeys.userId,
+          response.user.id,
+        ),
+        SharedPreferenceHelper.saveString(
+          SharedPrefKeys.userProfileImage,
+          response.user.profileImage ?? '',
+        ),
+        SharedPreferenceHelper.saveString(
+          SharedPrefKeys.userName,
+          response.user.role == 3
+              ? response.user.employee?.name ?? ""
+              : response.user.employer?.businessName ?? "",
+        ),
+      ]);
+
+      // Handle remember me
+      if (rememberMe.value) {
+        SharedPreferenceHelper.saveString(SharedPrefKeys.savedEmail, email);
+        SharedPreferenceHelper.saveString(SharedPrefKeys.savedPassword, password);
+      } else {
+        SharedPreferenceHelper.remove(SharedPrefKeys.savedEmail);
+        SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
+      }
+
+      // Set token
+      ApiService.setToken(response.token);
+
+      // Sync Firebase → Run in background (DO NOT AWAIT)
+      FirebaseService.syncUserWithFirebase(
+        apiUserId: response.user.id,
+        email: response.user.email,
+        password: password,
+        name: response.user.role == 3
+            ? response.user.employee?.name ?? ""
+            : response.user.employer?.businessName ?? "",
+        role: response.user.role == 3 ? "employee" : "employer",
+        profileImage: response.user.profileImage,
+      );
+
+      Utilities.showSnackBar(
+        title: "Success",
+        message: response.message,
+        isSuccess: true,
+      );
+
+      Get.offAllNamed(Routes.CUSTOMDRAWER);
+
+    } catch (e) {
+      final cleaned =
+      e.toString()
+          .replaceFirst('Exception: POST request error: Exception: ', '')
+          .replaceFirst('Exception: ', '');
+
+      Utilities.showSnackBar(
+        title: "Login Failed",
+        message: cleaned,
+        isSuccess: false,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+
+/*  Future<void> login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    isLoading.value = true;
+
+    try {
+      print('Attempting login with email: $email $password');
       final response = await AuthApi.login(email, password);
       print('Login Response: $response');
       TokenStorage.saveToken(response.token);
@@ -117,9 +203,9 @@ class SignInController extends GetxController {
         email: response.user.email,
         password: password,
         name:
-        response.user.role == 3
-            ? response.user.employee?.name ?? ""
-            : response.user.employer?.businessName ?? "",
+            response.user.role == 3
+                ? response.user.employee?.name ?? ""
+                : response.user.employer?.businessName ?? "",
         role: response.user.role == 3 ? "employee" : "employer",
         profileImage: response.user.profileImage,
       );
@@ -136,15 +222,19 @@ class SignInController extends GetxController {
         '',
       );
       errorMessage =
-      errorMessage.startsWith('Exception: ')
-          ? errorMessage.replaceFirst('Exception: ', '')
-          : errorMessage;
-      Get.snackbar("Login Failed", errorMessage, backgroundColor: Colors.red);
+          errorMessage.startsWith('Exception: ')
+              ? errorMessage.replaceFirst('Exception: ', '')
+              : errorMessage;
+      Utilities.showSnackBar(
+        title: "Login Failed",
+        message: errorMessage,
+        isSuccess: false,
+      );
       print(errorMessage);
     } finally {
       isLoading.value = false;
     }
-  }
+  }*/
 
   @override
   void onClose() {

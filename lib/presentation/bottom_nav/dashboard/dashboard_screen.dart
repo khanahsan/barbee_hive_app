@@ -86,7 +86,10 @@ class DashboardScreen extends GetView<DashboardController> {
                       child: SizedBox(
                         width: controller.bannerAd!.size.width.toDouble(),
                         height: controller.bannerAd!.size.height.toDouble(),
-                        child: AdWidget(ad: controller.bannerAd!),
+                        child: AdWidget(
+                          key: ObjectKey(controller.bannerAd!),
+                          ad: controller.bannerAd!,
+                        ),
                       ),
                     );
                   }),

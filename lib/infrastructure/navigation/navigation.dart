@@ -14,6 +14,7 @@ import 'package:barbee_hive_app/presentation/changePassword/change_password_scre
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
 import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
 import 'package:barbee_hive_app/presentation/signIn/sign_in_view.dart';
+import 'package:barbee_hive_app/presentation/signUp/views/select_role_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -63,6 +64,11 @@ class Nav {
     GetPage(
       name: Routes.AUTH,
       page: () => const AuthScreen(),
+      binding: InitialBindings(),
+    ),
+    GetPage(
+      name: Routes.selectRole,
+      page: () => const SelectRoleView(),
       binding: InitialBindings(),
     ),
     GetPage(

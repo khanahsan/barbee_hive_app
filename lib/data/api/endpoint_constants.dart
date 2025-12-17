@@ -1,11 +1,13 @@
 class ApiEndPoints {
   static const String baseUrl = 'https://barbeehive.staging.pegasync.com/api/';
 
+  /// AUTH
   static const String login = 'login';
   static const String logout = 'logout';
   static const String forgotPassword = 'forgot-password';
   static const String changePassword = 'change-password';
   static const String dashboardUsers = 'dashboard/nearest-users';
+  static const String deleteAccount = 'delete-account';
 
   /// COMMON
   static const String eyeColors = 'dashboard/eye-colors';

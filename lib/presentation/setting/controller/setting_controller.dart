@@ -1,6 +1,17 @@
 import 'dart:developer';
 
+import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
+import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
+import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart'
+    show FirebaseAuth, FirebaseAuthException, EmailAuthProvider;
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../data/api/auth_provider.dart';
 import '../../../infrastructure/utils/utilities.dart';
@@ -14,6 +25,8 @@ class SettingController extends GetxController {
   RxBool vibrate = false.obs;
   RxBool location = false.obs;
   RxBool showDistance = false.obs;
+
+  TextEditingController passwordController = TextEditingController();
 
   @override
   void onInit() {
@@ -77,4 +90,378 @@ class SettingController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  /*  Future<void> deleteAccount() async {
+    isLoading.value = true;
+
+    try {
+      final response = await AuthApi.deleteAccount(password: 'dsad');
+      final status = response['status'] as bool; // Status is a boolean
+      final message = response['message'] as String;
+      print('Forgot Password Response: status=$status, message=$message');
+
+      if (status) {
+        // Get.offNamed(Routes.SIGN_IN_VIEW);
+      } else {
+        Utilities.showSnackBar(
+          title: "Error",
+          message: message,
+          isSuccess: false,
+        );
+      }
+    } catch (e) {
+      String errorMessage = e.toString().replaceFirst(
+        'Exception: POST request error: Exception: ',
+        '',
+      );
+      errorMessage =
+          errorMessage.startsWith('Exception: ')
+              ? errorMessage.replaceFirst('Exception: ', '')
+              : errorMessage;
+
+      Utilities.showSnackBar(
+        title: "Error",
+        message: errorMessage,
+        isSuccess: false,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }*/
+
+  Future<void> deleteAccount() async {
+    final password = passwordController.text.trim();
+    if (password.isEmpty) {
+      Utilities.showSnackBar(
+        title: "Error",
+        message: "Password cannot be empty",
+        isSuccess: false,
+      );
+      return;
+    }
+
+    isLoading.value = true;
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null) {
+        throw Exception("No user logged in");
+      }
+
+      // 1️⃣ Reauthenticate Firebase user
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: password,
+      );
+      await user.reauthenticateWithCredential(credential);
+
+      // 2️⃣ Call backend API to delete account
+      final response = await AuthApi.deleteAccount(
+        email: user.email ?? '',
+        password: password,
+      );
+      final status = response['status'] as bool;
+      final message = response['message'] as String;
+
+      if (!status) {
+        Utilities.showSnackBar(
+          title: "Error",
+          message: message,
+          isSuccess: false,
+        );
+        return;
+      }
+
+      // 3️⃣ Delete Firestore user document
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .delete();
+
+      // 4️⃣ Delete FirebaseAuth account
+      await user.delete();
+
+      Utilities.showSnackBar(
+        title: "Success",
+        message: "Account deleted successfully",
+        isSuccess: true,
+      );
+
+      Get.offAllNamed(Routes.SIGN_IN_VIEW);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password') {
+        Utilities.showSnackBar(
+          title: "Error",
+          message: "Incorrect password",
+          isSuccess: false,
+        );
+      } else {
+        Utilities.showSnackBar(
+          title: "Error",
+          message: e.message ?? "Firebase error",
+          isSuccess: false,
+        );
+      }
+    } catch (e) {
+      Utilities.showSnackBar(
+        title: "Error",
+        message: e.toString().replaceFirst('Exception: ', ''),
+        isSuccess: false,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void showDeleteAccountDialog() {
+    final ctrl = this;
+
+    Get.dialog(
+      WillPopScope(
+        onWillPop: () async => false, // prevent back button
+        child: Dialog(
+          insetPadding: EdgeInsets.symmetric(horizontal: 15.w),
+          backgroundColor: AppColors.color000000,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.color000000,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.colorFF8600, width: 0.5),
+            ),
+            padding: EdgeInsets.only(
+              left: 20.w,
+              right: 20.w,
+              top: 10.h,
+              bottom: 20.h,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      ctrl.passwordController.clear(); // clear field
+                      Get.back(); // close dialog
+                    },
+                    child: Icon(
+                      Icons.close,
+                      size: 24.sp,
+                      color: AppColors.colorFF8600,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.h),
+
+                CustomText(
+                  title: "Confirm Delete",
+                  fontSize: 25.sp,
+                  color: AppColors.colorFFFFFF,
+                  fontWeight: FontWeight.w700,
+                ),
+                SizedBox(height: 15.h),
+
+                CustomText(
+                  title: "Enter your password to delete your account.",
+                  fontSize: 20.sp,
+                  color: AppColors.colorFFFFFF,
+                ),
+
+                SizedBox(height: 25.h),
+
+                AppTextField(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 16.h,
+                  ),
+                  controller: ctrl.passwordController,
+                  hintText: "Password",
+                  fillColor: AppColors.colorFFFFFF,
+                  fontColor: AppColors.color000000,
+                  fontSize: 16,
+                ),
+
+                SizedBox(height: 25.h),
+
+                Row(
+                  spacing: 10.w,
+                  children: [
+                    Expanded(
+                      child: CustomBtn(
+                        buttonHeight: 50.h,
+                        btnTitle: "Cancel",
+                        btnBackgroundColor: Colors.transparent,
+                        btnTxtColor: Colors.white,
+                        borderColor: AppColors.colorFF8600,
+                        borderWidth: 1,
+                        onPressed: () {
+                          ctrl.passwordController.clear(); // clear field
+                          Get.back(); // close dialog
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: CustomBtn(
+                        buttonHeight: 50.h,
+                        btnTitle: "Confirm",
+                        btnBackgroundColor: AppColors.colorFF8600,
+                        btnTxtColor: Colors.white,
+                        onPressed: () {
+                          if (ctrl.passwordController.text.isEmpty) {
+                            Utilities.showSnackBar(
+                              title: "Error",
+                              message: "Password cannot be empty",
+                              isSuccess: false,
+                            );
+                            return;
+                          }
+
+                          // 1️⃣ Close dialog immediately
+                          Get.back();
+
+                          // 2️⃣ Show loading overlay while deleting account
+                          ctrl.isLoading.value = true;
+                          ctrl.deleteAccount().whenComplete(() {
+                            ctrl.isLoading.value = false;
+                            ctrl.passwordController.clear();
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      barrierDismissible: false, // cannot dismiss by tapping outside
+    );
+  }
+
+  /*  void showDeleteAccountDialog() {
+    final ctrl = this;
+
+    Get.dialog(
+      Dialog(
+        insetPadding: EdgeInsets.symmetric(horizontal: 15.w),
+        backgroundColor: AppColors.color000000,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.color000000, // dialog background
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: AppColors.colorFF8600, // border color
+              width: 0.5, // border width
+            ),
+          ),
+          padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h, bottom: 20.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: AlignmentGeometry.topRight,
+                child: GestureDetector(
+                  onTap: () {
+                    ctrl.passwordController.clear(); // clear password
+                    Get.back(); // close dialog
+                  },
+                  child: Icon(
+                    Icons.close,
+                    size: 24.sp,
+                    color: AppColors.colorFF8600,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.h),
+
+              /// Label
+              CustomText(
+                title: "Confirm Delete",
+                fontSize: 25.sp,
+                color: AppColors.colorFFFFFF,
+                fontWeight: FontWeight.w700,
+              ),
+              SizedBox(height: 15.h),
+
+              /// Text Info
+              CustomText(
+                title: "Enter your password to delete your account.",
+                fontSize: 20.sp,
+                color: AppColors.colorFFFFFF,
+              ),
+
+              SizedBox(height: 25.h),
+
+              /// Password Field
+              AppTextField(
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 10.w,
+                  vertical: 16.h,
+                ),
+                controller: ctrl.passwordController,
+                hintText: "Password",
+                fillColor: AppColors.colorFFFFFF,
+                fontColor: AppColors.color000000,
+                fontSize: 16,
+              ),
+
+              SizedBox(height: 25.h),
+
+              Row(
+                spacing: 10.w,
+                children: [
+                  /// Cancel Option
+                  Expanded(
+                    child: CustomBtn(
+                      buttonHeight: 50.h,
+                      btnTitle: "Cancel",
+                      btnBackgroundColor: Colors.transparent,
+                      btnTxtColor: Colors.white,
+                      borderColor: AppColors.colorFF8600,
+                      borderWidth: 1,
+                      onPressed: () {
+                        ctrl.passwordController.clear(); // clear password
+                        Get.back(); // close dialog
+                      },
+                    ),
+                  ),
+
+                  /// Confirm Option
+                  Expanded(
+                    child: CustomBtn(
+                      buttonHeight: 50.h,
+                      btnTitle: "Confirm",
+                      btnBackgroundColor: AppColors.colorFF8600,
+                      btnTxtColor: Colors.white,
+                      onPressed: () {
+                        if (ctrl.passwordController.text.isEmpty) {
+                          Utilities.showSnackBar(
+                            title: "Error",
+                            message: "Password cannot be empty",
+                            isSuccess: false,
+                          );
+                          return;
+                        }
+
+                        ctrl.deleteAccount();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }*/
 }

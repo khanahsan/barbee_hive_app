@@ -47,6 +47,17 @@ class AuthApi {
     };
   }
 
+  /// FORGOT PASSWORD API
+  static Future<Map<String, dynamic>> deleteAccount({required String email, required String password}) async {
+    final response = await ApiService.post(ApiEndPoints.deleteAccount, {
+      'password': password,
+    }, auth: true);
+    return {
+      'status': response['status'] ?? false,
+      'message': response['message'] ?? 'Request processed',
+    };
+  }
+
   /// REGISTER API
   static Future<RegisterResponse> register({
     required String uid,

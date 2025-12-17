@@ -1,6 +1,3 @@
-
-
-
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
@@ -13,8 +10,6 @@ import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import 'controller/setting_controller.dart';
-
-
 
 class SettingsScreen extends GetView<SettingController> {
   const SettingsScreen({super.key});
@@ -51,7 +46,7 @@ class SettingsScreen extends GetView<SettingController> {
                 context: context,
                 buttonText: "Delete Account",
                 textColor: AppColors.colorFF3B30,
-                onTap: () {},
+                onTap: () => controller.showDeleteAccountDialog(),
               ),
 
               SizedBox(height: 10.h),
@@ -265,4 +260,3 @@ class SettingsScreen extends GetView<SettingController> {
     );
   }
 }
-

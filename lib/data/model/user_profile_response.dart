@@ -87,7 +87,7 @@ class Subscription {
   final String endDate;
   final String status;
   final String paymentStatus;
-  final int amountPaid;
+  final String amountPaid;
   final bool isActive;
   final bool isExpired;
 

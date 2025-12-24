@@ -2,6 +2,7 @@ class AppAssets {
   //~~~~~~~~~~~~~~~~Base Urls~~~~~~~~~~~~~~~~~~~~~~~~~//
   static String imagesPath = "assets/images";
   static String iconPath = "assets/icons";
+  static String gifPath = "assets/gifs";
 
   //~~~~~~~~~~~~~~~~Icons~~~~~~~~~~~~~~~~~~~~~~~~~//
 
@@ -49,6 +50,7 @@ class AppAssets {
   static String experienceLevel = '$iconPath/experience_level.svg';
   static String salary = '$iconPath/salary.svg';
 
+
   static String countryLogo = '$iconPath/country_icon.png';
   static String cityLogo = '$iconPath/city_icon.png';
   static String stateLogo = '$iconPath/state_icon.png';
@@ -74,7 +76,6 @@ class AppAssets {
   static String recruiterLogo = '$imagesPath/recruiter_logo.png';
   static String jobtyprLogo = '$imagesPath/jobtype_logo.png';
   static String uploadimgLogo = '$imagesPath/uploadimg_logo.png';
-
   static String profileImage = '$imagesPath/profile_image.jpg';
   static String sampleImage = '$imagesPath/sample_image.jpg';
   static String sampleCoverImage = '$imagesPath/sample_cover_image.png';
@@ -83,4 +84,9 @@ class AppAssets {
 
   static String nullProfile =
       'https://cdna.artstation.com/p/assets/images/images/084/124/296/large/matthew-blank-profile-photo-1.jpg?1737590038';
+
+
+  ///// GIF PATH
+
+  static String emailSend = '$gifPath/email-send.gif';
 }

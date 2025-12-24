@@ -217,6 +217,7 @@ class AppTextField extends StatelessWidget {
     this.fontSize,
     this.fontWeight = FontWeight.w400,
     this.enabledBorderColor,
+    this.enabled,
   });
 
   final TextEditingController? controller;
@@ -241,6 +242,7 @@ class AppTextField extends StatelessWidget {
   final double? fontSize;
   final Color? enabledBorderColor;
   final FontWeight? fontWeight;
+  final bool? enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -256,7 +258,7 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
-      enabled: true,
+      enabled: enabled,
       focusNode: focusNode,
       obscureText: isObscuredText,
       maxLines: maxLines,

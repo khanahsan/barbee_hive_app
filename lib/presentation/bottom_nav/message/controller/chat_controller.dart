@@ -38,6 +38,8 @@ class ChatController extends GetxController {
       currentUserId.value = uid;
       isEmployer.value = role == 2;
 
+      print("UIDIDID : $uid");
+
       if (uid.isNotEmpty) {
         final userDoc =
             await FirebaseFirestore.instance.collection('users').doc(uid).get();

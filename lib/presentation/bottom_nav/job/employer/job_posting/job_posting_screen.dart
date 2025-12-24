@@ -556,6 +556,17 @@ class JobPostingScreen extends GetView<JobPostingController> {
                                   .toList(),
                             ),
                             SizedBox(height: 15.h),
+                            //
+                            // _textField(
+                            //   hintText: 'Select Country',
+                            //   controller: controller.cityController,
+                            //   enabled: false,
+                            //   prefixIcon: SvgPicture.asset(
+                            //       AppAssets.cityIcon,
+                            //       fit: BoxFit.scaleDown),
+                            //
+                            // ),
+
 
                             /// Country
                             _dropdownField(
@@ -565,7 +576,10 @@ class JobPostingScreen extends GetView<JobPostingController> {
                               hint: 'Select Country',
                               iconPath: AppAssets.countryIcon,
                               selectedValue: controller.selectedCountry,
-                              onChanged: controller.updateCountry,
+                              onChanged: (value){
+                                print("value : $value");
+                                controller.updateCountry(value);
+                              },
                               items: controller.countries
                                   .map(
                                     (exp) =>
@@ -774,6 +788,7 @@ class JobPostingScreen extends GetView<JobPostingController> {
     int maxLines = 1,
     bool readOnly = false,
     String? Function(String?)? validator,
+    bool? enabled,
   }) {
     return AppTextField(
       textInputAction: TextInputAction.done,
@@ -787,6 +802,8 @@ class JobPostingScreen extends GetView<JobPostingController> {
       readOnly: readOnly,
       validator: validator,
       fillColor: AppColors.textFieldBackground,
+      enabled: enabled,
+
     );
   }
 

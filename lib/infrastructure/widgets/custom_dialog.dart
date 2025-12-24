@@ -1,5 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
@@ -265,16 +266,13 @@ class CustomDialog extends StatelessWidget {
                   Container(
                     width: 80.w,
                     height: 80.h,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
+                     decoration: const BoxDecoration(
+                       shape: BoxShape.circle,
                       color: AppColors.colorFF8600,
-                    ),
+                     ),
                     child: Center(
                       child: Image.asset(
-                        AppAssets.logo,
-                        width: 50.w,
-                        height: 50.h,
-                        fit: BoxFit.contain,
+                        AppAssets.emailSend,
                       ),
                     ),
                   ),

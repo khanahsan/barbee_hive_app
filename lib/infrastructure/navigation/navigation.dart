@@ -52,11 +52,11 @@ class EnvironmentsBadge extends StatelessWidget {
 
 class Nav {
   static List<GetPage> routes = [
-    GetPage(
+/*    GetPage(
       name: Routes.HOME,
       page: () => const HomeScreen(),
       binding: InitialBindings(),
-    ),
+    ),*/
     GetPage(
       name: Routes.SPLASH,
       page: () => const SplashScreen(),

@@ -237,6 +237,45 @@ class SignInView extends GetView<SignInController> {
                               ),
                             ),
 
+                            /// OR DIVIDER
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Divider(
+                                    color: AppColors.color4C4C4C,
+                                    thickness: 1,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                                  child: CustomText(
+                                    title: "OR",
+                                    fontSize: 14,
+                                    color: AppColors.color4C4C4C,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Divider(
+                                    color: AppColors.color4C4C4C,
+                                    thickness: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            /// CONTINUE WITH GOOGLE BUTTON
+                         /*   Obx(
+                              () => CustomBtn(
+                                buttonHeight: 55.h,
+                                btnTitle: "Continue with Google",
+                                btnBackgroundColor: AppColors.colorFFFFFF,
+                                btnTxtColor: AppColors.color000000,
+                                onPressed: controller.signInWithGoogle,
+                                isLoading: controller.isGoogleSignInLoading.value,
+                                iconPath: AppAssets.googleLogo,
+                              ),
+                            ),*/
+
                             /// SIGN UP OPTION
                             RichText(
                               text: TextSpan(

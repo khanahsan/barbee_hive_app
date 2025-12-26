@@ -30,7 +30,7 @@ class InitialBindings implements Bindings {
   void dependencies() {
     // TODO: implement dependencies
 
-    Get.lazyPut<HomeController>(() => HomeController());
+    // Get.lazyPut<HomeController>(() => HomeController());
     Get.lazyPut<DashboardController>(() => DashboardController());
     Get.lazyPut<B2BController>(() => B2BController());
     Get.lazyPut<HiveProfileController>(() => HiveProfileController());

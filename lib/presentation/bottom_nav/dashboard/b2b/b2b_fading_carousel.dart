@@ -87,7 +87,7 @@ class _FadingImageCarouselState extends State<CustomFadingCarousel> {
               ),
               child: ClipRRect(
                 // borderRadius: BorderRadius.circular(20.r),
-                child: Image.asset(
+                child: Image.network(
                   widget.imagePaths[_currentIndex],
                   fit: BoxFit.cover,
                   width: double.infinity,
@@ -99,9 +99,10 @@ class _FadingImageCarouselState extends State<CustomFadingCarousel> {
         SizedBox(height: 8.h),
         if(widget.showIndicators ?? true)
         Positioned(
-          bottom: 70.h,
+          bottom: 130.h,
           right: 0.w,
           left: 0.w,
+          //top: 0.w,
           child: _buildDotsIndicator(),
         ),
       ],

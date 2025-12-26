@@ -1,13 +1,16 @@
 import 'dart:developer';
 
 import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_dropdown.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../infrastructure/constants/app_colors.dart';
+import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/navigation/routes.dart';
 import '../../../infrastructure/widgets/custom_appbar.dart';
 import '../../../infrastructure/widgets/custom_btn.dart';
@@ -32,9 +35,19 @@ class DashboardScreen extends GetView<DashboardController> {
         leadingTapFunction: () {
           if (onMenuPressed != null) onMenuPressed!();
         },
-        // actions: [
-        //   SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
-        // ],
+        showActions: true,
+        actions: [
+          GestureDetector(
+            onTap: () {
+              Get.toNamed(Routes.notificationsScreen);
+            },
+            child: SvgPicture.asset(
+              AppAssets.bellIcon,
+              height: 24.h,
+              width: 24.w,
+            ),
+          ),
+        ],
         title: 'Home',
       ),
       backgroundColor: AppColors.black,
@@ -96,6 +109,7 @@ class DashboardScreen extends GetView<DashboardController> {
 
                   /// HIVE SECTION
                   hiveSection(context),
+                  SizedBox(height: 50),
                 ],
               ),
             ),
@@ -105,7 +119,7 @@ class DashboardScreen extends GetView<DashboardController> {
     );
   }
 
-  RxDouble hOfW = 0.0.obs;
+  final RxDouble hOfW = 0.0.obs;
 
   Widget hiveSection(BuildContext context) {
     return Obx(() {
@@ -134,7 +148,7 @@ class DashboardScreen extends GetView<DashboardController> {
         );
       }
 
-      return SizedBox(
+      return Container(
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -418,4 +432,151 @@ class DashboardScreen extends GetView<DashboardController> {
       );
     });
   }
+
+
+  // Widget filterDrawer(BuildContext context){
+  //   return Drawer(
+  //     backgroundColor: AppColors.black,
+  //     child: Column(
+  //       children: [
+  //         AppBar(
+  //           backgroundColor: AppColors.colorFF8600,
+  //           title: const Text("Filters"),
+  //           titleTextStyle: Theme.of(
+  //             context,
+  //           ).textTheme.titleMedium?.copyWith(
+  //             fontSize: 20.sp,
+  //             fontWeight: FontWeight.w500,
+  //             color: Colors.white,
+  //           ),
+  //           automaticallyImplyLeading: false,
+  //           actions: [
+  //             IconButton(
+  //               icon: const Icon(Icons.close, color: Colors.white),
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //             ),
+  //           ],
+  //         ),
+  //         SizedBox(height: 30.h),
+  //
+  //             SizedBox(height: 30.h),
+  //
+  //             _buildDropdown(
+  //               context,
+  //               value: controller.selectedJob?.value,
+  //               hintText: "Select Job Type",
+  //               items: controller.jobList,
+  //               onChanged: (val) => controller.selectedJob?.value = val ?? '',
+  //             ).paddingSymmetric(horizontal: 15.w),
+  //
+  //             SizedBox(height: 25.h),
+  //             _buildDropdown(
+  //               context,
+  //               value: controller.selectedPosition?.value,
+  //               hintText: "Select Position Type",
+  //               items: controller.positionList,
+  //               onChanged:
+  //                   (val) => controller.selectedPosition?.value = val ?? '',
+  //             ).paddingSymmetric(horizontal: 15.w),
+  //
+  //             SizedBox(height: 25.h),
+  //             _buildDropdown(
+  //               context,
+  //               value: controller.selectedMinAge?.value,
+  //               hintText: "Min Age",
+  //               items: controller.minAgeList,
+  //               onChanged:
+  //                   (val) => controller.selectedMinAge?.value = val ?? '',
+  //             ).paddingSymmetric(horizontal: 15.w),
+  //
+  //             SizedBox(height: 25.h),
+  //             _buildDropdown(
+  //               context,
+  //               value: controller.selectedMaxAge?.value,
+  //               hintText: "Max Age",
+  //               items: controller.maxAgeList,
+  //               onChanged:
+  //                   (val) => controller.selectedMaxAge?.value = val ?? '',
+  //             ).paddingSymmetric(horizontal: 15.w),
+  //
+  //             SizedBox(height: 25.h),
+  //             _buildDropdown(
+  //               context,
+  //               value: controller.selectedGender?.value,
+  //               hintText: "Gender",
+  //               items: controller.genderList,
+  //               onChanged:
+  //                   (val) => controller.selectedGender?.value = val ?? '',
+  //             ).paddingSymmetric(horizontal: 15.w),
+  //
+  //             SizedBox(height: 25.h),
+  //             _buildDropdown(
+  //               context,
+  //               value: controller.selectedHeight?.value,
+  //               hintText: "Height",
+  //               items: controller.heightList,
+  //               onChanged:
+  //                   (val) => controller.selectedHeight?.value = val ?? '',
+  //             ).paddingSymmetric(horizontal: 15.w),
+  //
+  //             SizedBox(height: 25.h),
+  //             _buildDropdown(
+  //               context,
+  //               value: controller.selectedEyeColor?.value,
+  //               hintText: "Eye Color",
+  //               items: controller.eyeColorList,
+  //               onChanged:
+  //                   (val) => controller.selectedEyeColor?.value = val ?? '',
+  //             ).paddingSymmetric(horizontal: 15.w),
+  //
+  //             SizedBox(height: 25.h),
+  //             _buildDropdown(
+  //               context,
+  //               value: controller.selectedHairColor?.value,
+  //               hintText: "Hair Color",
+  //               items: controller.hairColorList,
+  //               onChanged:
+  //                   (val) => controller.selectedHairColor?.value = val ?? '',
+  //             ).paddingSymmetric(horizontal: 15.w),
+  //
+  //             SizedBox(height: 25.h),
+  //             CustomButton(
+  //               buttonText: "Apply Filters",
+  //               onTap: controller.applyFilters,
+  //               buttonWidth: double.infinity,
+  //               buttonHeight: 60.h,
+  //               buttonColor: AppColors.colorFF8600,
+  //               borderRadius: 10.r,
+  //             ).paddingSymmetric(horizontal: 15.w),
+  //           ],
+  //         ),
+  //       );
+  // }
+
+
+  Widget _buildDropdown(
+      BuildContext context, {
+        required String? value,
+        required String hintText,
+        required List<DropdownMenuItem<String>> items,
+        required Function(String?) onChanged,
+      }) {
+    return CustomDropdown(
+      hint: hintText,
+      selectedValue: RxString(value ?? ''),
+      items: items,
+      onChanged: onChanged,
+      fontSize: 16.0,
+      iconSize: 24.0,
+      borderRadius: 10.0,
+      backgroundColor: Colors.white,
+      textColor: Colors.black,
+      dropdownColor: Colors.white,
+      borderColor: Colors.grey,
+    );
+
+}
+
 }

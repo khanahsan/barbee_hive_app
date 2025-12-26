@@ -6,6 +6,7 @@ import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/b2b/b2b_fading_carousel.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/b2b_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class B2BScreen extends GetView<B2BController> {
 
   @override
   Widget build(BuildContext context) {
-    log("CURRENT CHECK USER: ${currentUser.id}");
+    log("CURRENT CHECK USER: ${currentUser.profileImage}");
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: customAppbar(
@@ -49,6 +50,17 @@ class B2BScreen extends GetView<B2BController> {
               ),
             ),
           ),
+
+
+          // Positioned(
+          //   top: 102.h,
+          //   left: 0,
+          //   right: 0,
+          //   child:CustomFadingCarousel(
+          //       imagePaths: [currentUser.profileImage ?? AppAssets.nullProfile]),
+          // ),
+
+
           Positioned(
             top: 360.h,
             bottom: 0,

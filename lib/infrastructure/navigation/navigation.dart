@@ -11,6 +11,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/
 import 'package:barbee_hive_app/presentation/bottom_nav/job/job_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/pricing_plans_screen.dart';
 import 'package:barbee_hive_app/presentation/changePassword/change_password_screen.dart';
+import 'package:barbee_hive_app/presentation/notifications/notifications_screen.dart';
 import 'package:barbee_hive_app/presentation/feedbackSupport/feedback_support_screen.dart';
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
 import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
@@ -198,5 +199,12 @@ class Nav {
       page: () => JobScreen(showBackButton: Get.arguments["showBackButton"]),
       binding: InitialBindings(),
     ),
+
+    GetPage(
+      name: Routes.notificationsScreen,
+      page: () => NotificationsScreen(),
+      binding: InitialBindings(),
+    ),
+
   ];
 }

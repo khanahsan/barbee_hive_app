@@ -12,6 +12,7 @@ class CustomDrawerController extends GetxController
   late Animation<double> dashboardStackScaleAnimation;
 
   final isDrawerOpen = false.obs;
+  final isAnimated = false.obs;
   final userName = ''.obs;
   final userProfileImage = ''.obs;
   int? role;
@@ -21,15 +22,19 @@ class CustomDrawerController extends GetxController
     super.onInit();
 
     animationController = AnimationController(
-      duration: const Duration(milliseconds: 280),
+      duration: const Duration(seconds: 1),
+      reverseDuration: const Duration(milliseconds: 600),
       vsync: this,
     );
 
     offsetAnimation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0),
-      end: Offset.zero,
+      begin: const Offset(1.0, 0.0),  // Off-screen right
+      end: Offset.zero,  // Center
     ).animate(
-      CurvedAnimation(parent: animationController, curve: Curves.easeOutCubic),
+      CurvedAnimation(
+        parent: animationController,
+        curve: isDrawerOpen.value ? Curves.easeIn : Curves.easeInOut,
+      ),
     );
 
     fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -47,28 +52,25 @@ class CustomDrawerController extends GetxController
     loadUserData();
   }
 
-  // void toggleDrawer() {
-  //   if (isDrawerOpen.value) {
-  //     animationController.reverse();
-  //   } else {
-  //     animationController.forward();
-  //   }
-  //   isDrawerOpen.value = !isDrawerOpen.value;
-  // }
-
-  void toggleDrawer() {
+  Future<void> toggleDrawer() async {
+     // Toggle drawer state
     if (isDrawerOpen.value) {
       animationController.duration = const Duration(
-        milliseconds: 200,
+        milliseconds: 600,
       ); // faster close
       animationController.reverse();
     } else {
       animationController.duration = const Duration(
-        milliseconds: 280,
+        milliseconds: 600,
       ); // normal open
       animationController.forward();
     }
+
+    if(isDrawerOpen.value){
+      await Future.delayed(Duration(milliseconds: 600));
+    }
     isDrawerOpen.value = !isDrawerOpen.value;
+    //isAnimated.value = !isAnimated.value;  // Toggle drawer state
   }
 
   Future<void> loadUserData() async {

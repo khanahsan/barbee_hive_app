@@ -96,13 +96,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                         color: AppColors.colorFFFFFF,
                       ),
                     ),
-                    SvgPicture.asset(
-                      AppAssets.settingIcon,
-                      height: 22.h,
-                      width: 22.w,
-                      fit: BoxFit.cover,
-                      color: AppColors.colorFFFFFF,
-                    ),
+                    SizedBox.shrink(),
                   ],
                 ),
               ),
@@ -134,133 +128,142 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                       topLeft: Radius.circular(18.0),
                     ),
                   ),
-                  child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
-                    reverse: true,
-                    padding: EdgeInsets.only(
-                      top: 30.h,
-                      bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
-                    ),
-                    child: Form(
-                      key: controller.formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        spacing: 18.h,
-                        children: [
-                          _dropdownField(
-                            validator:
-                                (value) => FormValidators.validateRequired(
-                                  value,
-                                  "Experience Level",
-                                ),
-                            hint: 'Select Experience Level',
-                            iconPath: AppAssets.experienceLevel,
-                            selectedValue: controller.selectedExperienceLevel,
-                            items:
-                                controller.experienceLevels
-                                    .map(
-                                      (e) => DropdownMenuItem(
-                                        value: e.name,
-                                        child: Text(
-                                          e.name,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          physics: BouncingScrollPhysics(),
+                          reverse: false,
+                          padding: EdgeInsets.only(
+                            top: 30.h,
+                            bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
+                          ),
+                          child: Form(
+                            key: controller.formKey,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              spacing: 18.h,
+                              children: [
+                                _dropdownField(
+                                  validator:
+                                      (value) => FormValidators.validateRequired(
+                                        value,
+                                        "Experience Level",
                                       ),
-                                    )
-                                    .toList(),
-                            onChanged: controller.updateExperienceLevel,
-                          ),
-                          _textField(
-                            validator:
-                                (value) => FormValidators.validateRequired(
-                                  value,
-                                  "Years of Experience",
+                                  hint: 'Select Experience Level',
+                                  iconPath: AppAssets.experienceLevel,
+                                  selectedValue: controller.selectedExperienceLevel,
+                                  items:
+                                      controller.experienceLevels
+                                          .map(
+                                            (e) => DropdownMenuItem(
+                                              value: e.name,
+                                              child: Text(
+                                                e.name,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                  onChanged: controller.updateExperienceLevel,
                                 ),
-                            controller: controller.yearsOfExperience,
-                            hintText: "Years of Experience",
-                            prefixIcon: SvgPicture.asset(
-                              AppAssets.calenderIcon,
-                              height: 15.h,
-                              width: 15.w,
-                              fit: BoxFit.scaleDown,
-                            ),
-                            inputFormatter: [
-                              LengthLimitingTextInputFormatter(2),
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
-                          ),
-                          _textField(
-                            validator:
-                                (value) => FormValidators.validateRequired(
-                                  value,
-                                  "Expected Salary",
-                                ),
-                            controller: controller.expectedSalary,
-                            hintText: "Expected Salary",
-                            prefixIcon: SvgPicture.asset(
-                              AppAssets.cashIcon,
-                              height: 15.h,
-                              width: 15.w,
-                              fit: BoxFit.scaleDown,
-                            ),
-                            inputFormatter: [
-                              LengthLimitingTextInputFormatter(6),
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
-                          ),
-                          _dropdownField(
-                            validator:
-                                (value) => FormValidators.validateRequired(
-                                  value,
-                                  "Job Type",
-                                ),
-                            hint: 'Job Type',
-                            iconPath: AppAssets.cardIcon,
-                            selectedValue: controller.selectedJobType,
-                            onChanged: controller.updateJobType,
-                            items:
-                                controller.jobTypes
-                                    .map(
-                                      (job) => DropdownMenuItem(
-                                        value: job.name,
-                                        child: Text(
-                                          job.name,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
+                                _textField(
+                                  validator:
+                                      (value) => FormValidators.validateRequired(
+                                        value,
+                                        "Years of Experience",
                                       ),
-                                    )
-                                    .toList(),
+                                  controller: controller.yearsOfExperience,
+                                  hintText: "Years of Experience",
+                                  prefixIcon: SvgPicture.asset(
+                                    AppAssets.calenderIcon,
+                                    height: 15.h,
+                                    width: 15.w,
+                                    fit: BoxFit.scaleDown,
+                                  ),
+                                  inputFormatter: [
+                                    LengthLimitingTextInputFormatter(2),
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                ),
+                                _textField(
+                                  validator:
+                                      (value) => FormValidators.validateRequired(
+                                        value,
+                                        "Expected Salary",
+                                      ),
+                                  controller: controller.expectedSalary,
+                                  hintText: "Expected Salary",
+                                  prefixIcon: SvgPicture.asset(
+                                    AppAssets.cashIcon,
+                                    height: 15.h,
+                                    width: 15.w,
+                                    fit: BoxFit.scaleDown,
+                                  ),
+                                  inputFormatter: [
+                                    LengthLimitingTextInputFormatter(6),
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                ),
+                                _dropdownField(
+                                  validator:
+                                      (value) => FormValidators.validateRequired(
+                                        value,
+                                        "Job Type",
+                                      ),
+                                  hint: 'Job Type',
+                                  iconPath: AppAssets.cardIcon,
+                                  selectedValue: controller.selectedJobType,
+                                  onChanged: controller.updateJobType,
+                                  items:
+                                      controller.jobTypes
+                                          .map(
+                                            (job) => DropdownMenuItem(
+                                              value: job.name,
+                                              child: Text(
+                                                job.name,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                ),
+                                //SizedBox(height: 10.h),
+
+
+
+                              ],
+                            ),
                           ),
-                          SizedBox(height: 10.h),
-                          CustomBtn(
-                            btnTitle: 'Submit Now',
-                            buttonHeight: 50.h,
-                            btnBackgroundColor: AppColors.colorFF8600,
-                            btnTxtColor: Colors.white,
-                            buttonWidth: double.infinity,
-                            onPressed: () {
-                              if (controller.formKey.currentState!.validate()) {
-                                if (jobId != null) {
-                                  controller.applyForJob(jobId!);
-                                } else {
-                                  Get.snackbar(
-                                    'Error',
-                                    'Job ID is missing',
-                                    backgroundColor: Colors.red,
-                                    colorText: Colors.white,
-                                  );
-                                }
-                              }
-                            },
-                          ),
-                          SizedBox(height: 20.h),
-                        ],
+                        ),
                       ),
-                    ),
+                //      Spacer(),
+                      CustomBtn(
+                        btnTitle: 'Submit Now',
+                        buttonHeight: 50.h,
+                        btnBackgroundColor: AppColors.colorFF8600,
+                        btnTxtColor: Colors.white,
+                        buttonWidth: double.infinity,
+                        onPressed: () {
+                          if (controller.formKey.currentState!.validate()) {
+                            if (jobId != null) {
+                              controller.applyForJob(jobId!);
+                            } else {
+                              Get.snackbar(
+                                'Error',
+                                'Job ID is missing',
+                                backgroundColor: Colors.red,
+                                colorText: Colors.white,
+                              );
+                            }
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),

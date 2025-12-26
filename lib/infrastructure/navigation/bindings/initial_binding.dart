@@ -9,6 +9,8 @@ import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/application
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/controller/job_update_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller/pricing_plans_controller.dart';
+import 'package:barbee_hive_app/presentation/notifications/controllers/notifications_controller.dart';
+import 'package:barbee_hive_app/presentation/notifications/notifications_screen.dart';
 import 'package:barbee_hive_app/presentation/feedbackSupport/controller/feedback_support_controller.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:get/get.dart';
@@ -60,6 +62,9 @@ class InitialBindings implements Bindings {
     Get.lazyPut<PricingPlansController>(
       () => PricingPlansController(),
       fenix: true,
+    );
+
+    Get.lazyPut<NotificationsController>(() => NotificationsController(), fenix: true,
     );
   }
 }

@@ -170,7 +170,7 @@ class _EmployeeCardState extends State<EmployeeCard>
               ),
               infoRow(
                 iconPath: AppAssets.containerIcon,
-                rowTitle: "\$${widget.job.salaryRange.min} per month",
+                rowTitle: "\$${widget.job.salaryRange.min}-\$${widget.job.salaryRange.max} per month",
                 // "\$${widget.job.salaryRange.min}-${widget.job.salaryRange.max} per month",
               ),
 

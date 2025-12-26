@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/model/color_response.dart';
+import 'package:barbee_hive_app/data/model/contact_types_response.dart';
 import 'package:barbee_hive_app/data/model/country_response.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
+import 'package:barbee_hive_app/data/model/feedback_support_response.dart';
 import 'package:barbee_hive_app/data/model/gender_response.dart';
 import 'package:barbee_hive_app/data/model/height_response.dart';
 import 'package:barbee_hive_app/data/model/job_type_response.dart';
@@ -110,6 +114,12 @@ class AuthProvider {
     return SettingsResponse.fromJson(data);
   }
 
+  /// FETCH CONTACT TYPES
+  static Future<ContactTypesResponse> getContactTypes() async {
+    final data = await ApiService.get(ApiEndPoints.getContactTypes);
+    return ContactTypesResponse.fromJson(data);
+  }
+
   /// UPDATE SETTINGS
   static Future<UpdateSettingResponse> updateSetting({
     required bool receiveMessages,
@@ -133,5 +143,33 @@ class AuthProvider {
     );
 
     return UpdateSettingResponse.fromJson(data);
+  }
+
+  /// POST FEEDBACK & SUPPORT
+  static Future<FeedbackSupportResponse> postFeedbackSupport({
+    required String name,
+    required String email,
+    required String description,
+    required String type,
+  }) async {
+    final fields = {
+      'name': name,
+      'email': email,
+      'description': description,
+      'type': type,
+    };
+
+    log('NAEM: $name');
+    log('email: $email');
+    log('description: $description');
+    log('type: $type');
+
+    final data = await ApiService.post(
+      ApiEndPoints.feedbackSupport,
+      fields,
+      auth: true,
+    );
+
+    return FeedbackSupportResponse.fromJson(data);
   }
 }

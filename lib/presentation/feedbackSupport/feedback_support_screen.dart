@@ -2,6 +2,7 @@ import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dropdown.dart';
@@ -25,56 +26,60 @@ class FeedbackSupportScreen extends GetView<FeedbackSupportController> {
         leadingIconPath: AppAssets.backIcon,
         title: 'Feedback & Support',
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
-        child: Form(
-          key: controller.formKey,
-          child: Column(
-            spacing: 25.h,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              //Select Type Field
-              _selectTypeField(controller),
+      body: Obx(
+        () => controller.isLoading.value
+            ? _buildShimmerLoading()
+            : SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+                child: Form(
+                  key: controller.formKey,
+                  child: Column(
+                    spacing: 25.h,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      //Select Type Field
+                      _selectTypeField(controller),
 
-              //Message Field
-              _messageField(controller),
+                      //Message Field
+                      _messageField(controller),
 
-              //Submit Button
-              Obx(() {
-                return CustomBtn(
-                  isLoading: controller.isLoading.value,
-                  btnTitle: "Submit",
-                  btnBackgroundColor: AppColors.colorFF8600,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                  buttonHeight: 50.h,
-                  borderRadius: 15.r,
-                  onPressed: () {
-                    if (controller.formKey.currentState!.validate()) {
-                      controller.feedbackSupport();
-                    }
-                  },
-                );
-              }),
+                      //Submit Button
+                      Obx(() {
+                        return CustomBtn(
+                          isLoading: controller.isSubmitLoading.value,
+                          btnTitle: "Submit",
+                          btnBackgroundColor: AppColors.colorFF8600,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          buttonHeight: 50.h,
+                          borderRadius: 15.r,
+                          onPressed: () {
+                            if (controller.formKey.currentState!.validate()) {
+                              controller.feedbackSupport();
+                            }
+                          },
+                        );
+                      }),
 
-              //Cancel Button
-              CustomBtn(
-                btnTxtColor: AppColors.colorA3A3A3,
-                btnTitle: 'Cancel',
-                btnBackgroundColor: AppColors.color000000,
-                borderColor: AppColors.colorFF8600,
-                fontSize: 17,
-                fontWeight: FontWeight.w600,
-                buttonHeight: 50.h,
-                borderRadius: 15.r,
-                onPressed: () {
-                  Get.back<void>();
-                },
+                      //Cancel Button
+                      CustomBtn(
+                        btnTxtColor: AppColors.colorA3A3A3,
+                        btnTitle: 'Cancel',
+                        btnBackgroundColor: AppColors.color000000,
+                        borderColor: AppColors.colorFF8600,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w600,
+                        buttonHeight: 50.h,
+                        borderRadius: 15.r,
+                        onPressed: () {
+                          Get.back<void>();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -91,31 +96,32 @@ class FeedbackSupportScreen extends GetView<FeedbackSupportController> {
           fontWeight: FontWeight.w600,
           color: AppColors.colorFFFFFF,
         ),
-        CustomDropdown(
-          hint: 'Select Type',
-          selectedValue: controller.selectedType,
-          onChanged: controller.selectType,
-          items:
-              controller.typeOptions
-                  .map(
-                    (String type) => DropdownMenuItem<String>(
-                      value: type,
-                      child: Text(type),
-                    ),
-                  )
-                  .toList(),
-          fontSize: 17.sp,
-          borderRadius: 12.r,
-          backgroundColor: AppColors.color000000,
-          textColor: AppColors.colorFFFFFF,
-          dropdownColor: AppColors.colorFFFFFF,
-          borderColor: AppColors.colorA3A3A3,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please select a type';
-            }
-            return null;
-          },
+        Obx(
+          () => CustomDropdown(
+            hint: 'Select Type',
+            selectedValue: controller.selectedType,
+            onChanged: controller.selectType,
+            items: controller.typeOptions
+                .map(
+                  (contactType) => DropdownMenuItem<String>(
+                    value: contactType.id,
+                    child: Text(contactType.name),
+                  ),
+                )
+                .toList(),
+            fontSize: 17.sp,
+            borderRadius: 12.r,
+            backgroundColor: AppColors.color000000,
+            textColor: AppColors.colorFFFFFF,
+            dropdownColor: AppColors.colorFFFFFF,
+            borderColor: AppColors.colorA3A3A3,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please select a type';
+              }
+              return null;
+            },
+          ),
         ),
       ],
     );
@@ -157,6 +163,67 @@ class FeedbackSupportScreen extends GetView<FeedbackSupportController> {
           keyboardType: TextInputType.multiline,
         ),
       ],
+    );
+  }
+
+  Widget _buildShimmerLoading() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+      child: Column(
+        spacing: 25.h,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Select Type Field Shimmer
+          Column(
+            spacing: 10.h,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppShimmer(
+                height: 20,
+                width: 100,
+                borderRadius: BorderRadius.circular(5.r),
+              ),
+              AppShimmer(
+                height: 55,
+                width: double.infinity,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ],
+          ),
+
+          // Message Field Shimmer
+          Column(
+            spacing: 10.h,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AppShimmer(
+                height: 20,
+                width: 80,
+                borderRadius: BorderRadius.circular(5.r),
+              ),
+              AppShimmer(
+                height: 200,
+                width: double.infinity,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+            ],
+          ),
+
+          // Submit Button Shimmer
+          AppShimmer(
+            height: 50,
+            width: double.infinity,
+            borderRadius: BorderRadius.circular(15.r),
+          ),
+
+          // Cancel Button Shimmer
+          AppShimmer(
+            height: 50,
+            width: double.infinity,
+            borderRadius: BorderRadius.circular(15.r),
+          ),
+        ],
+      ),
     );
   }
 }

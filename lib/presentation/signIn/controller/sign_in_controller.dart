@@ -90,6 +90,10 @@ class SignInController extends GetxController {
               ? response.user.employee?.name ?? ""
               : response.user.employer?.businessName ?? "",
         ),
+        SharedPreferenceHelper.saveString(
+          SharedPrefKeys.userEmail,
+          response.user.email,
+        ),
       ]);
 
       // Handle remember me
@@ -212,6 +216,10 @@ class SignInController extends GetxController {
         SharedPreferenceHelper.saveString(
           SharedPrefKeys.userProfileImage,
           profileImage,
+        ),
+        SharedPreferenceHelper.saveString(
+          SharedPrefKeys.userEmail,
+          email,
         ),
       ]);
 

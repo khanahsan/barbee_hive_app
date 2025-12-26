@@ -20,6 +20,7 @@ class ApiEndPoints {
   static const String getCountries = 'dashboard/countries';
   static const String getStates = 'dashboard/states';
   static const String getSalaryTypes = 'dashboard/salary-types';
+  static const String getContactTypes = 'dashboard/contact-types';
 
   static const String registerEmployee = 'register';
   static const String userProfile = 'profiles';
@@ -34,6 +35,7 @@ class ApiEndPoints {
   /// SETTINGS
   static const String setting = 'settings';
   static const String updateSettings = 'settings/update';
+  static const String feedbackSupport = 'contact';
 
   /// SUBSCRIPTION
   static const String subscriptionPlans = 'subscription/plans';

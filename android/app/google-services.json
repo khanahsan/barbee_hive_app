@@ -12,7 +12,20 @@
           "package_name": "com.barbeeinc.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "545979703872-j1vdng0f1jpsb07vhvggonpc8rs37kej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.barbeeinc.app",
+            "certificate_hash": "2324b2d6e20bed69d0446b4d4a8fa1a7425e0af3"
+          }
+        },
+        {
+          "client_id": "545979703872-ias8r3rn9j32il4j3tj2ptaq2tg0euca.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDxM2cUz_nFmqdyVn0xlS0_sJ1KVpf5z2M"
@@ -20,26 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:545979703872:android:756f6980c1700bce7db5a5",
-        "android_client_info": {
-          "package_name": "com.example.barbee_hive_app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDxM2cUz_nFmqdyVn0xlS0_sJ1KVpf5z2M"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "545979703872-ias8r3rn9j32il4j3tj2ptaq2tg0euca.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "545979703872-5m6fb3en9nt5revti6td10ndkn3gpqod.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.barbeeinc.app"
+              }
+            }
+          ]
         }
       }
     }

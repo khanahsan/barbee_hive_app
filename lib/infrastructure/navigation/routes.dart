@@ -7,7 +7,7 @@ class Routes {
     print(
       'Token: $token, Route: ${token != null && token.isNotEmpty ? CUSTOMDRAWER : HOME}',
     );
-    return token != null && token.isNotEmpty ? CUSTOMDRAWER : HOME;
+    return token != null && token.isNotEmpty ? CUSTOMDRAWER : SIGN_IN_VIEW;
   }
 
   static const AUTH = '/auth';

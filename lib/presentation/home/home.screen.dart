@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -6,7 +7,6 @@ import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/navigation/routes.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
-import '../signUp/views/select_role_view.dart';
 import 'controllers/home.controller.dart';
 
 class HomeScreen extends GetView<HomeController> {
@@ -46,6 +46,20 @@ class HomeScreen extends GetView<HomeController> {
                   Get.toNamed(Routes.selectRole);
                 },
               ),
+
+              /// GOOGLE SIGN IN OPTION
+              Obx(
+                () => CustomBtn(
+                  buttonHeight: 55.h,
+                  btnTitle: 'Continue with Google',
+                  btnBackgroundColor: AppColors.colorFF8600,
+                  btnTxtColor: AppColors.colorFFFFFF,
+                  onPressed: () {
+                    controller.signInWithGoogle();
+                  },
+                  isLoading: controller.isGoogleSignInLoading.value,
+                ),
+              ),
             ],
           ),
         ),
@@ -53,3 +67,4 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 }
+*/

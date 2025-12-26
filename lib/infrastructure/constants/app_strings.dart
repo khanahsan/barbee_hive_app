@@ -26,7 +26,7 @@ class AppStrings {
   static const String signInToContinue = 'Sign in to continue';
   static const String signIn = 'Sign In';
   static const String signUp = 'Sign Up';
-  static const String noAccount = 'Don''t have an account?';
+  static const String noAccount = "Don't have an account?";
 
   static const String confirmEmail = 'Confirm email';
   static const String confirm = 'Confirm';

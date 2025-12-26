@@ -46,6 +46,7 @@ class DashboardController extends GetxController {
         bannerAd = ad;
         isBannerLoaded.value = true;
 
+
         log('✅ Banner ad loaded successfully.');
       },
       onAdFailed: () {

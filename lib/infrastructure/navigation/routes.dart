@@ -37,4 +37,5 @@ class Routes {
   static const applicantProfile = '/applicant_profile';
   static const myJobs = '/my_jobs';
   static const jobs = '/jobs';
+  static const notificationsScreen = '/notifications_screen';
 }

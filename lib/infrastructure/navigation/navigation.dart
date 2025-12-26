@@ -11,6 +11,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/
 import 'package:barbee_hive_app/presentation/bottom_nav/job/job_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/pricing_plans_screen.dart';
 import 'package:barbee_hive_app/presentation/changePassword/change_password_screen.dart';
+import 'package:barbee_hive_app/presentation/feedbackSupport/feedback_support_screen.dart';
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
 import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
 import 'package:barbee_hive_app/presentation/signIn/sign_in_view.dart';
@@ -173,6 +174,12 @@ class Nav {
     GetPage(
       name: Routes.jobUpdateScreen,
       page: () => JobUpdateScreen(),
+      binding: InitialBindings(),
+    ),
+
+    GetPage(
+      name: Routes.feedbackSupportScreen,
+      page: () => FeedbackSupportScreen(),
       binding: InitialBindings(),
     ),
 

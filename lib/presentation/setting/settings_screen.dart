@@ -186,7 +186,10 @@ class SettingsScreen extends GetView<SettingController> {
         ),
         _buildAboutTile(title: "Community Guidelines"),
         _buildAboutTile(title: "Terms & Conditions"),
-        _buildAboutTile(title: "Feedback & Support"),
+        _buildAboutTile(
+          title: "Feedback & Support",
+          onTap: () => Get.toNamed(Routes.feedbackSupportScreen),
+        ),
         Divider(color: AppColors.color262626),
       ],
     );

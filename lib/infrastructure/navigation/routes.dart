@@ -34,6 +34,7 @@ class Routes {
   static const hiveProfileScreen = '/hive_profile_screen';
   static const jobPostingScreen = '/job_posting_screen';
   static const jobUpdateScreen = '/job_update_screen';
+  static const feedbackSupportScreen = '/feedback_support_screen';
   static const applicantProfile = '/applicant_profile';
   static const myJobs = '/my_jobs';
   static const jobs = '/jobs';

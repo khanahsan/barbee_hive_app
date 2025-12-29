@@ -5,6 +5,7 @@ import 'package:barbee_hive_app/data/model/color_response.dart';
 import 'package:barbee_hive_app/data/model/contact_types_response.dart';
 import 'package:barbee_hive_app/data/model/country_response.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
+import 'package:barbee_hive_app/data/model/dropdown_response.dart';
 import 'package:barbee_hive_app/data/model/feedback_support_response.dart';
 import 'package:barbee_hive_app/data/model/gender_response.dart';
 import 'package:barbee_hive_app/data/model/height_response.dart';
@@ -30,6 +31,15 @@ class AuthProvider {
       auth: true, // Requires token
     );
     return DashboardResponse.fromJson(data);
+  }
+
+  /// FETCH ALL DROPDOWNS
+  static Future<DropdownResponse> getDashboardDropdowns() async {
+    final data = await ApiService.get(
+      ApiEndPoints.dashboardDropdown,
+      auth: false,
+    );
+    return DropdownResponse.fromJson(data);
   }
 
   /// FETCH ALL EYE COLORS

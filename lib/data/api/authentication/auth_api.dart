@@ -7,10 +7,11 @@ import '../endpoint_constants.dart';
 
 class AuthApi {
   /// LOGIN API
-  static Future<LoginResponse> login(String email, String password) async {
+  static Future<LoginResponse> login(String email, String password, String token) async {
     final data = await ApiService.post(ApiEndPoints.login, {
       'email': email,
       'password': password,
+      'fcm_token':token,
     });
     return LoginResponse.fromJson(data);
   }

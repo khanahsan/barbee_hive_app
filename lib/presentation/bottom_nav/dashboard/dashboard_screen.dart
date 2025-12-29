@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dropdown.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +22,122 @@ class DashboardScreen extends GetView<DashboardController> {
   DashboardScreen({super.key, this.onMenuPressed});
 
   final VoidCallback? onMenuPressed;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: Drawer(
+        backgroundColor: AppColors.black,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              AppBar(
+                backgroundColor: AppColors.colorFF8600,
+                title: const Text("Filters"),
+                titleTextStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.colorFFFFFF,
+                ),
+                automaticallyImplyLeading: false,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.close, color: AppColors.colorFFFFFF),
+                    onPressed: () => Get.back(),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30.h),
+          
+              _buildDropdown(
+                context,
+                value: controller.selectedJob.value,
+                hintText: "Job Type",
+                items: controller.jobList,
+                onChanged: (val) => controller.selectedJob.value = val ?? '',
+              ).paddingSymmetric(horizontal: 15.w),
+          
+              SizedBox(height: 25.h),
+              _buildDropdown(
+                context,
+                value: controller.selectedPosition.value,
+                hintText: "Position",
+                items: controller.positionList,
+                onChanged:
+                    (val) => controller.selectedPosition.value = val ?? '',
+              ).paddingSymmetric(horizontal: 15.w),
+          
+              SizedBox(height: 25.h),
+              _buildDropdown(
+                context,
+                value: controller.selectedMinAge.value,
+                hintText: "Min Age",
+                items: controller.minAgeList,
+                onChanged: (val) => controller.selectedMinAge.value = val ?? '',
+              ).paddingSymmetric(horizontal: 15.w),
+          
+              SizedBox(height: 25.h),
+              _buildDropdown(
+                context,
+                value: controller.selectedMaxAge.value,
+                hintText: "Max Age",
+                items: controller.maxAgeList,
+                onChanged: (val) => controller.selectedMaxAge.value = val ?? '',
+              ).paddingSymmetric(horizontal: 15.w),
+          
+              SizedBox(height: 25.h),
+              _buildDropdown(
+                context,
+                value: controller.selectedGender.value,
+                hintText: "Gender",
+                items: controller.genderList,
+                onChanged: (val) => controller.selectedGender.value = val ?? '',
+              ).paddingSymmetric(horizontal: 15.w),
+          
+              SizedBox(height: 25.h),
+              _buildDropdown(
+                context,
+                value: controller.selectedHeight.value,
+                hintText: "Height",
+                items: controller.heightList,
+                onChanged: (val) => controller.selectedHeight.value = val ?? '',
+              ).paddingSymmetric(horizontal: 15.w),
+          
+              SizedBox(height: 25.h),
+              _buildDropdown(
+                context,
+                value: controller.selectedEyeColor.value,
+                hintText: "Eye Color",
+                items: controller.eyeColorList,
+                onChanged:
+                    (val) => controller.selectedEyeColor.value = val ?? '',
+              ).paddingSymmetric(horizontal: 15.w),
+          
+              SizedBox(height: 25.h),
+              _buildDropdown(
+                context,
+                value: controller.selectedHairColor.value,
+                hintText: "Hair Color",
+                items: controller.hairColorList,
+                onChanged:
+                    (val) => controller.selectedHairColor.value = val ?? '',
+              ).paddingSymmetric(horizontal: 15.w),
+          
+              SizedBox(height: 25.h),
+              CustomButton(
+                buttonText: "Apply Filters",
+                onTap: controller.applyFilters,
+                buttonWidth: double.infinity,
+                buttonHeight: 60.h,
+                buttonColor: AppColors.colorFF8600,
+                borderRadius: 10.r,
+              ).paddingSymmetric(horizontal: 15.w),
+            ],
+          ),
+        ),
+      ),
       appBar: customAppbar(
         showHexagon: true,
         hexagonTapFunction: () {
@@ -43,6 +156,18 @@ class DashboardScreen extends GetView<DashboardController> {
             },
             child: SvgPicture.asset(
               AppAssets.bellIcon,
+              height: 24.h,
+              width: 24.w,
+            ),
+          ),
+          SizedBox(width: 15.w),
+
+          GestureDetector(
+            onTap: () {
+              _scaffoldKey.currentState?.openEndDrawer();
+            },
+            child: SvgPicture.asset(
+              AppAssets.filterIcon,
               height: 24.h,
               width: 24.w,
             ),
@@ -433,136 +558,13 @@ class DashboardScreen extends GetView<DashboardController> {
     });
   }
 
-
-  // Widget filterDrawer(BuildContext context){
-  //   return Drawer(
-  //     backgroundColor: AppColors.black,
-  //     child: Column(
-  //       children: [
-  //         AppBar(
-  //           backgroundColor: AppColors.colorFF8600,
-  //           title: const Text("Filters"),
-  //           titleTextStyle: Theme.of(
-  //             context,
-  //           ).textTheme.titleMedium?.copyWith(
-  //             fontSize: 20.sp,
-  //             fontWeight: FontWeight.w500,
-  //             color: Colors.white,
-  //           ),
-  //           automaticallyImplyLeading: false,
-  //           actions: [
-  //             IconButton(
-  //               icon: const Icon(Icons.close, color: Colors.white),
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //         SizedBox(height: 30.h),
-  //
-  //             SizedBox(height: 30.h),
-  //
-  //             _buildDropdown(
-  //               context,
-  //               value: controller.selectedJob?.value,
-  //               hintText: "Select Job Type",
-  //               items: controller.jobList,
-  //               onChanged: (val) => controller.selectedJob?.value = val ?? '',
-  //             ).paddingSymmetric(horizontal: 15.w),
-  //
-  //             SizedBox(height: 25.h),
-  //             _buildDropdown(
-  //               context,
-  //               value: controller.selectedPosition?.value,
-  //               hintText: "Select Position Type",
-  //               items: controller.positionList,
-  //               onChanged:
-  //                   (val) => controller.selectedPosition?.value = val ?? '',
-  //             ).paddingSymmetric(horizontal: 15.w),
-  //
-  //             SizedBox(height: 25.h),
-  //             _buildDropdown(
-  //               context,
-  //               value: controller.selectedMinAge?.value,
-  //               hintText: "Min Age",
-  //               items: controller.minAgeList,
-  //               onChanged:
-  //                   (val) => controller.selectedMinAge?.value = val ?? '',
-  //             ).paddingSymmetric(horizontal: 15.w),
-  //
-  //             SizedBox(height: 25.h),
-  //             _buildDropdown(
-  //               context,
-  //               value: controller.selectedMaxAge?.value,
-  //               hintText: "Max Age",
-  //               items: controller.maxAgeList,
-  //               onChanged:
-  //                   (val) => controller.selectedMaxAge?.value = val ?? '',
-  //             ).paddingSymmetric(horizontal: 15.w),
-  //
-  //             SizedBox(height: 25.h),
-  //             _buildDropdown(
-  //               context,
-  //               value: controller.selectedGender?.value,
-  //               hintText: "Gender",
-  //               items: controller.genderList,
-  //               onChanged:
-  //                   (val) => controller.selectedGender?.value = val ?? '',
-  //             ).paddingSymmetric(horizontal: 15.w),
-  //
-  //             SizedBox(height: 25.h),
-  //             _buildDropdown(
-  //               context,
-  //               value: controller.selectedHeight?.value,
-  //               hintText: "Height",
-  //               items: controller.heightList,
-  //               onChanged:
-  //                   (val) => controller.selectedHeight?.value = val ?? '',
-  //             ).paddingSymmetric(horizontal: 15.w),
-  //
-  //             SizedBox(height: 25.h),
-  //             _buildDropdown(
-  //               context,
-  //               value: controller.selectedEyeColor?.value,
-  //               hintText: "Eye Color",
-  //               items: controller.eyeColorList,
-  //               onChanged:
-  //                   (val) => controller.selectedEyeColor?.value = val ?? '',
-  //             ).paddingSymmetric(horizontal: 15.w),
-  //
-  //             SizedBox(height: 25.h),
-  //             _buildDropdown(
-  //               context,
-  //               value: controller.selectedHairColor?.value,
-  //               hintText: "Hair Color",
-  //               items: controller.hairColorList,
-  //               onChanged:
-  //                   (val) => controller.selectedHairColor?.value = val ?? '',
-  //             ).paddingSymmetric(horizontal: 15.w),
-  //
-  //             SizedBox(height: 25.h),
-  //             CustomButton(
-  //               buttonText: "Apply Filters",
-  //               onTap: controller.applyFilters,
-  //               buttonWidth: double.infinity,
-  //               buttonHeight: 60.h,
-  //               buttonColor: AppColors.colorFF8600,
-  //               borderRadius: 10.r,
-  //             ).paddingSymmetric(horizontal: 15.w),
-  //           ],
-  //         ),
-  //       );
-  // }
-
-
   Widget _buildDropdown(
-      BuildContext context, {
-        required String? value,
-        required String hintText,
-        required List<DropdownMenuItem<String>> items,
-        required Function(String?) onChanged,
-      }) {
+    BuildContext context, {
+    required String? value,
+    required String hintText,
+    required List<DropdownMenuItem<String>> items,
+    required Function(String?) onChanged,
+  }) {
     return CustomDropdown(
       hint: hintText,
       selectedValue: RxString(value ?? ''),
@@ -571,12 +573,10 @@ class DashboardScreen extends GetView<DashboardController> {
       fontSize: 16.0,
       iconSize: 24.0,
       borderRadius: 10.0,
-      backgroundColor: Colors.white,
-      textColor: Colors.black,
+      backgroundColor: AppColors.color000000,
+      textColor: AppColors.colorA3A3A3,
       dropdownColor: Colors.white,
-      borderColor: Colors.grey,
+      borderColor: AppColors.colorA3A3A3,
     );
-
-}
-
+  }
 }

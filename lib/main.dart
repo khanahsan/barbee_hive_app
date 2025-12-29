@@ -42,7 +42,7 @@ void main() async {
     await Stripe.instance.applySettings();
   }
 
-  // Initialize Firebase
+  /// Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Initialize Firebase Messaging

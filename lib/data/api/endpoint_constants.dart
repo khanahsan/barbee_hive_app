@@ -21,6 +21,7 @@ class ApiEndPoints {
   static const String getStates = 'dashboard/states';
   static const String getSalaryTypes = 'dashboard/salary-types';
   static const String getContactTypes = 'dashboard/contact-types';
+  static const String dashboardDropdown = 'dashboard/dropdown?filter=eye-colors,hair-colors,skills,experience-levels,job-types,genders,heights,salary-types,countries,states,contact-types';
 
   static const String registerEmployee = 'register';
   static const String userProfile = 'profiles';

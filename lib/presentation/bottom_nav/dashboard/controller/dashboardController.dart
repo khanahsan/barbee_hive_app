@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -25,8 +26,9 @@ class DashboardController extends GetxController {
   BannerAd? bannerAd;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+    print("Device token :: ${await FirebaseMessaging.instance.getToken() ?? ""}");
     // fetchDashboardUsers();
     getUserLocationAndFetchDashboard();
     loadBannerAd();

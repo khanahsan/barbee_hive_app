@@ -50,80 +50,77 @@ class DashboardScreen extends GetView<DashboardController> {
                 ],
               ),
               SizedBox(height: 30.h),
-          
-              _buildDropdown(
+
+              Obx(() => _buildDropdown(
                 context,
                 value: controller.selectedJob.value,
                 hintText: "Job Type",
                 items: controller.jobList,
-                onChanged: (val) => controller.selectedJob.value = val ?? '',
-              ).paddingSymmetric(horizontal: 15.w),
-          
+                onChanged: (val) => controller.selectedJob.value = val,
+              ).paddingSymmetric(horizontal: 15.w)),
+
               SizedBox(height: 25.h),
-              _buildDropdown(
+              Obx(() => _buildDropdown(
                 context,
                 value: controller.selectedPosition.value,
                 hintText: "Position",
                 items: controller.positionList,
-                onChanged:
-                    (val) => controller.selectedPosition.value = val ?? '',
-              ).paddingSymmetric(horizontal: 15.w),
-          
+                onChanged: (val) => controller.selectedPosition.value = val,
+              ).paddingSymmetric(horizontal: 15.w)),
+
               SizedBox(height: 25.h),
-              _buildDropdown(
+              Obx(() => _buildDropdown(
                 context,
                 value: controller.selectedMinAge.value,
                 hintText: "Min Age",
                 items: controller.minAgeList,
-                onChanged: (val) => controller.selectedMinAge.value = val ?? '',
-              ).paddingSymmetric(horizontal: 15.w),
-          
+                onChanged: (val) => controller.selectedMinAge.value = val,
+              ).paddingSymmetric(horizontal: 15.w)),
+
               SizedBox(height: 25.h),
-              _buildDropdown(
+              Obx(() => _buildDropdown(
                 context,
                 value: controller.selectedMaxAge.value,
                 hintText: "Max Age",
                 items: controller.maxAgeList,
-                onChanged: (val) => controller.selectedMaxAge.value = val ?? '',
-              ).paddingSymmetric(horizontal: 15.w),
-          
+                onChanged: (val) => controller.selectedMaxAge.value = val,
+              ).paddingSymmetric(horizontal: 15.w)),
+
               SizedBox(height: 25.h),
-              _buildDropdown(
+              Obx(() => _buildDropdown(
                 context,
                 value: controller.selectedGender.value,
                 hintText: "Gender",
                 items: controller.genderList,
-                onChanged: (val) => controller.selectedGender.value = val ?? '',
-              ).paddingSymmetric(horizontal: 15.w),
-          
+                onChanged: (val) => controller.selectedGender.value = val,
+              ).paddingSymmetric(horizontal: 15.w)),
+
               SizedBox(height: 25.h),
-              _buildDropdown(
+              Obx(() => _buildDropdown(
                 context,
                 value: controller.selectedHeight.value,
                 hintText: "Height",
                 items: controller.heightList,
-                onChanged: (val) => controller.selectedHeight.value = val ?? '',
-              ).paddingSymmetric(horizontal: 15.w),
-          
+                onChanged: (val) => controller.selectedHeight.value = val,
+              ).paddingSymmetric(horizontal: 15.w)),
+
               SizedBox(height: 25.h),
-              _buildDropdown(
+              Obx(() => _buildDropdown(
                 context,
                 value: controller.selectedEyeColor.value,
                 hintText: "Eye Color",
                 items: controller.eyeColorList,
-                onChanged:
-                    (val) => controller.selectedEyeColor.value = val ?? '',
-              ).paddingSymmetric(horizontal: 15.w),
-          
+                onChanged: (val) => controller.selectedEyeColor.value = val,
+              ).paddingSymmetric(horizontal: 15.w)),
+
               SizedBox(height: 25.h),
-              _buildDropdown(
+              Obx(() => _buildDropdown(
                 context,
                 value: controller.selectedHairColor.value,
                 hintText: "Hair Color",
                 items: controller.hairColorList,
-                onChanged:
-                    (val) => controller.selectedHairColor.value = val ?? '',
-              ).paddingSymmetric(horizontal: 15.w),
+                onChanged: (val) => controller.selectedHairColor.value = val,
+              ).paddingSymmetric(horizontal: 15.w)),
           
               SizedBox(height: 25.h),
               CustomButton(
@@ -134,6 +131,18 @@ class DashboardScreen extends GetView<DashboardController> {
                 buttonColor: AppColors.colorFF8600,
                 borderRadius: 10.r,
               ).paddingSymmetric(horizontal: 15.w),
+
+              SizedBox(height: 15.h),
+              CustomButton(
+                buttonText: "Reset Filters",
+                onTap: controller.resetFilters,
+                buttonWidth: double.infinity,
+                buttonHeight: 60.h,
+                buttonColor: AppColors.colorA3A3A3,
+                borderRadius: 10.r,
+              ).paddingSymmetric(horizontal: 15.w),
+
+              SizedBox(height: 30.h),
             ],
           ),
         ),

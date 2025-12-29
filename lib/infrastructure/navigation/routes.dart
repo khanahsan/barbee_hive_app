@@ -1,13 +1,14 @@
 import 'package:barbee_hive_app/data/api/api_service.dart';
 
+import '../constants/shared_pref_keys.dart';
+import '../helpers/shared_preference_helper.dart';
+
 class Routes {
   static Future<String> get initialRoute async {
     await ApiService.initToken();
-    final token = ApiService.getToken();
-    print(
-      'Token: $token, Route: ${token != null && token.isNotEmpty ? CUSTOMDRAWER : HOME}',
-    );
-    return token != null && token.isNotEmpty ? CUSTOMDRAWER : SIGN_IN_VIEW;
+    final isRememberMe = SharedPreferenceHelper.getBool(SharedPrefKeys.isRememberMe) ?? false;
+
+    return isRememberMe ? CUSTOMDRAWER : SIGN_IN_VIEW;
   }
 
   static const AUTH = '/auth';

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:barbee_hive_app/push_notifications/push_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -44,9 +45,10 @@ void main() async {
 
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await NotificationService.instance.initialize();
 
   // Initialize Firebase Messaging
-  await NotificationService().initNotification();
+//  await NotificationService().initNotification();
 
   // Request Notification permissions (iOS)
   await FirebaseMessaging.instance.requestPermission();

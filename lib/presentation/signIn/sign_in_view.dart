@@ -20,7 +20,7 @@ class SignInView extends GetView<SignInController> {
   @override
   Widget build(BuildContext context) {
     // employer
-    // controller.emailController.text = "employer5@gmail.com";
+     //controller.emailController.text = "employer5@gmail.com";
     // //employee
     controller.emailController.text = "employee11@gmail.com";
     controller.passwordController.text = "12345678";

@@ -5,6 +5,7 @@ import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -62,8 +63,14 @@ class SignInController extends GetxController {
     isLoading.value = true;
 
     try {
+
+
+      print("Device token 1 : ${await FirebaseMessaging.instance.getToken() ?? ""}");
+
       // LOGIN API
-      final response = await AuthApi.login(email, password);
+      final response = await AuthApi.login(email, password, await FirebaseMessaging.instance.getToken() ?? "");
+
+    //  return;
 
       // Save most values in parallel
       await Future.wait([
@@ -100,10 +107,12 @@ class SignInController extends GetxController {
       if (rememberMe.value) {
         SharedPreferenceHelper.saveString(SharedPrefKeys.savedEmail, email);
         SharedPreferenceHelper.saveString(SharedPrefKeys.savedPassword, password);
-      } else {
-        SharedPreferenceHelper.remove(SharedPrefKeys.savedEmail);
-        SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
+        SharedPreferenceHelper.saveBool(SharedPrefKeys.isRememberMe, true);
       }
+      // else {
+      //   SharedPreferenceHelper.remove(SharedPrefKeys.savedEmail);
+      //   SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
+      // }
 
       // Set token
       ApiService.setToken(response.token);

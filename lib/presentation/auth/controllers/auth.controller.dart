@@ -354,6 +354,7 @@ import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -432,8 +433,11 @@ class AuthController extends GetxController {
     isLoading.value = true;
 
     try {
-      print('Attempting login with email: $email');
-      final response = await AuthApi.login(email, password);
+
+      print("Device token 2 : ${await FirebaseMessaging.instance.getToken() ?? ""}");
+
+      //print('Attempting login with email: $email');
+      final response = await AuthApi.login(email, password,  await FirebaseMessaging.instance.getToken() ?? "");
       print('Login Response: $response');
       TokenStorage.saveToken(response.token);
 

@@ -14,8 +14,10 @@ import '../../../../infrastructure/helpers/location_service.dart';
 import '../../../../infrastructure/helpers/shared_preference_helper.dart';
 
 class DashboardController extends GetxController {
-  final RxList<User> employees = <User>[].obs; // Role 3 (Hive)
-  final RxList<User> employers = <User>[].obs; // Role 2 (B2B)
+  final RxList<User> employees = <User>[].obs; // Role 3 (Hive) - Displayed list
+  final RxList<User> employers = <User>[].obs; // Role 2 (B2B) - Displayed list
+  final RxList<User> allEmployees = <User>[].obs; // All employees (unfiltered)
+  final RxList<User> allEmployers = <User>[].obs; // All employers (unfiltered)
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
   RxString userProfileImage = ''.obs;
@@ -116,9 +118,15 @@ class DashboardController extends GetxController {
         currentLongitude: currentLongitude.value.toString(),
       );
 
+      // Store all users (unfiltered)
+      allEmployees.assignAll(response.data.employees);
+      allEmployers.assignAll(response.data.employers);
+
+      // Display all users initially
       employees.assignAll(response.data.employees); // Role 3 (Hive)
       employers.assignAll(response.data.employers); // Role 2 (B2B)
 
+      log('Total Employees: ${employees.length}');
       log('Total Employers: ${employers.length}');
       employers.asMap().forEach((index, e) {
         log(
@@ -263,12 +271,139 @@ class DashboardController extends GetxController {
     log('Selected Eye Color: ${selectedEyeColor.value}');
     log('Selected Hair Color: ${selectedHairColor.value}');
 
+    // Filter employees based on selected criteria
+    List<User> filteredEmployees = allEmployees.where((user) {
+      if (user.employee == null) return false;
+
+      final employee = user.employee!;
+
+      // Filter by gender
+      if (selectedGender.value != null && selectedGender.value!.isNotEmpty) {
+        if (employee.gender.toLowerCase() != selectedGender.value!.toLowerCase()) {
+          return false;
+        }
+      }
+
+      // Filter by height
+      if (selectedHeight.value != null && selectedHeight.value!.isNotEmpty) {
+        final selectedHeightId = int.tryParse(selectedHeight.value!);
+        if (selectedHeightId != null && employee.height != selectedHeightId) {
+          return false;
+        }
+      }
+
+      // Filter by eye color
+      if (selectedEyeColor.value != null && selectedEyeColor.value!.isNotEmpty) {
+        final selectedEyeColorId = int.tryParse(selectedEyeColor.value!);
+        if (selectedEyeColorId != null) {
+          if (employee.eyeColor == null || employee.eyeColor!.id != selectedEyeColorId) {
+            return false;
+          }
+        }
+      }
+
+      // Filter by hair color
+      if (selectedHairColor.value != null && selectedHairColor.value!.isNotEmpty) {
+        final selectedHairColorId = int.tryParse(selectedHairColor.value!);
+        if (selectedHairColorId != null) {
+          if (employee.hairColor == null || employee.hairColor!.id != selectedHairColorId) {
+            return false;
+          }
+        }
+      }
+
+      // Filter by experience level (position)
+      if (selectedPosition.value != null && selectedPosition.value!.isNotEmpty) {
+        if (employee.experienceYears == null ||
+            employee.experienceYears!.toLowerCase() != selectedPosition.value!.toLowerCase()) {
+          return false;
+        }
+      }
+
+      // Filter by age (calculate from DOB)
+      if ((selectedMinAge.value != null && selectedMinAge.value!.isNotEmpty) ||
+          (selectedMaxAge.value != null && selectedMaxAge.value!.isNotEmpty)) {
+        final age = _calculateAge(employee.dob);
+        if (age != null) {
+          if (selectedMinAge.value != null && selectedMinAge.value!.isNotEmpty) {
+            final minAge = int.tryParse(selectedMinAge.value!);
+            if (minAge != null && age < minAge) {
+              return false;
+            }
+          }
+          if (selectedMaxAge.value != null && selectedMaxAge.value!.isNotEmpty) {
+            final maxAge = int.tryParse(selectedMaxAge.value!);
+            if (maxAge != null && age > maxAge) {
+              return false;
+            }
+          }
+        }
+      }
+
+      return true;
+    }).toList();
+
+    // Update the displayed employee list
+    employees.assignAll(filteredEmployees);
+
     Get.back(); // Close the drawer
 
-    // TODO: Implement filter logic - make API call with selected filters
+    log('Filtered Employees: ${employees.length} out of ${allEmployees.length}');
+
     Utilities.showSnackBar(
       title: "Filters Applied",
-      message: "Dashboard will be updated with selected filters",
+      message: "Found ${employees.length} users matching your criteria",
+      isSuccess: true,
+    );
+  }
+
+  int? _calculateAge(String dob) {
+    try {
+      final birthDate = DateTime.parse(dob);
+      final today = DateTime.now();
+      int age = today.year - birthDate.year;
+      if (today.month < birthDate.month ||
+          (today.month == birthDate.month && today.day < birthDate.day)) {
+        age--;
+      }
+      return age;
+    } catch (e) {
+      log('Error calculating age from DOB: $dob - $e');
+      return null;
+    }
+  }
+
+  void resetFilters() {
+    log('Resetting filters...');
+
+    // Clear all selected filter values
+    selectedJob.value = null;
+    selectedPosition.value = null;
+    selectedMinAge.value = null;
+    selectedMaxAge.value = null;
+    selectedGender.value = null;
+    selectedHeight.value = null;
+    selectedEyeColor.value = null;
+    selectedHairColor.value = null;
+
+    // Restore all employees and employers
+    log('Restoring employees: ${allEmployees.length}');
+    log('Restoring employers: ${allEmployers.length}');
+
+    employees.clear();
+    employers.clear();
+
+    employees.addAll(allEmployees);
+    employers.addAll(allEmployers);
+
+    log('Restored employees: ${employees.length}');
+    log('Restored employers: ${employers.length}');
+
+    Get.back(); // Close the drawer
+
+    Utilities.showSnackBar(
+      title: "Filters Removed",
+      message: "Showing ${employees.length} employees and ${employers.length} employers",
       isSuccess: true,
     );
   }

@@ -434,10 +434,10 @@ class AuthController extends GetxController {
 
     try {
 
-      print("Device token 2 : ${await FirebaseMessaging.instance.getToken() ?? ""}");
+
 
       //print('Attempting login with email: $email');
-      final response = await AuthApi.login(email, password,  await FirebaseMessaging.instance.getToken() ?? "");
+      final response = await AuthApi.login(email, password,   "");
       print('Login Response: $response');
       TokenStorage.saveToken(response.token);
 

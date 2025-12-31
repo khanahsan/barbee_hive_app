@@ -65,9 +65,9 @@ class SignInController extends GetxController {
     try {
 
 
-      print("Device token 1 : ${await FirebaseMessaging.instance.getToken() ?? ""}");
 
-      final response = await AuthApi.login(email, password, await FirebaseMessaging.instance.getToken() ?? "");
+
+      final response = await AuthApi.login(email, password,"");
 
       // Save most values in parallel
       SharedPreferenceHelper.saveInfo(response,rememberMe.value, email,password);

@@ -286,14 +286,7 @@ class JobFilterDialog extends GetView<JobController> {
                       hint: "Job Role",
                       iconPath: 'assets/icons/job_icon.svg',
                       selectedValue: controller.selectedJobRole,
-                      items: controller.skills
-                          .map(
-                            (role) => DropdownMenuItem(
-                          value: role.name,
-                          child: Text(role.name),
-                        ),
-                      )
-                          .toList(),
+                      items: controller.skills,
                       onChanged: (val) =>
                       controller.selectedJobRole.value = val ?? '',
                     ),
@@ -304,14 +297,7 @@ class JobFilterDialog extends GetView<JobController> {
                       hint: "Experience",
                       iconPath: 'assets/icons/experience_icon.svg',
                       selectedValue: controller.selectedExperience,
-                      items: controller.experienceLevels
-                          .map(
-                            (exp) => DropdownMenuItem(
-                          value: exp.name,
-                          child: Text(exp.name),
-                        ),
-                      )
-                          .toList(),
+                      items: controller.experienceLevels,
                       onChanged: (val) =>
                       controller.selectedExperience.value = val ?? '',
                     ),
@@ -322,14 +308,7 @@ class JobFilterDialog extends GetView<JobController> {
                       hint: "Salary",
                       iconPath: 'assets/icons/salary_icon.svg',
                       selectedValue: controller.selectedSalary,
-                      items: controller.salaryTypes
-                          .map(
-                            (sal) => DropdownMenuItem(
-                          value: sal.name,
-                          child: Text(sal.name),
-                        ),
-                      )
-                          .toList(),
+                      items: controller.salaryTypes,
                       onChanged: (val) =>
                       controller.selectedSalary.value = val ?? '',
                     ),
@@ -340,14 +319,7 @@ class JobFilterDialog extends GetView<JobController> {
                       hint: "Job Type",
                       iconPath: 'assets/icons/job_icon.svg',
                       selectedValue: controller.selectedJobType,
-                      items: controller.jobTypes
-                          .map(
-                            (type) => DropdownMenuItem(
-                          value: type.name,
-                          child: Text(type.name),
-                        ),
-                      )
-                          .toList(),
+                      items: controller.jobTypes,
                       onChanged: (val) =>
                       controller.selectedJobType.value = val ?? '',
                     ),

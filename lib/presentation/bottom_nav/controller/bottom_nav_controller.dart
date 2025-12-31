@@ -1,6 +1,13 @@
+import 'dart:developer';
+
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/customDrawer/controller/custom_drawer_controller.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+
+import '../job/controller/job_controller.dart';
 
 class BottomNavController extends GetxController {
   /// STATE VARIABLES
@@ -60,10 +67,19 @@ class BottomNavController extends GetxController {
   // LIFECYCLE
   // -----------------------
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+      getIndex();
     _loadUserData();
   }
+
+  getIndex(){
+    if(Get.find<CustomDrawerController>().currentIndex.value == 2){
+      tabChangeForEmployeeNotifications(2);
+    }
+  }
+
+
 
   // -----------------------
   // METHODS
@@ -84,6 +100,21 @@ class BottomNavController extends GetxController {
     // } else if (index == 2) {
     //   Get.find<JobController>().onInit();
     // }
+  }
+
+  tabChangeForEmployeeNotifications(int index) async {
+    currentBottomIndex.value = index;
+    currentBottomIndex.refresh();
+
+    var jobController = Get.find<JobController>();
+     print("jobController.isScreenLoaded : ${jobController.isScreenLoaded}}");
+    //
+    // bool isEmpty
+    if(jobController.isScreenLoaded){
+      await jobController.fetchEmployeeJobs();
+    }
+
+
   }
 
   // void applyFilters() {

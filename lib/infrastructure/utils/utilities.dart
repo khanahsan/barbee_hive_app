@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../constants/app_colors.dart';
@@ -35,6 +36,13 @@ class Utilities {
       fontSize: 16.0,
     );
   }
+
+
+  static getTime(DateTime time){
+    DateTime localDateTime = time.toLocal();
+    return DateFormat('hh:mm a').format(localDateTime);
+  }
+
 }
 
 extension StringCasingExtension on String {
@@ -46,3 +54,5 @@ extension StringCasingExtension on String {
     ' ',
   ).split(' ').map((str) => str.toCapitalized).join(' ');
 }
+
+

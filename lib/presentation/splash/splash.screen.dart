@@ -13,10 +13,11 @@ class SplashScreen extends GetView<SplashController> {
         title: const Text('SplashScreen'),
         centerTitle: true,
       ),
-      body: const Center(
-        child: Text(
-          'SplashScreen is working',
-          style: TextStyle(fontSize: 20),
+      body:  Center(
+        child: Obx(() => Text(
+            'SplashScreen is working ${controller.count}',
+            style: TextStyle(fontSize: 20),
+          ),
         ),
       ),
     );

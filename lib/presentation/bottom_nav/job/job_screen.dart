@@ -68,8 +68,9 @@ class JobScreen extends GetView<JobController> {
                 ),
                 suffixIcon: GestureDetector(
                   onTap: () async {
+
+                    print("12333");
                     // Fetch all dropdown data before opening
-                    await controller.fetchAllDropdowns();
 
                     Get.dialog(JobFilterDialog(), barrierDismissible: true);
                   },
@@ -90,7 +91,7 @@ class JobScreen extends GetView<JobController> {
                 child: Obx(
                   () => RefreshIndicator(
                     onRefresh: () async {
-                      await controller.fetchAllDropdowns();
+                      //await controller.fetchDropdownData();
                       await controller.fetchEmployeeJobs();
                     },
                     // Refresh function
@@ -150,7 +151,6 @@ class JobScreen extends GetView<JobController> {
                 child: Obx(
                   () => RefreshIndicator(
                     onRefresh: () async {
-                      await controller.fetchAllDropdowns();
                       controller.fetchEmployerJobs();
                     },
                     // Refresh function

@@ -42,4 +42,10 @@ class ApiEndPoints {
   static const String subscriptionPlans = 'subscription/plans';
   static const String applySubscription = 'subscription/apply';
   static const String finalizeSubscription = 'subscription/finalize';
+
+
+  /// DASHBOARD
+  static const String unreadCount = 'notifications/unread-count';
+  static const String getAllNotifications = 'notifications';
+  static const String markAllAsRead = 'notifications/mark-all-read';
 }

@@ -276,6 +276,7 @@ class JobController extends GetxController {
 
 import 'dart:developer';
 
+import 'package:barbee_hive_app/data/model/dropdown_response.dart';
 import 'package:barbee_hive_app/data/model/job_list_response.dart';
 import 'package:barbee_hive_app/data/model/job_type_response.dart';
 import 'package:barbee_hive_app/data/model/color_response.dart' as colorModel;
@@ -299,6 +300,7 @@ class JobController extends GetxController {
   Rx<String?> userProfileImage = ''.obs;
   RxBool isLoading = false.obs;
   RxString errorMessage = ''.obs;
+  bool isScreenLoaded = false;
 
   /// Dropdown Selections
   RxString selectedJobRole = ''.obs;
@@ -312,16 +314,27 @@ class JobController extends GetxController {
   final filteredJobs = <JobListData>[].obs;
 
   /// Dropdown Data
-  final RxList<colorModel.Skill> skills = <colorModel.Skill>[].obs;
-  final RxList<ExperienceLevel> experienceLevels = <ExperienceLevel>[].obs;
-  final RxList<SalaryType> salaryTypes = <SalaryType>[].obs;
-  final RxList<JobType> jobTypes = <JobType>[].obs;
+  final RxList<DropdownMenuItem<String>> skills = <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> experienceLevels =  <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> salaryTypes =  <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> jobTypes =  <DropdownMenuItem<String>>[].obs;
 
   @override
   void onInit() {
     super.onInit();
+
     loadRole();
-    fetchAllDropdowns();
+    fetchDropdownData();
+   loadScreen();
+
+
+    print("JOB CONTROLLER :: ");
+  }
+
+  loadScreen() async {
+    await Future.delayed(Duration(seconds: 3));
+    isScreenLoaded = true;
+
   }
 
   /// Load user role & profile
@@ -456,43 +469,67 @@ class JobController extends GetxController {
     filteredJobs.assignAll(employeeJobs);
   }
 
-  /// Fetch dropdown data
-  Future<void> fetchAllDropdowns() async {
-    await Future.wait([
-      _fetchSkills(),
-      _fetchExperienceLevels(),
-      _fetchSalaryTypes(),
-      _fetchJobTypes(),
-    ]);
+
+
+  Future<void> fetchDropdownData() async {
+    try {
+
+      if(!isEmployer.value) {
+
+        final response = await AuthProvider.getDashboardDropdowns();
+
+        if (response.status) {
+
+          skills.assignAll(
+            response.data.skills.map(
+                  (item) => DropdownMenuItem<String>(
+                value: item.id.toString(),
+                child: Text(item.name),
+              ),
+            ).toList(),
+          );
+
+          experienceLevels.assignAll(
+            response.data.experienceLevels.map(
+                  (item) => DropdownMenuItem<String>(
+                value: item.id.toString(),
+                child: Text(item.name),
+              ),
+            ).toList(),
+          );
+
+          salaryTypes.assignAll(
+            response.data.salaryTypes.map(
+                  (item) => DropdownMenuItem<String>(
+                value: item.id.toString(),
+                child: Text(item.name),
+              ),
+            ).toList(),
+          );
+
+          jobTypes.assignAll(
+            response.data.jobTypes.map(
+                  (item) => DropdownMenuItem<String>(
+                value: item.id.toString(),
+                child: Text(item.name),
+              ),
+            ).toList(),
+          );
+
+
+        }
+      }
+    } catch (e) {
+      log('Error fetching dropdown data: $e');
+      Utilities.showSnackBar(
+        title: "Error",
+        message: "Failed to load filter options",
+        isSuccess: false,
+      );
+    }
   }
 
-  Future<void> _fetchSkills() async {
-    try {
-      final res = await AuthProvider.getSkills();
-      if (res.status) skills.assignAll(res.data);
-    } catch (_) {}
-  }
 
-  Future<void> _fetchExperienceLevels() async {
-    try {
-      final res = await AuthProvider.getExperienceLevels();
-      if (res.status) experienceLevels.assignAll(res.data);
-    } catch (_) {}
-  }
-
-  Future<void> _fetchSalaryTypes() async {
-    try {
-      final res = await AuthProvider.getSalaryTypes();
-      if (res.status) salaryTypes.assignAll(res.data);
-    } catch (_) {}
-  }
-
-  Future<void> _fetchJobTypes() async {
-    try {
-      final res = await AuthProvider.getJobTypes();
-      if (res.status) jobTypes.assignAll(res.data);
-    } catch (_) {}
-  }
 
   /// Loading helpers
   void _startLoading() => isLoading.value = true;

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import '../../../../data/api/notifications/notifications_api.dart';
 import '../../../../infrastructure/constants/shared_pref_keys.dart';
 import '../../../../infrastructure/helpers/location_service.dart';
 import '../../../../infrastructure/helpers/shared_preference_helper.dart';
@@ -20,6 +21,7 @@ class DashboardController extends GetxController {
   final RxList<User> allEmployees = <User>[].obs; // All employees (unfiltered)
   final RxList<User> allEmployers = <User>[].obs; // All employers (unfiltered)
   final RxBool isLoading = false.obs;
+  final RxInt count = 0.obs;
   final RxString errorMessage = ''.obs;
   RxString userProfileImage = ''.obs;
 
@@ -49,17 +51,26 @@ class DashboardController extends GetxController {
   final Rx<String?> selectedEyeColor = Rx<String?>(null);
   final Rx<String?> selectedHairColor = Rx<String?>(null);
 
+
+
   @override
   void onInit() {
     super.onInit();
     // fetchDashboardUsers();
+    getUnreadCount();
     getUserLocationAndFetchDashboard();
     loadBannerAd();
     AdsHelper().loadInterstitialAd();
     fetchDropdownData();
-
     loadUserData();
+
   }
+
+  getUnreadCount() async {
+    count.value =  await NotificationsApi.getUnreadCount();
+  }
+
+
 
   Future<void> loadUserData() async {
     userProfileImage.value =

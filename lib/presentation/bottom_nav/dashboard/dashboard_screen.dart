@@ -27,6 +27,11 @@ class DashboardScreen extends GetView<DashboardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          controller.getUnreadCount();
+        },
+      ),
       key: _scaffoldKey,
       endDrawer: Drawer(
         backgroundColor: AppColors.black,
@@ -36,7 +41,9 @@ class DashboardScreen extends GetView<DashboardController> {
               AppBar(
                 backgroundColor: AppColors.colorFF8600,
                 title: const Text("Filters"),
-                titleTextStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                titleTextStyle: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w500,
                   color: AppColors.colorFFFFFF,
@@ -51,77 +58,93 @@ class DashboardScreen extends GetView<DashboardController> {
               ),
               SizedBox(height: 30.h),
 
-              Obx(() => _buildDropdown(
-                context,
-                value: controller.selectedJob.value,
-                hintText: "Job Type",
-                items: controller.jobList,
-                onChanged: (val) => controller.selectedJob.value = val,
-              ).paddingSymmetric(horizontal: 15.w)),
+              Obx(
+                () => _buildDropdown(
+                  context,
+                  value: controller.selectedJob.value,
+                  hintText: "Job Type",
+                  items: controller.jobList,
+                  onChanged: (val) => controller.selectedJob.value = val,
+                ).paddingSymmetric(horizontal: 15.w),
+              ),
 
               SizedBox(height: 25.h),
-              Obx(() => _buildDropdown(
-                context,
-                value: controller.selectedPosition.value,
-                hintText: "Position",
-                items: controller.positionList,
-                onChanged: (val) => controller.selectedPosition.value = val,
-              ).paddingSymmetric(horizontal: 15.w)),
+              Obx(
+                () => _buildDropdown(
+                  context,
+                  value: controller.selectedPosition.value,
+                  hintText: "Position",
+                  items: controller.positionList,
+                  onChanged: (val) => controller.selectedPosition.value = val,
+                ).paddingSymmetric(horizontal: 15.w),
+              ),
 
               SizedBox(height: 25.h),
-              Obx(() => _buildDropdown(
-                context,
-                value: controller.selectedMinAge.value,
-                hintText: "Min Age",
-                items: controller.minAgeList,
-                onChanged: (val) => controller.selectedMinAge.value = val,
-              ).paddingSymmetric(horizontal: 15.w)),
+              Obx(
+                () => _buildDropdown(
+                  context,
+                  value: controller.selectedMinAge.value,
+                  hintText: "Min Age",
+                  items: controller.minAgeList,
+                  onChanged: (val) => controller.selectedMinAge.value = val,
+                ).paddingSymmetric(horizontal: 15.w),
+              ),
 
               SizedBox(height: 25.h),
-              Obx(() => _buildDropdown(
-                context,
-                value: controller.selectedMaxAge.value,
-                hintText: "Max Age",
-                items: controller.maxAgeList,
-                onChanged: (val) => controller.selectedMaxAge.value = val,
-              ).paddingSymmetric(horizontal: 15.w)),
+              Obx(
+                () => _buildDropdown(
+                  context,
+                  value: controller.selectedMaxAge.value,
+                  hintText: "Max Age",
+                  items: controller.maxAgeList,
+                  onChanged: (val) => controller.selectedMaxAge.value = val,
+                ).paddingSymmetric(horizontal: 15.w),
+              ),
 
               SizedBox(height: 25.h),
-              Obx(() => _buildDropdown(
-                context,
-                value: controller.selectedGender.value,
-                hintText: "Gender",
-                items: controller.genderList,
-                onChanged: (val) => controller.selectedGender.value = val,
-              ).paddingSymmetric(horizontal: 15.w)),
+              Obx(
+                () => _buildDropdown(
+                  context,
+                  value: controller.selectedGender.value,
+                  hintText: "Gender",
+                  items: controller.genderList,
+                  onChanged: (val) => controller.selectedGender.value = val,
+                ).paddingSymmetric(horizontal: 15.w),
+              ),
 
               SizedBox(height: 25.h),
-              Obx(() => _buildDropdown(
-                context,
-                value: controller.selectedHeight.value,
-                hintText: "Height",
-                items: controller.heightList,
-                onChanged: (val) => controller.selectedHeight.value = val,
-              ).paddingSymmetric(horizontal: 15.w)),
+              Obx(
+                () => _buildDropdown(
+                  context,
+                  value: controller.selectedHeight.value,
+                  hintText: "Height",
+                  items: controller.heightList,
+                  onChanged: (val) => controller.selectedHeight.value = val,
+                ).paddingSymmetric(horizontal: 15.w),
+              ),
 
               SizedBox(height: 25.h),
-              Obx(() => _buildDropdown(
-                context,
-                value: controller.selectedEyeColor.value,
-                hintText: "Eye Color",
-                items: controller.eyeColorList,
-                onChanged: (val) => controller.selectedEyeColor.value = val,
-              ).paddingSymmetric(horizontal: 15.w)),
+              Obx(
+                () => _buildDropdown(
+                  context,
+                  value: controller.selectedEyeColor.value,
+                  hintText: "Eye Color",
+                  items: controller.eyeColorList,
+                  onChanged: (val) => controller.selectedEyeColor.value = val,
+                ).paddingSymmetric(horizontal: 15.w),
+              ),
 
               SizedBox(height: 25.h),
-              Obx(() => _buildDropdown(
-                context,
-                value: controller.selectedHairColor.value,
-                hintText: "Hair Color",
-                items: controller.hairColorList,
-                onChanged: (val) => controller.selectedHairColor.value = val,
-              ).paddingSymmetric(horizontal: 15.w)),
-          
+              Obx(
+                () => _buildDropdown(
+                  context,
+                  value: controller.selectedHairColor.value,
+                  hintText: "Hair Color",
+                  items: controller.hairColorList,
+                  onChanged: (val) => controller.selectedHairColor.value = val,
+                ).paddingSymmetric(horizontal: 15.w),
+              ),
+
               SizedBox(height: 25.h),
               CustomButton(
                 buttonText: "Apply Filters",
@@ -160,13 +183,46 @@ class DashboardScreen extends GetView<DashboardController> {
         showActions: true,
         actions: [
           GestureDetector(
-            onTap: () {
-              Get.toNamed(Routes.notificationsScreen);
+            onTap: () async {
+              await Get.toNamed(Routes.notificationsScreen);
+              controller.count.value = 0;
             },
-            child: SvgPicture.asset(
-              AppAssets.bellIcon,
-              height: 24.h,
-              width: 24.w,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
+
+                // Badge
+                controller.count.value > 0 ?  Positioned(
+                  right: -2,
+                  top: -2,
+                  child: Container(
+                    constraints: BoxConstraints(
+                      minHeight: 16.r,
+                      minWidth: 16.r,
+                    ),
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Obx(
+                      () =>
+                          Text(
+                                controller.count.value.toString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9.sp,
+                                  height: 1, // 👈 IMPORTANT
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+
+                    ),
+                  ),
+                ): SizedBox.shrink(),
+              ],
             ),
           ),
           SizedBox(width: 15.w),

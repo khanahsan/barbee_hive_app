@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../../presentation/bottom_nav/controller/bottom_nav_controller.dart';
 
 class CustomDrawerController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -16,10 +21,15 @@ class CustomDrawerController extends GetxController
   final userName = ''.obs;
   final userProfileImage = ''.obs;
   int? role;
+  RxInt currentIndex = 0.obs;
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+
+    if(Get.arguments != null){
+      currentIndex.value = Get.arguments;
+    }
 
     animationController = AnimationController(
       duration: const Duration(seconds: 1),

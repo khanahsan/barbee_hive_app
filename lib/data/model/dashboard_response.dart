@@ -66,6 +66,10 @@ class User {
   final Employee? employee;
   final Employer? employer;
 
+  // 🔴 missing fields
+  final String? distance;
+  final int? age;
+
   User({
     required this.id,
     required this.uid,
@@ -80,6 +84,8 @@ class User {
     required this.updatedAt,
     this.employee,
     this.employer,
+    this.distance,
+    this.age,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -89,8 +95,8 @@ class User {
     role: json['role'] ?? 0,
     isVerified: json['is_verified'] ?? false,
     isActive: json['is_active'] ?? false,
-    profileImage: json['profile_image'] is String ? json['profile_image'] : null,
-    coverPhoto: json['cover_photo'] is String ? json['cover_photo'] : null,
+    profileImage: json['profile_image'],
+    coverPhoto: json['cover_photo'],
     subscription: json['subscription'] is Map
         ? Subscription.fromJson(Map<String, dynamic>.from(json['subscription']))
         : null,
@@ -102,6 +108,8 @@ class User {
     employer: json['employer'] is Map
         ? Employer.fromJson(Map<String, dynamic>.from(json['employer']))
         : null,
+    distance: json['distance']?.toString() ?? '0.0',
+    age: json['age'] is int ? json['age'] : null,
   );
 
   Map<String, dynamic> toJson() => {

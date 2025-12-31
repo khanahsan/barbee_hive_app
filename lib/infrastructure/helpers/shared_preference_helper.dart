@@ -1,5 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../data/api/api_service.dart';
+import '../../data/api/token_storage.dart';
+import '../../data/model/login_response.dart';
+import '../constants/shared_pref_keys.dart';
+
 class SharedPreferenceHelper {
   static SharedPreferences? _prefs;
 
@@ -39,4 +44,53 @@ class SharedPreferenceHelper {
   static Future<void> clear() async {
     await _prefs?.clear();
   }
+
+
+  static saveInfo(LoginResponse response, bool isRememberMe, String email, String password) async {
+    await Future.wait([
+      TokenStorage.saveToken(response.token),
+      SharedPreferenceHelper.saveInt(
+        SharedPrefKeys.userRole,
+        response.user.role,
+      ),
+      SharedPreferenceHelper.saveString(
+        SharedPrefKeys.authToken,
+        response.token,
+      ),
+
+
+      SharedPreferenceHelper.saveInt(
+        SharedPrefKeys.userId,
+        response.user.id,
+      ),
+      SharedPreferenceHelper.saveString(
+        SharedPrefKeys.userProfileImage,
+        response.user.profileImage ?? '',
+      ),
+      SharedPreferenceHelper.saveString(
+        SharedPrefKeys.userName,
+        response.user.role == 3
+            ? response.user.employee?.name ?? ""
+            : response.user.employer?.businessName ?? "",
+      ),
+      SharedPreferenceHelper.saveString(
+        SharedPrefKeys.userEmail,
+        response.user.email,
+      ),
+    ]);
+
+
+    print("GET TOKEN IN SAVE INFO : ${SharedPreferenceHelper.getString(SharedPrefKeys.authToken)}");
+
+    if(isRememberMe){
+      SharedPreferenceHelper.saveString(SharedPrefKeys.savedEmail, email);
+      SharedPreferenceHelper.saveString(SharedPrefKeys.savedPassword,password);
+      SharedPreferenceHelper.saveBool(SharedPrefKeys.isRememberMe, true);
+    }else{
+      SharedPreferenceHelper.remove(SharedPrefKeys.savedEmail);
+      SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
+    }
+
+  }
+
 }

@@ -123,6 +123,37 @@ class ApiService {
     }
   }
 
+  static Future<dynamic> put(
+      String endpoint,
+       {
+         var data,
+          bool auth = true,
+      }) async {
+    try {
+      if (!(await isInternetAvailable())) {
+        throw Exception('No internet connection');
+      }
+
+      final uri = Uri.parse('${ApiEndPoints.baseUrl}$endpoint');
+      print('PUT Request URL: $uri');
+
+      final response = await _safeRequest(
+        'PUT',
+        uri,
+        headers: _headers(includeAuth: auth),
+        body: data != null ? jsonEncode(data) : null,
+      );
+
+      return _handleResponse(response);
+    } catch (e) {
+      print('PUT Error: $e');
+      LogUtil.logError('PUT $endpoint: $e');
+      rethrow;
+    }
+  }
+
+
+
  /* static Future<dynamic> multipartPost(
     String endpoint, {
     required Map<String, String> fields,

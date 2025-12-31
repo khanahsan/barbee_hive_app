@@ -98,7 +98,7 @@ class B2BScreen extends GetView<B2BController> {
 
                     /// DISTANCE
                     CustomText(
-                      title: "0.6 mi away",
+                      title: "${currentUser.distance} mi away",
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: AppColors.colorFF8600,

@@ -1,10 +1,15 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:barbee_hive_app/presentation/bottom_nav/controller/bottom_nav_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
+
+import '../infrastructure/constants/shared_pref_keys.dart';
+import '../infrastructure/helpers/shared_preference_helper.dart';
 
 
 @pragma('vm:entry-point')
@@ -54,11 +59,20 @@ class NotificationService {
 
     // Handle app opened from terminated state via notification
     final initialMessage = await _messaging.getInitialMessage();
+    log("initial message : ${initialMessage?.data}");
+
     if (initialMessage != null) {
       log("App opened from terminated state via notification");
+
+
+
       await _clearBadge();
+
+
+
+
       // Handle the notification
-      handleBackgroundMessage(initialMessage);
+      //handleBackgroundMessage(initialMessage);
     }
 
     //Get FCM Token
@@ -334,19 +348,26 @@ class NotificationService {
       ) async {
     // Clear badge count when notification is tapped
     await _clearBadge();
+    print("auth token : ${SharedPreferenceHelper.getString(SharedPrefKeys.authToken)}");
+    // if(SharedPreferenceHelper.getString(SharedPrefKeys.authToken).toString().isEmpty){
+    //   print("user is logged out");
+    //   return;
+    // }
 
-    const bottomIndex = 0;
-    int tabBarIndex = 1;
+    print("message : ${message.data['type']}");
+    print("message2 : ${message.data['type'] == 'new_job'}");
 
-    // final deliveryScreenProvider = Provider.of<OrderProvider>(
-    //   navigatorKey.currentContext!,
-    //   listen: false,
-    // );
+    if(message.data['type'] == 'new_job'){
+      print("333333");
+      var controller = Get.put(BottomNavController());
+      controller.tabChangeForEmployeeNotifications(2);
 
-    String? serviceType = message.data['service_type_id'] as String?;
-    if (serviceType == "3") {
-      tabBarIndex = 0;
     }
+
+
+    print("ON NOTIFICATION SELECTED ::: ");
+
+
 
     if (isTerminated) {
       //await deliveryScreenProvider.fetchAllOrders();
@@ -361,6 +382,9 @@ class NotificationService {
       //       (Route route) => false,
       // );
     } else {
+
+
+
       //await deliveryScreenProvider.fetchAllOrders();
 
       // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
@@ -426,24 +450,15 @@ class NotificationService {
       // Clear badge when app is opened from notification
       _clearBadge();
 
-      String? notificationType = message.data['notificationType'] as String?;
+      //String? notificationType = message.data['notificationType'] as String?;
 
       log("Handle BACKGROUND MESSAGE DATA ${message.data}");
 
-      if (notificationType == "1") {
-        // Navigator.of(navigatorKey.currentContext!).pushNamed(
-        //   AppRoutesConstants.blankRouteName,
-        //   arguments: {
-        //     'message': message,
-        //     'isTerminated': false,
-        //   },
-        // );
-      } else {
-        handleNotificationAction(
-          message,
-          false,
-        );
-      }
+      handleNotificationAction(
+        message,
+        false,
+      );
+
     }
   }
 

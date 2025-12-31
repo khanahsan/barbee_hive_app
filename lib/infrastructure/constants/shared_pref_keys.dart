@@ -12,4 +12,5 @@ class SharedPrefKeys {
   static const String activatedSubscriptionId = 'activated_subscription_id';
   static const String isRememberMe = 'is_remember_me';
 
+
 }

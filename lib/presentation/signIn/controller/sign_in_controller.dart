@@ -67,54 +67,10 @@ class SignInController extends GetxController {
 
       print("Device token 1 : ${await FirebaseMessaging.instance.getToken() ?? ""}");
 
-      // LOGIN API
       final response = await AuthApi.login(email, password, await FirebaseMessaging.instance.getToken() ?? "");
 
-    //  return;
-
       // Save most values in parallel
-      await Future.wait([
-        TokenStorage.saveToken(response.token),
-        SharedPreferenceHelper.saveInt(
-          SharedPrefKeys.userRole,
-          response.user.role,
-        ),
-        SharedPreferenceHelper.saveString(
-          SharedPrefKeys.authToken,
-          response.token,
-        ),
-        SharedPreferenceHelper.saveInt(
-          SharedPrefKeys.userId,
-          response.user.id,
-        ),
-        SharedPreferenceHelper.saveString(
-          SharedPrefKeys.userProfileImage,
-          response.user.profileImage ?? '',
-        ),
-        SharedPreferenceHelper.saveString(
-          SharedPrefKeys.userName,
-          response.user.role == 3
-              ? response.user.employee?.name ?? ""
-              : response.user.employer?.businessName ?? "",
-        ),
-        SharedPreferenceHelper.saveString(
-          SharedPrefKeys.userEmail,
-          response.user.email,
-        ),
-      ]);
-
-      // Handle remember me
-      if (rememberMe.value) {
-        SharedPreferenceHelper.saveString(SharedPrefKeys.savedEmail, email);
-        SharedPreferenceHelper.saveString(SharedPrefKeys.savedPassword, password);
-        SharedPreferenceHelper.saveBool(SharedPrefKeys.isRememberMe, true);
-      }
-      // else {
-      //   SharedPreferenceHelper.remove(SharedPrefKeys.savedEmail);
-      //   SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
-      // }
-
-      // Set token
+      SharedPreferenceHelper.saveInfo(response,rememberMe.value, email,password);
       ApiService.setToken(response.token);
 
       // Sync Firebase → Run in background (DO NOT AWAIT)

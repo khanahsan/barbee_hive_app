@@ -97,7 +97,7 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
 
                       /// USER DISTANCE
                       CustomText(
-                        title: ".6 mi away",
+                        title: "${currentUser.distance} mi away",
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                         color: AppColors.colorFF8600,
@@ -109,7 +109,9 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
                           /// USER EXPERIENCE
                           _infoRow(
                             "Experience",
-                            currentUser.employee?.skills.first.name ?? "",
+                              currentUser.employee?.skills
+                                  .map((skill) => skill.name)
+                                  .join(', ') ?? ''
                           ),
 
                           /// USER GENDER

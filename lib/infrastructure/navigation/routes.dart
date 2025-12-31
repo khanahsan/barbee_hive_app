@@ -4,12 +4,8 @@ import '../constants/shared_pref_keys.dart';
 import '../helpers/shared_preference_helper.dart';
 
 class Routes {
-  static Future<String> get initialRoute async {
-    await ApiService.initToken();
-    final isRememberMe = SharedPreferenceHelper.getBool(SharedPrefKeys.isRememberMe) ?? false;
+  static  const initialRoute = '/splash';
 
-    return isRememberMe ? CUSTOMDRAWER : SIGN_IN_VIEW;
-  }
 
   static const AUTH = '/auth';
   static const HOME = '/home';

@@ -27,11 +27,11 @@ class DashboardScreen extends GetView<DashboardController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          controller.getUnreadCount();
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     controller.getUnreadCount();
+      //   },
+      // ),
       key: _scaffoldKey,
       endDrawer: Drawer(
         backgroundColor: AppColors.black,

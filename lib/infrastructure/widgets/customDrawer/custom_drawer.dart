@@ -118,7 +118,7 @@ class CustomDrawer extends GetView<CustomDrawerController> {
                             iconPath: AppAssets.exitIcon,
                             controller: controller,
                             onTap: () {
-                              Get.find<AuthController>().logout();
+                              Get.find<AuthController>().logout(context);
                             },
                           ),
                         ],

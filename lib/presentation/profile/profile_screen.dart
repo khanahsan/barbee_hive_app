@@ -203,50 +203,52 @@ class ProfileScreen extends GetView<ProfileController> {
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    CustomText(
-                                      title: controller.userName,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.colorFFFFFF,
+                                    Obx(() => CustomText(
+                                        title: controller.userName.value,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.colorFFFFFF,
+                                      ),
                                     ),
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text:
-                                                controller.isEditing.value
-                                                    ? ""
-                                                    : "Experience",
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.titleMedium?.copyWith(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: AppColors.colorFF8600,
-                                            ),
-                                          ),
-                                          TextSpan(text: " "),
-                                          TextSpan(
-                                            text:
-                                                controller
-                                                        .selectedSkills
-                                                        .isNotEmpty
-                                                    ? controller
-                                                        .selectedSkills
-                                                        .first
-                                                    : "No skills selected",
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.titleMedium?.copyWith(
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color:
+                                    Obx(() => RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text:
                                                   controller.isEditing.value
-                                                      ? AppColors.colorFF8600
-                                                      : AppColors.colorFFFFFF,
+                                                      ? ""
+                                                      : "Skills",
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.titleMedium?.copyWith(
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.colorFF8600,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                            TextSpan(text: " "),
+                                            TextSpan(
+                                              text:
+                                                  controller
+                                                          .selectedSkills
+                                                          .isNotEmpty
+                                                      ? controller
+                                                          .selectedSkills
+                                                          .first
+                                                      : "No skills selected",
+                                              style: Theme.of(
+                                                context,
+                                              ).textTheme.titleMedium?.copyWith(
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w600,
+                                                color:
+                                                    controller.isEditing.value
+                                                        ? AppColors.colorFF8600
+                                                        : AppColors.colorFFFFFF,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     SizedBox(height: 40.h),
@@ -312,19 +314,21 @@ class ProfileScreen extends GetView<ProfileController> {
                           Positioned(
                             top: -80.h,
                             child: Obx(
-                              () => CustomProfileImage(
-                                width: 130,
-                                height: 140,
-                                imagePath: controller.userProfileImage.value,
-                                text: controller.userName,
-                                isEditMode: controller.isEditing.value,
-                                wholeAvatarClickable: false,
-                                onImagePicked: (File? file) {
-                                  if (file != null) {
-                                    controller.userProfileImage.value =
-                                        file.path;
-                                  }
-                                },
+                              () => Center(
+                                child: CustomProfileImage(
+                                  width: 130,
+                                  height: 140,
+                                  imagePath: controller.userProfileImage.value,
+                                  text: controller.userName.value,
+                                  isEditMode: controller.isEditing.value,
+                                  wholeAvatarClickable: false,
+                                  onImagePicked: (File? file) {
+                                    if (file != null) {
+                                      controller.userProfileImage.value =
+                                          file.path;
+                                    }
+                                  },
+                                ),
                               ),
                             ),
                           ),

@@ -23,6 +23,7 @@ class Utilities {
       duration: duration,
       borderRadius: borderRadius ?? 12.r,
       dismissDirection: DismissDirection.startToEnd,
+      snackPosition: SnackPosition.BOTTOM
     );
   }
 

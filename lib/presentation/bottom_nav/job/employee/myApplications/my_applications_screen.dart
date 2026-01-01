@@ -10,6 +10,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
+import '../../../../../infrastructure/navigation/routes.dart';
+
 class MyApplicationsScreen extends GetView<MyApplicationsController> {
   const MyApplicationsScreen({super.key});
 
@@ -30,12 +32,17 @@ class MyApplicationsScreen extends GetView<MyApplicationsController> {
 
           showHexagon: true,
           actions: [
-            SvgPicture.asset(
-              AppAssets.bellIcon,
-              fit: BoxFit.cover,
-              height: 23.h,
-              width: 23.w,
-              color: AppColors.colorFFFFFF,
+            GestureDetector(
+              onTap: () async {
+                await Get.toNamed(Routes.notificationsScreen);
+              },
+              child: SvgPicture.asset(
+                AppAssets.bellIcon,
+                fit: BoxFit.cover,
+                height: 23.h,
+                width: 23.w,
+                color: AppColors.colorFFFFFF,
+              ),
             ),
           ],
         ),
@@ -86,8 +93,23 @@ class MyApplicationsScreen extends GetView<MyApplicationsController> {
                         selectedJobType: controller.selectedJobType,
 
                         /// Callbacks
-                        onDone: controller.applyFilters,
-                        onClear: controller.clearFilters,
+                        onCloseTap: (){
+                          if (Navigator.of(context, rootNavigator: true).canPop()) {
+                            Navigator.of(context, rootNavigator: true).pop();
+                          }
+                        },
+                        onDone: (){
+                          if (Navigator.of(context, rootNavigator: true).canPop()) {
+                            Navigator.of(context, rootNavigator: true).pop();
+                          }
+                          controller.applyFilters();
+                        },
+                        onClear:(){
+                          if (Navigator.of(context, rootNavigator: true).canPop()) {
+                            Navigator.of(context, rootNavigator: true).pop();
+                          }
+                          controller.clearFilters();
+                        },
                       );
                     },
                   );

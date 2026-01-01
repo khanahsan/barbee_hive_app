@@ -19,6 +19,7 @@ class CustomJobFilterDialog extends StatelessWidget {
     required this.selectedJobType,
     required this.onDone,
     required this.onClear,
+    required this.onCloseTap,
   });
 
   final List<String> jobRoles;
@@ -33,6 +34,7 @@ class CustomJobFilterDialog extends StatelessWidget {
 
   final VoidCallback onDone;
   final VoidCallback onClear;
+  final VoidCallback onCloseTap;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +60,7 @@ class CustomJobFilterDialog extends StatelessWidget {
                 Align(
                   alignment: Alignment.topRight,
                   child: GestureDetector(
-                    onTap: () => Get.back<void>(),
+                    onTap: onCloseTap,
                     child: const Icon(
                       Icons.close,
                       color: AppColors.colorFF8600,
@@ -125,7 +127,6 @@ class CustomJobFilterDialog extends StatelessWidget {
                         btnBackgroundColor: AppColors.colorFF8600,
                         btnTxtColor: Colors.white,
                         onPressed: () {
-                          Get.back<void>();
                           onDone();
                         },
                       ),
@@ -140,7 +141,6 @@ class CustomJobFilterDialog extends StatelessWidget {
                         borderColor: AppColors.colorFF8600,
                         borderWidth: 1.5,
                         onPressed: () {
-                          Get.back<void>();
                           onClear();
                         },
                       ),

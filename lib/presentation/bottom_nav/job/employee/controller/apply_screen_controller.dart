@@ -209,7 +209,7 @@ class ApplyScreenController extends GetxController {
     }
   }
 
-  Future<void> applyForJob(int jobId) async {
+  Future<void> applyForJob(int jobId, context) async {
     final years = int.tryParse(yearsOfExperience.text);
     final salary = double.tryParse(expectedSalary.text);
 
@@ -239,9 +239,14 @@ class ApplyScreenController extends GetxController {
         controller.fetchEmployeeJobs();
 
         Get.back();
-        Get.dialog(
-          CustomDialog(title: "Congratulations", subTitle: response.message),
+        showDialog(
+          context: context,
           barrierDismissible: false,
+          builder: (_) => const CustomDialog(
+            title: 'Success',
+            subTitle: 'Email has been sent successfully',
+            email: 'example@email.com',
+          ),
         );
       } else {
         _showError(response.message);

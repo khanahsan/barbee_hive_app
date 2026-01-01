@@ -56,7 +56,7 @@ class SettingsScreen extends GetView<SettingController> {
                 buttonText: "Sign Out",
                 textColor: AppColors.colorFFFFFF,
                 onTap: () {
-                  Get.find<AuthController>().logout();
+                  Get.find<AuthController>().logout(context);
                 },
               ),
             ],

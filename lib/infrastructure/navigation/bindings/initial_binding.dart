@@ -1,4 +1,5 @@
 import 'package:barbee_hive_app/infrastructure/widgets/customDrawer/controller/custom_drawer_controller.dart';
+import 'package:barbee_hive_app/presentation/auth/controllers/forget_password_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/controller/bottom_nav_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
@@ -39,7 +40,7 @@ class InitialBindings implements Bindings {
     Get.lazyPut<CustomDrawerController>(() => CustomDrawerController(),
         fenix: true);
     Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
-    Get.lazyPut<SignInController>(() => SignInController(), fenix: true);
+    Get.put<SignInController>(SignInController());
     Get.lazyPut<ChangePasswordController>(() => ChangePasswordController());
     Get.lazyPut<SignUpEmployeeController>(() => SignUpEmployeeController());
     Get.lazyPut<SplashController>(() => SplashController());
@@ -64,7 +65,7 @@ class InitialBindings implements Bindings {
       fenix: true,
     );
 
-    Get.lazyPut<NotificationsController>(() => NotificationsController(), fenix: true,
-    );
+    Get.lazyPut<NotificationsController>(() => NotificationsController(), fenix: true,);
+    Get.lazyPut<ForgetPasswordController>(() => ForgetPasswordController(), fenix: true);
   }
 }

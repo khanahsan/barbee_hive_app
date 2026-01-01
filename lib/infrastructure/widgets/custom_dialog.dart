@@ -242,43 +242,50 @@ class CustomDialog extends StatelessWidget {
   final VoidCallback? onDone;
 
   const CustomDialog({
+    super.key,
     this.email,
     required this.title,
     required this.subTitle,
     this.onDone,
-    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false, // Prevent back button
+      onWillPop: () async => false, // disable back button
       child: Dialog(
         insetPadding: EdgeInsets.symmetric(horizontal: 10.w),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
         backgroundColor: Colors.white,
-        child: SizedBox(
-          child: Stack(
-            children: [
-              Column(
+        child: Stack(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                top: 30.h,
+                bottom: 60.h,
+                left: 20.w,
+                right: 20.w,
+              ),
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     width: 80.w,
                     height: 80.h,
-                     decoration: const BoxDecoration(
-                       shape: BoxShape.circle,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
                       color: AppColors.colorFF8600,
-                     ),
+                    ),
                     child: Center(
-                      child: Image.asset(
-                        AppAssets.emailSend,
-                      ),
+                      child: Image.asset(AppAssets.emailSend),
                     ),
                   ),
                   SizedBox(height: 20.h),
                   Text(
                     title,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 36.sp,
                       fontWeight: FontWeight.bold,
@@ -288,6 +295,7 @@ class CustomDialog extends StatelessWidget {
                   SizedBox(height: 5.h),
                   Text(
                     subTitle,
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontSize: 15.sp,
                       color: AppColors.black,
@@ -308,7 +316,8 @@ class CustomDialog extends StatelessWidget {
                     width: double.infinity,
                     height: 50.h,
                     child: ElevatedButton(
-                      onPressed: onDone ?? () => Get.back(),
+                      onPressed: onDone ??
+                              () => Navigator.of(context, rootNavigator: true).pop(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.colorFF8600,
                         shape: RoundedRectangleBorder(
@@ -326,23 +335,25 @@ class CustomDialog extends StatelessWidget {
                     ),
                   ),
                 ],
-              ).paddingOnly(top: 30.h, bottom: 60.h, left: 20.w, right: 20.w),
-              Positioned(
-                right: 1.w,
-                top: 1.h,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.close,
-                    color: AppColors.colorFF8600,
-                    size: 24.sp,
-                  ),
-                  onPressed: onDone ?? () => Get.back(),
-                ),
               ),
-            ],
-          ),
+            ),
+            Positioned(
+              right: 4.w,
+              top: 4.h,
+              child: IconButton(
+                icon: Icon(
+                  Icons.close,
+                  color: AppColors.colorFF8600,
+                  size: 24.sp,
+                ),
+                onPressed: onDone ??
+                        () => Navigator.of(context, rootNavigator: true).pop(),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
+

@@ -755,10 +755,11 @@ class JobPostingScreen extends GetView<JobPostingController> {
                                     btnTxtColor: Colors.white,
                                     buttonWidth: double.infinity,
                                     onPressed: () {
-                                      if (controller.formKey.currentState!
-                                          .validate()) {
-                                        controller.postJob(context);
-                                      }
+                                      controller.postJob(context);
+                                      // if (controller.formKey.currentState!
+                                      //     .validate()) {
+                                      //
+                                      // }
                                     },
                                     isLoading: controller.isLoading.value,
                                   ),

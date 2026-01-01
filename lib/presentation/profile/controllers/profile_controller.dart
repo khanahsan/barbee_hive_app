@@ -51,21 +51,21 @@ class ProfileController extends GetxController {
 
   Future<void> pickCoverPhoto() async {
     // Request permission
-    var status = await Permission.photos.request();
-
-    if (status.isDenied) {
-      Utilities.showSnackBar(
-        title: "Permission Denied",
-        message: "Gallery access is required to pick cover photo.",
-        isSuccess: false,
-      );
-      return;
-    }
-
-    if (status.isPermanentlyDenied) {
-      openAppSettings();
-      return;
-    }
+    // var status = await Permission.photos.request();
+    //
+    // if (status.isDenied) {
+    //   Utilities.showSnackBar(
+    //     title: "Permission Denied",
+    //     message: "Gallery access is required to pick cover photo.",
+    //     isSuccess: false,
+    //   );
+    //   return;
+    // }
+    //
+    // if (status.isPermanentlyDenied) {
+    //   openAppSettings();
+    //   return;
+    // }
 
     // Pick the image
     final XFile? image = await _picker.pickImage(
@@ -221,6 +221,11 @@ class ProfileController extends GetxController {
       final profile = await ProfileApi.getUserProfile(userId);
       userProfile.value = profile;
 
+      userName.value = isEmployer
+          ? userProfile.value?.data.employer?.businessName ?? ''
+          : userProfile.value?.data.employee?.name ?? '';
+
+
       populateData();
     } catch (e) {
       debugPrint('Error fetching profile: $e');
@@ -336,10 +341,9 @@ class ProfileController extends GetxController {
   // ---------------- Getters ----------------
   bool get isEmployer => currentUserRole.value == 2;
 
-  String get userName =>
-      isEmployer
-          ? userProfile.value?.data.employer?.businessName ?? ''
-          : userProfile.value?.data.employee?.name ?? '';
+  RxString userName = ''.obs;
+
+
 
   // String get currentUserSkill =>
   //     isEmployer
@@ -545,6 +549,8 @@ class ProfileController extends GetxController {
 
       final String newProfileImg = response.data.profileImage ?? '';
 
+      userName.value = newProfileName;
+
       await Future.wait([
         SharedPreferenceHelper.saveString(
           SharedPrefKeys.userName,
@@ -579,14 +585,15 @@ class ProfileController extends GetxController {
       ]);
 
       // ========== 5️⃣ SUCCESS UI ==========
-      Get.back();
+      //Get.back();
+      toggleEditing();
       Utilities.showSnackBar(
         title: 'Success',
         message: response.message,
         isSuccess: true,
       );
 
-      toggleEditing();
+
     } catch (e) {
       debugPrint("Error updating profile: $e");
       showError("Error", "Something went wrong");

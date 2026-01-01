@@ -18,6 +18,8 @@ class SignInController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode passFocusNode = FocusNode();
   // Form & state
   final formKey = GlobalKey<FormState>();
   final RxBool isLoading = false.obs;
@@ -59,6 +61,14 @@ class SignInController extends GetxController {
   Future<void> login() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
+
+    if(emailFocusNode.hasFocus){
+      emailFocusNode.unfocus();
+    }
+
+    if(passFocusNode.hasFocus){
+      passFocusNode.unfocus();
+    }
 
     isLoading.value = true;
 

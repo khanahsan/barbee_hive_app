@@ -45,7 +45,7 @@ class AgreeTermsTile extends StatelessWidget {
             ),
           ),
           CustomText(
-            title: titleText ?? 'I agree to the Terms of Service',
+            title: titleText ?? 'I agree with Terms & Services and Privacy Policy.',
             color: AppColors.colorFF8600,
             fontSize: 14,
           ),

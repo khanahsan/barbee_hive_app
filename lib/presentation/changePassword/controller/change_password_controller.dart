@@ -3,21 +3,60 @@ import 'dart:developer';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../data/api/authentication/auth_api.dart';
+import '../../../infrastructure/constants/app_colors.dart';
 
 class ChangePasswordController extends GetxController {
   final TextEditingController currentPassController = TextEditingController();
   final TextEditingController newPassController = TextEditingController();
   final TextEditingController confirmPassController = TextEditingController();
 
+  FocusNode passFocusNode = FocusNode();
+  FocusNode newPassFocusNode = FocusNode();
+  FocusNode confirmPassFocusNode = FocusNode();
+
   final formKey = GlobalKey<FormState>();
   RxBool isLoading = false.obs;
+  RxBool isPasswordObscured = false.obs;
+  RxBool isNewPasswordObscured = false.obs;
+  RxBool isConfirmPasswordObscured = false.obs;
+
+
+  oldPasswordToggle(){
+    isPasswordObscured.value = !isPasswordObscured.value;
+  }
+
+  newPasswordToggle(){
+    isNewPasswordObscured.value = !isNewPasswordObscured.value;
+  }
+
+  confirmPasswordToggle(){
+    isConfirmPasswordObscured.value = !isConfirmPasswordObscured.value;
+  }
+
+  removeFocus(){
+    if(passFocusNode.hasFocus){
+      passFocusNode.unfocus();
+    }
+    if(newPassFocusNode.hasFocus){
+      newPassFocusNode.unfocus();
+    }
+
+    if(confirmPassFocusNode.hasFocus){
+      confirmPassFocusNode.unfocus();
+    }
+  }
+
+
 
 
   Future<void> changePassword() async {
+
     if (!formKey.currentState!.validate()) return;
+    removeFocus();
 
     isLoading.value = true;
 
@@ -31,6 +70,8 @@ class ChangePasswordController extends GetxController {
 
       if (result['status'] == true) {
         final user = FirebaseAuth.instance.currentUser;
+
+
 
         if (user != null) {
           final cred = EmailAuthProvider.credential(
@@ -55,7 +96,14 @@ class ChangePasswordController extends GetxController {
           }
         }
 
-        Get.back<void>();
+
+        currentPassController.clear();
+        newPassController.clear();
+        confirmPassController.clear();
+
+         Get.back<void>();
+
+
         Utilities.showSnackBar(
           title: "Success",
           message: result['message'],

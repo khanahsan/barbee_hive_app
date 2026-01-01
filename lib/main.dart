@@ -75,7 +75,9 @@ void main() async {
   var initialRoute = await Routes.initialRoute;
 
   // Run the app
-  runApp(Main(initialRoute));
+  runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Main(initialRoute)));
 
   // Set the device orientation (optional)
   SystemChrome.setPreferredOrientations(<DeviceOrientation>[DeviceOrientation.portraitUp]);

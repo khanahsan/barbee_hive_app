@@ -251,7 +251,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                         onPressed: () {
                           if (controller.formKey.currentState!.validate()) {
                             if (jobId != null) {
-                              controller.applyForJob(jobId!);
+                              controller.applyForJob(jobId!, context);
                             } else {
                               Get.snackbar(
                                 'Error',

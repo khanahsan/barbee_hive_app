@@ -7,7 +7,10 @@ import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+
+import '../../presentation/auth/controllers/auth.controller.dart';
 
 class ApiService {
   //static const String baseUrl = 'https://barbeehive.staging.pegasync.com';

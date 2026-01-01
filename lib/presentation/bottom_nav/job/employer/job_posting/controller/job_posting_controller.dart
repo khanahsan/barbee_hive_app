@@ -554,6 +554,9 @@ class JobPostingController extends GetxController {
 
   /// POST JOB
   Future<void> postJob(BuildContext context) async {
+
+
+
     try {
       /// VALIDATION BEFORE API CALL
       if (selectedSkill.value == null ||
@@ -646,12 +649,16 @@ class JobPostingController extends GetxController {
 
         await showDialog(
           context: context,
+          barrierDismissible: false,
           builder:
               (_) => CustomDialog(
                 title: "Congratulations",
                 subTitle: "Your Job Application Has Been Submitted",
                 onDone: () {
-                  Get.close(3);
+                  Navigator.of(context, rootNavigator: true).pop();
+                  Get.back();
+                  Get.back();
+
                 },
               ),
         );

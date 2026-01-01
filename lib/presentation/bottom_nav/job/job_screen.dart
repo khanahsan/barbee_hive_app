@@ -72,7 +72,30 @@ class JobScreen extends GetView<JobController> {
                     print("12333");
                     // Fetch all dropdown data before opening
 
-                    Get.dialog(JobFilterDialog(), barrierDismissible: true);
+                    showDialog(
+                      context: context,
+                      builder: (_) {
+                        return JobFilterDialog(
+                          onCloseTap: (){
+                            if (Navigator.of(context, rootNavigator: true).canPop()) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                            }
+                          },
+                          onDone: (){
+                            if (Navigator.of(context, rootNavigator: true).canPop()) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                            }
+                            controller.applyFilters();
+                          },
+                          onClear:(){
+                            if (Navigator.of(context, rootNavigator: true).canPop()) {
+                              Navigator.of(context, rootNavigator: true).pop();
+                            }
+                            controller.clearFilters();
+                          },
+                        );
+                      });
+
                   },
                   child: SvgPicture.asset(
                     AppAssets.searchFilterIcon,

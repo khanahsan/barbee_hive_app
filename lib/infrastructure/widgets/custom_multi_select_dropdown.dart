@@ -143,7 +143,11 @@ class CustomMultiSelectDropdown extends StatelessWidget {
 
               actions: [
                 TextButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () {
+              if (Navigator.of(context, rootNavigator: true).canPop()) {
+                Navigator.of(context, rootNavigator: true).pop();
+              }
+            },
                   child: const Text("Cancel", style: TextStyle(color: Colors.white)),
                 ),
                 TextButton(
@@ -157,7 +161,9 @@ class CustomMultiSelectDropdown extends StatelessWidget {
                     /// Force validation to show error immediately
                     state.validate();
 
-                    Get.back();
+                    if (Navigator.of(context, rootNavigator: true).canPop()) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
                   },
                   child: const Text("OK", style: TextStyle(color: AppColors.colorFF8600)),
                 ),

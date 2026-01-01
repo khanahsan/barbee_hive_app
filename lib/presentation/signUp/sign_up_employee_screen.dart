@@ -161,7 +161,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
 
                                   /// EXPERIENCE
                                   CustomMultiSelectDropdown(
-                                    hint: 'Experience',
+                                    hint: 'Skills',
                                     iconPath: AppAssets.cardIcon,
                                     selectedValues: controller.selectedSkills,
                                     items:
@@ -170,7 +170,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                             .toList(),
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return "Please select at least one experience";
+                                        return "Please select at least one skill";
                                       }
                                       return null;
                                     },

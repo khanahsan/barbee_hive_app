@@ -205,40 +205,51 @@ class CustomProfileImage extends StatelessWidget {
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    final hasPermission = await _requestPermission(source);
-
-    if (!hasPermission) {
-      Utilities.showSnackBar(
-        title: 'Permission Denied',
-        message: source == ImageSource.camera
-            ? 'Camera permission is required.'
-            : 'Gallery permission is required.',
-        isSuccess: false,
-      );
-
-      await Future.delayed(const Duration(seconds: 3));
-      openAppSettings();
-      return;
-    }
+    // final hasPermission = await _requestPermission(source);
+    //
+    // if (!hasPermission) {
+    //   Utilities.showSnackBar(
+    //     title: 'Permission Denied',
+    //     message: source == ImageSource.camera
+    //         ? 'Camera permission is required.'
+    //         : 'Gallery permission is required.',
+    //     isSuccess: false,
+    //   );
+    //
+    //   // 🔴 Sirf iOS par settings open karni hain
+    //   if (Platform.isAndroid) {
+    //     await Future.delayed(const Duration(seconds: 2));
+    //     openAppSettings();
+    //   }
+    //
+    //   return;
+    // }
 
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source, imageQuality: 80);
+    final pickedFile = await picker.pickImage(
+      source: source,
+      imageQuality: 80,
+    );
 
     if (pickedFile != null && onImagePicked != null) {
       onImagePicked!(File(pickedFile.path));
     }
   }
 
+
   Future<bool> _requestPermission(ImageSource source) async {
-    Permission permission =
-    source == ImageSource.camera ? Permission.camera : Permission.photos;
+    if (source == ImageSource.camera) {
+      final status = await Permission.camera.request();
+      return status.isGranted;
+    }
 
-    // Request permission if it's not granted
-    if (await permission.isGranted) return true;
 
-    // Request permission
-    final result = await permission.request();
-    return result.isGranted;
+       final status = await Permission.photos.request();
+       return status.isGranted || status.isLimited;
+
+
+    // Android → image_picker handles gallery permission
+    return false;
   }
 
 /*  Future<void> _pickImage(ImageSource source) async {

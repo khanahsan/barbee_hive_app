@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
+import '../../../data/api/token_storage.dart';
 import '../../../infrastructure/constants/shared_pref_keys.dart';
 import '../../../infrastructure/helpers/shared_preference_helper.dart';
 import '../../../infrastructure/navigation/routes.dart';
@@ -55,25 +56,25 @@ class SplashController extends GetxController {
 
     if (didNotificationLaunchApp && notificationResponse?.payload != null) {
       try {
-        goto(2);
+        await goto(2);
       } catch (e) {
         log("Error parsing notification payload: $e");
         debugPrint("Error parsing notification payload: $e");
       }
     } else {
-      goto(0);
+      await goto(0);
       log("Login Function is Called");
       debugPrint("Login Function is Called");
     }
   }
 
 
-  goto(int index){
+  goto(int index) async {
     final isRememberMe = SharedPreferenceHelper.getBool(SharedPrefKeys.isRememberMe) ?? false;
 
-    print("IS REMEMBER ME : ${isRememberMe}");
+    print("IS REMEMBER ME : AND ${isRememberMe} and token ${await TokenStorage.getToken()}");
 
-    if(isRememberMe){
+    if(isRememberMe && await TokenStorage.getToken() != null){
       Get.offAllNamed(Routes.CUSTOMDRAWER, arguments:index);
     }else{
       Get.offAllNamed(Routes.SIGN_IN_VIEW);

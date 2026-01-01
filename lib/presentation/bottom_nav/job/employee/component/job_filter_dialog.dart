@@ -223,7 +223,11 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../../../infrastructure/widgets/custom_btn.dart';
 
 class JobFilterDialog extends GetView<JobController> {
-  const JobFilterDialog({super.key});
+  const JobFilterDialog({super.key, required this.onCloseTap, required this.onClear, required this.onDone});
+
+  final VoidCallback onDone;
+  final VoidCallback onClear;
+  final VoidCallback onCloseTap;
 
   @override
   Widget build(BuildContext context) {
@@ -264,7 +268,7 @@ class JobFilterDialog extends GetView<JobController> {
                     Align(
                       alignment: AlignmentGeometry.topRight,
                       child: GestureDetector(
-                        onTap: () => Get.back<void>(),
+                        onTap: onCloseTap,
                         child: const Icon(
                           Icons.close,
                           color: AppColors.colorFF8600,
@@ -336,10 +340,7 @@ class JobFilterDialog extends GetView<JobController> {
                             btnTitle: "Done",
                             btnBackgroundColor: AppColors.colorFF8600,
                             btnTxtColor: Colors.white,
-                            onPressed: () {
-                              Get.back<void>();
-                              controller.applyFilters();
-                            },
+                            onPressed: onDone,
                           ),
                         ),
                         Expanded(
@@ -351,10 +352,7 @@ class JobFilterDialog extends GetView<JobController> {
                             btnTxtColor: AppColors.colorFF8600,
                             borderColor: AppColors.colorFF8600,
                             borderWidth: 1.5,
-                            onPressed: () {
-                              Get.back<void>();
-                              controller.clearFilters();
-                            },
+                            onPressed: onClear,
                           ),
                         ),
                       ],

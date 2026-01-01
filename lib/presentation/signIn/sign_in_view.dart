@@ -23,7 +23,7 @@ class SignInView extends GetView<SignInController> {
     //controller.emailController.text = "employer5@gmail.com";
     // //employee
     // controller.emailController.text = "employee11@gmail.com";
-    // controller.passwordController.text = "12345678";
+    //  controller.passwordController.text = "12345678";
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -141,6 +141,7 @@ class SignInView extends GetView<SignInController> {
                               filled: true,
                               fillColor: AppColors.color101010,
                               enabledBorderColor: Colors.transparent,
+                              focusNode: controller.emailFocusNode,
                               hintText: 'Username or Email',
                               prefixIcon: SvgPicture.asset(
                                 AppAssets.personIcon,
@@ -158,6 +159,7 @@ class SignInView extends GetView<SignInController> {
                                 fillColor: AppColors.color101010,
                                 enabledBorderColor: Colors.transparent,
                                 isObscuredText: controller.isObscured.value,
+                                focusNode: controller.passFocusNode,
                                 hintText: AppStrings.password,
                                 textInputAction: TextInputAction.done,
                                 prefixIcon: SvgPicture.asset(
@@ -179,46 +181,52 @@ class SignInView extends GetView<SignInController> {
                             ),
 
                             /// FORGET PASSWORD OPTION
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: GestureDetector(
-                                onTap: () {
-                                  Get.toNamed(Routes.FORGOT_PASSWORD);
-                                },
-                                child: CustomText(
-                                  title: 'Forgot Password?',
-                                  fontSize: 15,
-                                  color: AppColors.colorFF8600,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+
+                                /// REMEMBER ME OPTION
+                                Obx(
+                                      () => Row(
+                                    children: [
+                                      Checkbox(
+                                        materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                        visualDensity: VisualDensity(
+                                          horizontal: -3.w,
+                                          vertical: -4.h,
+                                        ),
+                                        value: controller.rememberMe.value,
+                                        onChanged:
+                                            (v) => controller.toggleRememberMe(v!),
+                                        activeColor: AppColors.colorFF8600,
+                                      ),
+                                      CustomText(
+                                        title: "Remember Me",
+                                        color: AppColors.colorFFFFFF,
+                                        fontSize: 14,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Get.toNamed(Routes.FORGOT_PASSWORD);
+                                    },
+                                    child: CustomText(
+                                      title: 'Forgot Password?',
+                                      fontSize: 15,
+                                      color: AppColors.colorFF8600,
+                                    ),
+                                  ),
+                                ),
+
+                              ],
                             ),
                             SizedBox(height: 5.h),
 
-                            /// REMEMBER ME OPTION
-                            Obx(
-                              () => Row(
-                                children: [
-                                  Checkbox(
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    visualDensity: VisualDensity(
-                                      horizontal: -3.w,
-                                      vertical: -4.h,
-                                    ),
-                                    value: controller.rememberMe.value,
-                                    onChanged:
-                                        (v) => controller.toggleRememberMe(v!),
-                                    activeColor: AppColors.colorFF8600,
-                                  ),
-                                  CustomText(
-                                    title: "Remember Me",
-                                    color: AppColors.colorFFFFFF,
-                                    fontSize: 14,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 3.h),
 
                             /// SIGN IN OPTION
                             Obx(

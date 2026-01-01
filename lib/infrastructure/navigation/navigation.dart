@@ -63,11 +63,11 @@ class Nav {
       page: () => const SplashScreen(),
       binding: InitialBindings(),
     ),
-    GetPage(
-      name: Routes.AUTH,
-      page: () => const AuthScreen(),
-      binding: InitialBindings(),
-    ),
+    // GetPage(
+    //   name: Routes.AUTH,
+    //   page: () => const AuthScreen(),
+    //   binding: InitialBindings(),
+    // ),
     GetPage(
       name: Routes.selectRole,
       page: () => const SelectRoleView(),

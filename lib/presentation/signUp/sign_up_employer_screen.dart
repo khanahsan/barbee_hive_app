@@ -86,7 +86,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                   CustomProfileImage(
                                     imagePath:
                                         controller.selectedImage.value?.path ??
-                                        '',
+                                        controller.profileImageUrl.value,
                                     width: 130,
                                     height: 140,
                                     testIcon: AppAssets.cameraIcon,

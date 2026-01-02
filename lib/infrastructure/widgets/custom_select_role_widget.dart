@@ -8,12 +8,14 @@ class CustomSelectRoleWidget extends StatelessWidget {
   final String? iconPath;
   final String? btnText;
   final VoidCallback onTap;
+  final bool isSelected;
 
   const CustomSelectRoleWidget({
     super.key,
     required this.iconPath,
     required this.onTap,
     required this.btnText,
+    this.isSelected = false,
   });
 
   @override
@@ -21,12 +23,15 @@ class CustomSelectRoleWidget extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        width: 170.w,
-        height: 170.h,
+        width: 160.w,
+        height: 140.h,
         decoration: BoxDecoration(
-          color: AppColors.boxBackground,
+          color: isSelected ? AppColors.color101010 : AppColors.boxBackground,
           borderRadius: BorderRadius.all(Radius.circular(10)),
-          border: Border.all(color: AppColors.boxBorder, width: 2),
+          border: Border.all(
+            color: isSelected ? AppColors.colorFF8600 : AppColors.boxBorder,
+            width: isSelected ? 1.5 : 1,
+          ),
         ),
         child: Center(
           child: Column(

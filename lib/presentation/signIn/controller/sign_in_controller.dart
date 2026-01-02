@@ -1,11 +1,9 @@
 import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
-import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -63,14 +61,15 @@ class SignInController extends GetxController {
     isLoading.value = true;
 
     try {
-
-
-
-
-      final response = await AuthApi.login(email, password,"");
+      final response = await AuthApi.login(email, password, "");
 
       // Save most values in parallel
-      SharedPreferenceHelper.saveInfo(response,rememberMe.value, email,password);
+      SharedPreferenceHelper.saveInfo(
+        response,
+        rememberMe.value,
+        email,
+        password,
+      );
       ApiService.setToken(response.token);
 
       // Sync Firebase → Run in background (DO NOT AWAIT)
@@ -78,9 +77,10 @@ class SignInController extends GetxController {
         apiUserId: response.user.id,
         email: response.user.email,
         password: password,
-        name: response.user.role == 3
-            ? response.user.employee?.name ?? ""
-            : response.user.employer?.businessName ?? "",
+        name:
+            response.user.role == 3
+                ? response.user.employee?.name ?? ""
+                : response.user.employer?.businessName ?? "",
         role: response.user.role == 3 ? "employee" : "employer",
         profileImage: response.user.profileImage,
       );
@@ -92,10 +92,9 @@ class SignInController extends GetxController {
       );
 
       Get.offAllNamed(Routes.CUSTOMDRAWER);
-
     } catch (e) {
-      final cleaned =
-      e.toString()
+      final cleaned = e
+          .toString()
           .replaceFirst('Exception: POST request error: Exception: ', '')
           .replaceFirst('Exception: ', '');
 
@@ -140,16 +139,15 @@ class SignInController extends GetxController {
       }
 
       // Step 3: Check if user exists in Firestore and is registered in backend
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .get();
+      final userDoc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
       if (!userDoc.exists || !userDoc.data()!.containsKey('apiUserId')) {
         // User is not registered in the backend
         Utilities.showSnackBar(
           title: "Not Registered",
-          message: "Please register your account first before using Google Sign-In",
+          message:
+              "Please register your account first before using Google Sign-In",
           isSuccess: false,
         );
 
@@ -166,26 +164,17 @@ class SignInController extends GetxController {
 
       // Step 5: Save user data locally
       await Future.wait([
-        SharedPreferenceHelper.saveInt(
-          SharedPrefKeys.userId,
-          apiUserId,
-        ),
+        SharedPreferenceHelper.saveInt(SharedPrefKeys.userId, apiUserId),
         SharedPreferenceHelper.saveInt(
           SharedPrefKeys.userRole,
           role == 'employee' ? 3 : 2,
         ),
-        SharedPreferenceHelper.saveString(
-          SharedPrefKeys.userName,
-          name,
-        ),
+        SharedPreferenceHelper.saveString(SharedPrefKeys.userName, name),
         SharedPreferenceHelper.saveString(
           SharedPrefKeys.userProfileImage,
           profileImage,
         ),
-        SharedPreferenceHelper.saveString(
-          SharedPrefKeys.userEmail,
-          email,
-        ),
+        SharedPreferenceHelper.saveString(SharedPrefKeys.userEmail, email),
       ]);
 
       // Successfully signed in
@@ -208,7 +197,6 @@ class SignInController extends GetxController {
       isGoogleSignInLoading.value = false;
     }
   }
-
 
   @override
   void onClose() {

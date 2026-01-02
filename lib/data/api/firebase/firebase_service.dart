@@ -40,8 +40,16 @@ class FirebaseService {
 
   static Future<UserCredential?> signInWithGoogle() async {
     try {
+      // Configure GoogleSignIn with proper scopes for both iOS and Android
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        scopes: [
+          'email',
+          'profile',
+        ],
+      );
+
       // Trigger the authentication flow
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
       // If user cancels the sign-in
       if (googleUser == null) {

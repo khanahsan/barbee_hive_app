@@ -264,7 +264,7 @@ class SignInView extends GetView<SignInController> {
                             ),
 
                             /// CONTINUE WITH GOOGLE BUTTON
-                         /*   Obx(
+                            Obx(
                               () => CustomBtn(
                                 buttonHeight: 55.h,
                                 btnTitle: "Continue with Google",
@@ -274,7 +274,7 @@ class SignInView extends GetView<SignInController> {
                                 isLoading: controller.isGoogleSignInLoading.value,
                                 iconPath: AppAssets.googleLogo,
                               ),
-                            ),*/
+                            ),
 
                             /// SIGN UP OPTION
                             RichText(

@@ -65,13 +65,25 @@
     <key>GADApplicationIdentifier</key>
     <string>ca-app-pub-7197948477323178~9756279016</string>
 
-    <!-- Stripe URL Scheme -->
+    <!-- URL Schemes for Stripe and Google Sign-In -->
     <key>CFBundleURLTypes</key>
     <array>
+        <!-- Stripe URL Scheme -->
         <dict>
             <key>CFBundleURLSchemes</key>
             <array>
                 <string>stripe</string>
+            </array>
+        </dict>
+        <!-- Google Sign-In URL Scheme -->
+        <!-- TODO: Replace with your REVERSED_CLIENT_ID from Firebase Console -->
+        <!-- Get it from: Firebase Console > Project Settings > iOS App > OAuth 2.0 Client ID -->
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>com.googleusercontent.apps.545979703872-5m6fb3en9nt5revti6td10ndkn3gpqod</string>
             </array>
         </dict>
     </array>

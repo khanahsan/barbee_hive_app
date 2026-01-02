@@ -1,12 +1,15 @@
-import 'dart:developer';
-
+import 'package:barbee_hive_app/data/api/api_service.dart';
+import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
+import 'package:barbee_hive_app/data/api/token_storage.dart';
+import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../../presentation/bottom_nav/controller/bottom_nav_controller.dart';
+import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 class CustomDrawerController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -27,7 +30,7 @@ class CustomDrawerController extends GetxController
   Future<void> onInit() async {
     super.onInit();
 
-    if(Get.arguments != null){
+    if (Get.arguments != null) {
       currentIndex.value = Get.arguments;
     }
 
@@ -38,8 +41,8 @@ class CustomDrawerController extends GetxController
     );
 
     offsetAnimation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0),  // Off-screen right
-      end: Offset.zero,  // Center
+      begin: const Offset(1.0, 0.0), // Off-screen right
+      end: Offset.zero, // Center
     ).animate(
       CurvedAnimation(
         parent: animationController,
@@ -63,7 +66,7 @@ class CustomDrawerController extends GetxController
   }
 
   Future<void> toggleDrawer() async {
-     // Toggle drawer state
+    // Toggle drawer state
     if (isDrawerOpen.value) {
       animationController.duration = const Duration(
         milliseconds: 600,
@@ -76,11 +79,86 @@ class CustomDrawerController extends GetxController
       animationController.forward();
     }
 
-    if(isDrawerOpen.value){
+    if (isDrawerOpen.value) {
       await Future.delayed(Duration(milliseconds: 600));
     }
     isDrawerOpen.value = !isDrawerOpen.value;
     //isAnimated.value = !isAnimated.value;  // Toggle drawer state
+  }
+
+  Future<void> logout() async {
+    // Show loading dialog
+    Get.dialog<void>(
+      Center(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.r),
+            color: AppColors.colorFFFFFF,
+          ),
+          child: Column(
+            spacing: 20.h,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CircularProgressIndicator(color: AppColors.colorE4A74C),
+              const CustomText(
+                title: 'Signing Out..',
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: AppColors.color000000,
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+
+    try {
+      // 🔄 Use Function 2 API call
+      await AuthApi.logout();
+
+      // 🔐 Clear tokens (from Function 2)
+      await TokenStorage.clearToken();
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userRole);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.authToken);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userId);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userProfileImage);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userName);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
+      ApiService.clearToken();
+
+      Get.back<void>(); // close dialog
+
+      // 🟢 Success
+      Utilities.showSnackBar(
+        message: "Logged out successfully",
+        title: 'Sign Out',
+        isSuccess: true,
+      );
+
+      // navigate
+      Get.offAllNamed<void>(Routes.SIGN_IN_VIEW);
+    } catch (e) {
+      Get.back<void>(); // close dialog
+
+      // Clean error message (from Function 2)
+      String errorMessage = e.toString().replaceFirst(
+        'Exception: POST request error: Exception: ',
+        '',
+      );
+      errorMessage =
+      errorMessage.startsWith('Exception: ')
+          ? errorMessage.replaceFirst('Exception: ', '')
+          : errorMessage;
+
+      // 🔴 Error
+      Utilities.showSnackBar(
+        message: errorMessage,
+        title: 'Error',
+        isSuccess: false,
+      );
+    }
   }
 
   Future<void> loadUserData() async {

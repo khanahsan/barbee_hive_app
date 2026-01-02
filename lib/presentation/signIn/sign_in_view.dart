@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
@@ -60,10 +63,7 @@ class SignInView extends GetView<SignInController> {
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.colorFFFFFF,
-                  ),
+                  style: TextStyle(fontSize: 12, color: AppColors.colorFFFFFF),
                   children: [
                     TextSpan(
                       text: 'Back at it ',
@@ -85,7 +85,6 @@ class SignInView extends GetView<SignInController> {
                 ),
               ).paddingSymmetric(horizontal: 20.w),
               SizedBox(height: 10.h),
-
 
               Container(
                 // height: 532.h,
@@ -173,18 +172,19 @@ class SignInView extends GetView<SignInController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Obx(
-                                    () => Row(
+                                () => Row(
                                   children: [
                                     Checkbox(
                                       materialTapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
+                                          MaterialTapTargetSize.shrinkWrap,
                                       visualDensity: VisualDensity(
                                         horizontal: -3.w,
                                         vertical: -4.h,
                                       ),
                                       value: controller.rememberMe.value,
                                       onChanged:
-                                          (v) => controller.toggleRememberMe(v!),
+                                          (v) =>
+                                              controller.toggleRememberMe(v!),
                                       activeColor: AppColors.colorFF8600,
                                     ),
                                     CustomText(
@@ -209,7 +209,6 @@ class SignInView extends GetView<SignInController> {
                           ),
                           SizedBox(height: 15.h),
 
-
                           /// SIGN IN OPTION
                           Obx(
                             () => CustomBtn(
@@ -226,6 +225,7 @@ class SignInView extends GetView<SignInController> {
                               isLoading: controller.isLoading.value,
                             ),
                           ),
+
                           /// SIGN UP OPTION
                           RichText(
                             text: TextSpan(
@@ -253,10 +253,10 @@ class SignInView extends GetView<SignInController> {
                                     color: AppColors.colorFF8600,
                                   ),
                                   recognizer:
-                                  TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Get.toNamed(Routes.selectRole);
-                                    },
+                                      TapGestureRecognizer()
+                                        ..onTap = () {
+                                          Get.toNamed(Routes.selectRole);
+                                        },
                                 ),
                               ],
                             ),
@@ -269,14 +269,39 @@ class SignInView extends GetView<SignInController> {
                               buttonHeight: 55.h,
                               btnTitle: "Continue with Google",
                               btnBackgroundColor: AppColors.color000000,
-                              borderColor: AppColors.colorFFFFFF.withValues(alpha: 0.4),
+                              borderColor: AppColors.colorFFFFFF.withValues(
+                                alpha: 0.4,
+                              ),
                               btnTxtColor: AppColors.colorFFFFFF,
                               onPressed: controller.signInWithGoogle,
-                              isLoading:
-                                  controller.isGoogleSignInLoading.value,
+                              isLoading: controller.isGoogleSignInLoading.value,
                               iconPath: AppAssets.googleLogo,
                             ),
                           ),
+                          if (Platform.isIOS) ...[
+                            SizedBox(height: 15.h),
+
+                            // Continue with Apple button
+                            Obx(
+                              () => CustomBtn(
+                                buttonHeight: 55.h,
+                                btnTitle: "Continue With Apple",
+                                btnBackgroundColor: AppColors.color000000,
+                                borderColor: AppColors.colorFFFFFF,
+                                btnTxtColor: AppColors.colorFFFFFF,
+                                iconPath: AppAssets.appleLogo,
+                                onPressed: () {
+                                  // TODO: Implement Apple Sign-In for registration
+                                  Utilities.showSnackBar(
+                                    title: 'Coming Soon',
+                                    message:
+                                        'Apple Sign-Up will be available soon',
+                                    isSuccess: false,
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),

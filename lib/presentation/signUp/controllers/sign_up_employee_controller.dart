@@ -11,7 +11,7 @@ import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart'
-    show FirebaseAuth, FirebaseAuthException;
+    show FirebaseAuth, FirebaseAuthException, GoogleAuthProvider;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -57,6 +57,8 @@ class SignUpEmployeeController extends GetxController {
   final Rx<String> profileImageUrl = ''.obs; // Profile image URL
 
   final Rx<File?> selectedResume = Rx<File?>(null); // Resume file
+  final RxString googleAccessToken = ''.obs;
+  final RxString googleIdToken = ''.obs;
 
   final isChecked = false.obs;
   final isPasswordVisible = false.obs;
@@ -70,6 +72,7 @@ class SignUpEmployeeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _prefillFromGoogle();
     // Fetch dropdown data
     Future.wait([
       fetchEyeColors(),
@@ -424,6 +427,9 @@ class SignUpEmployeeController extends GetxController {
 
 
   Future<void> registerEmployee() async {
+    if (googleAccessToken.value.isNotEmpty && googleIdToken.value.isNotEmpty) {
+      return _registerWithGoogleCredential();
+    }
     // 1️⃣ Validate Terms, Resume, Profile Image, and Skills
     if (!isChecked.value) {
       return _showError('Please agree to the Terms of Service');
@@ -431,7 +437,7 @@ class SignUpEmployeeController extends GetxController {
     if (selectedResume.value == null) {
       return _showError('Please upload your resume');
     }
-    if (selectedImage.value == null) {
+    if (selectedImage.value == null && profileImageUrl.value.isEmpty) {
       return _showError('Please upload a profile image');
     }
 
@@ -563,80 +569,134 @@ class SignUpEmployeeController extends GetxController {
     }
   }
 
-  /* Future<void> registerEmployee() async {
-    // 1️⃣ Validate Terms, Resume, and Profile Image
-    if (!isChecked.value) return _showError('Please agree to the Terms of Service');
-    if (selectedResume.value == null) return _showError('Please upload your resume');
-    if (selectedImage.value == null) return _showError('Please upload a profile image');
-    if (selectedSkills.isEmpty) return _showError('Please select at least one skill');
 
-    late List<Skill> userSkills;
-    late EyeColor eyeColor;
-    late HairColor hairColor;
-    late Gender userGender;
-    late Height userHeight;
-    late int countryId;
-    late int stateId;
+  // ======== Helper Method for Error SnackBar ========
+  void _showError(String message) {
+    Utilities.showSnackBar(title: 'Error', message: message, isSuccess: false);
+  }
 
-    try {
-      // ✅ Map selected skills to Skill objects
-      userSkills = skills.where((skill) => selectedSkills.contains(skill.name)).toList();
-      if (userSkills.isEmpty) throw Exception('Please select valid skills');
+  void _prefillFromGoogle() {
+    final args = Get.arguments;
+    if (args is! Map) return;
 
-      // ✅ Map selected eye color
-      eyeColor = eyeColors.firstWhere(
-            (color) => color.name == selectedEyeColor.value,
-        orElse: () => throw Exception('Please select an eye color'),
-      );
+    final name = args['name'] as String?;
+    final email = args['email'] as String?;
+    final photoUrl = args['photoUrl'] as String?;
+    final accessToken = args['googleAccessToken'] as String?;
+    final idToken = args['googleIdToken'] as String?;
 
-      // ✅ Map selected hair color
-      hairColor = hairColors.firstWhere(
-            (color) => color.name == selectedHairColor.value,
-        orElse: () => throw Exception('Please select a hair color'),
-      );
+    if (name != null && name.isNotEmpty) nameController.text = name;
+    if (email != null && email.isNotEmpty) emailController.text = email;
+    if (photoUrl != null && photoUrl.isNotEmpty) {
+      profileImageUrl.value = photoUrl;
+    }
+    if (accessToken != null && accessToken.isNotEmpty) {
+      googleAccessToken.value = accessToken;
+    }
+    if (idToken != null && idToken.isNotEmpty) {
+      googleIdToken.value = idToken;
+    }
+  }
 
-      // ✅ Map selected gender
-      userGender = genders.firstWhere(
-            (gender) => gender.name == selectedGender.value,
-        orElse: () => throw Exception('Please select a gender'),
-      );
-
-      // ✅ Map selected height
-      userHeight = heights.firstWhere(
-            (height) => height.name == selectedHeight.value,
-        orElse: () => throw Exception('Please select a height'),
-      );
-
-      // ✅ Map country name to ID
-      countryId = countries.firstWhere(
-            (c) => c.name == selectedCountry.value,
-        orElse: () => throw Exception('Please select a country'),
-      ).id;
-
-      // ✅ Map state name to ID
-      stateId = states.firstWhere(
-            (s) => s.name == selectedState.value,
-        orElse: () => throw Exception('Please select a state'),
-      ).id;
-    } catch (e) {
-      return _showError(e.toString().replaceFirst('Exception: ', ''));
+  Future<void> _registerWithGoogleCredential() async {
+    if (googleAccessToken.value.isEmpty || googleIdToken.value.isEmpty) {
+      return _showError('Google sign-in token missing. Please try again.');
     }
 
-    isLoading.value = true;
+    // Keep existing form validations for resume/image/terms/skills
+    if (!isChecked.value) {
+      return _showError('Please agree to the Terms of Service');
+    }
+    if (selectedResume.value == null) {
+      return _showError('Please upload your resume');
+    }
+    if (selectedImage.value == null && profileImageUrl.value.isEmpty) {
+      return _showError('Please upload a profile image');
+    }
 
+    // Fallback password to satisfy API if user didn’t type one
+    if (passwordController.text.isEmpty) {
+      final generated = 'Gg@${DateTime.now().millisecondsSinceEpoch}';
+      passwordController.text = generated;
+      confirmPasswordController.text = generated;
+    }
+
+    // Continue with the regular registration logic using Google Firebase UID
     try {
-      // Create Firebase User
-      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-      final uid = userCredential.user!.uid;
+      isLoading.value = true;
 
-      // Register with Backend API
+      // Sign in to Firebase with Google credential to get UID
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAccessToken.value,
+        idToken: googleIdToken.value,
+      );
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      final uid = userCredential.user?.uid;
+      final email = userCredential.user?.email ?? emailController.text.trim();
+
+      if (uid == null || email.isEmpty) {
+        throw Exception('Unable to complete Google signup. Please try again.');
+      }
+
+      // Reuse existing registerEmployee flow pieces by calling backend register
+      // with the Google UID but skipping Firebase email/password creation.
+
+      // Map selections (reuse the same validation logic)
+      late List<Skill> userSkills;
+      late EyeColor eyeColor;
+      late HairColor hairColor;
+      late Gender userGender;
+      late Height userHeight;
+      late int countryId;
+      late int stateId;
+
+      try {
+        userSkills = skills
+            .where((skill) => selectedSkills.contains(skill.name))
+            .toList();
+        if (userSkills.isEmpty) {
+          throw Exception('Please select valid skills');
+        }
+
+        eyeColor = eyeColors.firstWhere(
+          (color) => color.name == selectedEyeColor.value,
+          orElse: () => throw Exception('Please select an eye color'),
+        );
+        hairColor = hairColors.firstWhere(
+          (color) => color.name == selectedHairColor.value,
+          orElse: () => throw Exception('Please select a hair color'),
+        );
+        userGender = genders.firstWhere(
+          (gender) => gender.name == selectedGender.value,
+          orElse: () => throw Exception('Please select a gender'),
+        );
+        userHeight = heights.firstWhere(
+          (height) => height.name == selectedHeight.value,
+          orElse: () => throw Exception('Please select a height'),
+        );
+        countryId = countries
+            .firstWhere(
+              (c) => c.name == selectedCountry.value,
+              orElse: () => throw Exception('Please select a country'),
+            )
+            .id;
+        stateId = states
+            .firstWhere(
+              (s) => s.name == selectedState.value,
+              orElse: () => throw Exception('Please select a state'),
+            )
+            .id;
+      } catch (e) {
+        return _showError(
+          e.toString().replaceFirst('Exception: ', ''),
+        );
+      }
+
       final response = await AuthApi.register(
         uid: uid,
         name: nameController.text.trim(),
-        email: emailController.text.trim(),
+        email: email,
         password: passwordController.text.trim(),
         passwordConfirmation: confirmPasswordController.text.trim(),
         role: 3,
@@ -649,7 +709,7 @@ class SignUpEmployeeController extends GetxController {
         hairColorId: hairColor.id,
         height: userHeight.id,
         resume: selectedResume.value,
-        skillIds: userSkills.map((s) => s.id).toList(), // ✅ Pass selected skill IDs
+        skillIds: userSkills.map((s) => s.id).toList(),
         profileImage: selectedImage.value,
       );
 
@@ -657,25 +717,31 @@ class SignUpEmployeeController extends GetxController {
 
       ApiService.setToken(response.data.token);
 
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'uid': uid,
+        'apiUserId': response.data.user.id ?? '',
+        'name': nameController.text.trim(),
+        'email': email,
+        'role': 'employee',
+        'profileImage': response.data.user.profileImage ?? '',
+        'createdAt': FieldValue.serverTimestamp(),
+        'authProvider': 'google',
+      });
 
-
-      Utilities.showSnackBar(title: 'Success', message: response.message, isSuccess: true);
+      Utilities.showSnackBar(
+        title: 'Success',
+        message: response.message,
+        isSuccess: true,
+      );
       Get.offAllNamed(Routes.SIGN_IN_VIEW);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') return _showError('Email already exists in Firebase');
-      if (e.code == 'weak-password') return _showError('Password is too weak');
-      if (e.code == 'invalid-email') return _showError('Invalid email format');
       return _showError('${e.code}: ${e.message}');
     } catch (e) {
-      log('EXCEPTION: ${e.toString()}');
-      return _showError(e.toString().replaceFirst('Exception: ', ''));
+      return _showError(
+        e.toString().replaceFirst('Exception: ', ''),
+      );
     } finally {
       isLoading.value = false;
     }
-  }*/
-
-  // ======== Helper Method for Error SnackBar ========
-  void _showError(String message) {
-    Utilities.showSnackBar(title: 'Error', message: message, isSuccess: false);
   }
 }

@@ -523,7 +523,7 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> logout() async {
+/*  Future<void> logout() async {
     // Show loading dialog
     Get.dialog<void>(
       Center(
@@ -597,7 +597,7 @@ class AuthController extends GetxController {
         isSuccess: false,
       );
     }
-  }
+  }*/
 
   Future<void> forgotPassword(BuildContext context) async {
     final email = fEmailController.text.trim();

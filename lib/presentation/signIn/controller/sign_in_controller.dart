@@ -205,49 +205,84 @@ class SignInController extends GetxController {
     isAppleSignInLoading.value = true;
 
     try {
+      // Step 1: Sign in with Apple for tokens only (no Firebase user creation)
       final appleResult =
       await FirebaseService.signInWithAppleTokensOnly();
 
       if (appleResult == null) {
         Utilities.showSnackBar(
           title: "Cancelled",
-          message: "Apple Sign-In cancelled",
+          message: "Apple Sign-In was cancelled",
           isSuccess: false,
         );
         return;
       }
 
+      final identityToken = appleResult.identityToken;
+      debugPrint("🔑 Apple Identity Token: $identityToken");
+
+      // Step 2: Validate identity token
+      if (identityToken.isEmpty) {
+        Utilities.showSnackBar(
+          title: "Error",
+          message: "Unable to retrieve Apple identity token",
+          isSuccess: false,
+        );
+        return;
+      }
+
+      // Step 3: Get FCM token
       String fcmToken = '';
       try {
         fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
-      } catch (_) {}
+        debugPrint("🔔 FCM Token: $fcmToken");
+      } catch (e) {
+        debugPrint("⚠️ Failed to get FCM token: $e");
+        // Continue without FCM token if it fails
+      }
 
-      final response = await AuthApi.googleLogin(
-        appleResult.identityToken,
-        appleResult.authorizationCode,
-      );
+      // Step 4: Call backend Apple login API (using same endpoint as Google)
+      try {
+        final response = await AuthApi.googleLogin(identityToken, fcmToken);
 
-      SharedPreferenceHelper.saveInfo(
-        response,
-        false,
-        appleResult.email ?? '',
-        '',
-      );
+        // Step 5: Save user data locally
+        SharedPreferenceHelper.saveInfo(
+          response,
+          false, // rememberMe not applicable for Apple Sign-In
+          appleResult.email ?? '',
+          '', // no password for Apple Sign-In
+        );
+        ApiService.setToken(response.token);
 
-      ApiService.setToken(response.token);
+        // Successfully signed in
+        Utilities.showSnackBar(
+          title: "Success",
+          message: response.message,
+          isSuccess: true,
+        );
 
-      Utilities.showSnackBar(
-        title: "Success",
-        message: response.message,
-        isSuccess: true,
-      );
+        // Navigate to main screen
+        Get.offAllNamed(Routes.CUSTOMDRAWER);
+      } catch (backendError) {
+        // Backend rejected the user
+        // Clean error message
+        final errorMessage = backendError
+            .toString()
+            .replaceFirst('Exception: POST request error: Exception: ', '')
+            .replaceFirst('Exception: ', '');
 
-      Get.offAllNamed(Routes.CUSTOMDRAWER);
+        Utilities.showSnackBar(
+          title: "Not Registered",
+          message: errorMessage,
+          isSuccess: false,
+        );
+        return;
+      }
     } catch (e) {
-      final msg = e.toString().replaceFirst('Exception: ', '');
+      final errorMessage = e.toString().replaceFirst('Exception: ', '');
       Utilities.showSnackBar(
         title: "Apple Sign-In Failed",
-        message: msg,
+        message: errorMessage,
         isSuccess: false,
       );
     } finally {

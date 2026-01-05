@@ -21,6 +21,7 @@ class SignInController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final RxBool isLoading = false.obs;
   final RxBool isGoogleSignInLoading = false.obs;
+  final RxBool isAppleSignInLoading = false.obs;
   final RxBool rememberMe = false.obs;
   final RxBool isObscured = true.obs;
 
@@ -199,6 +200,61 @@ class SignInController extends GetxController {
       isGoogleSignInLoading.value = false;
     }
   }
+
+  Future<void> signInWithApple() async {
+    isAppleSignInLoading.value = true;
+
+    try {
+      final appleResult =
+      await FirebaseService.signInWithAppleTokensOnly();
+
+      if (appleResult == null) {
+        Utilities.showSnackBar(
+          title: "Cancelled",
+          message: "Apple Sign-In cancelled",
+          isSuccess: false,
+        );
+        return;
+      }
+
+      String fcmToken = '';
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+      } catch (_) {}
+
+      final response = await AuthApi.googleLogin(
+        appleResult.identityToken,
+        appleResult.authorizationCode,
+      );
+
+      SharedPreferenceHelper.saveInfo(
+        response,
+        false,
+        appleResult.email ?? '',
+        '',
+      );
+
+      ApiService.setToken(response.token);
+
+      Utilities.showSnackBar(
+        title: "Success",
+        message: response.message,
+        isSuccess: true,
+      );
+
+      Get.offAllNamed(Routes.CUSTOMDRAWER);
+    } catch (e) {
+      final msg = e.toString().replaceFirst('Exception: ', '');
+      Utilities.showSnackBar(
+        title: "Apple Sign-In Failed",
+        message: msg,
+        isSuccess: false,
+      );
+    } finally {
+      isAppleSignInLoading.value = false;
+    }
+  }
+
 
   @override
   void onClose() {

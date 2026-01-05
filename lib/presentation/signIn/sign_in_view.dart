@@ -284,21 +284,14 @@ class SignInView extends GetView<SignInController> {
                             // Continue with Apple button
                             Obx(
                               () => CustomBtn(
+                                isLoading: controller.isAppleSignInLoading.value,
                                 buttonHeight: 55.h,
                                 btnTitle: "Continue With Apple",
                                 btnBackgroundColor: AppColors.color000000,
                                 borderColor: AppColors.colorFFFFFF,
                                 btnTxtColor: AppColors.colorFFFFFF,
                                 iconPath: AppAssets.appleLogo,
-                                onPressed: () {
-                                  // TODO: Implement Apple Sign-In for registration
-                                  Utilities.showSnackBar(
-                                    title: 'Coming Soon',
-                                    message:
-                                        'Apple Sign-Up will be available soon',
-                                    isSuccess: false,
-                                  );
-                                },
+                                onPressed: controller.signInWithApple
                               ),
                             ),
                           ],

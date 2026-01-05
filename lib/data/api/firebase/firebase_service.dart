@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:math';
+import 'package:crypto/crypto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 // Model to hold Google Sign-In result with access token
 class GoogleSignInResult {
@@ -16,6 +20,21 @@ class GoogleSignInResult {
   });
 }
 
+class AppleSignInResult {
+  final String identityToken;
+  final String authorizationCode;
+  final String? email;
+  final String? fullName;
+
+  AppleSignInResult({
+    required this.identityToken,
+    required this.authorizationCode,
+    this.email,
+    this.fullName,
+  });
+}
+
+
 // Lightweight model when we only need Google tokens, not Firebase sign-in
 class GoogleAuthTokens {
   final GoogleSignInAccount account;
@@ -28,6 +47,58 @@ class GoogleAuthTokens {
 }
 
 class FirebaseService {
+
+
+  // ---------- Apple helpers ----------
+
+  static String _generateNonce([int length = 32]) {
+    const charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final rand = Random.secure();
+    return List.generate(length, (_) => charset[rand.nextInt(charset.length)])
+        .join();
+  }
+
+  static String _sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
+  /// Apple Sign-In (TOKEN ONLY – no Firebase user)
+  static Future<AppleSignInResult?> signInWithAppleTokensOnly() async {
+    try {
+      final rawNonce = _generateNonce();
+      final nonce = _sha256ofString(rawNonce);
+
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        nonce: nonce,
+      );
+
+      if (credential.identityToken == null ||
+          credential.authorizationCode.isEmpty) {
+        debugPrint("❌ Apple Sign-In cancelled or invalid");
+        return null;
+      }
+
+      return AppleSignInResult(
+        identityToken: credential.identityToken!,
+        authorizationCode: credential.authorizationCode,
+        email: credential.email,
+        fullName:
+        '${credential.givenName ?? ''} ${credential.familyName ?? ''}'
+            .trim(),
+      );
+    } catch (e) {
+      debugPrint("❌ Apple Sign-In error: $e");
+      rethrow;
+    }
+  }
+
   /// Lightweight helper to pick a Google account without creating a Firebase user.
   /// Returns basic profile info for pre-filling forms.
   static Future<GoogleSignInAccount?> pickGoogleAccount() async {

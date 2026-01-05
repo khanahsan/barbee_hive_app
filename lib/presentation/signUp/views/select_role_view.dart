@@ -198,36 +198,36 @@ class SelectRoleView extends StatelessWidget {
                       SizedBox(height: 15.h),
 
                       // Continue with Apple button
-                      Obx(
-                            () => CustomBtn(
-                          buttonHeight: 55.h,
-                          btnTitle: "Continue With Apple",
-                          btnBackgroundColor: AppColors.color000000,
-                          borderColor: AppColors.colorFFFFFF,
-                          btnTxtColor: AppColors.colorFFFFFF,
-                          iconPath: AppAssets.appleLogo,
-                          onPressed:
-                          selectedRole.value.isEmpty
-                              ? () {
-                            Utilities.showSnackBar(
-                              title: 'Select Role',
-                              message:
-                              'Please select Employee or Employer first',
-                              isSuccess: false,
-                            );
-                          }
-                              : () {
-                            // TODO: Implement Apple Sign-In for registration
-                            Get.snackbar(
-                              'Coming Soon',
-                              'Apple Sign-Up will be available soon',
-                              backgroundColor: AppColors.colorFF8600,
-                              colorText: Colors.white,
-                              snackPosition: SnackPosition.BOTTOM,
-                            );
-                          },
-                        ),
-                      ),
+                      // Obx(
+                      //       () => CustomBtn(
+                      //     buttonHeight: 55.h,
+                      //     btnTitle: "Continue With Apple",
+                      //     btnBackgroundColor: AppColors.color000000,
+                      //     borderColor: AppColors.colorFFFFFF,
+                      //     btnTxtColor: AppColors.colorFFFFFF,
+                      //     iconPath: AppAssets.appleLogo,
+                      //     onPressed:
+                      //     selectedRole.value.isEmpty
+                      //         ? () {
+                      //       Utilities.showSnackBar(
+                      //         title: 'Select Role',
+                      //         message:
+                      //         'Please select Employee or Employer first',
+                      //         isSuccess: false,
+                      //       );
+                      //     }
+                      //         : () {
+                      //       // TODO: Implement Apple Sign-In for registration
+                      //       Get.snackbar(
+                      //         'Coming Soon',
+                      //         'Apple Sign-Up will be available soon',
+                      //         backgroundColor: AppColors.colorFF8600,
+                      //         colorText: Colors.white,
+                      //         snackPosition: SnackPosition.BOTTOM,
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
                     ],
                   ],
                 ),

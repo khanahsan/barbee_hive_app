@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:barbee_hive_app/presentation/signUp/component/agree_terms_tile.dart';
 import 'package:flutter/material.dart';
@@ -325,6 +327,66 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                       }
                                     },
                                   ),
+                                  SizedBox(height: 20.h),
+
+                                  /// OR DIVIDER
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Divider(
+                                          color: AppColors.colorFFFFFF.withValues(alpha: 0.3),
+                                          thickness: 1,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                                        child: CustomText(
+                                          title: 'OR',
+                                          color: AppColors.colorFFFFFF.withValues(alpha: 0.6),
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Divider(
+                                          color: AppColors.colorFFFFFF.withValues(alpha: 0.3),
+                                          thickness: 1,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20.h),
+
+                                  /// CONTINUE WITH GOOGLE BUTTON
+                                  Obx(
+                                    () => CustomBtn(
+                                      buttonHeight: 55.h,
+                                      btnTitle: "Continue with Google",
+                                      btnBackgroundColor: AppColors.color000000,
+                                      borderColor: AppColors.colorFFFFFF.withValues(alpha: 0.4),
+                                      btnTxtColor: AppColors.colorFFFFFF,
+                                      onPressed: controller.signUpWithGoogle,
+                                      isLoading: controller.isGoogleSignInLoading.value,
+                                      iconPath: AppAssets.googleLogo,
+                                    ),
+                                  ),
+                                  if (Platform.isIOS) ...[
+                                    SizedBox(height: 15.h),
+
+                                    /// CONTINUE WITH APPLE BUTTON
+                                    Obx(
+                                      () => CustomBtn(
+                                        isLoading: controller.isAppleSignInLoading.value,
+                                        buttonHeight: 55.h,
+                                        btnTitle: "Continue With Apple",
+                                        btnBackgroundColor: AppColors.color000000,
+                                        borderColor: AppColors.colorFFFFFF,
+                                        btnTxtColor: AppColors.colorFFFFFF,
+                                        iconPath: AppAssets.appleLogo,
+                                        onPressed: controller.signUpWithApple,
+                                      ),
+                                    ),
+                                  ],
+                                  SizedBox(height: 20.h),
                                 ],
                               ),
                             ),

@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Barbee Hive App</string>
+	<string>BarBee Inc</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -20,10 +22,48 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>stripe</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.545979703872-5m6fb3en9nt5revti6td10ndkn3gpqod</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-7197948477323178~9756279016</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>stripe</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Barbee Inc. needs camera permission to register and edit profile.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Barbee Inc needs location permission to find nearby users.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Barbee Inc needs location permission to find nearby users.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Barbee Inc. needs gallery permission to register and edit profile.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -41,72 +81,14 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-
-	<!-- Add the permissions for camera and gallery -->
-    <key>NSCameraUsageDescription</key>
-    <string>Barbee Inc. needs permission to register and edit profile.</string>
-
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Barbee Inc. needs permission to register and edit profile.</string>
-
-    <!-- Add the permissions for camera and gallery -->
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Barbee Inc needs permission to find nearby users.</string>
-
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Barbee Inc needs permission to find nearby users.</string>
-
-
-	<!-- Add the AdMob Application ID here -->
-    <key>GADApplicationIdentifier</key>
-    <string>ca-app-pub-7197948477323178~9756279016</string>
-
-    <!-- URL Schemes for Stripe and Google Sign-In -->
-    <key>CFBundleURLTypes</key>
-    <array>
-        <!-- Stripe URL Scheme -->
-        <dict>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>stripe</string>
-            </array>
-        </dict>
-        <!-- Google Sign-In URL Scheme -->
-        <!-- TODO: Replace with your REVERSED_CLIENT_ID from Firebase Console -->
-        <!-- Get it from: Firebase Console > Project Settings > iOS App > OAuth 2.0 Client ID -->
-        <dict>
-            <key>CFBundleTypeRole</key>
-            <string>Editor</string>
-            <key>CFBundleURLSchemes</key>
-            <array>
-                <string>com.googleusercontent.apps.545979703872-5m6fb3en9nt5revti6td10ndkn3gpqod</string>
-            </array>
-        </dict>
-    </array>
-
-    <!-- Apple Pay Merchant Identifier -->
-    <key>merchantIdentifier</key>
-    <string>merchant.app.barbeeinc</string>
-
-    <!-- Stripe Apple Pay Settings -->
-    <key>com.stripe.react-native.payments</key>
-    <dict>
-        <key>merchantIdentifier</key>
-        <string>merchant.app.barbeeinc</string>
-        <key>enableApplePay</key>
-        <true/>
-    </dict>
-
-    <!-- Allow Stripe Redirect Handling -->
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>stripe</string>
-    </array>
-
-
+	<key>com.stripe.react-native.payments</key>
+	<dict>
+		<key>enableApplePay</key>
+		<true/>
+		<key>merchantIdentifier</key>
+		<string>merchant.app.barbeeinc</string>
+	</dict>
+	<key>merchantIdentifier</key>
+	<string>merchant.app.barbeeinc</string>
 </dict>
 </plist>

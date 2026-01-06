@@ -16,6 +16,15 @@ class AuthApi {
     return LoginResponse.fromJson(data);
   }
 
+  /// GOOGLE LOGIN API
+  static Future<LoginResponse> googleLogin(String accessToken, String fcmToken) async {
+    final data = await ApiService.post(ApiEndPoints.googleLogin, {
+      'access_token': accessToken,
+      'fcm_token': fcmToken,
+    });
+    return LoginResponse.fromJson(data);
+  }
+
   /// LOGOUT API
   static Future<void> logout() async =>
       ApiService.post(ApiEndPoints.logout, {}, auth: true);

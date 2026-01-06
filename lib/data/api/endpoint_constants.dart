@@ -3,6 +3,7 @@ class ApiEndPoints {
 
   /// AUTH
   static const String login = 'login';
+  static const String googleLogin = 'auth/google';
   static const String logout = 'logout';
   static const String forgotPassword = 'forgot-password';
   static const String changePassword = 'change-password';

@@ -217,7 +217,9 @@ class AppTextField extends StatelessWidget {
     this.fontSize,
     this.fontWeight = FontWeight.w400,
     this.enabledBorderColor,
+    this.focusedBorderColor,
     this.enabled,
+    this.useUnderlineBorder = false,
   });
 
   final TextEditingController? controller;
@@ -241,8 +243,10 @@ class AppTextField extends StatelessWidget {
   final Color? fontColor;
   final double? fontSize;
   final Color? enabledBorderColor;
+  final Color? focusedBorderColor;
   final FontWeight? fontWeight;
   final bool? enabled;
+  final bool useUnderlineBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -253,6 +257,7 @@ class AppTextField extends StatelessWidget {
     );
 
     final borderColor = enabledBorderColor ?? AppColors.textFieldBackground;
+    final focusBorderColor = focusedBorderColor ?? AppColors.colorFF8600;
 
     return TextFormField(
       controller: controller,
@@ -279,7 +284,9 @@ class AppTextField extends StatelessWidget {
         isDense: true,
         contentPadding:
             contentPadding ??
-            EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            (useUnderlineBorder
+                ? EdgeInsets.symmetric(horizontal: 0, vertical: 12.h)
+                : EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h)),
         // fillColor: isTapAble ? fillColor : Colors.grey,
         fillColor: fillColor,
         filled: filled,
@@ -294,30 +301,54 @@ class AppTextField extends StatelessWidget {
         labelStyle: textStyle,
         // ✅ same style
         floatingLabelBehavior: FloatingLabelBehavior.auto,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: borderColor, width: 1.5),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: Colors.red, width: 1),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.r),
-          borderSide: const BorderSide(color: Colors.red, width: 1.5),
-        ),
+        border: useUnderlineBorder
+            ? UnderlineInputBorder(
+                borderSide: BorderSide(color: borderColor),
+              )
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide(color: borderColor),
+              ),
+        enabledBorder: useUnderlineBorder
+            ? UnderlineInputBorder(
+                borderSide: BorderSide(color: borderColor),
+              )
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide(color: borderColor),
+              ),
+        focusedBorder: useUnderlineBorder
+            ? UnderlineInputBorder(
+                borderSide: BorderSide(color: focusBorderColor, width: 2),
+              )
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide(color: focusBorderColor, width: 1.5),
+              ),
+        disabledBorder: useUnderlineBorder
+            ? UnderlineInputBorder(
+                borderSide: BorderSide(color: borderColor),
+              )
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: BorderSide(color: borderColor),
+              ),
+        errorBorder: useUnderlineBorder
+            ? const UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.red, width: 1),
+              )
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: const BorderSide(color: Colors.red, width: 1),
+              ),
+        focusedErrorBorder: useUnderlineBorder
+            ? const UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.red, width: 2),
+              )
+            : OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.r),
+                borderSide: const BorderSide(color: Colors.red, width: 1.5),
+              ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
+import 'package:barbee_hive_app/data/api/firebase/firebase_service.dart';
 import 'package:barbee_hive_app/data/model/country_response.dart';
 import 'package:barbee_hive_app/data/model/gender_response.dart';
 import 'package:barbee_hive_app/data/model/height_response.dart';
@@ -11,7 +12,8 @@ import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart'
-    show FirebaseAuth, FirebaseAuthException;
+    show FirebaseAuth, FirebaseAuthException, GoogleAuthProvider, OAuthProvider;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -57,11 +59,17 @@ class SignUpEmployeeController extends GetxController {
   final Rx<String> profileImageUrl = ''.obs; // Profile image URL
 
   final Rx<File?> selectedResume = Rx<File?>(null); // Resume file
+  final RxString googleAccessToken = ''.obs;
+  final RxString googleIdToken = ''.obs;
+  final RxString appleIdentityToken = ''.obs;
+  final RxString appleAuthorizationCode = ''.obs;
 
   final isChecked = false.obs;
   final isPasswordVisible = false.obs;
   final isConfirmPasswordVisible = false.obs;
   final isLoading = false.obs;
+  final isGoogleSignInLoading = false.obs;
+  final isAppleSignInLoading = false.obs;
   final errorMessage = ''.obs;
 
   final formKey = GlobalKey<FormState>();
@@ -70,6 +78,7 @@ class SignUpEmployeeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _prefillFromGoogle();
     // Fetch dropdown data
     Future.wait([
       fetchEyeColors(),
@@ -424,6 +433,12 @@ class SignUpEmployeeController extends GetxController {
 
 
   Future<void> registerEmployee() async {
+    if (googleAccessToken.value.isNotEmpty && googleIdToken.value.isNotEmpty) {
+      return _registerWithGoogleCredential();
+    }
+    if (appleIdentityToken.value.isNotEmpty && appleAuthorizationCode.value.isNotEmpty) {
+      return _registerWithAppleCredential();
+    }
     // 1️⃣ Validate Terms, Resume, Profile Image, and Skills
     if (!isChecked.value) {
       return _showError('Please agree to the Terms of Service');
@@ -431,7 +446,7 @@ class SignUpEmployeeController extends GetxController {
     if (selectedResume.value == null) {
       return _showError('Please upload your resume');
     }
-    if (selectedImage.value == null) {
+    if (selectedImage.value == null && profileImageUrl.value.isEmpty) {
       return _showError('Please upload a profile image');
     }
 
@@ -563,80 +578,286 @@ class SignUpEmployeeController extends GetxController {
     }
   }
 
-  /* Future<void> registerEmployee() async {
-    // 1️⃣ Validate Terms, Resume, and Profile Image
-    if (!isChecked.value) return _showError('Please agree to the Terms of Service');
-    if (selectedResume.value == null) return _showError('Please upload your resume');
-    if (selectedImage.value == null) return _showError('Please upload a profile image');
-    if (selectedSkills.isEmpty) return _showError('Please select at least one skill');
 
-    late List<Skill> userSkills;
-    late EyeColor eyeColor;
-    late HairColor hairColor;
-    late Gender userGender;
-    late Height userHeight;
-    late int countryId;
-    late int stateId;
+  // ======== Helper Method for Error SnackBar ========
+  void _showError(String message) {
+    Utilities.showSnackBar(title: 'Error', message: message, isSuccess: false);
+  }
+
+  // ======== Google Sign Up Method ========
+  Future<void> signUpWithGoogle() async {
+    isGoogleSignInLoading.value = true;
 
     try {
-      // ✅ Map selected skills to Skill objects
-      userSkills = skills.where((skill) => selectedSkills.contains(skill.name)).toList();
-      if (userSkills.isEmpty) throw Exception('Please select valid skills');
+      final tokenResult = await FirebaseService.signInWithGoogleTokensOnly();
 
-      // ✅ Map selected eye color
-      eyeColor = eyeColors.firstWhere(
-            (color) => color.name == selectedEyeColor.value,
-        orElse: () => throw Exception('Please select an eye color'),
-      );
+      if (tokenResult == null) {
+        Utilities.showSnackBar(
+          title: "Cancelled",
+          message: "Google Sign-In was cancelled",
+          isSuccess: false,
+        );
+        return;
+      }
 
-      // ✅ Map selected hair color
-      hairColor = hairColors.firstWhere(
-            (color) => color.name == selectedHairColor.value,
-        orElse: () => throw Exception('Please select a hair color'),
-      );
+      final accessToken = tokenResult.authentication.accessToken;
+      final idToken = tokenResult.authentication.idToken;
 
-      // ✅ Map selected gender
-      userGender = genders.firstWhere(
-            (gender) => gender.name == selectedGender.value,
-        orElse: () => throw Exception('Please select a gender'),
-      );
+      if (accessToken == null || accessToken.isEmpty) {
+        Utilities.showSnackBar(
+          title: "Error",
+          message: "Unable to retrieve Google access token",
+          isSuccess: false,
+        );
+        return;
+      }
 
-      // ✅ Map selected height
-      userHeight = heights.firstWhere(
-            (height) => height.name == selectedHeight.value,
-        orElse: () => throw Exception('Please select a height'),
-      );
+      // Get FCM token
+      String fcmToken = '';
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+      } catch (e) {
+        debugPrint("⚠️ Failed to get FCM token: $e");
+      }
 
-      // ✅ Map country name to ID
-      countryId = countries.firstWhere(
-            (c) => c.name == selectedCountry.value,
-        orElse: () => throw Exception('Please select a country'),
-      ).id;
+      // Try to sign in with backend first
+      try {
+        final response = await AuthApi.googleLogin(accessToken, fcmToken);
 
-      // ✅ Map state name to ID
-      stateId = states.firstWhere(
-            (s) => s.name == selectedState.value,
-        orElse: () => throw Exception('Please select a state'),
-      ).id;
+        // User already registered, redirect to sign in
+        Utilities.showSnackBar(
+          title: "Already Registered",
+          message: "This Google account is already registered. Please sign in.",
+          isSuccess: false,
+        );
+        Get.back();
+        return;
+      } catch (backendError) {
+        // User not registered, continue with signup flow
+        // Pre-fill the form with Google data
+        nameController.text = tokenResult.account.displayName ?? '';
+        emailController.text = tokenResult.account.email;
+        profileImageUrl.value = tokenResult.account.photoUrl ?? '';
+        googleAccessToken.value = accessToken;
+        googleIdToken.value = idToken ?? '';
+
+        Utilities.showSnackBar(
+          title: "Complete Your Profile",
+          message: "Please fill in the remaining details to complete registration",
+          isSuccess: true,
+        );
+      }
     } catch (e) {
-      return _showError(e.toString().replaceFirst('Exception: ', ''));
+      final errorMessage = e.toString().replaceFirst('Exception: ', '');
+      Utilities.showSnackBar(
+        title: "Google Sign-Up Failed",
+        message: errorMessage,
+        isSuccess: false,
+      );
+    } finally {
+      isGoogleSignInLoading.value = false;
+    }
+  }
+
+  // ======== Apple Sign Up Method ========
+  Future<void> signUpWithApple() async {
+    isAppleSignInLoading.value = true;
+
+    try {
+      final appleResult = await FirebaseService.signInWithAppleTokensOnly();
+
+      if (appleResult == null) {
+        Utilities.showSnackBar(
+          title: "Cancelled",
+          message: "Apple Sign-In was cancelled",
+          isSuccess: false,
+        );
+        return;
+      }
+
+      final identityToken = appleResult.identityToken;
+
+      if (identityToken.isEmpty) {
+        Utilities.showSnackBar(
+          title: "Error",
+          message: "Unable to retrieve Apple identity token",
+          isSuccess: false,
+        );
+        return;
+      }
+
+      // Get FCM token
+      String fcmToken = '';
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+      } catch (e) {
+        debugPrint("⚠️ Failed to get FCM token: $e");
+      }
+
+      // Try to sign in with backend first
+      try {
+        final response = await AuthApi.googleLogin(identityToken, fcmToken);
+
+        // User already registered, redirect to sign in
+        Utilities.showSnackBar(
+          title: "Already Registered",
+          message: "This Apple account is already registered. Please sign in.",
+          isSuccess: false,
+        );
+        Get.back();
+        return;
+      } catch (backendError) {
+        // User not registered, continue with signup flow
+        // Pre-fill the form with Apple data
+        if (appleResult.fullName != null && appleResult.fullName!.isNotEmpty) {
+          nameController.text = appleResult.fullName!;
+        }
+        if (appleResult.email != null && appleResult.email!.isNotEmpty) {
+          emailController.text = appleResult.email!;
+        }
+        appleIdentityToken.value = identityToken;
+        appleAuthorizationCode.value = appleResult.authorizationCode;
+
+        Utilities.showSnackBar(
+          title: "Complete Your Profile",
+          message: "Please fill in the remaining details to complete registration",
+          isSuccess: true,
+        );
+      }
+    } catch (e) {
+      final errorMessage = e.toString().replaceFirst('Exception: ', '');
+      Utilities.showSnackBar(
+        title: "Apple Sign-Up Failed",
+        message: errorMessage,
+        isSuccess: false,
+      );
+    } finally {
+      isAppleSignInLoading.value = false;
+    }
+  }
+
+  void _prefillFromGoogle() {
+    final args = Get.arguments;
+    if (args is! Map) return;
+
+    final name = args['name'] as String?;
+    final email = args['email'] as String?;
+    final photoUrl = args['photoUrl'] as String?;
+    final accessToken = args['googleAccessToken'] as String?;
+    final idToken = args['googleIdToken'] as String?;
+
+    if (name != null && name.isNotEmpty) nameController.text = name;
+    if (email != null && email.isNotEmpty) emailController.text = email;
+    if (photoUrl != null && photoUrl.isNotEmpty) {
+      profileImageUrl.value = photoUrl;
+    }
+    if (accessToken != null && accessToken.isNotEmpty) {
+      googleAccessToken.value = accessToken;
+    }
+    if (idToken != null && idToken.isNotEmpty) {
+      googleIdToken.value = idToken;
+    }
+  }
+
+  Future<void> _registerWithGoogleCredential() async {
+    if (googleAccessToken.value.isEmpty || googleIdToken.value.isEmpty) {
+      return _showError('Google sign-in token missing. Please try again.');
     }
 
-    isLoading.value = true;
+    // Keep existing form validations for resume/image/terms/skills
+    if (!isChecked.value) {
+      return _showError('Please agree to the Terms of Service');
+    }
+    if (selectedResume.value == null) {
+      return _showError('Please upload your resume');
+    }
+    if (selectedImage.value == null && profileImageUrl.value.isEmpty) {
+      return _showError('Please upload a profile image');
+    }
 
+    // Fallback password to satisfy API if user didn’t type one
+    if (passwordController.text.isEmpty) {
+      final generated = 'Gg@${DateTime.now().millisecondsSinceEpoch}';
+      passwordController.text = generated;
+      confirmPasswordController.text = generated;
+    }
+
+    // Continue with the regular registration logic using Google Firebase UID
     try {
-      // Create Firebase User
-      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-      final uid = userCredential.user!.uid;
+      isLoading.value = true;
 
-      // Register with Backend API
+      // Sign in to Firebase with Google credential to get UID
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAccessToken.value,
+        idToken: googleIdToken.value,
+      );
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      final uid = userCredential.user?.uid;
+      final email = userCredential.user?.email ?? emailController.text.trim();
+
+      if (uid == null || email.isEmpty) {
+        throw Exception('Unable to complete Google signup. Please try again.');
+      }
+
+      // Reuse existing registerEmployee flow pieces by calling backend register
+      // with the Google UID but skipping Firebase email/password creation.
+
+      // Map selections (reuse the same validation logic)
+      late List<Skill> userSkills;
+      late EyeColor eyeColor;
+      late HairColor hairColor;
+      late Gender userGender;
+      late Height userHeight;
+      late int countryId;
+      late int stateId;
+
+      try {
+        userSkills = skills
+            .where((skill) => selectedSkills.contains(skill.name))
+            .toList();
+        if (userSkills.isEmpty) {
+          throw Exception('Please select valid skills');
+        }
+
+        eyeColor = eyeColors.firstWhere(
+          (color) => color.name == selectedEyeColor.value,
+          orElse: () => throw Exception('Please select an eye color'),
+        );
+        hairColor = hairColors.firstWhere(
+          (color) => color.name == selectedHairColor.value,
+          orElse: () => throw Exception('Please select a hair color'),
+        );
+        userGender = genders.firstWhere(
+          (gender) => gender.name == selectedGender.value,
+          orElse: () => throw Exception('Please select a gender'),
+        );
+        userHeight = heights.firstWhere(
+          (height) => height.name == selectedHeight.value,
+          orElse: () => throw Exception('Please select a height'),
+        );
+        countryId = countries
+            .firstWhere(
+              (c) => c.name == selectedCountry.value,
+              orElse: () => throw Exception('Please select a country'),
+            )
+            .id;
+        stateId = states
+            .firstWhere(
+              (s) => s.name == selectedState.value,
+              orElse: () => throw Exception('Please select a state'),
+            )
+            .id;
+      } catch (e) {
+        return _showError(
+          e.toString().replaceFirst('Exception: ', ''),
+        );
+      }
+
       final response = await AuthApi.register(
         uid: uid,
         name: nameController.text.trim(),
-        email: emailController.text.trim(),
+        email: email,
         password: passwordController.text.trim(),
         passwordConfirmation: confirmPasswordController.text.trim(),
         role: 3,
@@ -649,7 +870,7 @@ class SignUpEmployeeController extends GetxController {
         hairColorId: hairColor.id,
         height: userHeight.id,
         resume: selectedResume.value,
-        skillIds: userSkills.map((s) => s.id).toList(), // ✅ Pass selected skill IDs
+        skillIds: userSkills.map((s) => s.id).toList(),
         profileImage: selectedImage.value,
       );
 
@@ -657,25 +878,178 @@ class SignUpEmployeeController extends GetxController {
 
       ApiService.setToken(response.data.token);
 
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'uid': uid,
+        'apiUserId': response.data.user.id ?? '',
+        'name': nameController.text.trim(),
+        'email': email,
+        'role': 'employee',
+        'profileImage': response.data.user.profileImage ?? '',
+        'createdAt': FieldValue.serverTimestamp(),
+        'authProvider': 'google',
+      });
 
-
-      Utilities.showSnackBar(title: 'Success', message: response.message, isSuccess: true);
+      Utilities.showSnackBar(
+        title: 'Success',
+        message: response.message,
+        isSuccess: true,
+      );
       Get.offAllNamed(Routes.SIGN_IN_VIEW);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') return _showError('Email already exists in Firebase');
-      if (e.code == 'weak-password') return _showError('Password is too weak');
-      if (e.code == 'invalid-email') return _showError('Invalid email format');
       return _showError('${e.code}: ${e.message}');
     } catch (e) {
-      log('EXCEPTION: ${e.toString()}');
-      return _showError(e.toString().replaceFirst('Exception: ', ''));
+      return _showError(
+        e.toString().replaceFirst('Exception: ', ''),
+      );
     } finally {
       isLoading.value = false;
     }
-  }*/
+  }
 
-  // ======== Helper Method for Error SnackBar ========
-  void _showError(String message) {
-    Utilities.showSnackBar(title: 'Error', message: message, isSuccess: false);
+  Future<void> _registerWithAppleCredential() async {
+    if (appleIdentityToken.value.isEmpty || appleAuthorizationCode.value.isEmpty) {
+      return _showError('Apple sign-in token missing. Please try again.');
+    }
+
+    // Keep existing form validations for resume/image/terms/skills
+    if (!isChecked.value) {
+      return _showError('Please agree to the Terms of Service');
+    }
+    if (selectedResume.value == null) {
+      return _showError('Please upload your resume');
+    }
+    if (selectedImage.value == null && profileImageUrl.value.isEmpty) {
+      return _showError('Please upload a profile image');
+    }
+
+    // Fallback password to satisfy API if user didn't type one
+    if (passwordController.text.isEmpty) {
+      final generated = 'Aa@${DateTime.now().millisecondsSinceEpoch}';
+      passwordController.text = generated;
+      confirmPasswordController.text = generated;
+    }
+
+    // Continue with the regular registration logic using Apple Firebase UID
+    try {
+      isLoading.value = true;
+
+      // Sign in to Firebase with Apple credential to get UID
+      final credential = OAuthProvider('apple.com').credential(
+        idToken: appleIdentityToken.value,
+        accessToken: appleAuthorizationCode.value,
+      );
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      final uid = userCredential.user?.uid;
+      final email = userCredential.user?.email ?? emailController.text.trim();
+
+      if (uid == null || email.isEmpty) {
+        throw Exception('Unable to complete Apple signup. Please try again.');
+      }
+
+      // Reuse existing registerEmployee flow pieces by calling backend register
+      // with the Apple UID but skipping Firebase email/password creation.
+
+      // Map selections (reuse the same validation logic)
+      late List<Skill> userSkills;
+      late EyeColor eyeColor;
+      late HairColor hairColor;
+      late Gender userGender;
+      late Height userHeight;
+      late int countryId;
+      late int stateId;
+
+      try {
+        userSkills = skills
+            .where((skill) => selectedSkills.contains(skill.name))
+            .toList();
+        if (userSkills.isEmpty) {
+          throw Exception('Please select valid skills');
+        }
+
+        eyeColor = eyeColors.firstWhere(
+          (color) => color.name == selectedEyeColor.value,
+          orElse: () => throw Exception('Please select an eye color'),
+        );
+        hairColor = hairColors.firstWhere(
+          (color) => color.name == selectedHairColor.value,
+          orElse: () => throw Exception('Please select a hair color'),
+        );
+        userGender = genders.firstWhere(
+          (gender) => gender.name == selectedGender.value,
+          orElse: () => throw Exception('Please select a gender'),
+        );
+        userHeight = heights.firstWhere(
+          (height) => height.name == selectedHeight.value,
+          orElse: () => throw Exception('Please select a height'),
+        );
+        countryId = countries
+            .firstWhere(
+              (c) => c.name == selectedCountry.value,
+              orElse: () => throw Exception('Please select a country'),
+            )
+            .id;
+        stateId = states
+            .firstWhere(
+              (s) => s.name == selectedState.value,
+              orElse: () => throw Exception('Please select a state'),
+            )
+            .id;
+      } catch (e) {
+        return _showError(
+          e.toString().replaceFirst('Exception: ', ''),
+        );
+      }
+
+      final response = await AuthApi.register(
+        uid: uid,
+        name: nameController.text.trim(),
+        email: email,
+        password: passwordController.text.trim(),
+        passwordConfirmation: confirmPasswordController.text.trim(),
+        role: 3,
+        country: countryId.toString(),
+        state: stateId.toString(),
+        city: cityController.text,
+        dob: selectedDate.value,
+        gender: userGender.id,
+        eyeColorId: eyeColor.id,
+        hairColorId: hairColor.id,
+        height: userHeight.id,
+        resume: selectedResume.value,
+        skillIds: userSkills.map((s) => s.id).toList(),
+        profileImage: selectedImage.value,
+      );
+
+      if (!response.status) throw Exception(response.message);
+
+      ApiService.setToken(response.data.token);
+
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'uid': uid,
+        'apiUserId': response.data.user.id ?? '',
+        'name': nameController.text.trim(),
+        'email': email,
+        'role': 'employee',
+        'profileImage': response.data.user.profileImage ?? '',
+        'createdAt': FieldValue.serverTimestamp(),
+        'authProvider': 'apple',
+      });
+
+      Utilities.showSnackBar(
+        title: 'Success',
+        message: response.message,
+        isSuccess: true,
+      );
+      Get.offAllNamed(Routes.SIGN_IN_VIEW);
+    } on FirebaseAuthException catch (e) {
+      return _showError('${e.code}: ${e.message}');
+    } catch (e) {
+      return _showError(
+        e.toString().replaceFirst('Exception: ', ''),
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
 }

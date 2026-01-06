@@ -24,6 +24,7 @@ class AppAssets {
   static String locationIcon = '$iconPath/location_icon.svg';
   static String locationBIcon = '$iconPath/locationB_icon.svg';
   static String bagIcon = '$iconPath/bag_icon.svg';
+  static String appIcon = '$iconPath/app_icon.svg';
   static String searchIcon = '$iconPath/search_icon.svg';
   static String searchFilterIcon = '$iconPath/search_filter_icon.svg';
   static String bagTwoIcon = '$iconPath/bag_two_icon.svg';

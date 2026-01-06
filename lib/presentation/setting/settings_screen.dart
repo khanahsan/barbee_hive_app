@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
+import '../auth/controllers/auth.controller.dart';
 import 'controller/setting_controller.dart';
 
 class SettingsScreen extends GetView<SettingController> {

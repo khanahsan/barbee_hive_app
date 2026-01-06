@@ -1,5 +1,4 @@
 import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
-import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
@@ -24,6 +23,7 @@ class SignInController extends GetxController {
   final formKey = GlobalKey<FormState>();
   final RxBool isLoading = false.obs;
   final RxBool isGoogleSignInLoading = false.obs;
+  final RxBool isAppleSignInLoading = false.obs;
   final RxBool rememberMe = false.obs;
   final RxBool isObscured = true.obs;
 
@@ -73,14 +73,15 @@ class SignInController extends GetxController {
     isLoading.value = true;
 
     try {
-
-
-
-
-      final response = await AuthApi.login(email, password,"");
+      final response = await AuthApi.login(email, password, "");
 
       // Save most values in parallel
-      SharedPreferenceHelper.saveInfo(response,rememberMe.value, email,password);
+      SharedPreferenceHelper.saveInfo(
+        response,
+        rememberMe.value,
+        email,
+        password,
+      );
       ApiService.setToken(response.token);
 
       // Sync Firebase → Run in background (DO NOT AWAIT)
@@ -88,9 +89,10 @@ class SignInController extends GetxController {
         apiUserId: response.user.id,
         email: response.user.email,
         password: password,
-        name: response.user.role == 3
-            ? response.user.employee?.name ?? ""
-            : response.user.employer?.businessName ?? "",
+        name:
+            response.user.role == 3
+                ? response.user.employee?.name ?? ""
+                : response.user.employer?.businessName ?? "",
         role: response.user.role == 3 ? "employee" : "employer",
         profileImage: response.user.profileImage,
       );
@@ -102,10 +104,9 @@ class SignInController extends GetxController {
       );
 
       Get.offAllNamed(Routes.CUSTOMDRAWER);
-
     } catch (e) {
-      final cleaned =
-      e.toString()
+      final cleaned = e
+          .toString()
           .replaceFirst('Exception: POST request error: Exception: ', '')
           .replaceFirst('Exception: ', '');
 
@@ -123,11 +124,10 @@ class SignInController extends GetxController {
     isGoogleSignInLoading.value = true;
 
     try {
-      // Step 1: Sign in with Google via Firebase
-      final userCredential = await FirebaseService.signInWithGoogle();
+      // Step 1: Sign in with Google for tokens only (no Firebase user creation)
+      final tokenResult = await FirebaseService.signInWithGoogleTokensOnly();
 
-      if (userCredential == null) {
-        // User cancelled the sign-in
+      if (tokenResult == null) {
         Utilities.showSnackBar(
           title: "Cancelled",
           message: "Google Sign-In was cancelled",
@@ -136,77 +136,69 @@ class SignInController extends GetxController {
         return;
       }
 
-      // Step 2: Get user data from Google
-      final email = userCredential.user?.email;
-      final uid = userCredential.user?.uid;
+      final accessToken = tokenResult.authentication.accessToken;
+      final idToken = tokenResult.authentication.idToken;
 
-      if (email == null || uid == null) {
+      debugPrint("🔑 Google Access Token: $accessToken");
+      debugPrint("🔑 Google ID Token: $idToken");
+
+      // Step 2: Validate access token
+      if (accessToken == null || accessToken.isEmpty) {
         Utilities.showSnackBar(
           title: "Error",
-          message: "Unable to retrieve Google account information",
+          message: "Unable to retrieve Google access token",
           isSuccess: false,
         );
         return;
       }
 
-      // Step 3: Check if user exists in Firestore and is registered in backend
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .get();
+      // Step 3: Get FCM token
+      String fcmToken = '';
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+        debugPrint("🔔 FCM Token: $fcmToken");
+      } catch (e) {
+        debugPrint("⚠️ Failed to get FCM token: $e");
+        // Continue without FCM token if it fails
+      }
 
-      if (!userDoc.exists || !userDoc.data()!.containsKey('apiUserId')) {
-        // User is not registered in the backend
+      // Step 4: Call backend Google login API
+      try {
+        final response = await AuthApi.googleLogin(accessToken, fcmToken);
+
+        // Step 6: Save user data locally
+        SharedPreferenceHelper.saveInfo(
+          response,
+          false, // rememberMe not applicable for Google Sign-In
+          tokenResult.account.email,
+          '', // no password for Google Sign-In
+        );
+        ApiService.setToken(response.token);
+
+        // Successfully signed in
+        Utilities.showSnackBar(
+          title: "Success",
+          message: response.message,
+          isSuccess: true,
+        );
+
+        // Navigate to main screen
+        Get.offAllNamed(Routes.CUSTOMDRAWER);
+      } catch (backendError) {
+        // Backend rejected the user
+        // Clean error message
+        final errorMessage = backendError
+            .toString()
+            .replaceFirst('Exception: POST request error: Exception: ', '')
+            .replaceFirst('Exception: ', '');
+
         Utilities.showSnackBar(
           title: "Not Registered",
-          message: "Please register your account first before using Google Sign-In",
+          message: errorMessage,
           isSuccess: false,
         );
-
-        // Sign out from Firebase since they're not registered
-        await FirebaseAuth.instance.signOut();
         return;
       }
-
-      // Step 4: User exists in backend, retrieve their data
-      final apiUserId = userDoc.data()!['apiUserId'];
-      final role = userDoc.data()!['role'];
-      final name = userDoc.data()!['name'] ?? '';
-      final profileImage = userDoc.data()!['profileImage'] ?? '';
-
-      // Step 5: Save user data locally
-      await Future.wait([
-        SharedPreferenceHelper.saveInt(
-          SharedPrefKeys.userId,
-          apiUserId,
-        ),
-        SharedPreferenceHelper.saveInt(
-          SharedPrefKeys.userRole,
-          role == 'employee' ? 3 : 2,
-        ),
-        SharedPreferenceHelper.saveString(
-          SharedPrefKeys.userName,
-          name,
-        ),
-        SharedPreferenceHelper.saveString(
-          SharedPrefKeys.userProfileImage,
-          profileImage,
-        ),
-        SharedPreferenceHelper.saveString(
-          SharedPrefKeys.userEmail,
-          email,
-        ),
-      ]);
-
-      // Successfully signed in
-      Utilities.showSnackBar(
-        title: "Success",
-        message: "Successfully signed in with Google",
-        isSuccess: true,
-      );
-
-      // Navigate to main screen
-      Get.offAllNamed(Routes.CUSTOMDRAWER);
     } catch (e) {
       final errorMessage = e.toString().replaceFirst('Exception: ', '');
       Utilities.showSnackBar(
@@ -216,6 +208,95 @@ class SignInController extends GetxController {
       );
     } finally {
       isGoogleSignInLoading.value = false;
+    }
+  }
+
+  Future<void> signInWithApple() async {
+    isAppleSignInLoading.value = true;
+
+    try {
+      // Step 1: Sign in with Apple for tokens only (no Firebase user creation)
+      final appleResult =
+      await FirebaseService.signInWithAppleTokensOnly();
+
+      if (appleResult == null) {
+        Utilities.showSnackBar(
+          title: "Cancelled",
+          message: "Apple Sign-In was cancelled",
+          isSuccess: false,
+        );
+        return;
+      }
+
+      final identityToken = appleResult.identityToken;
+      debugPrint("🔑 Apple Identity Token: $identityToken");
+
+      // Step 2: Validate identity token
+      if (identityToken.isEmpty) {
+        Utilities.showSnackBar(
+          title: "Error",
+          message: "Unable to retrieve Apple identity token",
+          isSuccess: false,
+        );
+        return;
+      }
+
+      // Step 3: Get FCM token
+      String fcmToken = '';
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+        debugPrint("🔔 FCM Token: $fcmToken");
+      } catch (e) {
+        debugPrint("⚠️ Failed to get FCM token: $e");
+        // Continue without FCM token if it fails
+      }
+
+      // Step 4: Call backend Apple login API (using same endpoint as Google)
+      try {
+        final response = await AuthApi.googleLogin(identityToken, fcmToken);
+
+        // Step 5: Save user data locally
+        SharedPreferenceHelper.saveInfo(
+          response,
+          false, // rememberMe not applicable for Apple Sign-In
+          appleResult.email ?? '',
+          '', // no password for Apple Sign-In
+        );
+        ApiService.setToken(response.token);
+
+        // Successfully signed in
+        Utilities.showSnackBar(
+          title: "Success",
+          message: response.message,
+          isSuccess: true,
+        );
+
+        // Navigate to main screen
+        Get.offAllNamed(Routes.CUSTOMDRAWER);
+      } catch (backendError) {
+        // Backend rejected the user
+        // Clean error message
+        final errorMessage = backendError
+            .toString()
+            .replaceFirst('Exception: POST request error: Exception: ', '')
+            .replaceFirst('Exception: ', '');
+
+        Utilities.showSnackBar(
+          title: "Not Registered",
+          message: errorMessage,
+          isSuccess: false,
+        );
+        return;
+      }
+    } catch (e) {
+      final errorMessage = e.toString().replaceFirst('Exception: ', '');
+      Utilities.showSnackBar(
+        title: "Apple Sign-In Failed",
+        message: errorMessage,
+        isSuccess: false,
+      );
+    } finally {
+      isAppleSignInLoading.value = false;
     }
   }
 

@@ -238,7 +238,46 @@ class DashboardScreen extends GetView<DashboardController> {
             ),
           ),
         ],
-        title: 'Home',
+        titleWidget:      RichText(
+          text: TextSpan(
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.colorFFFFFF,
+            ),
+            children: [
+              TextSpan(
+                text: 'Bar',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(
+                  fontSize: 30.sp,
+                  color: AppColors.colorFFFFFF,
+                ),
+              ),
+              TextSpan(
+                text: 'Bee',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(
+                  fontSize: 30.sp,
+                  color: AppColors.colorFF8600,
+                ),
+              ),
+              TextSpan(text: " "),
+
+              TextSpan(
+                text: 'INC.',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(
+                  fontSize: 22.sp,
+                  color: AppColors.colorFFFFFF,
+                ),
+
+              ),
+            ],
+          ),
+        ), title: ''
       ),
       backgroundColor: AppColors.black,
       body: Obx(() {
@@ -348,7 +387,7 @@ class DashboardScreen extends GetView<DashboardController> {
               'HIVE',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: AppColors.colorFFFFFF,
-                fontSize: 25.sp,
+                fontSize: 30.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -573,7 +612,7 @@ class DashboardScreen extends GetView<DashboardController> {
               'B2B',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: AppColors.colorFFFFFF,
-                fontSize: 25.sp,
+                fontSize: 30.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),

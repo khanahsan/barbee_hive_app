@@ -23,7 +23,6 @@ import '../../../presentation/bottom_nav/job/employer/job_posting/controller/job
 import '../../../presentation/changePassword/controller/change_password_controller.dart';
 import '../../../presentation/home/controllers/home.controller.dart';
 import '../../../presentation/setting/controller/setting_controller.dart';
-import '../../../presentation/signIn/controller/sign_in_controller.dart';
 import '../../../presentation/signUp/controllers/sign_up_employee_controller.dart';
 import '../../../presentation/signUp/controllers/sign_up_employer_controller.dart';
 import '../../../presentation/splash/controllers/splash.controller.dart';

@@ -21,6 +21,7 @@ class CustomBtn extends StatelessWidget {
     this.borderColor = Colors.transparent,
     this.borderWidth = 0.0,
     this.iconPath, // New optional image path parameter
+    this.iconColor, // New optional image path parameter
     this.borderRadius, // New optional image path parameter
   });
 
@@ -37,6 +38,7 @@ class CustomBtn extends StatelessWidget {
   final bool isLoading;
   final EdgeInsets titlePadding;
   final String? iconPath; // Optional image path
+  final Color? iconColor; // Optional image path
   final double? borderRadius; // Optional image path
 
   @override
@@ -89,6 +91,7 @@ class CustomBtn extends StatelessWidget {
                         iconPath!,
                         width: 20.w, // Adjust size as needed
                         height: 20.h,
+                        color: iconColor ?? null,
                       ),
                       SizedBox(width: 8.w), // Space between image and text
                     ],

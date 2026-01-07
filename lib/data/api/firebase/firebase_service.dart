@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:crypto/crypto.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,29 +35,25 @@ class AppleSignInResult {
   });
 }
 
-
 // Lightweight model when we only need Google tokens, not Firebase sign-in
 class GoogleAuthTokens {
   final GoogleSignInAccount account;
   final GoogleSignInAuthentication authentication;
 
-  GoogleAuthTokens({
-    required this.account,
-    required this.authentication,
-  });
+  GoogleAuthTokens({required this.account, required this.authentication});
 }
 
 class FirebaseService {
-
-
   // ---------- Apple helpers ----------
 
   static String _generateNonce([int length = 32]) {
     const charset =
         '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
     final rand = Random.secure();
-    return List.generate(length, (_) => charset[rand.nextInt(charset.length)])
-        .join();
+    return List.generate(
+      length,
+      (_) => charset[rand.nextInt(charset.length)],
+    ).join();
   }
 
   static String _sha256ofString(String input) {
@@ -66,6 +63,39 @@ class FirebaseService {
   }
 
   /// Apple Sign-In (TOKEN ONLY – no Firebase user)
+  // static Future<AppleSignInResult?> signInWithAppleTokensOnly() async {
+  //   try {
+  //     final rawNonce = _generateNonce();
+  //     final nonce = _sha256ofString(rawNonce);
+  //
+  //     final credential = await SignInWithApple.getAppleIDCredential(
+  //       scopes: [
+  //         AppleIDAuthorizationScopes.email,
+  //         AppleIDAuthorizationScopes.fullName,
+  //       ],
+  //       nonce: nonce,
+  //     );
+  //
+  //     if (credential.identityToken == null ||
+  //         credential.authorizationCode.isEmpty) {
+  //       debugPrint("❌ Apple Sign-In cancelled or invalid");
+  //       return null;
+  //     }
+  //
+  //     return AppleSignInResult(
+  //       identityToken: credential.identityToken!,
+  //       authorizationCode: credential.authorizationCode,
+  //       email: credential.email,
+  //       fullName:
+  //       '${credential.givenName ?? ''} ${credential.familyName ?? ''}'
+  //           .trim(),
+  //     );
+  //   } catch (e) {
+  //     debugPrint("❌ Apple Sign-In error: $e");
+  //     rethrow;
+  //   }
+  // }
+
   static Future<AppleSignInResult?> signInWithAppleTokensOnly() async {
     try {
       final rawNonce = _generateNonce();
@@ -82,6 +112,11 @@ class FirebaseService {
       if (credential.identityToken == null ||
           credential.authorizationCode.isEmpty) {
         debugPrint("❌ Apple Sign-In cancelled or invalid");
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: 'Apple Sign-In was canceled',
+          isSuccess: false,
+        );
         return null;
       }
 
@@ -90,11 +125,25 @@ class FirebaseService {
         authorizationCode: credential.authorizationCode,
         email: credential.email,
         fullName:
-        '${credential.givenName ?? ''} ${credential.familyName ?? ''}'
-            .trim(),
+            '${credential.givenName ?? ''} ${credential.familyName ?? ''}'
+                .trim(),
       );
     } catch (e) {
       debugPrint("❌ Apple Sign-In error: $e");
+      if (e is SignInWithAppleAuthorizationException &&
+          e.code == AuthorizationErrorCode.canceled) {
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: 'Apple Sign-In was canceled',
+          isSuccess: false,
+        );
+      } else {
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: 'Apple Sign-In failed. Please try again."',
+          isSuccess: false,
+        );
+      }
       rethrow;
     }
   }
@@ -185,10 +234,8 @@ class FirebaseService {
     String? profileImage,
   }) async {
     try {
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .get();
+      final userDoc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
       if (!userDoc.exists) {
         await FirebaseFirestore.instance.collection('users').doc(uid).set({
@@ -201,7 +248,9 @@ class FirebaseService {
           'createdAt': FieldValue.serverTimestamp(),
           'authProvider': 'google',
         });
-        debugPrint("✅ Google user created in Firestore after backend verification");
+        debugPrint(
+          "✅ Google user created in Firestore after backend verification",
+        );
       } else {
         // Update existing document with latest data
         await FirebaseFirestore.instance.collection('users').doc(uid).update({
@@ -221,10 +270,7 @@ class FirebaseService {
     try {
       // Configure GoogleSignIn with proper scopes for both iOS and Android
       final GoogleSignIn googleSignIn = GoogleSignIn(
-        scopes: [
-          'email',
-          'profile',
-        ],
+        scopes: ['email', 'profile'],
       );
 
       // Trigger the authentication flow
@@ -251,11 +297,14 @@ class FirebaseService {
       );
 
       // Sign in to Firebase with the Google credential
-      final userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
 
       debugPrint("✅ Google Sign-In successful: ${userCredential.user?.email}");
-      debugPrint("⚠️ Firestore document will be created only after backend verification");
+      debugPrint(
+        "⚠️ Firestore document will be created only after backend verification",
+      );
 
       // Return result with access token
       return GoogleSignInResult(

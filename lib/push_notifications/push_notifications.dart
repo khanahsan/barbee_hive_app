@@ -22,9 +22,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   await NotificationService.instance.setupFlutterNotifications();
 
-  if (Platform.isAndroid) {
+ /* if (Platform.isAndroid) {
     await NotificationService.instance.showNotification(message);
-  }
+  }*/
+  await NotificationService.instance.showNotification(message);
+
 }
 
 class NotificationService {
@@ -199,7 +201,7 @@ class NotificationService {
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // Clear badge immediately when notification is tapped
-        _clearBadge();
+        // _clearBadge();
 
         log("ON DID RECEIVER NOTIFICATION RESPONSE RAW PAYLOAD: ${response.payload}");
         log("SELECTED ACTION ID: ${response.actionId}");
@@ -265,8 +267,8 @@ class NotificationService {
     if (notification.isNotEmpty) {
       await _localNotifications.show(
         notification.hashCode,
-        notification['employer_name'],
-        notification['job_title'],
+        notification['title'],
+        notification['body'],
         const NotificationDetails(
           android: AndroidNotificationDetails(
             'high_importance_channel_v2',
@@ -284,7 +286,7 @@ class NotificationService {
             presentBadge: true,
             presentSound: true,
             //sound: "notification_sound.wav",
-            categoryIdentifier: 'notification-action',
+            // categoryIdentifier: 'notification-action',
           ),
         ),
         payload: jsonEncode(message.data),
@@ -400,7 +402,16 @@ class NotificationService {
   }
 
 
+RemoteMessage customRemoteMessage = RemoteMessage(
+  data: {
+    'title':'Mw title',
+    'body':'MW BODY',
+    'employer_name' : 'MW',
+    'job_title':'Flutter'
 
+
+  }
+);
   Future<void> _setupMessageHandlers() async {
     //Foreground Message
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -409,19 +420,24 @@ class NotificationService {
           "ON MESSAGE TITLE ------------ ${message.notification?.title}");
       String? notificationType = message.data['notificationType'] as String?;
 
-      if (Platform.isAndroid) {
+     /* if (Platform.isAndroid) {
         if (notificationType == "1") {
           showButtonNotification(message);
         } else {
           showNotification(message);
         }
+      }*/
+      if (notificationType == "1") {
+        showButtonNotification(customRemoteMessage);
+      } else {
+        showNotification(customRemoteMessage);
       }
     });
 
     //Background Message
     //Works on Foreground/Background Tap of System Notification
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      log("------CCCCCCCCCCC--------");
+      log("------CCCCCCCCCCC-------- ${message.data}");
       handleBackgroundMessage(message);
     });
 
@@ -446,15 +462,16 @@ class NotificationService {
   // }
 
   void handleBackgroundMessage(RemoteMessage message) {
+    log('handleBackgroundMessage called ${message.data}');
     if (message.data.isNotEmpty) {
       // Clear badge when app is opened from notification
-      _clearBadge();
+      // _clearBadge();
 
       //String? notificationType = message.data['notificationType'] as String?;
 
       log("Handle BACKGROUND MESSAGE DATA ${message.data}");
 
-      handleNotificationAction(
+       handleNotificationAction(
         message,
         false,
       );

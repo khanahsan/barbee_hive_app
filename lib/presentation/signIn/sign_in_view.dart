@@ -119,6 +119,7 @@ class SignInView extends GetView<SignInController> {
                         children: [
                           /// EMAIL FIELD
                           AppTextField(
+                            focusNode: controller.emailFocusNode,
                             validator: FormValidators.validateEmail,
                             filled: false,
                             useUnderlineBorder: true,
@@ -138,6 +139,7 @@ class SignInView extends GetView<SignInController> {
                           /// PASSWORD FIELD
                           Obx(
                             () => AppTextField(
+                              focusNode: controller.passFocusNode,
                               validator: FormValidators.validatePassword,
                               filled: false,
                               useUnderlineBorder: true,

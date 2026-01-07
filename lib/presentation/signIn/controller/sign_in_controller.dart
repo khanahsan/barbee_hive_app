@@ -73,7 +73,16 @@ class SignInController extends GetxController {
     isLoading.value = true;
 
     try {
-      final response = await AuthApi.login(email, password, "");
+
+      String fcmToken = '';
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+        debugPrint("🔔 FCM Token: $fcmToken");
+      } catch (e) {
+        debugPrint("⚠️ Failed to get FCM token: $e");
+        // Continue without FCM token if it fails
+      }
+      final response = await AuthApi.login(email, password, fcmToken,);
 
       // Save most values in parallel
       SharedPreferenceHelper.saveInfo(

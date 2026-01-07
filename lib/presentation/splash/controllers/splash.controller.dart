@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -12,8 +13,13 @@ import '../../../infrastructure/navigation/routes.dart';
 import '../../../push_notifications/push_notifications.dart';
 import '../../bottom_nav/controller/bottom_nav_controller.dart';
 
-class SplashController extends GetxController {
+class SplashController extends GetxController with SingleGetTickerProviderMixin{
   //TODO: Implement SplashController
+
+  Rx<String> splashLottie = AppAssets.splashLottie.obs;
+
+  late final AnimationController animationController;
+
 
   final count = 0.obs;
   @override
@@ -34,9 +40,18 @@ class SplashController extends GetxController {
     //
     // }
 
-    _checkNotificationNavigation();
+    // _checkNotificationNavigation();
 
     super.onInit();
+
+    animationController = AnimationController(vsync: this);
+
+    animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        // When Lottie finishes, navigate based on subscription
+        _checkNotificationNavigation();
+      }
+    });
   }
 
 

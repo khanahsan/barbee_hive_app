@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/push_notifications/push_notifications.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart'; // To load environment variables
+import 'package:googleapis_auth/auth_io.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import 'data/api/api_service.dart';
@@ -83,6 +85,32 @@ void main() async {
   SystemChrome.setPreferredOrientations(<DeviceOrientation>[DeviceOrientation.portraitUp]);
 }
 
+
+
+Future<void> getToken() async {
+  try {
+    // Load the JSON file from assets
+    final jsonKey = await rootBundle.loadString('assets/service-account.json');
+
+    // Parse the JSON content
+    final accountCredentials = ServiceAccountCredentials.fromJson(jsonKey);
+
+    final scopes = [
+      'https://www.googleapis.com/auth/firebase.messaging',
+    ];
+
+    final client = await clientViaServiceAccount(
+      accountCredentials,
+      scopes,
+    );
+
+    print('Test Token: ${client.credentials.accessToken.data}');
+  } catch (e) {
+    log('TOKEN ERROR: ${e.toString()}');
+  }
+}
+
+
 class Main extends StatelessWidget {
   final String initialRoute;
 
@@ -90,6 +118,7 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    getToken();
     return ResponsiveInitializer(
       baseHeight: 956,
       baseWidth: 440,

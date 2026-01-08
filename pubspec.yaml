@@ -64,6 +64,7 @@ dependencies:
   sign_in_with_apple: ^7.0.1
   crypto: ^3.0.7
   lottie: ^3.3.1
+  googleapis_auth: ^2.0.0
 
 
 
@@ -85,6 +86,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - assets/service-account.json
     - assets/images/
     - assets/icons/
     - assets/gifs/

@@ -198,6 +198,9 @@ class NotificationService {
     );
 
     await _localNotifications.initialize(
+      onDidReceiveBackgroundNotificationResponse: (NotificationResponse nor){
+        //log(nor.data);
+      },
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // Clear badge immediately when notification is tapped
@@ -463,7 +466,9 @@ RemoteMessage customRemoteMessage = RemoteMessage(
 
   void handleBackgroundMessage(RemoteMessage message) {
     log('handleBackgroundMessage called ${message.data}');
-    if (message.data.isNotEmpty) {
+    log('MESSAGE TITLE ${message.notification?.title}');
+    log('MESSAGE BODY ${message.notification?.body}');
+    if (message.data.isNotEmpty && Platform.isAndroid) {
       // Clear badge when app is opened from notification
       // _clearBadge();
 

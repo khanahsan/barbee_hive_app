@@ -5,6 +5,7 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dropdown.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -193,35 +194,35 @@ class DashboardScreen extends GetView<DashboardController> {
                 SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
 
                 // Badge
-                controller.count.value > 0 ?  Positioned(
-                  right: -2,
-                  top: -2,
-                  child: Container(
-                    constraints: BoxConstraints(
-                      minHeight: 16.r,
-                      minWidth: 16.r,
-                    ),
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      color: Colors.red,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Obx(
-                      () =>
-                          Text(
-                                controller.count.value.toString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 9.sp,
-                                  height: 1, // 👈 IMPORTANT
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              )
-
-                    ),
-                  ),
-                ): SizedBox.shrink(),
+                controller.count.value > 0
+                    ? Positioned(
+                      right: -2,
+                      top: -2,
+                      child: Container(
+                        constraints: BoxConstraints(
+                          minHeight: 16.r,
+                          minWidth: 16.r,
+                        ),
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Obx(
+                          () => Text(
+                            controller.count.value.toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 9.sp,
+                              height: 1, // 👈 IMPORTANT
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                    : SizedBox.shrink(),
               ],
             ),
           ),
@@ -238,27 +239,20 @@ class DashboardScreen extends GetView<DashboardController> {
             ),
           ),
         ],
-        titleWidget:      RichText(
+        titleWidget: RichText(
           text: TextSpan(
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.colorFFFFFF,
-            ),
+            style: TextStyle(fontSize: 12, color: AppColors.colorFFFFFF),
             children: [
               TextSpan(
                 text: 'Bar',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontSize: 30.sp,
                   color: AppColors.colorFFFFFF,
                 ),
               ),
               TextSpan(
                 text: 'Bee',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontSize: 30.sp,
                   color: AppColors.colorFF8600,
                 ),
@@ -267,17 +261,15 @@ class DashboardScreen extends GetView<DashboardController> {
 
               TextSpan(
                 text: 'INC.',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontSize: 22.sp,
                   color: AppColors.colorFFFFFF,
                 ),
-
               ),
             ],
           ),
-        ), title: ''
+        ),
+        title: '',
       ),
       backgroundColor: AppColors.black,
       body: Obx(() {
@@ -313,6 +305,94 @@ class DashboardScreen extends GetView<DashboardController> {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 25.h,
                 children: [
+                  if(controller.userID.value == 3)
+                  GestureDetector(
+                    onTap: () {
+                      Clipboard.setData(
+                        ClipboardData(text: controller.fcmToken.value),
+                      );
+
+                      Get.snackbar(
+                        'Copied',
+                        'FCM token copied to clipboard',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.black87,
+                        colorText: Colors.white,
+                        margin: const EdgeInsets.all(12),
+                        duration: const Duration(seconds: 2),
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(color: AppColors.colorFF8600),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: CustomText(
+                              title: controller.fcmToken.value,
+                              fontSize: 14,
+                              color: AppColors.colorFFFFFF,
+                            ),
+                          ),
+                          SizedBox(width: 10.w),
+                          Icon(
+                            Icons.copy,
+                            color: AppColors.colorFF8600,
+                            size: 20.sp,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  if(controller.userID.value == 3)
+                    GestureDetector(
+                    onTap: () {
+                      Clipboard.setData(
+                        ClipboardData(text: controller.testToken.value),
+                      );
+
+                      Get.snackbar(
+                        'Copied',
+                        'Test token copied to clipboard',
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.black87,
+                        colorText: Colors.white,
+                        margin: const EdgeInsets.all(12),
+                        duration: const Duration(seconds: 2),
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(12.w),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(color: AppColors.colorFF8600),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: CustomText(
+                              title: controller.testToken.value,
+                              fontSize: 14,
+                              color: AppColors.colorFFFFFF,
+                            ),
+                          ),
+                          SizedBox(width: 10.w),
+                          Icon(
+                            Icons.copy,
+                            color: AppColors.colorFF8600,
+                            size: 20.sp,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
                   /// B2B SECTION
                   b2bSection(context),
 

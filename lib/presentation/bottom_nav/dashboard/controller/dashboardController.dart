@@ -24,6 +24,9 @@ class DashboardController extends GetxController {
   final RxInt count = 0.obs;
   final RxString errorMessage = ''.obs;
   RxString userProfileImage = ''.obs;
+  RxString fcmToken = ''.obs;
+  RxString testToken = ''.obs;
+  RxInt userID = 0.obs;
 
   RxDouble currentLatitude = 0.0.obs;
   RxDouble currentLongitude = 0.0.obs;
@@ -75,6 +78,15 @@ class DashboardController extends GetxController {
   Future<void> loadUserData() async {
     userProfileImage.value =
         SharedPreferenceHelper.getString(SharedPrefKeys.userProfileImage) ?? '';
+
+    fcmToken.value =
+        SharedPreferenceHelper.getString(SharedPrefKeys.fcmToken) ?? '';
+
+    testToken.value =
+        SharedPreferenceHelper.getString(SharedPrefKeys.testToken) ?? '';
+
+    userID.value =
+        SharedPreferenceHelper.getInt(SharedPrefKeys.userId) ?? 0;
   }
 
   void loadBannerAd() {

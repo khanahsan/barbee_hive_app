@@ -1,5 +1,7 @@
 class SharedPrefKeys {
   static const String authToken = 'auth_token';
+  static const String fcmToken = 'test_token';
+  static const String testToken = 'fcm_token';
   static const String userEmail = 'user_email';
   static const String savedEmail = 'saved_email';
   static const String savedPassword = 'saved_password';

@@ -91,6 +91,13 @@ class SignInController extends GetxController {
         email,
         password,
       );
+
+      SharedPreferenceHelper.saveString(
+        SharedPrefKeys.fcmToken,
+        fcmToken ?? '',
+      );
+
+
       ApiService.setToken(response.token);
 
       // Sync Firebase → Run in background (DO NOT AWAIT)

@@ -11,22 +11,22 @@ import 'package:get/get.dart';
 import '../infrastructure/constants/shared_pref_keys.dart';
 import '../infrastructure/helpers/shared_preference_helper.dart';
 
-
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   log("FIREBASE MESSAGING BACKGROUND HANDLER DATA ${message.data}");
-  log("FIREBASE MESSAGING BACKGROUND HANDLER NOTIFICATION ${message.notification?.title}");
+  log(
+    "FIREBASE MESSAGING BACKGROUND HANDLER NOTIFICATION ${message.notification?.title}",
+  );
 
   String? notificationType = message.data['notificationType'] as String?;
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await NotificationService.instance.setupFlutterNotifications();
 
- /* if (Platform.isAndroid) {
+  /* if (Platform.isAndroid) {
     await NotificationService.instance.showNotification(message);
   }*/
   await NotificationService.instance.showNotification(message);
-
 }
 
 class NotificationService {
@@ -51,10 +51,10 @@ class NotificationService {
 
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+          alert: true,
+          badge: true,
+          sound: true,
+        );
 
     // Clear any existing badges when app starts
     await _clearBadge();
@@ -66,12 +66,7 @@ class NotificationService {
     if (initialMessage != null) {
       log("App opened from terminated state via notification");
 
-
-
       await _clearBadge();
-
-
-
 
       // Handle the notification
       //handleBackgroundMessage(initialMessage);
@@ -158,11 +153,13 @@ class NotificationService {
 
     await _localNotifications
         .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(channel);
 
-    const initializationSettingsAndroid =
-    AndroidInitializationSettings('@drawable/ic_notification');
+    const initializationSettingsAndroid = AndroidInitializationSettings(
+      '@drawable/ic_notification',
+    );
 
     var initializationSettingsDarwin = DarwinInitializationSettings(
       notificationCategories: [
@@ -198,15 +195,17 @@ class NotificationService {
     );
 
     await _localNotifications.initialize(
-      onDidReceiveBackgroundNotificationResponse: (NotificationResponse nor){
-        //log(nor.data);
-      },
+      // onDidReceiveBackgroundNotificationResponse: (NotificationResponse nor){
+      //   //log(nor.data);
+      // },
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
         // Clear badge immediately when notification is tapped
         // _clearBadge();
 
-        log("ON DID RECEIVER NOTIFICATION RESPONSE RAW PAYLOAD: ${response.payload}");
+        log(
+          "ON DID RECEIVER NOTIFICATION RESPONSE RAW PAYLOAD: ${response.payload}",
+        );
         log("SELECTED ACTION ID: ${response.actionId}");
 
         Map<String, dynamic> messageData = jsonDecode(response.payload!);
@@ -277,7 +276,7 @@ class NotificationService {
             'high_importance_channel_v2',
             "High Importance Notification",
             channelDescription:
-            "This channel is used for important notifications.",
+                "This channel is used for important notifications.",
             importance: Importance.high,
             priority: Priority.high,
             playSound: true,
@@ -324,7 +323,7 @@ class NotificationService {
             'high_importance_channel_v2',
             "High Importance Notification",
             channelDescription:
-            "This channel is used for important notifications.",
+                "This channel is used for important notifications.",
             importance: Importance.high,
             priority: Priority.high,
             playSound: true,
@@ -347,32 +346,26 @@ class NotificationService {
   }
 
   static Future<void> handleNotificationAction(
-      // String? response,
-      RemoteMessage message,
-      bool isTerminated,
-      ) async {
+    // String? response,
+    RemoteMessage message,
+    bool isTerminated,
+  ) async {
     // Clear badge count when notification is tapped
     await _clearBadge();
-    print("auth token : ${SharedPreferenceHelper.getString(SharedPrefKeys.authToken)}");
-    // if(SharedPreferenceHelper.getString(SharedPrefKeys.authToken).toString().isEmpty){
-    //   print("user is logged out");
-    //   return;
-    // }
+    print(
+      "auth token : ${SharedPreferenceHelper.getString(SharedPrefKeys.authToken)}",
+    );
 
     print("message : ${message.data['type']}");
     print("message2 : ${message.data['type'] == 'new_job'}");
 
-    if(message.data['type'] == 'new_job'){
+    if (message.data['type'] == 'new_job') {
       print("333333");
       var controller = Get.put(BottomNavController());
       controller.tabChangeForEmployeeNotifications(2);
-
     }
 
-
     print("ON NOTIFICATION SELECTED ::: ");
-
-
 
     if (isTerminated) {
       //await deliveryScreenProvider.fetchAllOrders();
@@ -387,9 +380,6 @@ class NotificationService {
       //       (Route route) => false,
       // );
     } else {
-
-
-
       //await deliveryScreenProvider.fetchAllOrders();
 
       // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
@@ -404,36 +394,32 @@ class NotificationService {
     }
   }
 
-
-RemoteMessage customRemoteMessage = RemoteMessage(
-  data: {
-    'title':'Mw title',
-    'body':'MW BODY',
-    'employer_name' : 'MW',
-    'job_title':'Flutter'
-
-
-  }
-);
+  // RemoteMessage customRemoteMessage = RemoteMessage(
+  //   data: {
+  //     'title':'Mw title',
+  //     'body':'MW BODY',
+  //     'employer_name' : 'MW',
+  //     'job_title':'Flutter'
+  //
+  //
+  //   }
+  // );
   Future<void> _setupMessageHandlers() async {
     //Foreground Message
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      debugPrint("ON MESSAGE DATA ------------ ${message.data}");
+      debugPrint("MESSAGE DATA ------------ ${message.data}");
       debugPrint(
-          "ON MESSAGE TITLE ------------ ${message.notification?.title}");
+        "MESSAGE NOTIFICATION ------------ ${message.notification?.title}",
+      );
       String? notificationType = message.data['notificationType'] as String?;
 
-     /* if (Platform.isAndroid) {
-        if (notificationType == "1") {
-          showButtonNotification(message);
-        } else {
-          showNotification(message);
-        }
-      }*/
-      if (notificationType == "1") {
-        showButtonNotification(customRemoteMessage);
-      } else {
-        showNotification(customRemoteMessage);
+      if (Platform.isAndroid) {
+        showNotification(message);
+        // if (notificationType == "1") {
+        //   showButtonNotification(message);
+        // } else {
+        //   showNotification(message);
+        // }
       }
     });
 
@@ -465,29 +451,25 @@ RemoteMessage customRemoteMessage = RemoteMessage(
   // }
 
   void handleBackgroundMessage(RemoteMessage message) {
-    log('handleBackgroundMessage called ${message.data}');
-    log('MESSAGE TITLE ${message.notification?.title}');
-    log('MESSAGE BODY ${message.notification?.body}');
-    if (message.data.isNotEmpty && Platform.isAndroid) {
+    log('handleBackgroundMessage MESSAGE DATA ${message.data}');
+    log('handleBackgroundMessage MESSAGE NOTIFICATION TITLE ${message.notification?.title}');
+    log('handleBackgroundMessage MESSAGE NOTIFICATION BODY ${message.notification?.body}');
+    if (message.data.isNotEmpty) {
       // Clear badge when app is opened from notification
       // _clearBadge();
 
       //String? notificationType = message.data['notificationType'] as String?;
 
-      log("Handle BACKGROUND MESSAGE DATA ${message.data}");
 
-       handleNotificationAction(
-        message,
-        false,
-      );
-
+      handleNotificationAction(message, false);
     }
   }
 
   /// Helper method to clear app badge count using built-in methods
   static Future<void> _clearBadge() async {
     try {
-      final FlutterLocalNotificationsPlugin localNotifications = FlutterLocalNotificationsPlugin();
+      final FlutterLocalNotificationsPlugin localNotifications =
+          FlutterLocalNotificationsPlugin();
 
       // Clear all local notifications (removes notification tray items)
       await localNotifications.cancelAll();
@@ -526,102 +508,99 @@ RemoteMessage customRemoteMessage = RemoteMessage(
     await _clearBadge();
   }
 
-
-
-// BUTTON IN NOTIFICATIONS
-//Accept or Decline API Function
-// static Future<void> handleButtonNotificationAction(
-//     // NotificationResponse response,
-//     String response,
-//     RemoteMessage message,
-//     bool isTerminated,
-//     ) async {
-//   // Clear badge count when notification action is tapped
-//   await _clearBadge();
-//
-//   final currentDriverId = await SharedPrefHelper.getInt('driver-id');
-//
-//   final Map<String, dynamic> params = {
-//     "status": response, // accepted or declined
-//     "driver_id": currentDriverId,
-//     "order_id": message.data["orderId"]
-//   };
-//
-//   debugPrint("Params sent to confirmOrder: $params");
-//
-//   try {
-//     final responseData = await ApiService.postApiWithToken(
-//       endpoint: NetworkConstantsUtil.confirmOrder,
-//       body: params,
-//     );
-//
-//     bool isSuccess = responseData['success'];
-//     String message = responseData['message'];
-//
-//     debugPrint('message $message');
-//
-//     EasyLoadingHelper.showToast(message);
-//     await Future.delayed(const Duration(seconds: 1));
-//
-//     // final deliveryScreenProvider = Provider.of<OrderProvider>(
-//     //     navigatorKey.currentContext!,
-//     //     listen: false);
-//
-//     if (isSuccess) {
-//       await deliveryScreenProvider.fetchAllOrders();
-//
-//       const bottomIndex = 0;
-//       const tabBarIndex = 1;
-//
-//       if (isTerminated) {
-//         // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
-//         //   MaterialPageRoute(
-//         //       builder: (context) => const MainScreen(
-//         //         tabBarIndex: tabBarIndex,
-//         //         bottomBarIndex: bottomIndex,
-//         //       )),
-//         //       (Route route) => false,
-//         // );
-//       } else {
-//         // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
-//         //   MaterialPageRoute(
-//         //       builder: (context) => const MainScreen(
-//         //         tabBarIndex: tabBarIndex,
-//         //         bottomBarIndex: bottomIndex,
-//         //       )),
-//         //       (Route route) => false,
-//         // );
-//       }
-//     } else {
-//       await deliveryScreenProvider.fetchAllOrders();
-//
-//       const bottomIndex = 0;
-//       const tabBarIndex = 1;
-//
-//       if (isTerminated) {
-//         // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
-//         //   MaterialPageRoute(
-//         //       builder: (context) => const MainScreen(
-//         //         tabBarIndex: tabBarIndex,
-//         //         bottomBarIndex: bottomIndex,
-//         //       )),
-//         //       (Route route) => false,
-//         // );
-//       } else {
-//         // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
-//         //   MaterialPageRoute(
-//         //       builder: (context) => const MainScreen(
-//         //         tabBarIndex: tabBarIndex,
-//         //         bottomBarIndex: bottomIndex,
-//         //       )),
-//         //       (Route route) => false,
-//         // );
-//       }
-//       debugPrint(message);
-//     }
-//   } catch (e) {
-//     debugPrint("Error: $e");
-//   }
-// }
-
+  // BUTTON IN NOTIFICATIONS
+  //Accept or Decline API Function
+  // static Future<void> handleButtonNotificationAction(
+  //     // NotificationResponse response,
+  //     String response,
+  //     RemoteMessage message,
+  //     bool isTerminated,
+  //     ) async {
+  //   // Clear badge count when notification action is tapped
+  //   await _clearBadge();
+  //
+  //   final currentDriverId = await SharedPrefHelper.getInt('driver-id');
+  //
+  //   final Map<String, dynamic> params = {
+  //     "status": response, // accepted or declined
+  //     "driver_id": currentDriverId,
+  //     "order_id": message.data["orderId"]
+  //   };
+  //
+  //   debugPrint("Params sent to confirmOrder: $params");
+  //
+  //   try {
+  //     final responseData = await ApiService.postApiWithToken(
+  //       endpoint: NetworkConstantsUtil.confirmOrder,
+  //       body: params,
+  //     );
+  //
+  //     bool isSuccess = responseData['success'];
+  //     String message = responseData['message'];
+  //
+  //     debugPrint('message $message');
+  //
+  //     EasyLoadingHelper.showToast(message);
+  //     await Future.delayed(const Duration(seconds: 1));
+  //
+  //     // final deliveryScreenProvider = Provider.of<OrderProvider>(
+  //     //     navigatorKey.currentContext!,
+  //     //     listen: false);
+  //
+  //     if (isSuccess) {
+  //       await deliveryScreenProvider.fetchAllOrders();
+  //
+  //       const bottomIndex = 0;
+  //       const tabBarIndex = 1;
+  //
+  //       if (isTerminated) {
+  //         // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
+  //         //   MaterialPageRoute(
+  //         //       builder: (context) => const MainScreen(
+  //         //         tabBarIndex: tabBarIndex,
+  //         //         bottomBarIndex: bottomIndex,
+  //         //       )),
+  //         //       (Route route) => false,
+  //         // );
+  //       } else {
+  //         // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
+  //         //   MaterialPageRoute(
+  //         //       builder: (context) => const MainScreen(
+  //         //         tabBarIndex: tabBarIndex,
+  //         //         bottomBarIndex: bottomIndex,
+  //         //       )),
+  //         //       (Route route) => false,
+  //         // );
+  //       }
+  //     } else {
+  //       await deliveryScreenProvider.fetchAllOrders();
+  //
+  //       const bottomIndex = 0;
+  //       const tabBarIndex = 1;
+  //
+  //       if (isTerminated) {
+  //         // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
+  //         //   MaterialPageRoute(
+  //         //       builder: (context) => const MainScreen(
+  //         //         tabBarIndex: tabBarIndex,
+  //         //         bottomBarIndex: bottomIndex,
+  //         //       )),
+  //         //       (Route route) => false,
+  //         // );
+  //       } else {
+  //         // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
+  //         //   MaterialPageRoute(
+  //         //       builder: (context) => const MainScreen(
+  //         //         tabBarIndex: tabBarIndex,
+  //         //         bottomBarIndex: bottomIndex,
+  //         //       )),
+  //         //       (Route route) => false,
+  //         // );
+  //       }
+  //       debugPrint(message);
+  //     }
+  //   } catch (e) {
+  //     debugPrint("Error: $e");
+  //   }
+  // }
 }

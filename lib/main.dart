@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/push_notifications/push_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart'; // To load environment variables
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/api/api_service.dart';
 import 'data/firebase/firebase_notificaton_service.dart';
@@ -105,6 +107,11 @@ Future<void> getToken() async {
     );
 
     print('Test Token: ${client.credentials.accessToken.data}');
+
+    SharedPreferenceHelper.saveString(
+      SharedPrefKeys.testToken,
+      client.credentials.accessToken.data ?? '',
+    );
   } catch (e) {
     log('TOKEN ERROR: ${e.toString()}');
   }

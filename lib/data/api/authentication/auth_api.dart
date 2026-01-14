@@ -12,6 +12,7 @@ class AuthApi {
       'email': email,
       'password': password,
       'fcm_token':token,
+      'device_type': Platform.isIOS ? 'ios' : 'android',
     });
     return LoginResponse.fromJson(data);
   }
@@ -21,6 +22,7 @@ class AuthApi {
     final data = await ApiService.post(ApiEndPoints.googleLogin, {
       'access_token': accessToken,
       'fcm_token': fcmToken,
+      'device_type': Platform.isIOS ? 'ios' : 'android',
     });
     return LoginResponse.fromJson(data);
   }

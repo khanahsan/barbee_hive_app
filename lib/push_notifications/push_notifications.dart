@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 
 import '../infrastructure/constants/shared_pref_keys.dart';
 import '../infrastructure/helpers/shared_preference_helper.dart';
+import '../infrastructure/navigation/routes.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -363,6 +364,19 @@ class NotificationService {
       print("333333");
       var controller = Get.put(BottomNavController());
       controller.tabChangeForEmployeeNotifications(2);
+    }
+
+    if (message.data['type'] == 'new_application') {
+      print("44444444");
+      var controller = Get.put(BottomNavController());
+      controller.tabChangeForEmployeeNotifications(2);
+
+      Future.delayed(Duration(seconds: 4), (){
+        Get.toNamed(
+          Routes.applicationsScreen,
+          arguments: {'jobId': message.data['job_id']},
+        );
+      });
     }
 
     print("ON NOTIFICATION SELECTED ::: ");

@@ -52,3 +52,5 @@ app.*.map.json
 .fvm/
 .env
 .gitignore
+assets/service-account.json
+**/service-account.json

@@ -86,7 +86,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
-    - assets/service-account.json
+#    - assets/service-account.json
     - assets/images/
     - assets/icons/
     - assets/gifs/

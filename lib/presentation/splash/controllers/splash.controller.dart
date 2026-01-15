@@ -29,22 +29,6 @@ class SplashController extends GetxController
 
   @override
   Future<void> onInit() async {
-    // RemoteMessage? initialMessage =
-    //     await FirebaseMessaging.instance.getInitialMessage();
-    //
-    //
-    // if (initialMessage != null) {
-    //   debugPrint("Initial message received: ${initialMessage.data}");
-    //
-    //
-    // } else {
-    //
-    //
-    //
-    //
-    // }
-
-    // _checkNotificationNavigation();
 
     super.onInit();
 
@@ -59,60 +43,6 @@ class SplashController extends GetxController
       }
     });
   }
-
-  Future<void> _readPayload() async {
-    if (Platform.isIOS) {
-      final RemoteMessage? message =
-          await FirebaseMessaging.instance.getInitialMessage();
-
-      if (message != null && message.data.isNotEmpty) {
-        payloadText.value = jsonEncode(message.data);
-        return;
-      }
-    }
-
-    if (Platform.isAndroid) {
-      final plugin = FlutterLocalNotificationsPlugin();
-      final details = await plugin.getNotificationAppLaunchDetails();
-
-      if (details?.didNotificationLaunchApp ??
-          false && details?.notificationResponse?.payload != null) {
-        payloadText.value = details!.notificationResponse!.payload!;
-        return;
-      }
-    }
-
-    payloadText.value = "No notification payload";
-  }
-
-  // Future<void> _checkNotificationNavigation() async {
-  //   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //   FlutterLocalNotificationsPlugin();
-  //
-  //   NotificationAppLaunchDetails? notificationAppLaunchDetails =
-  //   await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-  //
-  //   bool didNotificationLaunchApp =
-  //       notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
-  //
-  //   NotificationResponse? notificationResponse =
-  //       notificationAppLaunchDetails?.notificationResponse;
-  //
-  //   if (didNotificationLaunchApp && notificationResponse?.payload != null) {
-  //     try {
-  //       await goto(2);
-  //     } catch (e) {
-  //       log("Error parsing notification payload: $e");
-  //       debugPrint("Error parsing notification payload: $e");
-  //     }
-  //   } else {
-  //
-  //
-  //     await goto(0);
-  //     log("Login Function is Called");
-  //     debugPrint("Login Function is Called");
-  //   }
-  // }
 
   Future<void> _checkNotificationNavigation() async {
     int indexToPass = 0;
@@ -178,45 +108,6 @@ class SplashController extends GetxController
     }
   }
 
-  /*  Future<void> _checkNotificationNavigation() async {
-    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-    final NotificationAppLaunchDetails? details =
-    await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-
-    final bool launchedFromNotification =
-        details?.didNotificationLaunchApp ?? false;
-
-    final NotificationResponse? response = details?.notificationResponse;
-
-    int indexToPass = 0; // default
-
-    if (launchedFromNotification && response?.payload != null) {
-      try {
-        // 🔹 Decode payload (this is message.data)
-        final Map<String, dynamic> payload =
-        jsonDecode(response!.payload!);
-
-        final String? type = payload['type'] as String?;
-        final String? employerName = payload['employer_name'] as String?;
-
-        log("Notification TYPE: $type");
-        log("Employer Name: $employerName");
-
-        // 🔹 Decision logic
-        if (type == 'new_job') {
-          indexToPass = 2;
-        } else {
-          indexToPass = 0;
-        }
-      } catch (e) {
-        log("Error parsing notification payload: $e");
-        indexToPass = 0;
-      }
-    }
-
-    await goto(indexToPass);
-  }*/
 
   goto(int index) async {
     final isRememberMe =
@@ -233,15 +124,6 @@ class SplashController extends GetxController
     }
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   void increment() => count.value++;
 }

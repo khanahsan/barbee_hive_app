@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:barbee_hive_app/presentation/bottom_nav/controller/bottom_nav_controller.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -351,60 +352,52 @@ class NotificationService {
     RemoteMessage message,
     bool isTerminated,
   ) async {
-    // Clear badge count when notification is tapped
-    await _clearBadge();
+    log("handleNotificationAction CALLED with type: ${message.data['type']}");
+
+    try {
+      // Clear badge count when notification is tapped
+      await _clearBadge();
+      log("Badge cleared successfully");
+    } catch (e) {
+      log("Error clearing badge in handleNotificationAction: $e");
+    }
+
     print(
       "auth token : ${SharedPreferenceHelper.getString(SharedPrefKeys.authToken)}",
     );
 
-    print("message : ${message.data['type']}");
-    print("message2 : ${message.data['type'] == 'new_job'}");
-
     if (message.data['type'] == 'new_job') {
-      print("333333");
-      var controller = Get.put(BottomNavController());
+      log("NEW JOB POSTED NOTIFICATION");
+      // var controller = Get.put(BottomNavController());
+      var controller = Get.find<BottomNavController>();
       controller.tabChangeForEmployeeNotifications(2);
     }
 
     if (message.data['type'] == 'new_application') {
-      print("44444444");
-      var controller = Get.put(BottomNavController());
-      controller.tabChangeForEmployeeNotifications(2);
+      log('NEW APPLICATION SUBMITTED NOTIFICATION');
 
-      Future.delayed(Duration(seconds: 4), (){
-        Get.toNamed(
-          Routes.applicationsScreen,
-          arguments: {'jobId': message.data['job_id']},
-        );
-      });
-    }
+      try {
+        // Small delay to ensure app state is ready
+        await Future.delayed(const Duration(milliseconds: 400));
 
-    print("ON NOTIFICATION SELECTED ::: ");
+        final bottomNavController = Get.find<BottomNavController>();
+        bottomNavController.tabChangeForEmployeeNotifications(2);
+        log('BOTTOM NAV CHANGED TO INDEX 2');
 
-    if (isTerminated) {
-      //await deliveryScreenProvider.fetchAllOrders();
+        // Allow tab switch animation/state to complete
+        await Future.delayed(const Duration(milliseconds: 200));
 
-      // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
-      //   MaterialPageRoute(
-      //     builder: (context) => MainScreen(
-      //       tabBarIndex: tabBarIndex,
-      //       bottomBarIndex: bottomIndex,
-      //     ),
-      //   ),
-      //       (Route route) => false,
-      // );
-    } else {
-      //await deliveryScreenProvider.fetchAllOrders();
+        final jobId =
+            int.tryParse(message.data['job_id']?.toString() ?? '') ?? 0;
 
-      // Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
-      //   MaterialPageRoute(
-      //     builder: (context) => MainScreen(
-      //       tabBarIndex: tabBarIndex,
-      //       bottomBarIndex: bottomIndex,
-      //     ),
-      //   ),
-      //       (Route route) => false,
-      // );
+        log('Navigating to applicationsScreen with jobId: $jobId');
+
+        Get.toNamed(Routes.applicationsScreen, arguments: {'jobId': jobId});
+
+        log('Navigation to applicationsScreen complete');
+      } catch (e) {
+        log('Error handling new_application notification: $e');
+      }
     }
   }
 
@@ -466,14 +459,17 @@ class NotificationService {
 
   void handleBackgroundMessage(RemoteMessage message) {
     log('handleBackgroundMessage MESSAGE DATA ${message.data}');
-    log('handleBackgroundMessage MESSAGE NOTIFICATION TITLE ${message.notification?.title}');
-    log('handleBackgroundMessage MESSAGE NOTIFICATION BODY ${message.notification?.body}');
+    log(
+      'handleBackgroundMessage MESSAGE NOTIFICATION TITLE ${message.notification?.title}',
+    );
+    log(
+      'handleBackgroundMessage MESSAGE NOTIFICATION BODY ${message.notification?.body}',
+    );
     if (message.data.isNotEmpty) {
       // Clear badge when app is opened from notification
       // _clearBadge();
 
       //String? notificationType = message.data['notificationType'] as String?;
-
 
       handleNotificationAction(message, false);
     }

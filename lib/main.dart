@@ -89,33 +89,33 @@ void main() async {
 
 
 
-Future<void> getToken() async {
-  try {
-    // Load the JSON file from assets
-    final jsonKey = await rootBundle.loadString('assets/service-account.json');
-
-    // Parse the JSON content
-    final accountCredentials = ServiceAccountCredentials.fromJson(jsonKey);
-
-    final scopes = [
-      'https://www.googleapis.com/auth/firebase.messaging',
-    ];
-
-    final client = await clientViaServiceAccount(
-      accountCredentials,
-      scopes,
-    );
-
-    print('Test Token: ${client.credentials.accessToken.data}');
-
-    SharedPreferenceHelper.saveString(
-      SharedPrefKeys.testToken,
-      client.credentials.accessToken.data ?? '',
-    );
-  } catch (e) {
-    log('TOKEN ERROR: ${e.toString()}');
-  }
-}
+// Future<void> getToken() async {
+//   try {
+//     // Load the JSON file from assets
+//     final jsonKey = await rootBundle.loadString('assets/service-account.json');
+//
+//     // Parse the JSON content
+//     final accountCredentials = ServiceAccountCredentials.fromJson(jsonKey);
+//
+//     final scopes = [
+//       'https://www.googleapis.com/auth/firebase.messaging',
+//     ];
+//
+//     final client = await clientViaServiceAccount(
+//       accountCredentials,
+//       scopes,
+//     );
+//
+//     print('Test Token: ${client.credentials.accessToken.data}');
+//
+//     SharedPreferenceHelper.saveString(
+//       SharedPrefKeys.testToken,
+//       client.credentials.accessToken.data ?? '',
+//     );
+//   } catch (e) {
+//     log('TOKEN ERROR: ${e.toString()}');
+//   }
+// }
 
 
 class Main extends StatelessWidget {
@@ -125,7 +125,7 @@ class Main extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    getToken();
+    // getToken();
     return ResponsiveInitializer(
       baseHeight: 956,
       baseWidth: 440,

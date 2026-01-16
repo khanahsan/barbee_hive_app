@@ -416,7 +416,7 @@ class JobController extends GetxController {
     if (selectedJobRole.value.isNotEmpty) {
       filtered = filtered
           .where((job) =>
-      job.skills.name.toLowerCase() == selectedJobRole.value.toLowerCase())
+      job.skills.id.toString() == selectedJobRole.value.toLowerCase())
           .toList();
     }
 

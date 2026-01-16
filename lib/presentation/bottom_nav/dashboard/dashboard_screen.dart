@@ -397,24 +397,7 @@ class DashboardScreen extends GetView<DashboardController> {
                   b2bSection(context),
 
                   /// BANNER AD SECTION
-                  Obx(() {
-                    if (!controller.isBannerLoaded.value ||
-                        controller.bannerAd == null) {
-                      return AppShimmer(height: 80.h, width: double.infinity);
-                    }
-
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: SizedBox(
-                        width: controller.bannerAd!.size.width.toDouble(),
-                        height: controller.bannerAd!.size.height.toDouble(),
-                        child: AdWidget(
-                          key: ObjectKey(controller.bannerAd!),
-                          ad: controller.bannerAd!,
-                        ),
-                      ),
-                    );
-                  }),
+                  const DashboardBannerAdWidget(),
 
                   /// HIVE SECTION
                   hiveSection(context),
@@ -762,5 +745,43 @@ class DashboardScreen extends GetView<DashboardController> {
       dropdownColor: Colors.white,
       borderColor: AppColors.colorA3A3A3,
     );
+  }
+}
+
+/// Separate stateful widget for banner ad to prevent rebuilds
+class DashboardBannerAdWidget extends StatefulWidget {
+  const DashboardBannerAdWidget({super.key});
+
+  @override
+  State<DashboardBannerAdWidget> createState() => _DashboardBannerAdWidgetState();
+}
+
+class _DashboardBannerAdWidgetState extends State<DashboardBannerAdWidget> {
+  final DashboardController controller = Get.find<DashboardController>();
+  AdWidget? _cachedAdWidget;
+  BannerAd? _cachedAd;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (!controller.isBannerLoaded.value || controller.bannerAd == null) {
+        return AppShimmer(height: 80.h, width: double.infinity);
+      }
+
+      // Only create a new AdWidget if the ad object has changed
+      if (_cachedAd != controller.bannerAd) {
+        _cachedAd = controller.bannerAd;
+        _cachedAdWidget = AdWidget(ad: controller.bannerAd!);
+      }
+
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          width: controller.bannerAd!.size.width.toDouble(),
+          height: controller.bannerAd!.size.height.toDouble(),
+            child: AdWidget(ad: controller.bannerAd!),
+      ),
+      );
+    });
   }
 }

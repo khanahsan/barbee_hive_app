@@ -60,21 +60,27 @@ class SplashController extends GetxController
         if (initialMessage != null && initialMessage.data.isNotEmpty) {
           final type = initialMessage.data['type'];
 
+          final jobId =
+          int.tryParse(initialMessage.data['job_id']?.toString() ?? '');
+
           payloadText.value = 'TYPE $type';
 
           log("iOS Initial Message Payload: ${initialMessage.data}");
 
           if (type == 'new_job') {
             indexToPass = 2;
+
+            await goto(indexToPass);
           }
           if (type == 'new_application') {
             indexToPass = 2;
+
+            await goto(indexToPass, jobId: jobId);
           }
 
-          notificationData = initialMessage.data;
+          // notificationData = initialMessage.data;
 
-          await goto(indexToPass);
-          await _handleNotificationNavigation(notificationData);
+          // await _handleNotificationNavigation(notificationData);
           return;
         }
 
@@ -99,41 +105,72 @@ class SplashController extends GetxController
           final payload = jsonDecode(details!.notificationResponse!.payload!);
 
           final type = payload['type'];
+          final jobId =
+          int.tryParse(payload['job_id']?.toString() ?? '');
 
           log("Android Notification Payload: $payload");
 
           if (type == 'new_job') {
             indexToPass = 2;
+
+            await goto(indexToPass);
+
           }
           if (type == 'new_application') {
             indexToPass = 2;
+
+            await goto(indexToPass, jobId: jobId);
           }
 
-          notificationData = Map<String, dynamic>.from(payload);
+          // notificationData = Map<String, dynamic>.from(payload);
         } catch (e) {
           log("Android payload parse error: $e");
         }
       }
 
       await goto(indexToPass);
-      await _handleNotificationNavigation(notificationData);
+      // await _handleNotificationNavigation(notificationData);
     }
   }
 
-  goto(int index) async {
+  // goto(int index) async {
+  //   final isRememberMe =
+  //       SharedPreferenceHelper.getBool(SharedPrefKeys.isRememberMe) ?? false;
+  //
+  //   log(
+  //     "IS REMEMBER ME : AND ${isRememberMe} and token ${await TokenStorage.getToken()}",
+  //   );
+  //
+  //   if (isRememberMe && await TokenStorage.getToken() != null) {
+  //     Get.offAllNamed(Routes.CUSTOMDRAWER, arguments: {
+  //       'index': index,
+  //     });
+  //   } else {
+  //     Get.offAllNamed(Routes.SIGN_IN_VIEW);
+  //   }
+  // }
+
+  Future<void> goto(int index, {int? jobId}) async {
     final isRememberMe =
         SharedPreferenceHelper.getBool(SharedPrefKeys.isRememberMe) ?? false;
 
     log(
-      "IS REMEMBER ME : AND ${isRememberMe} and token ${await TokenStorage.getToken()}",
+      "IS REMEMBER ME : $isRememberMe | jobId: $jobId | token: ${await TokenStorage.getToken()}",
     );
 
     if (isRememberMe && await TokenStorage.getToken() != null) {
-      Get.offAllNamed(Routes.CUSTOMDRAWER, arguments: index);
+      Get.offAllNamed(
+        Routes.CUSTOMDRAWER,
+        arguments: {
+          'index': index,
+          'jobId': jobId, // ✅ nullable
+        },
+      );
     } else {
       Get.offAllNamed(Routes.SIGN_IN_VIEW);
     }
   }
+
 
 
   void increment() => count.value++;

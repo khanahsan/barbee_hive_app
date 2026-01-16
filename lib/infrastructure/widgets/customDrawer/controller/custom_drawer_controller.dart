@@ -25,13 +25,18 @@ class CustomDrawerController extends GetxController
   final userProfileImage = ''.obs;
   int? role;
   RxInt currentIndex = 0.obs;
+  RxnInt currentJobID = RxnInt();
+
 
   @override
   Future<void> onInit() async {
     super.onInit();
 
     if (Get.arguments != null) {
-      currentIndex.value = Get.arguments;
+      final args = Get.arguments;
+      currentIndex.value = args['index'] ?? 0;
+      currentJobID.value = args['jobId'];
+      // currentIndex.value = Get.arguments;
     }
 
     animationController = AnimationController(
@@ -64,6 +69,23 @@ class CustomDrawerController extends GetxController
 
     loadUserData();
   }
+
+  @override
+  void onReady() {
+    super.onReady();
+
+    final jobId = currentJobID.value;
+    if (jobId != null) {
+      Get.toNamed(
+        Routes.applicationsScreen,
+        arguments: {'jobId': jobId},
+      );
+
+      // reset to avoid duplicate navigation
+      currentJobID.value = null;
+    }
+  }
+
 
   Future<void> toggleDrawer() async {
     // Toggle drawer state

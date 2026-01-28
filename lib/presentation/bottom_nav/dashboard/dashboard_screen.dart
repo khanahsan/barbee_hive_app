@@ -314,93 +314,93 @@ class DashboardScreen extends GetView<DashboardController> {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 25.h,
                 children: [
-                  if(controller.userID.value == 3)
-                  GestureDetector(
-                    onTap: () {
-                      Clipboard.setData(
-                        ClipboardData(text: controller.fcmToken.value),
-                      );
-
-                      Get.snackbar(
-                        'Copied',
-                        'FCM token copied to clipboard',
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.black87,
-                        colorText: Colors.white,
-                        margin: const EdgeInsets.all(12),
-                        duration: const Duration(seconds: 2),
-                      );
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(12.w),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.r),
-                        border: Border.all(color: AppColors.colorFF8600),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: CustomText(
-                              title: controller.fcmToken.value,
-                              fontSize: 14,
-                              color: AppColors.colorFFFFFF,
-                            ),
-                          ),
-                          SizedBox(width: 10.w),
-                          Icon(
-                            Icons.copy,
-                            color: AppColors.colorFF8600,
-                            size: 20.sp,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  if(controller.userID.value == 3)
-                    GestureDetector(
-                    onTap: () {
-                      Clipboard.setData(
-                        ClipboardData(text: controller.testToken.value),
-                      );
-
-                      Get.snackbar(
-                        'Copied',
-                        'Test token copied to clipboard',
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: Colors.black87,
-                        colorText: Colors.white,
-                        margin: const EdgeInsets.all(12),
-                        duration: const Duration(seconds: 2),
-                      );
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(12.w),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.r),
-                        border: Border.all(color: AppColors.colorFF8600),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: CustomText(
-                              title: controller.testToken.value,
-                              fontSize: 14,
-                              color: AppColors.colorFFFFFF,
-                            ),
-                          ),
-                          SizedBox(width: 10.w),
-                          Icon(
-                            Icons.copy,
-                            color: AppColors.colorFF8600,
-                            size: 20.sp,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // if(controller.userID.value == 3)
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     Clipboard.setData(
+                  //       ClipboardData(text: controller.fcmToken.value),
+                  //     );
+                  //
+                  //     Get.snackbar(
+                  //       'Copied',
+                  //       'FCM token copied to clipboard',
+                  //       snackPosition: SnackPosition.BOTTOM,
+                  //       backgroundColor: Colors.black87,
+                  //       colorText: Colors.white,
+                  //       margin: const EdgeInsets.all(12),
+                  //       duration: const Duration(seconds: 2),
+                  //     );
+                  //   },
+                  //   child: Container(
+                  //     padding: EdgeInsets.all(12.w),
+                  //     decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(8.r),
+                  //       border: Border.all(color: AppColors.colorFF8600),
+                  //     ),
+                  //     child: Row(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         Expanded(
+                  //           child: CustomText(
+                  //             title: controller.fcmToken.value,
+                  //             fontSize: 14,
+                  //             color: AppColors.colorFFFFFF,
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: 10.w),
+                  //         Icon(
+                  //           Icons.copy,
+                  //           color: AppColors.colorFF8600,
+                  //           size: 20.sp,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  //
+                  // if(controller.userID.value == 3)
+                  //   GestureDetector(
+                  //   onTap: () {
+                  //     Clipboard.setData(
+                  //       ClipboardData(text: controller.testToken.value),
+                  //     );
+                  //
+                  //     Get.snackbar(
+                  //       'Copied',
+                  //       'Test token copied to clipboard',
+                  //       snackPosition: SnackPosition.BOTTOM,
+                  //       backgroundColor: Colors.black87,
+                  //       colorText: Colors.white,
+                  //       margin: const EdgeInsets.all(12),
+                  //       duration: const Duration(seconds: 2),
+                  //     );
+                  //   },
+                  //   child: Container(
+                  //     padding: EdgeInsets.all(12.w),
+                  //     decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(8.r),
+                  //       border: Border.all(color: AppColors.colorFF8600),
+                  //     ),
+                  //     child: Row(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         Expanded(
+                  //           child: CustomText(
+                  //             title: controller.testToken.value,
+                  //             fontSize: 14,
+                  //             color: AppColors.colorFFFFFF,
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: 10.w),
+                  //         Icon(
+                  //           Icons.copy,
+                  //           color: AppColors.colorFF8600,
+                  //           size: 20.sp,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
 
                   /// B2B SECTION
                   b2bSection(context),

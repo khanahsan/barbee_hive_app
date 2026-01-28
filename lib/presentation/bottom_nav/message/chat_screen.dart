@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
+import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
@@ -10,6 +11,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -118,6 +120,11 @@ class ChatScreen extends StatelessWidget {
 
               body: Column(
                 children: [
+                  // Banner Ad at top
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+                    child: const ChatBannerAdWidget(),
+                  ),
                   // messages
                   Expanded(
                     child: StreamBuilder<QuerySnapshot>(
@@ -380,6 +387,60 @@ class ChatScreen extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+class ChatBannerAdWidget extends StatefulWidget {
+  const ChatBannerAdWidget({super.key});
+
+  @override
+  State<ChatBannerAdWidget> createState() => _ChatBannerAdWidgetState();
+}
+
+class _ChatBannerAdWidgetState extends State<ChatBannerAdWidget> {
+  BannerAd? _bannerAd;
+  bool _isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    AdsHelper().loadBannerAd(
+      onAdLoaded: (ad) {
+        if (!mounted) return;
+        setState(() {
+          _bannerAd = ad;
+          _isLoaded = true;
+        });
+      },
+      onAdFailed: () {
+        if (!mounted) return;
+        setState(() {
+          _isLoaded = false;
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_isLoaded || _bannerAd == null) {
+      return const SizedBox.shrink();
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: SizedBox(
+        width: _bannerAd!.size.width.toDouble(),
+        height: _bannerAd!.size.height.toDouble(),
+        child: AdWidget(ad: _bannerAd!),
+      ),
     );
   }
 }

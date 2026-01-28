@@ -1,5 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
+import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_profile_image.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
@@ -7,6 +8,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../infrastructure/widgets/custom_appbar.dart';
@@ -20,15 +22,27 @@ class MessageScreen extends GetView<ChatController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppbar(
-        showHexagon: true,
+        showHexagon: false,
         profileImagePath: controller.userProfileImage.value,
         context: context,
         leadingTapFunction: () {
           if (onMenuPressed != null) onMenuPressed!();
         },
-        title: 'Messages',
+        title: '',
+        titleWidget: SvgPicture.asset(
+          AppAssets.appIconTwo,
+          width: 50.w,
+          height: 50.h,
+          fit: BoxFit.cover,
+        ),
       ),
       backgroundColor: AppColors.black,
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+          child: const MessageBannerAdWidget(),
+        ),
+      ),
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
@@ -157,6 +171,60 @@ class MessageScreen extends GetView<ChatController> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MessageBannerAdWidget extends StatefulWidget {
+  const MessageBannerAdWidget({super.key});
+
+  @override
+  State<MessageBannerAdWidget> createState() => _MessageBannerAdWidgetState();
+}
+
+class _MessageBannerAdWidgetState extends State<MessageBannerAdWidget> {
+  BannerAd? _bannerAd;
+  bool _isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    AdsHelper().loadBannerAd(
+      onAdLoaded: (ad) {
+        if (!mounted) return;
+        setState(() {
+          _bannerAd = ad;
+          _isLoaded = true;
+        });
+      },
+      onAdFailed: () {
+        if (!mounted) return;
+        setState(() {
+          _isLoaded = false;
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_isLoaded || _bannerAd == null) {
+      return const SizedBox.shrink();
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: SizedBox(
+        width: _bannerAd!.size.width.toDouble(),
+        height: _bannerAd!.size.height.toDouble(),
+        child: AdWidget(ad: _bannerAd!),
       ),
     );
   }

@@ -54,7 +54,7 @@ class CustomBottomNavBar extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  AppAssets.chatIcon,
+                  AppAssets.findIcon,
                   colorFilter: ColorFilter.mode(
                     currentIndex == 1 ? AppColors.colorFF8600 : Colors.white,
                     BlendMode.srcIn,
@@ -65,9 +65,10 @@ class CustomBottomNavBar extends StatelessWidget {
                 ),
                 label: "",
               ),
+
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  AppAssets.findIcon,
+                  AppAssets.favIcon,
                   colorFilter: ColorFilter.mode(
                     currentIndex == 2 ? AppColors.colorFF8600 : Colors.white,
                     BlendMode.srcIn,
@@ -78,9 +79,23 @@ class CustomBottomNavBar extends StatelessWidget {
                 ),
                 label: "",
               ),
+
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  currentIndex == 3 ? AppAssets.premiumActiveIcon : AppAssets.premiumIcon,
+                  AppAssets.chatIcon,
+                  colorFilter: ColorFilter.mode(
+                    currentIndex == 3 ? AppColors.colorFF8600 : Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                  height: 25.h,
+                  width: 25.w,
+                  fit: BoxFit.cover,
+                ),
+                label: "",
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  currentIndex == 4 ? AppAssets.premiumActiveIcon : AppAssets.premiumIcon,
                   // colorFilter: ColorFilter.mode(
                   //   currentIndex == 3 ? AppColors.primary : Colors.white,
                   //   BlendMode.srcIn,

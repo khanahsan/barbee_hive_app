@@ -15,6 +15,7 @@ class AppAssets {
   static String beeIcon = '$iconPath/bee_icon.svg';
   static String chatIcon = '$iconPath/chat_icon.svg';
   static String findIcon = '$iconPath/find_icon.svg';
+  static String favIcon = '$iconPath/fav_icon.svg';
   static String crownIcon = '$iconPath/crown_icon.svg';
   static String editIcon = '$iconPath/edit_icon.svg';
   static String jobIcon = '$iconPath/job_icon.svg';
@@ -27,6 +28,7 @@ class AppAssets {
   static String locationBIcon = '$iconPath/locationB_icon.svg';
   static String bagIcon = '$iconPath/bag_icon.svg';
   static String appIcon = '$iconPath/app_icon.svg';
+  static String appIconTwo = '$iconPath/app_icon_two.svg';
   static String searchIcon = '$iconPath/search_icon.svg';
   static String searchFilterIcon = '$iconPath/search_filter_icon.svg';
   static String bagTwoIcon = '$iconPath/bag_two_icon.svg';

@@ -41,7 +41,41 @@ class JobScreen extends GetView<JobController> {
             }
           },
           leadingIconPath: showBackButton == true ? AppAssets.backIcon : null,
-          title: isEmployer ? 'Job Applications' : 'Find Jobs',
+          // title: isEmployer ? 'Job Applications' : 'Find Jobs',
+          title: '',
+          titleWidget: RichText(
+            text: TextSpan(
+              style: TextStyle(fontSize: 12, color: AppColors.colorFFFFFF),
+              children: [
+                TextSpan(
+                  text: 'Bar',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontSize: 32.sp,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextSpan(
+                  text: 'Bee',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontSize: 32.sp,
+                    color: AppColors.colorFF8600,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextSpan(text: " "),
+
+                TextSpan(
+                  text: 'INC.',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontSize: 16.sp,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
           profileImagePath: controller.userProfileImage.value,
         ),
 

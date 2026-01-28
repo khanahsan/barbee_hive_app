@@ -246,15 +246,17 @@ class DashboardScreen extends GetView<DashboardController> {
               TextSpan(
                 text: 'Bar',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontSize: 30.sp,
+                  fontSize: 32.sp,
                   color: AppColors.colorFFFFFF,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               TextSpan(
                 text: 'Bee',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontSize: 30.sp,
+                  fontSize: 32.sp,
                   color: AppColors.colorFF8600,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               TextSpan(text: " "),
@@ -262,8 +264,9 @@ class DashboardScreen extends GetView<DashboardController> {
               TextSpan(
                 text: 'INC.',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontSize: 22.sp,
+                  fontSize: 16.sp,
                   color: AppColors.colorFFFFFF,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -272,6 +275,12 @@ class DashboardScreen extends GetView<DashboardController> {
         title: '',
       ),
       backgroundColor: AppColors.black,
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+          child: const DashboardBannerAdWidget(),
+        ),
+      ),
       body: Obx(() {
         if (controller.errorMessage.value.isNotEmpty) {
           return Center(
@@ -395,9 +404,6 @@ class DashboardScreen extends GetView<DashboardController> {
 
                   /// B2B SECTION
                   b2bSection(context),
-
-                  /// BANNER AD SECTION
-                  const DashboardBannerAdWidget(),
 
                   /// HIVE SECTION
                   hiveSection(context),

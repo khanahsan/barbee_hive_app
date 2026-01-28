@@ -6,6 +6,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/widgets/employee_plans_card.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/widgets/employer_plans_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
@@ -37,7 +38,13 @@ class PricingPlansScreen extends GetView<PricingPlansController> {
         },
         leadingIconPath: showBackButton ? AppAssets.backIcon : null,
         // show back icon if needed
-        title: 'Pricing Plans',
+        title: '',
+        titleWidget: SvgPicture.asset(
+          AppAssets.appIconTwo,
+          width: 50.w,
+          height: 50.h,
+          fit: BoxFit.cover,
+        ),
       ),
 
       backgroundColor: AppColors.black,

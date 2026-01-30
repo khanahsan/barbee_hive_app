@@ -63,6 +63,24 @@ class JobApi {
     return JobPostResponse.fromJson(data);
   }
 
+  static Future<JobPostResponse> finalizeJob({
+    required int jobId,
+    required String paymentIntentId,
+  }) async {
+    final payload = {
+      'job_id': jobId,
+      'payment_intent_id': paymentIntentId,
+    };
+
+    final data = await ApiService.post(
+      ApiEndPoints.finalizeJob,
+      payload,
+      auth: true,
+    );
+
+    return JobPostResponse.fromJson(data);
+  }
+
   // static Future<JobPostResponse> postJob({
   //   required String title,
   //   required String description,

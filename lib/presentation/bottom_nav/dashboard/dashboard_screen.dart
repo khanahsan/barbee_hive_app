@@ -456,7 +456,7 @@ class DashboardScreen extends GetView<DashboardController> {
               'HIVE',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: AppColors.colorFFFFFF,
-                fontSize: 30.sp,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -681,7 +681,7 @@ class DashboardScreen extends GetView<DashboardController> {
               'B2B',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 color: AppColors.colorFFFFFF,
-                fontSize: 30.sp,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),

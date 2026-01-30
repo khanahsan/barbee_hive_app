@@ -263,7 +263,6 @@ class JobScreen extends GetView<JobController> {
                 buttonTextSize: 16.sp,
                 buttonHeight: 60.h,
                 onTap: () {
-                  // Get.toNamed(Routes.createJobScreen);
                   Get.toNamed(Routes.jobPostingScreen);
                 },
               ).paddingOnly(bottom: 20.h),

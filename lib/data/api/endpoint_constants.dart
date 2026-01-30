@@ -20,6 +20,7 @@ class ApiEndPoints {
   static const String getHeights = 'dashboard/heights';
   static const String getCountries = 'dashboard/countries';
   static const String getStates = 'dashboard/states';
+  static const String getDuration = 'duration';
   static const String getSalaryTypes = 'dashboard/salary-types';
   static const String getContactTypes = 'dashboard/contact-types';
   static const String dashboardDropdown = 'dashboard/dropdown?filter=eye-colors,hair-colors,skills,experience-levels,job-types,genders,heights,salary-types,countries,states,contact-types';
@@ -28,6 +29,7 @@ class ApiEndPoints {
   static const String userProfile = 'profiles';
   static const String jobStore = 'jobs/store';
   static const String jobUpdate = 'jobs/update';
+  static const String finalizeJob = 'jobs/finalize-job';
   static const String updateProfile = 'profiles/update';
   static const String jobs = 'jobs';
   static const String appliedJobs = 'jobs/applied';

@@ -228,6 +228,34 @@ class JobPostingScreen extends GetView<JobPostingController> {
                             .toList(),
                       ),
                       SizedBox(height: 15.h),
+
+                      /// Duration
+                      _dropdownField(
+                        validator: (value) =>
+                            FormValidators.validateRequired(
+                                value, "Duration"),
+                        hint: 'Select Duration',
+                        iconPath: AppAssets.cardIcon,
+                        selectedValue: controller.selectedDurationLabel,
+                        onChanged: controller.updateDuration,
+                        items: controller.durations
+                            .map(
+                              (duration) {
+                                final label =
+                                    controller.durationLabel(duration);
+                                return DropdownMenuItem(
+                                  value: label,
+                                  child: Text(
+                                    label,
+                                    style: const TextStyle(
+                                        color: Colors.white),
+                                  ),
+                                );
+                              },
+                        )
+                            .toList(),
+                      ),
+                      SizedBox(height: 15.h),
                       //
                       // _textField(
                       //   hintText: 'Select Country',

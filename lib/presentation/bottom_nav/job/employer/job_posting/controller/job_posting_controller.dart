@@ -268,20 +268,18 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
-import 'package:barbee_hive_app/data/model/country_response.dart';
-import 'package:barbee_hive_app/data/model/experience_level_response.dart';
-import 'package:barbee_hive_app/data/model/job_type_response.dart';
-import 'package:barbee_hive_app/data/model/salary_type_response.dart';
-import 'package:barbee_hive_app/data/model/state_response.dart';
+import 'package:barbee_hive_app/data/model/dropdown_response.dart';
+import 'package:barbee_hive_app/data/model/duration_model.dart';
+import 'package:barbee_hive_app/data/model/job_posting_model.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
+import 'package:barbee_hive_app/infrastructure/services/stripe_service.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../../../data/api/job/job_api.dart';
-import '../../../../../../data/model/color_response.dart' as colorModel;
 
 class JobPostingController extends GetxController {
   /// TEXT CONTROLLERS
@@ -305,38 +303,60 @@ class JobPostingController extends GetxController {
   final RxString selectedSalaryType = ''.obs;
   final RxString selectedCountry = ''.obs;
   final RxString selectedState = ''.obs;
+  final RxString selectedDurationLabel = ''.obs;
+  final Rx<DurationModel?> selectedDuration = Rx<DurationModel?>(null);
 
   /// IMAGE
   final Rx<File?> selectedImage = Rx<File?>(null);
 
   /// DATA LISTS
-  final RxList<colorModel.Skill> skills = <colorModel.Skill>[].obs;
-  final RxList<ExperienceLevel> experienceLevels = <ExperienceLevel>[].obs;
-  final RxList<JobType> jobTypes = <JobType>[].obs;
-  final RxList<SalaryType> salaryTypes = <SalaryType>[].obs;
-  final RxList<Country> countries = <Country>[].obs;
-  final RxList<StateModel> states = <StateModel>[].obs;
+  final RxList<DropdownItem> skills = <DropdownItem>[].obs;
+  final RxList<DropdownItem> experienceLevels = <DropdownItem>[].obs;
+  final RxList<DropdownItem> jobTypes = <DropdownItem>[].obs;
+  final RxList<DropdownItem> salaryTypes = <DropdownItem>[].obs;
+  final RxList<DropdownItem> countries = <DropdownItem>[].obs;
+  final RxList<DurationModel> durations = <DurationModel>[].obs;
+  final RxList<DropdownItem> states = <DropdownItem>[].obs;
 
   final formKey = GlobalKey<FormState>();
 
   @override
   void onInit() {
     super.onInit();
-    fetchAllData();
+
+    Future.wait([fetchDurations(), fetchAllData()]);
+  }
+
+  Future<void> fetchDurations() async {
+    try {
+      final response = await AuthProvider.getDurations();
+      durations.assignAll(response.duration);
+      // if (durations.isNotEmpty) {
+      //   selectedDurationLabel.value = durationLabel(durations.first);
+      //   selectedDuration.value = durations.first;
+      // }
+    } catch (_) {}
   }
 
   Future<void> fetchAllData() async {
     isLoading.value = true;
 
     try {
-      await Future.wait([
-        fetchSkills(),
-        fetchExperienceLevels(),
-        fetchJobTypes(),
-        fetchAllSalaryTypes(),
-        fetchCountries(),
-        fetchStates(),
-      ]);
+      final response = await AuthProvider.getDashboardDropdowns();
+      if (response.status) {
+        skills.assignAll(response.data.skills);
+        experienceLevels.assignAll(response.data.experienceLevels);
+        jobTypes.assignAll(response.data.jobTypes);
+        salaryTypes.assignAll(response.data.salaryTypes);
+        countries.assignAll(response.data.countries);
+        states.assignAll(response.data.states);
+      } else {
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: response.message,
+          isSuccess: false,
+        );
+      }
 
       /// SET DEFAULT SELECTIONS (Fix for null value crashes)
       selectedSkill.value = '';
@@ -344,70 +364,9 @@ class JobPostingController extends GetxController {
       selectedJobType.value = '';
     } catch (e) {
       debugPrint("Fetch data error: $e");
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> fetchAllSalaryTypes() async {
-    isLoading.value = true;
-
-    try {
-      print('Fetching Salary Types');
-      final response = await AuthProvider.getSalaryTypes();
-      if (response.status) {
-        salaryTypes.assignAll(response.data);
-      } else {}
-    } catch (e) {
-      log('Failed to States');
-
       Utilities.showSnackBar(
-        message: 'Failed to Fetch Salary Types',
         title: 'Error',
-        isSuccess: false,
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> fetchCountries() async {
-    isLoading.value = true;
-
-    try {
-      print('Fetching Countries');
-      final response = await AuthProvider.getCountries();
-      if (response.status) {
-        countries.assignAll(response.data);
-      } else {}
-    } catch (e) {
-      log('Failed to Countries');
-
-      Utilities.showSnackBar(
-        message: 'Failed to Fetch Countries',
-        title: 'Error',
-        isSuccess: false,
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> fetchStates() async {
-    isLoading.value = true;
-
-    try {
-      print('Fetching States');
-      final response = await AuthProvider.getStates();
-      if (response.status) {
-        states.assignAll(response.data);
-      } else {}
-    } catch (e) {
-      log('Failed to States');
-
-      Utilities.showSnackBar(
-        message: 'Failed to Fetch States',
-        title: 'Error',
+        message: 'Failed to fetch dropdown data',
         isSuccess: false,
       );
     } finally {
@@ -442,68 +401,68 @@ class JobPostingController extends GetxController {
 
   void updateState(String? value) => selectedState.value = value ?? '';
 
-  /// FETCHING API DATA
-  Future<void> fetchSkills() async {
+  Future<bool> _processPaymentIfRequired(JobPostResult? data) async {
+    if (data == null || data.paymentRequired != true) return true;
+
+    final clientSecret = data.payment?.clientSecret;
+
+    if (clientSecret == null || clientSecret.isEmpty) {
+      Utilities.showSnackBar(
+        title: "Payment Error",
+        message: "Payment details are missing. Please try again.",
+        isSuccess: false,
+      );
+      return false;
+    }
+
     try {
-      final response = await AuthProvider.getSkills();
-      if (response.status) {
-        skills.assignAll(response.data);
+      if (Platform.isIOS) {
+        await StripeService.instance.initPaymentSheetIOS(
+          clientSecret: clientSecret,
+          merchantDisplayName: 'Barbee Hive',
+        );
       } else {
+        await StripeService.instance.initPaymentSheetAndroid(
+          clientSecret: clientSecret,
+          merchantDisplayName: 'Barbee Hive',
+        );
+      }
+
+      final paymentSuccess =
+          await StripeService.instance.presentPaymentSheet();
+
+      if (!paymentSuccess) {
         Utilities.showSnackBar(
-          title: "Error",
-          message: response.message,
+          title: "Payment",
+          message: "Payment was cancelled",
           isSuccess: false,
         );
       }
+
+      return paymentSuccess;
     } catch (e) {
       Utilities.showSnackBar(
-        title: "Error",
-        message: "Failed to fetch skills",
+        title: "Payment Error",
+        message: e.toString(),
         isSuccess: false,
       );
+      return false;
     }
   }
 
-  Future<void> fetchExperienceLevels() async {
+  void updateDuration(String? value) {
+    selectedDurationLabel.value = value ?? '';
     try {
-      final response = await AuthProvider.getExperienceLevels();
-      if (response.status) {
-        experienceLevels.assignAll(response.data);
-      } else {
-        Utilities.showSnackBar(
-          title: "Error",
-          message: response.message,
-          isSuccess: false,
-        );
-      }
-    } catch (e) {
-      Utilities.showSnackBar(
-        title: "Error",
-        message: "Failed to fetch experience levels",
-        isSuccess: false,
+      selectedDuration.value = durations.firstWhere(
+        (duration) => durationLabel(duration) == value,
       );
+    } catch (_) {
+      selectedDuration.value = null;
     }
   }
 
-  Future<void> fetchJobTypes() async {
-    try {
-      final response = await AuthProvider.getJobTypes();
-      if (response.status) {
-        jobTypes.assignAll(response.data);
-      } else {
-        Utilities.showSnackBar(
-          title: "Error",
-          message: response.message,
-          isSuccess: false,
-        );
-      }
-    } catch (e) {
-      Utilities.showSnackBar(
-        title: "Error",
-        message: "Failed to fetch job types",
-        isSuccess: false,
-      );
-    }
+  String durationLabel(DurationModel duration) {
+    return '${duration.days} Day';
   }
 
   /// IMAGE PICKER WITH BOTTOM SHEET
@@ -554,9 +513,6 @@ class JobPostingController extends GetxController {
 
   /// POST JOB
   Future<void> postJob(BuildContext context) async {
-
-
-
     try {
       /// VALIDATION BEFORE API CALL
       if (selectedSkill.value == null ||
@@ -581,6 +537,15 @@ class JobPostingController extends GetxController {
         return;
       }
 
+      if (selectedDuration.value == null) {
+        Utilities.showSnackBar(
+          title: "Missing Fields",
+          message: "Please select a duration",
+          isSuccess: false,
+        );
+        return;
+      }
+
       print("===== FIELD VALUES BEFORE API CALL =====");
       print("Description: ${jobDesController.text}");
       print("Min Salary: ${minSalaryController.text}");
@@ -594,32 +559,32 @@ class JobPostingController extends GetxController {
 
       /// MAPPING SELECTED MODELS
       final userSkill = skills.firstWhere(
-        (s) => (s.name ?? "") == selectedSkill.value,
+        (s) => s.name == selectedSkill.value,
         orElse: () => throw Exception("Invalid Skill Selected"),
       );
 
       final userExp = experienceLevels.firstWhere(
-        (e) => (e.name ?? "") == selectedExperienceLevel.value,
+        (e) => e.name == selectedExperienceLevel.value,
         orElse: () => throw Exception("Invalid Experience Level Selected"),
       );
 
       final userJob = jobTypes.firstWhere(
-        (j) => (j.name ?? "") == selectedJobType.value,
+        (j) => j.name == selectedJobType.value,
         orElse: () => throw Exception("Invalid Job Type Selected"),
       );
 
       final salaryType = salaryTypes.firstWhere(
-        (j) => (j.name ?? "") == selectedSalaryType.value,
+        (j) => j.name == selectedSalaryType.value,
         orElse: () => throw Exception("Invalid Salary Type Selected"),
       );
 
       final country = countries.firstWhere(
-        (j) => (j.name ?? "") == selectedCountry.value,
+        (j) => j.name == selectedCountry.value,
         orElse: () => throw Exception("Invalid Country Selected"),
       );
 
       final state = states.firstWhere(
-        (j) => (j.name ?? "") == selectedState.value,
+        (j) => j.name == selectedState.value,
         orElse: () => throw Exception("Invalid State Selected"),
       );
 
@@ -636,13 +601,45 @@ class JobPostingController extends GetxController {
         state: state.id.toString(),
         city: cityController.text,
         recruiterName: recruiterController.text,
-        noOfDays: 2,
+        noOfDays: selectedDuration.value?.days ?? 0,
         skillId: userSkill.id,
         image: selectedImage.value,
         salaryType: salaryType.id,
       );
 
       if (response.status) {
+        final paymentOk = await _processPaymentIfRequired(response.data);
+        if (!paymentOk) return;
+
+        // Finalize job if payment was required (activates the posting)
+        if (response.data?.paymentRequired == true) {
+          final jobId = response.data?.jobId;
+          final paymentIntentId = response.data?.payment?.paymentIntentId;
+
+          if (jobId == null || paymentIntentId == null) {
+            Utilities.showSnackBar(
+              title: "Payment Error",
+              message: "Missing payment confirmation details.",
+              isSuccess: false,
+            );
+            return;
+          }
+
+          final finalizeRes = await JobApi.finalizeJob(
+            jobId: jobId,
+            paymentIntentId: paymentIntentId,
+          );
+
+          if (!finalizeRes.status) {
+            Utilities.showSnackBar(
+              title: "Error",
+              message: finalizeRes.message,
+              isSuccess: false,
+            );
+            return;
+          }
+        }
+
         final controller = Get.find<JobController>();
 
         controller.fetchEmployerJobs();
@@ -658,7 +655,6 @@ class JobPostingController extends GetxController {
                   Navigator.of(context, rootNavigator: true).pop();
                   Get.back();
                   Get.back();
-
                 },
               ),
         );

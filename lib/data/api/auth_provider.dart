@@ -6,6 +6,7 @@ import 'package:barbee_hive_app/data/model/contact_types_response.dart';
 import 'package:barbee_hive_app/data/model/country_response.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/data/model/dropdown_response.dart';
+import 'package:barbee_hive_app/data/model/duration_model.dart';
 import 'package:barbee_hive_app/data/model/feedback_support_response.dart';
 import 'package:barbee_hive_app/data/model/gender_response.dart';
 import 'package:barbee_hive_app/data/model/height_response.dart';
@@ -110,6 +111,12 @@ class AuthProvider {
   static Future<StateResponse> getStates() async {
     final data = await ApiService.get(ApiEndPoints.getStates, auth: false);
     return StateResponse.fromJson(data);
+  }
+
+  /// FETCH ALL DURATIONS
+  static Future<DurationResponse> getDurations() async {
+    final data = await ApiService.get(ApiEndPoints.getDuration, auth: true);
+    return DurationResponse.fromJson(data);
   }
 
   /// FETCH ALL SALARY TYPES

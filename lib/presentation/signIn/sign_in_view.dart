@@ -25,7 +25,7 @@ class SignInView extends GetView<SignInController> {
     // employer
     //controller.emailController.text = "employer5@gmail.com";
     // //employee
-    // controller.emailController.text = "employee11@gmail.com";
+    // controller.emailController.text = "employer1@gmail.com";
     // controller.passwordController.text = "12345678";
 
     return Scaffold(
@@ -180,8 +180,8 @@ class SignInView extends GetView<SignInController> {
                                       materialTapTargetSize:
                                           MaterialTapTargetSize.shrinkWrap,
                                       visualDensity: VisualDensity(
-                                        horizontal: -3.w,
-                                        vertical: -4.h,
+                                        horizontal: -3,
+                                        vertical: -4,
                                       ),
                                       value: controller.rememberMe.value,
                                       onChanged:

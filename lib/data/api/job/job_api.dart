@@ -1,4 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
+
+import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
+import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 
 import '../../../infrastructure/utils/log_util.dart';
 import '../../model/applied_job_response.dart';
@@ -67,10 +71,7 @@ class JobApi {
     required int jobId,
     required String paymentIntentId,
   }) async {
-    final payload = {
-      'job_id': jobId,
-      'payment_intent_id': paymentIntentId,
-    };
+    final payload = {'job_id': jobId, 'payment_intent_id': paymentIntentId};
 
     final data = await ApiService.post(
       ApiEndPoints.finalizeJob,
@@ -166,6 +167,8 @@ class JobApi {
     int jobId, {
     Map<String, dynamic>? filters,
   }) async {
+
+    log("BEARER TOKEN: ${SharedPreferenceHelper.getString(SharedPrefKeys.authToken)}");
     try {
       String endpoint = '${ApiEndPoints.jobApplications}/$jobId';
       if (filters != null && filters.isNotEmpty) {
@@ -190,7 +193,12 @@ class JobApi {
   }
 
   static Future<JobListResponse> getEmployeeJobs() async {
-    final data = await ApiService.get(ApiEndPoints.jobs, auth: true);
+    final userID = await SharedPreferenceHelper.getInt(SharedPrefKeys.userId);
+
+    final data = await ApiService.get(
+      '${ApiEndPoints.jobs}',
+      auth: true,
+    );
     return JobListResponse.fromJson(data);
   }
 
@@ -210,10 +218,6 @@ class JobApi {
     required int skillId,
     File? image, // Added image parameter
   }) async {
-
-
-
-
     final fields = <String, String>{
       'id': id.toString(),
       'skill_id': '$skillId',

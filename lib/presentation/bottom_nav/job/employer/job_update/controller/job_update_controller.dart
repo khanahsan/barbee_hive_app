@@ -286,7 +286,9 @@ class JobUpdateController extends GetxController {
                 title: "Congratulations",
                 subTitle: "Your Job Application Has Been Updated",
                 onDone: () {
-                  Get.close(2);
+                  Navigator.of(context, rootNavigator: true).pop();
+                  Get.back();
+                  Get.back();
                 },
               ),
         );

@@ -5,6 +5,7 @@ import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/force_logout_dialog.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -289,6 +290,45 @@ class ApiService {
 
     if (statusCode >= 200 && statusCode < 300) {
       return body;
+    } else if (statusCode == 401) {
+      // Handle 401 Unauthorized response
+      ForceLogoutDialog.show(); // Show the force logout dialog
+      throw Exception(body?['message'] ?? 'Unauthorized request');
+    } else if (statusCode == 403) {
+      throw Exception(body?['message'] ?? 'Forbidden: Access denied');
+    } else if (statusCode == 404) {
+      throw Exception(body?['message'] ?? 'Resource not found');
+    } else if (statusCode == 422) {
+      final errors = body?['errors'] ?? {};
+      final firstError =
+      errors.isNotEmpty
+          ? errors.values.first[0]
+          : body?['message'] ?? 'Validation failed';
+      throw Exception(firstError);
+    } else if (statusCode == 500) {
+      throw Exception(body?['message'] ?? 'Internal server error');
+    } else {
+      throw Exception(body?['message'] ?? 'Unexpected error: $statusCode');
+    }
+  }
+
+
+/*  static dynamic _handleResponse(http.Response response) {
+    final statusCode = response.statusCode;
+    final String rawBody = response.body;
+
+    print('Response Status: $statusCode');
+    print('Response Body: $rawBody');
+
+    dynamic body;
+    try {
+      body = rawBody.isNotEmpty ? jsonDecode(rawBody) : null;
+    } catch (e) {
+      throw Exception('Failed to parse response: $rawBody');
+    }
+
+    if (statusCode >= 200 && statusCode < 300) {
+      return body;
     } else if (statusCode == 301 ||
         statusCode == 302 ||
         statusCode == 307 ||
@@ -314,5 +354,5 @@ class ApiService {
     } else {
       throw Exception(body?['message'] ?? 'Unexpected error: $statusCode');
     }
-  }
+  }*/
 }

@@ -79,6 +79,12 @@ class MessageScreen extends GetView<ChatController> {
             final cachedImage = otherUser['image'] ?? '';
 
             final lastMessage = chat['lastMessage'] ?? "";
+            final readBy = (chat['readBy'] as List?) ?? const [];
+            final lastMessageSenderId = chat['lastMessageSenderId'] ?? '';
+            final isUnread =
+                lastMessage.toString().isNotEmpty &&
+                lastMessageSenderId != currentUserId &&
+                !readBy.contains(currentUserId);
 
             // Wrap each tile inside FutureBuilder
             return FutureBuilder(
@@ -89,6 +95,7 @@ class MessageScreen extends GetView<ChatController> {
                     name: cachedName,
                     message: lastMessage,
                     profileImage: cachedImage,
+                    isUnread: isUnread,
                   );
                 }
 
@@ -100,6 +107,7 @@ class MessageScreen extends GetView<ChatController> {
                   name: liveName,
                   message: lastMessage,
                   profileImage: liveImage,
+                  isUnread: isUnread,
                   onTap: () {
                     Get.toNamed(
                       Routes.chatScreen,
@@ -119,6 +127,7 @@ class MessageScreen extends GetView<ChatController> {
     required String name,
     required String message,
     required String profileImage,
+    bool isUnread = false,
     VoidCallback? onTap,
   }) {
     return GestureDetector(
@@ -127,6 +136,10 @@ class MessageScreen extends GetView<ChatController> {
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
         decoration: BoxDecoration(
           color: AppColors.color101010,
+          border: Border.all(
+            color: isUnread ? AppColors.colorFF8600 : Colors.transparent,
+            width: isUnread ? 1.0 : 0,
+          ),
           borderRadius: BorderRadius.circular(15.r),
         ),
         child: Row(

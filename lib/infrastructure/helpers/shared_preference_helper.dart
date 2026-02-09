@@ -1,6 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../data/api/api_service.dart';
 import '../../data/api/token_storage.dart';
 import '../../data/model/login_response.dart';
 import '../constants/shared_pref_keys.dart';
@@ -31,8 +30,11 @@ class SharedPreferenceHelper {
 
   // Read data
   static String? getString(String key) => _prefs?.getString(key);
+
   static bool? getBool(String key) => _prefs?.getBool(key);
+
   static int? getInt(String key) => _prefs?.getInt(key);
+
   static double? getDouble(String key) => _prefs?.getDouble(key);
 
   // Remove specific key
@@ -45,8 +47,10 @@ class SharedPreferenceHelper {
     await _prefs?.clear();
   }
 
-
-  static saveInfo(LoginResponse response, bool isRememberMe, String email, String password) async {
+  static saveInfo(LoginResponse response,
+      bool isRememberMe,
+      String email,
+      String password,) async {
     await Future.wait([
       TokenStorage.saveToken(response.token),
       SharedPreferenceHelper.saveInt(
@@ -58,11 +62,7 @@ class SharedPreferenceHelper {
         response.token,
       ),
 
-
-      SharedPreferenceHelper.saveInt(
-        SharedPrefKeys.userId,
-        response.user.id,
-      ),
+      SharedPreferenceHelper.saveInt(SharedPrefKeys.userId, response.user.id),
       SharedPreferenceHelper.saveString(
         SharedPrefKeys.userProfileImage,
         response.user.profileImage ?? '',
@@ -79,18 +79,18 @@ class SharedPreferenceHelper {
       ),
     ]);
 
+    print(
+      "GET TOKEN IN SAVE INFO : ${SharedPreferenceHelper.getString(
+          SharedPrefKeys.authToken)}",
+    );
 
-    print("GET TOKEN IN SAVE INFO : ${SharedPreferenceHelper.getString(SharedPrefKeys.authToken)}");
-
-    if(isRememberMe){
+    if (isRememberMe) {
       SharedPreferenceHelper.saveString(SharedPrefKeys.savedEmail, email);
-      SharedPreferenceHelper.saveString(SharedPrefKeys.savedPassword,password);
+      SharedPreferenceHelper.saveString(SharedPrefKeys.savedPassword, password);
       SharedPreferenceHelper.saveBool(SharedPrefKeys.isRememberMe, true);
-    }else{
+    } else {
       SharedPreferenceHelper.remove(SharedPrefKeys.savedEmail);
       SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
     }
-
   }
-
 }

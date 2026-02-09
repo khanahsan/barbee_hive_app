@@ -10,9 +10,8 @@ import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/application
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/controller/job_update_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller/pricing_plans_controller.dart';
-import 'package:barbee_hive_app/presentation/notifications/controllers/notifications_controller.dart';
-import 'package:barbee_hive_app/presentation/notifications/notifications_screen.dart';
 import 'package:barbee_hive_app/presentation/feedbackSupport/controller/feedback_support_controller.dart';
+import 'package:barbee_hive_app/presentation/notifications/controllers/notifications_controller.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:get/get.dart';
 
@@ -21,7 +20,6 @@ import '../../../presentation/bottom_nav/dashboard/controller/b2b_controller.dar
 import '../../../presentation/bottom_nav/dashboard/controller/hive_profile_controller.dart';
 import '../../../presentation/bottom_nav/job/employer/job_posting/controller/job_posting_controller.dart';
 import '../../../presentation/changePassword/controller/change_password_controller.dart';
-import '../../../presentation/home/controllers/home.controller.dart';
 import '../../../presentation/setting/controller/setting_controller.dart';
 import '../../../presentation/signIn/controller/sign_in_controller.dart';
 import '../../../presentation/signUp/controllers/sign_up_employee_controller.dart';
@@ -37,8 +35,10 @@ class InitialBindings implements Bindings {
     Get.lazyPut<DashboardController>(() => DashboardController());
     Get.lazyPut<B2BController>(() => B2BController());
     Get.lazyPut<HiveProfileController>(() => HiveProfileController());
-    Get.lazyPut<CustomDrawerController>(() => CustomDrawerController(),
-        fenix: true);
+    Get.lazyPut<CustomDrawerController>(
+      () => CustomDrawerController(),
+      fenix: true,
+    );
     Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
     Get.put<SignInController>(SignInController());
     Get.lazyPut<ChangePasswordController>(() => ChangePasswordController());
@@ -52,10 +52,16 @@ class InitialBindings implements Bindings {
     Get.lazyPut<ApplicantProfileController>(() => ApplicantProfileController());
     Get.lazyPut<ChatController>(() => ChatController(), fenix: true);
     Get.lazyPut<JobUpdateController>(() => JobUpdateController(), fenix: true);
-    Get.lazyPut<MyApplicationsController>(() => MyApplicationsController(), fenix: true);
+    Get.lazyPut<MyApplicationsController>(
+      () => MyApplicationsController(),
+      fenix: true,
+    );
     Get.lazyPut<BottomNavController>(() => BottomNavController(), fenix: true);
     Get.lazyPut<SettingController>(() => SettingController(), fenix: true);
-    Get.lazyPut<FeedbackSupportController>(() => FeedbackSupportController(), fenix: true);
+    Get.lazyPut<FeedbackSupportController>(
+      () => FeedbackSupportController(),
+      fenix: true,
+    );
     Get.lazyPut<JobPostingController>(
       () => JobPostingController(),
       // fenix: true,
@@ -65,7 +71,13 @@ class InitialBindings implements Bindings {
       fenix: true,
     );
 
-    Get.lazyPut<NotificationsController>(() => NotificationsController(), fenix: true,);
-    Get.lazyPut<ForgetPasswordController>(() => ForgetPasswordController(), fenix: true);
+    Get.lazyPut<NotificationsController>(
+      () => NotificationsController(),
+      fenix: true,
+    );
+    Get.lazyPut<ForgetPasswordController>(
+      () => ForgetPasswordController(),
+      fenix: true,
+    );
   }
 }

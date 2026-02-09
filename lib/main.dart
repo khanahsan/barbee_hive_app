@@ -1,22 +1,16 @@
-import 'dart:developer';
 import 'dart:io';
 
-import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/push_notifications/push_notifications.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart'; // To load environment variables
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart'; // To load environment variables
-import 'package:googleapis_auth/auth_io.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/api/api_service.dart';
-import 'data/firebase/firebase_notificaton_service.dart';
 import 'firebase_options.dart';
 import 'infrastructure/helpers/shared_preference_helper.dart';
 import 'infrastructure/navigation/bindings/initial_binding.dart';
@@ -35,8 +29,7 @@ void main() async {
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? '';
 
   /// ------------- STRIPE INITIALIZATION (APPLE PAY FIX) ---------------
-  if(Platform.isIOS){
-
+  if (Platform.isIOS) {
     // Set Apple Pay merchant ID
     Stripe.merchantIdentifier = 'merchant.app.barbeeinc';
 
@@ -52,7 +45,7 @@ void main() async {
   await NotificationService.instance.initialize();
 
   // Initialize Firebase Messaging
-//  await NotificationService().initNotification();
+  //  await NotificationService().initNotification();
 
   // Request Notification permissions (iOS)
   await FirebaseMessaging.instance.requestPermission();
@@ -79,15 +72,15 @@ void main() async {
   var initialRoute = await Routes.initialRoute;
 
   // Run the app
-  runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Main(initialRoute)));
+  runApp(
+    MaterialApp(debugShowCheckedModeBanner: false, home: Main(initialRoute)),
+  );
 
   // Set the device orientation (optional)
-  SystemChrome.setPreferredOrientations(<DeviceOrientation>[DeviceOrientation.portraitUp]);
+  SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+    DeviceOrientation.portraitUp,
+  ]);
 }
-
-
 
 // Future<void> getToken() async {
 //   try {
@@ -116,7 +109,6 @@ void main() async {
 //     log('TOKEN ERROR: ${e.toString()}');
 //   }
 // }
-
 
 class Main extends StatelessWidget {
   final String initialRoute;

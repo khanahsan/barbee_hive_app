@@ -1,7 +1,5 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../constants/app_colors.dart';
@@ -234,7 +232,6 @@ class CustomDialog extends StatelessWidget {
 //   }
 // }
 
-
 class CustomDialog extends StatelessWidget {
   final String? email;
   final String title;
@@ -278,9 +275,7 @@ class CustomDialog extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: AppColors.colorFF8600,
                     ),
-                    child: Center(
-                      child: Image.asset(AppAssets.emailSend),
-                    ),
+                    child: Center(child: Image.asset(AppAssets.emailSend)),
                   ),
                   SizedBox(height: 20.h),
                   Text(
@@ -316,8 +311,10 @@ class CustomDialog extends StatelessWidget {
                     width: double.infinity,
                     height: 50.h,
                     child: ElevatedButton(
-                      onPressed: onDone ??
-                              () => Navigator.of(context, rootNavigator: true).pop(),
+                      onPressed:
+                          onDone ??
+                          () =>
+                              Navigator.of(context, rootNavigator: true).pop(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.colorFF8600,
                         shape: RoundedRectangleBorder(
@@ -346,8 +343,9 @@ class CustomDialog extends StatelessWidget {
                   color: AppColors.colorFF8600,
                   size: 24.sp,
                 ),
-                onPressed: onDone ??
-                        () => Navigator.of(context, rootNavigator: true).pop(),
+                onPressed:
+                    onDone ??
+                    () => Navigator.of(context, rootNavigator: true).pop(),
               ),
             ),
           ],
@@ -356,4 +354,3 @@ class CustomDialog extends StatelessWidget {
     );
   }
 }
-

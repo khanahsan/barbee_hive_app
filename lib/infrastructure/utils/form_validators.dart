@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 class FormValidators {
@@ -34,7 +32,6 @@ class FormValidators {
 
     return null;
   }
-
 
   // Email validation
   static String? validateEmail(dynamic value) {
@@ -177,12 +174,12 @@ class FormValidators {
   }
 
   static String? validateSalary(
-      String? value,
-      String fieldName, {
-        int min = 5,
-        int max = 10000,
-        bool isMinField = true, // true if this is the minimum salary field
-      }) {
+    String? value,
+    String fieldName, {
+    int min = 5,
+    int max = 10000,
+    bool isMinField = true, // true if this is the minimum salary field
+  }) {
     if (value == null || value.isEmpty) {
       return '$fieldName is required';
     }
@@ -202,8 +199,6 @@ class FormValidators {
 
     return null;
   }
-
-
 
   // Account Name validation (Only alphabets allowed)
   static String? validateName(dynamic value) {
@@ -225,7 +220,10 @@ class FormValidators {
   }
 
   static String? validateEndDateField(String? endDate, String? startDate) {
-    if (endDate == null || endDate.isEmpty || startDate == null || startDate.isEmpty) {
+    if (endDate == null ||
+        endDate.isEmpty ||
+        startDate == null ||
+        startDate.isEmpty) {
       return null; // Skip if one is empty – let required validator handle it
     }
 
@@ -247,7 +245,10 @@ class FormValidators {
     required String? startDate,
     required String? endDate,
   }) {
-    if (startTime == null || startTime.isEmpty || endTime == null || endTime.isEmpty) {
+    if (startTime == null ||
+        startTime.isEmpty ||
+        endTime == null ||
+        endTime.isEmpty) {
       return null; // Let the required validator handle this case
     }
 

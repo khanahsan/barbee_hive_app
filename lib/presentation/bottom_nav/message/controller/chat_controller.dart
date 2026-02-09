@@ -466,6 +466,10 @@ class ChatController extends GetxController {
     if (!chatDoc.exists && otherUserData != null) {
       await startChat(otherUserData, chatType: chatType);
     }
+    if (!chatDoc.exists && otherUserData == null) {
+      log("sendMessage skipped: chat not found and otherUserData missing ($chatId)");
+      return;
+    }
 
     // 🟢 Add message
     await chatRef.collection('messages').add({
@@ -474,10 +478,29 @@ class ChatController extends GetxController {
       'timestamp': FieldValue.serverTimestamp(),
     });
 
-    // 🟢 Update chat metadata
+    // 🟢 Update chat metadata + mark unread for the other user
     await chatRef.update({
       'lastMessage': text,
+      'lastMessageSenderId': currentUserId.value,
+      'readBy': [currentUserId.value],
       'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Mark chat as read by current user
+  Future<void> markChatAsRead(String chatId) async {
+    final uid = currentUserId.value;
+    if (uid.isEmpty) return;
+
+    final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
+    final chatDoc = await chatRef.get();
+    if (!chatDoc.exists) {
+      log("markChatAsRead skipped: chat not found ($chatId)");
+      return;
+    }
+
+    await chatRef.update({
+      'readBy': FieldValue.arrayUnion([uid]),
     });
   }
 

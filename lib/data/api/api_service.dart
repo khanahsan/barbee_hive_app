@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
@@ -8,10 +9,7 @@ import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/force_logout_dialog.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-
-import '../../presentation/auth/controllers/auth.controller.dart';
 
 class ApiService {
   //static const String baseUrl = 'https://barbeehive.staging.pegasync.com';
@@ -49,10 +47,12 @@ class ApiService {
   static Future<bool> isInternetAvailable() async {
     WidgetsFlutterBinding.ensureInitialized();
     try {
-      final List<ConnectivityResult> connectivityResult = await Connectivity().checkConnectivity();
+      final List<ConnectivityResult> connectivityResult =
+          await Connectivity().checkConnectivity();
       if (connectivityResult.contains(ConnectivityResult.none)) {
         Utilities.showToast(
-          toastMsg: 'No internet connection. Please check your WiFi or mobile data.',
+          toastMsg:
+              'No internet connection. Please check your WiFi or mobile data.',
           isSuccess: false,
         );
         return false;
@@ -65,13 +65,15 @@ class ApiService {
         return true;
       }
       Utilities.showToast(
-        toastMsg: 'Internet connection is not working. Please check your connection or try again later.',
+        toastMsg:
+            'Internet connection is not working. Please check your connection or try again later.',
         isSuccess: false,
       );
       return false;
     } catch (e) {
       Utilities.showToast(
-        toastMsg: 'Internet connection is not working. Please check your connection or try again later.',
+        toastMsg:
+            'Internet connection is not working. Please check your connection or try again later.',
         isSuccess: false,
       );
       LogUtil.logError('isInternetAvailable: $e');
@@ -128,11 +130,10 @@ class ApiService {
   }
 
   static Future<dynamic> put(
-      String endpoint,
-       {
-         var data,
-          bool auth = true,
-      }) async {
+    String endpoint, {
+    var data,
+    bool auth = true,
+  }) async {
     try {
       if (!(await isInternetAvailable())) {
         throw Exception('No internet connection');
@@ -156,9 +157,7 @@ class ApiService {
     }
   }
 
-
-
- /* static Future<dynamic> multipartPost(
+  /* static Future<dynamic> multipartPost(
     String endpoint, {
     required Map<String, String> fields,
     File? file,
@@ -199,11 +198,11 @@ class ApiService {
   }*/
 
   static Future<dynamic> multipartPost(
-      String endpoint, {
-        required Map<String, String> fields,
-        Map<String, File>? files, // Changed to support multiple files
-        bool auth = true,
-      }) async {
+    String endpoint, {
+    required Map<String, String> fields,
+    Map<String, File>? files, // Changed to support multiple files
+    bool auth = true,
+  }) async {
     try {
       if (!(await isInternetAvailable())) {
         throw Exception('No internet connection');
@@ -301,9 +300,9 @@ class ApiService {
     } else if (statusCode == 422) {
       final errors = body?['errors'] ?? {};
       final firstError =
-      errors.isNotEmpty
-          ? errors.values.first[0]
-          : body?['message'] ?? 'Validation failed';
+          errors.isNotEmpty
+              ? errors.values.first[0]
+              : body?['message'] ?? 'Validation failed';
       throw Exception(firstError);
     } else if (statusCode == 500) {
       throw Exception(body?['message'] ?? 'Internal server error');
@@ -312,8 +311,7 @@ class ApiService {
     }
   }
 
-
-/*  static dynamic _handleResponse(http.Response response) {
+  /*  static dynamic _handleResponse(http.Response response) {
     final statusCode = response.statusCode;
     final String rawBody = response.body;
 

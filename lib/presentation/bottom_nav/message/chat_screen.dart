@@ -64,6 +64,9 @@ class ChatScreen extends StatelessWidget {
           otherUserId,
         );
 
+        // Mark chat as read when opening
+        chatController.markChatAsRead(chatId);
+
         log("CURRENT USER ROLE: $currentUserRole");
         log("OTHER USER ROLE: $otherUserRole");
 

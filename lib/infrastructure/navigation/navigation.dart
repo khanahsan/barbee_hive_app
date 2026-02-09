@@ -11,8 +11,8 @@ import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/
 import 'package:barbee_hive_app/presentation/bottom_nav/job/job_screen.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/pricing_plans_screen.dart';
 import 'package:barbee_hive_app/presentation/changePassword/change_password_screen.dart';
-import 'package:barbee_hive_app/presentation/notifications/notifications_screen.dart';
 import 'package:barbee_hive_app/presentation/feedbackSupport/feedback_support_screen.dart';
+import 'package:barbee_hive_app/presentation/notifications/notifications_screen.dart';
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
 import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
 import 'package:barbee_hive_app/presentation/signIn/binding/sign_in_binding.dart';
@@ -22,12 +22,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../config.dart';
-import '../../presentation/auth/auth.screen.dart';
 import '../../presentation/auth/views/forgot_password_view.dart';
 import '../../presentation/bottom_nav/dashboard/dashboard_screen.dart';
 import '../../presentation/bottom_nav/job/employee/apply_screen.dart';
 import '../../presentation/bottom_nav/message/chat_screen.dart';
-import '../../presentation/home/home.screen.dart';
 import '../../presentation/signUp/sign_up_employee_screen.dart';
 import '../../presentation/signUp/sign_up_employer_screen.dart';
 import '../../presentation/splash/splash.screen.dart';
@@ -54,7 +52,7 @@ class EnvironmentsBadge extends StatelessWidget {
 
 class Nav {
   static List<GetPage> routes = [
-/*    GetPage(
+    /*    GetPage(
       name: Routes.HOME,
       page: () => const HomeScreen(),
       binding: InitialBindings(),
@@ -206,6 +204,5 @@ class Nav {
       page: () => NotificationsScreen(),
       binding: InitialBindings(),
     ),
-
   ];
 }

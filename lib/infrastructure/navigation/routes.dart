@@ -1,11 +1,5 @@
-import 'package:barbee_hive_app/data/api/api_service.dart';
-
-import '../constants/shared_pref_keys.dart';
-import '../helpers/shared_preference_helper.dart';
-
 class Routes {
-  static  const initialRoute = '/splash';
-
+  static const initialRoute = '/splash';
 
   static const AUTH = '/auth';
   static const HOME = '/home';

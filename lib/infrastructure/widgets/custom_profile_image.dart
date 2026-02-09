@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -11,8 +10,6 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../infrastructure/constants/app_colors.dart';
 import '../constants/app_images.dart';
 import 'hexagon_clipper.dart';
-
-
 
 typedef OnImagePicked = void Function(File file);
 
@@ -37,20 +34,20 @@ class CustomProfileImage extends StatelessWidget {
   final Color? borderColor;
   final String? text;
   final OnImagePicked? onImagePicked;
-  final bool isEditMode;            // edit profile mode
-  final bool wholeAvatarClickable;  // registration mode
+  final bool isEditMode; // edit profile mode
+  final bool wholeAvatarClickable; // registration mode
   final bool showFullText;
   final String? testIcon;
 
   bool get _isNetworkImage =>
       imagePath.isNotEmpty &&
-          (imagePath.startsWith('http://') || imagePath.startsWith('https://'));
+      (imagePath.startsWith('http://') || imagePath.startsWith('https://'));
 
   bool get _isAssetImage =>
       imagePath.isNotEmpty &&
-          (imagePath.endsWith('.png') ||
-              imagePath.endsWith('.jpg') ||
-              imagePath.endsWith('.jpeg'));
+      (imagePath.endsWith('.png') ||
+          imagePath.endsWith('.jpg') ||
+          imagePath.endsWith('.jpeg'));
 
   Widget _buildInitial() {
     return Container(
@@ -71,9 +68,7 @@ class CustomProfileImage extends StatelessWidget {
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
-                showFullText
-                    ? text!.trim()
-                    : text!.trim()[0].toUpperCase(),
+                showFullText ? text!.trim() : text!.trim()[0].toUpperCase(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: AppColors.colorFFFFFF,
@@ -112,21 +107,22 @@ class CustomProfileImage extends StatelessWidget {
               child: SizedBox(
                 width: width.w,
                 height: height.h,
-                child: showInitial
-                    ? _buildInitial()
-                    : _isNetworkImage
-                    ? Image.network(
-                  imagePath,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _buildInitial(),
-                )
-                    : File(imagePath).existsSync()
-                    ? Image.file(File(imagePath), fit: BoxFit.cover)
-                    : Image.asset(
-                  imagePath,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _buildInitial(),
-                ),
+                child:
+                    showInitial
+                        ? _buildInitial()
+                        : _isNetworkImage
+                        ? Image.network(
+                          imagePath,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => _buildInitial(),
+                        )
+                        : File(imagePath).existsSync()
+                        ? Image.file(File(imagePath), fit: BoxFit.cover)
+                        : Image.asset(
+                          imagePath,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => _buildInitial(),
+                        ),
               ),
             ),
           ),
@@ -174,33 +170,34 @@ class CustomProfileImage extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.camera_alt, color: Colors.white),
-            title: const Text(
-              "Pick from Camera",
-              style: TextStyle(color: Colors.white),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              _pickImage(ImageSource.camera);
-            },
+      builder:
+          (_) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt, color: Colors.white),
+                title: const Text(
+                  "Pick from Camera",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library, color: Colors.white),
+                title: const Text(
+                  "Pick from Gallery",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
           ),
-          ListTile(
-            leading: const Icon(Icons.photo_library, color: Colors.white),
-            title: const Text(
-              "Pick from Gallery",
-              style: TextStyle(color: Colors.white),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              _pickImage(ImageSource.gallery);
-            },
-          ),
-        ],
-      ),
     );
   }
 
@@ -226,16 +223,12 @@ class CustomProfileImage extends StatelessWidget {
     // }
 
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: source,
-      imageQuality: 80,
-    );
+    final pickedFile = await picker.pickImage(source: source, imageQuality: 80);
 
     if (pickedFile != null && onImagePicked != null) {
       onImagePicked!(File(pickedFile.path));
     }
   }
-
 
   Future<bool> _requestPermission(ImageSource source) async {
     if (source == ImageSource.camera) {
@@ -243,16 +236,14 @@ class CustomProfileImage extends StatelessWidget {
       return status.isGranted;
     }
 
-
-       final status = await Permission.photos.request();
-       return status.isGranted || status.isLimited;
-
+    final status = await Permission.photos.request();
+    return status.isGranted || status.isLimited;
 
     // Android → image_picker handles gallery permission
     return false;
   }
 
-/*  Future<void> _pickImage(ImageSource source) async {
+  /*  Future<void> _pickImage(ImageSource source) async {
     final hasPermission = await _requestPermission(source);
 
     if (!hasPermission) {

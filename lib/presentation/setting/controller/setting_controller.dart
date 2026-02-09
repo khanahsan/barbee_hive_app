@@ -65,7 +65,6 @@ class SettingController extends GetxController {
     }
   }
 
-
   Future<void> logout() async {
     // Show loading dialog
     Get.dialog<void>(
@@ -136,9 +135,9 @@ class SettingController extends GetxController {
         '',
       );
       errorMessage =
-      errorMessage.startsWith('Exception: ')
-          ? errorMessage.replaceFirst('Exception: ', '')
-          : errorMessage;
+          errorMessage.startsWith('Exception: ')
+              ? errorMessage.replaceFirst('Exception: ', '')
+              : errorMessage;
 
       // 🔴 Error
       Utilities.showSnackBar(
@@ -148,7 +147,6 @@ class SettingController extends GetxController {
       );
     }
   }
-
 
   // UPDATE SETTINGS API CALL
   Future<void> updateSettings() async {
@@ -179,44 +177,6 @@ class SettingController extends GetxController {
       isLoading.value = false;
     }
   }
-
-  /*  Future<void> deleteAccount() async {
-    isLoading.value = true;
-
-    try {
-      final response = await AuthApi.deleteAccount(password: 'dsad');
-      final status = response['status'] as bool; // Status is a boolean
-      final message = response['message'] as String;
-      print('Forgot Password Response: status=$status, message=$message');
-
-      if (status) {
-        // Get.offNamed(Routes.SIGN_IN_VIEW);
-      } else {
-        Utilities.showSnackBar(
-          title: "Error",
-          message: message,
-          isSuccess: false,
-        );
-      }
-    } catch (e) {
-      String errorMessage = e.toString().replaceFirst(
-        'Exception: POST request error: Exception: ',
-        '',
-      );
-      errorMessage =
-          errorMessage.startsWith('Exception: ')
-              ? errorMessage.replaceFirst('Exception: ', '')
-              : errorMessage;
-
-      Utilities.showSnackBar(
-        title: "Error",
-        message: errorMessage,
-        isSuccess: false,
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }*/
 
   Future<void> deleteAccount() async {
     final password = passwordController.text.trim();
@@ -441,125 +401,4 @@ class SettingController extends GetxController {
       barrierDismissible: false, // cannot dismiss by tapping outside
     );
   }
-
-  /*  void showDeleteAccountDialog() {
-    final ctrl = this;
-
-    Get.dialog(
-      Dialog(
-        insetPadding: EdgeInsets.symmetric(horizontal: 15.w),
-        backgroundColor: AppColors.color000000,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.color000000, // dialog background
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.colorFF8600, // border color
-              width: 0.5, // border width
-            ),
-          ),
-          padding: EdgeInsets.only(left: 20.w, right: 20.w, top: 10.h, bottom: 20.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: AlignmentGeometry.topRight,
-                child: GestureDetector(
-                  onTap: () {
-                    ctrl.passwordController.clear(); // clear password
-                    Get.back(); // close dialog
-                  },
-                  child: Icon(
-                    Icons.close,
-                    size: 24.sp,
-                    color: AppColors.colorFF8600,
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-
-              /// Label
-              CustomText(
-                title: "Confirm Delete",
-                fontSize: 25.sp,
-                color: AppColors.colorFFFFFF,
-                fontWeight: FontWeight.w700,
-              ),
-              SizedBox(height: 15.h),
-
-              /// Text Info
-              CustomText(
-                title: "Enter your password to delete your account.",
-                fontSize: 20.sp,
-                color: AppColors.colorFFFFFF,
-              ),
-
-              SizedBox(height: 25.h),
-
-              /// Password Field
-              AppTextField(
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 10.w,
-                  vertical: 16.h,
-                ),
-                controller: ctrl.passwordController,
-                hintText: "Password",
-                fillColor: AppColors.colorFFFFFF,
-                fontColor: AppColors.color000000,
-                fontSize: 16,
-              ),
-
-              SizedBox(height: 25.h),
-
-              Row(
-                spacing: 10.w,
-                children: [
-                  /// Cancel Option
-                  Expanded(
-                    child: CustomBtn(
-                      buttonHeight: 50.h,
-                      btnTitle: "Cancel",
-                      btnBackgroundColor: Colors.transparent,
-                      btnTxtColor: Colors.white,
-                      borderColor: AppColors.colorFF8600,
-                      borderWidth: 1,
-                      onPressed: () {
-                        ctrl.passwordController.clear(); // clear password
-                        Get.back(); // close dialog
-                      },
-                    ),
-                  ),
-
-                  /// Confirm Option
-                  Expanded(
-                    child: CustomBtn(
-                      buttonHeight: 50.h,
-                      btnTitle: "Confirm",
-                      btnBackgroundColor: AppColors.colorFF8600,
-                      btnTxtColor: Colors.white,
-                      onPressed: () {
-                        if (ctrl.passwordController.text.isEmpty) {
-                          Utilities.showSnackBar(
-                            title: "Error",
-                            message: "Password cannot be empty",
-                            isSuccess: false,
-                          );
-                          return;
-                        }
-
-                        ctrl.deleteAccount();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-      barrierDismissible: false,
-    );
-  }*/
 }

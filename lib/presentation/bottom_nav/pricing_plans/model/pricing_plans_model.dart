@@ -29,10 +29,12 @@ class PricingPlansModel {
 class SubscriptionData {
   final List<SubscriptionPlan> plans;
   final String planType;
+  final CurrentMembership? currentMembership;
 
   SubscriptionData({
     required this.plans,
     required this.planType,
+    this.currentMembership,
   });
 
   factory SubscriptionData.fromJson(Map<String, dynamic> json) {
@@ -41,6 +43,9 @@ class SubscriptionData {
           .map((plan) => SubscriptionPlan.fromJson(plan))
           .toList(),
       planType: json['plan_type'] ?? '',
+      currentMembership: json['current_membership'] != null
+          ? CurrentMembership.fromJson(json['current_membership'])
+          : null,
     );
   }
 
@@ -48,6 +53,51 @@ class SubscriptionData {
     return {
       'plans': plans.map((plan) => plan.toJson()).toList(),
       'plan_type': planType,
+      'current_membership': currentMembership?.toJson(),
+    };
+  }
+}
+
+class CurrentMembership {
+  final int id;
+  final int planId;
+  final String planName;
+  final String startDate;
+  final String endDate;
+  final String status;
+  final String paymentStatus;
+
+  CurrentMembership({
+    required this.id,
+    required this.planId,
+    required this.planName,
+    required this.startDate,
+    required this.endDate,
+    required this.status,
+    required this.paymentStatus,
+  });
+
+  factory CurrentMembership.fromJson(Map<String, dynamic> json) {
+    return CurrentMembership(
+      id: json['id'] ?? 0,
+      planId: json['plan_id'] ?? 0,
+      planName: json['plan_name'] ?? '',
+      startDate: json['start_date'] ?? '',
+      endDate: json['end_date'] ?? '',
+      status: json['status'] ?? '',
+      paymentStatus: json['payment_status'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'plan_id': planId,
+      'plan_name': planName,
+      'start_date': startDate,
+      'end_date': endDate,
+      'status': status,
+      'payment_status': paymentStatus,
     };
   }
 }

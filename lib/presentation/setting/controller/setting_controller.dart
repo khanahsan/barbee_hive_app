@@ -108,7 +108,11 @@ class SettingController extends GetxController {
       await SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
       ApiService.clearToken();
 
-      Get.back<void>(); // close dialog
+      // Close loading dialog from root navigator
+      final ctx = Get.overlayContext;
+      if (ctx != null) {
+        Navigator.of(ctx, rootNavigator: true).pop();
+      }
 
       // 🟢 Success
       Utilities.showSnackBar(
@@ -120,7 +124,11 @@ class SettingController extends GetxController {
       // navigate
       Get.offAllNamed<void>(Routes.SIGN_IN_VIEW);
     } catch (e) {
-      Get.back<void>(); // close dialog
+      // Close loading dialog from root navigator
+      final ctx = Get.overlayContext;
+      if (ctx != null) {
+        Navigator.of(ctx, rootNavigator: true).pop();
+      }
 
       // Clean error message (from Function 2)
       String errorMessage = e.toString().replaceFirst(
@@ -327,8 +335,11 @@ class SettingController extends GetxController {
                   alignment: Alignment.topRight,
                   child: GestureDetector(
                     onTap: () {
-                      ctrl.passwordController.clear(); // clear field
-                      Get.back(); // close dialog
+                      ctrl.passwordController.clear();
+                      final ctx = Get.overlayContext;
+                      if (ctx != null) {
+                        Navigator.of(ctx, rootNavigator: true).pop();
+                      }
                     },
                     child: Icon(
                       Icons.close,
@@ -381,8 +392,11 @@ class SettingController extends GetxController {
                         borderColor: AppColors.colorFF8600,
                         borderWidth: 1,
                         onPressed: () {
-                          ctrl.passwordController.clear(); // clear field
-                          Get.back(); // close dialog
+                          ctrl.passwordController.clear();
+                          final ctx = Get.overlayContext;
+                          if (ctx != null) {
+                            Navigator.of(ctx, rootNavigator: true).pop();
+                          }
                         },
                       ),
                     ),
@@ -402,10 +416,13 @@ class SettingController extends GetxController {
                             return;
                           }
 
-                          // 1️⃣ Close dialog immediately
-                          Get.back();
+                          // Close dialog from root navigator
+                          final ctx = Get.overlayContext;
+                          if (ctx != null) {
+                            Navigator.of(ctx, rootNavigator: true).pop();
+                          }
 
-                          // 2️⃣ Show loading overlay while deleting account
+                          // Show loading overlay while deleting account
                           ctrl.isLoading.value = true;
                           ctrl.deleteAccount().whenComplete(() {
                             ctrl.isLoading.value = false;

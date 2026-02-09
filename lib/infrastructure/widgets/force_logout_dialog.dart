@@ -43,10 +43,12 @@ class ForceLogoutDialog {
 
                 await SharedPreferenceHelper.clear();
 
-                // First dismiss the dialog
-                Get.back();
+                // Pop from the root navigator (where Get.dialog pushes)
+                final ctx = Get.overlayContext;
+                if (ctx != null) {
+                  Navigator.of(ctx, rootNavigator: true).pop();
+                }
 
-                // Then navigate to the sign-in page
                 Get.offAllNamed<void>(Routes.SIGN_IN_VIEW);
               },
             ),

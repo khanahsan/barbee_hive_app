@@ -16,15 +16,15 @@ class PricingPlansController extends GetxController {
 
   RxInt activePlanId = 0.obs;
 
-  Future<void> loadActivePlan() async {
-    final savedId = SharedPreferenceHelper.getInt(
-      SharedPrefKeys.activatedSubscriptionId,
-    );
-
-    log("SAVED ID: $savedId");
-
-    activePlanId.value = savedId ?? 0;
-  }
+  // Future<void> loadActivePlan() async {
+  //   final savedId = SharedPreferenceHelper.getInt(
+  //     SharedPrefKeys.activatedSubscriptionId,
+  //   );
+  //
+  //   log("SAVED ID: $savedId");
+  //
+  //   activePlanId.value = savedId ?? 0;
+  // }
 
   /// Loading state
   RxBool isLoading = true.obs;
@@ -38,7 +38,7 @@ class PricingPlansController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    Future.wait([loadRoleAsync(), loadActivePlan(), fetchSubscriptionPlans()]);
+    Future.wait([loadRoleAsync(), fetchSubscriptionPlans()]);
   }
 
   /// Fetch Role Value From Local Storage
@@ -55,6 +55,14 @@ class PricingPlansController extends GetxController {
 
       if (response.status) {
         plans.value = response.data.plans;
+
+        // Update active plan from current_membership
+        final membership = response.data.currentMembership;
+        if (membership != null && membership.status == 'active') {
+          activePlanId.value = membership.planId;
+        }
+
+        log("ACTIVE PLAN ID: ${activePlanId.value}");
       } else {
         errorMessage.value = response.message;
       }
@@ -93,14 +101,14 @@ class PricingPlansController extends GetxController {
         try {
           // Initialize PaymentSheet
 
-          if(Platform.isIOS){
+          if (Platform.isIOS) {
             await StripeService.instance.initPaymentSheetIOS(
               clientSecret: clientSecret ?? '',
               merchantDisplayName: 'Barbee Hive',
             );
           }
 
-          if(Platform.isAndroid){
+          if (Platform.isAndroid) {
             await StripeService.instance.initPaymentSheetAndroid(
               clientSecret: clientSecret ?? '',
             );
@@ -165,7 +173,6 @@ class PricingPlansController extends GetxController {
       );
 
       if (finalizeResponse.status) {
-
         final membershipId = finalizeResponse.data?.planId;
 
         if (membershipId != null) {
@@ -174,59 +181,12 @@ class PricingPlansController extends GetxController {
             membershipId,
           );
 
-          activePlanId.value = membershipId;  // ← update instantly
+          activePlanId.value = membershipId; // ← update instantly
         }
 
         // Now refresh plans
         await fetchSubscriptionPlans();
 
-        Get.close(1);
-
-        Utilities.showSnackBar(
-          title: 'Success',
-          message: finalizeResponse.message,
-          isSuccess: true,
-        );
-
-      } else {
-        Utilities.showSnackBar(
-          title: 'Error',
-          message: finalizeResponse.message,
-          isSuccess: false,
-        );
-      }
-    }
-    catch (e) {
-      Utilities.showSnackBar(
-        title: 'Error',
-        message: 'Failed to finalize subscription: $e',
-        isSuccess: false,
-      );
-    }
-  }
-
-/*  Future<void> finalizeSubscription({
-    required int planId,
-    String? paymentIntentID,
-  }) async {
-    try {
-      final finalizeResponse = await SubscriptionApi.finalizeSubscription(
-        planID: planId,
-        paymentIntentID: paymentIntentID,
-      );
-
-      if (finalizeResponse.status) {
-        final membershipId = finalizeResponse.data?.planId;
-
-        fetchSubscriptionPlans();
-        loadActivePlan();
-
-        if (membershipId != null) {
-          await SharedPreferenceHelper.saveInt(
-            SharedPrefKeys.activatedSubscriptionId,
-            membershipId,
-          );
-        }
         Get.close(1);
 
         Utilities.showSnackBar(
@@ -242,12 +202,11 @@ class PricingPlansController extends GetxController {
         );
       }
     } catch (e) {
-      log('Finalize subscription error: ${e.toString()}');
       Utilities.showSnackBar(
         title: 'Error',
         message: 'Failed to finalize subscription: $e',
         isSuccess: false,
       );
     }
-  }*/
+  }
 }

@@ -29,6 +29,8 @@ class EmployerPlansCard extends GetView<PricingPlansController> {
 
   @override
   Widget build(BuildContext context) {
+
+    log("AAA == ${controller.activePlanId.value} BBB == ${plan.id}");
     final bool isPurchased = controller.activePlanId.value == plan.id;
 
     final gradientColors = planGradients[index % planGradients.length];

@@ -2,9 +2,7 @@ import 'dart:developer';
 
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_text_btn.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller/pricing_plans_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/model/pricing_plans_model.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/widgets/plan_details_sheet.dart';
@@ -29,7 +27,6 @@ class EmployerPlansCard extends GetView<PricingPlansController> {
 
   @override
   Widget build(BuildContext context) {
-
     log("AAA == ${controller.activePlanId.value} BBB == ${plan.id}");
     final bool isPurchased = controller.activePlanId.value == plan.id;
 
@@ -39,6 +36,7 @@ class EmployerPlansCard extends GetView<PricingPlansController> {
     // Static titles for plans
     final List<String> titles = [
       "Profile Views",
+      "Profile Interaction",
       "Free Job Posts",
       "Additional job posting cost",
     ];
@@ -74,16 +72,24 @@ class EmployerPlansCard extends GetView<PricingPlansController> {
 
             /// PLAN DURATION
             CustomText(
-              title: "${plan.durationDisplay} Plan",
+              title: plan.durationDays == 0
+                  ? "For Free Users"
+                  : plan.durationDays == 30
+                  ? "Per Month"
+                  : "For ${plan.durationDisplay}",
               fontSize: 16,
               color: AppColors.colorFFFFFF,
               fontWeight: FontWeight.w400,
             ),
+
             SizedBox(height: 5.h),
 
             /// PLAN PRICE
             CustomText(
-              title: plan.price == 0 ? "Free" : "\$${plan.price}",
+              title:
+                  plan.price == 0
+                      ? "\$${plan.price.toStringAsFixed(0)}"
+                      : "\$${plan.price}",
               fontSize: 32,
               color: AppColors.colorFFFFFF,
               fontWeight: FontWeight.w600,
@@ -175,11 +181,13 @@ class EmployerPlansCard extends GetView<PricingPlansController> {
           fontWeight: FontWeight.w500,
         ),
         CustomText(
-          title: subTitle,
+          height: 1.8,
+          title: subTitle.split(',').map((e) => e.trim()).join('\n'),
           fontSize: 16,
           color: AppColors.colorFFFFFF,
           fontWeight: FontWeight.w400,
         ),
+
         SizedBox(height: 10.h),
       ],
     );

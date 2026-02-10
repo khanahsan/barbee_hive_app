@@ -1,3 +1,4 @@
+/*
 import 'dart:developer';
 
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
@@ -68,11 +69,21 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
 
                 /// PLAN DURATION
                 CustomText(
-                  title: "${plan.durationDisplay} Plan",
+                  title: plan.durationDays == 0
+                      ? "For Free Users"
+                      : plan.durationDays == 30
+                      ? "Per Month"
+                      : "For ${plan.durationDisplay}",
                   fontSize: 16,
                   color: AppColors.colorFFFFFF,
                   fontWeight: FontWeight.w400,
                 ),
+                // CustomText(
+                //   title: "${plan.durationDisplay} Plan",
+                //   fontSize: 16,
+                //   color: AppColors.colorFFFFFF,
+                //   fontWeight: FontWeight.w400,
+                // ),
 
                 /// PLAN PRICE
                 CustomText(
@@ -129,7 +140,8 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
                   btnBackgroundColor: AppColors.colorFF8600,
                 ),
             ],
-          /*    CustomButton(
+          */
+/*    CustomButton(
                 onTap: () {
                   log('CALLING');
                   if (plan == null) {
@@ -150,7 +162,8 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
                 buttonTextSize: 16.sp,
                 buttonTextWeight: FontWeight.w600,
                 buttonColor: AppColors.colorFF8600,
-              ),*/
+              ),*//*
+
           ],
         ),
       ),
@@ -201,5 +214,208 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
         SizedBox(height: 10.h),
       ],
     );
+  }
+}
+*/
+
+
+import 'dart:developer';
+
+import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller/pricing_plans_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/model/pricing_plans_model.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/widgets/plan_details_sheet.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:my_responsive_ui/my_responsive_ui.dart';
+
+import '../../../../infrastructure/widgets/custom_btn.dart';
+
+class EmployeePlansCard extends GetView<PricingPlansController> {
+  final SubscriptionPlan plan;
+  final int index;
+
+  const EmployeePlansCard({
+    super.key,
+    required this.plan,
+    required this.index,
+  });
+
+  static const List<List<Color>> planGradients = [
+    [AppColors.colorFF8600, AppColors.black],
+    [AppColors.color9F7857, AppColors.black],
+    [AppColors.colorB1B1B1, AppColors.black],
+    [AppColors.colorE4A74C, AppColors.black],
+    [AppColors.colorD2D7D3, AppColors.black],
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final gradient = planGradients[index % planGradients.length];
+    final primaryColor = gradient.first;
+
+    final bool isPurchased = controller.activePlanId.value == plan.id;
+
+    return Container(
+      padding: const EdgeInsets.all(1),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [AppColors.colorFF8600, AppColors.black],
+        ),
+        borderRadius: BorderRadius.circular(15.r),
+      ),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+        decoration: BoxDecoration(
+          color: AppColors.black,
+          borderRadius: BorderRadius.circular(14.r),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            /// HEADER
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 5.h,
+              children: [
+                /// PLAN NAME
+                CustomText(
+                  title: plan.name,
+                  fontSize: 25,
+                  color: primaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+
+                /// PLAN DURATION
+                CustomText(
+                  title: plan.durationDays == 0
+                      ? "For Free Users"
+                      : plan.durationDays == 30
+                      ? "Per Month"
+                      : "For ${plan.durationDisplay}",
+                  fontSize: 16,
+                  color: AppColors.colorFFFFFF,
+                  fontWeight: FontWeight.w400,
+                ),
+
+                /// PLAN PRICE
+                CustomText(
+                  title: plan.price == 0 ? "Free" : "\$${plan.price}",
+                  fontSize: 25,
+                  color: AppColors.colorFFFFFF,
+                  fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
+
+            SizedBox(height: 20.h),
+
+            /// FREE PLAN FEATURES → BULLETS
+            if (plan.price == 0) ...[
+              ...plan.features.map((text) => _buildBulletPoint(text, AppColors.colorFF8600 )),
+              SizedBox(height: 20.h),
+            ],
+
+            /// PAID PLAN DESCRIPTION → COMMA BASED LOGIC
+            if (plan.price != 0) ...[
+              CustomText(
+                title: 'Description',
+                fontSize: 16,
+                color: primaryColor,
+                fontWeight: FontWeight.w500,
+              ),
+              SizedBox(height: 5.h),
+
+              ..._buildDescriptionByComma(
+                plan.features.isNotEmpty ? plan.features.first.toString() : '',
+              ),
+
+              SizedBox(height: 10.h),
+            ],
+
+            /// CTA BUTTON
+            if (plan.price != 0) ...[
+              if (isPurchased)
+                CustomBtn(
+                  btnTitle: "Purchased",
+                  onPressed: () {},
+                  buttonHeight: 54.h,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  btnBackgroundColor: AppColors.color000000,
+                  borderColor: AppColors.colorFF8600,
+                )
+              else
+                CustomBtn(
+                  onPressed: () {
+                    Get.bottomSheet(
+                      PlanDetailsBottomSheet(plan: plan),
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                    );
+                  },
+                  btnTitle: "Get Started",
+                  buttonWidth: double.infinity,
+                  buttonHeight: 54.h,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  btnBackgroundColor: AppColors.colorFF8600,
+                ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// BULLET ITEM
+  Widget _buildBulletPoint(String text, Color color) {
+    return Row(
+      spacing: 8.w,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          Icons.check,
+          color: color,
+          size: 23.sp,
+        ),
+        Expanded(
+          child: CustomText(
+            title: text,
+            fontSize: 16,
+            color: AppColors.colorFFFFFF,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ],
+    ).paddingSymmetric(vertical: 8.h);
+  }
+
+  /// PAID PLAN DESCRIPTION HANDLER (COMMA BASED)
+  List<Widget> _buildDescriptionByComma(String description) {
+    final items = description
+        .split(',')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+
+    // Single item → normal text
+    if (items.length <= 1) {
+      return [
+        CustomText(
+          title: description,
+          fontSize: 16,
+          color: AppColors.colorFFFFFF,
+          fontWeight: FontWeight.w400,
+        ),
+      ];
+    }
+
+    // Multiple items → bullets
+    return items.map((item) => _buildBulletPoint(item, AppColors.colorB1B1B1)).toList();
   }
 }

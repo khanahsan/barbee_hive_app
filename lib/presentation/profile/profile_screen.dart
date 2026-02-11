@@ -40,7 +40,7 @@ class ProfileScreen extends GetView<ProfileController> {
             showHexagon: false,
             actions: [
               GestureDetector(
-                onTap: () => Get.offNamed(Routes.settingsScreen),
+                onTap: () => Get.toNamed(Routes.settingsScreen),
                 child: SvgPicture.asset(
                   AppAssets.settingIcon,
                   fit: BoxFit.cover,

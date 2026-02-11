@@ -81,6 +81,9 @@ class AppStrings {
   static const String noFavShopsFound = 'No favorite shops found';
 
   static const String unknownError = 'an error occurred';
+  static const String privacyPolicy = 'privacy-policy';
+  static const String termsConditions = 'terms-and-conditions';
+  static const String communityGuidelines = 'community-guidelines';
 
 
 // static const String whiteLogo = 'assets/images/white_logo.png';

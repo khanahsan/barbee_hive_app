@@ -1,9 +1,12 @@
 import 'dart:developer';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:barbee_hive_app/data/api/api_service.dart';
 import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
+import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/api/token_storage.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
+import 'package:barbee_hive_app/infrastructure/constants/app_strings.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
@@ -36,6 +39,45 @@ class SettingController extends GetxController {
   void onInit() {
     super.onInit();
     fetchSettings();
+  }
+
+  Future<void> openCommunityGuidelines() async {
+    final uri = Uri.parse(
+      '${ApiEndPoints.basePoint}${AppStrings.communityGuidelines}',
+    );
+
+    final launched = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+
+    if (!launched) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Could not launch the Terms of Service',
+        isSuccess: false,
+      );
+    }
+  }
+
+
+  Future<void> openTerms() async {
+    final uri = Uri.parse(
+      '${ApiEndPoints.basePoint}${AppStrings.termsConditions}',
+    );
+
+    final launched = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+
+    if (!launched) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Could not launch the Terms of Service',
+        isSuccess: false,
+      );
+    }
   }
 
   // FETCH SETTINGS FROM API

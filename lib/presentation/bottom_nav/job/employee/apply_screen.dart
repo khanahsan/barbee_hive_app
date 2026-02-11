@@ -24,18 +24,6 @@ class ApplyScreen extends GetView<ApplyScreenController> {
     super.key,
   });
 
-  void applyDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return CustomDialog(
-          title: "Congratulations",
-          subTitle: "Your Job Application has been submitted",
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {

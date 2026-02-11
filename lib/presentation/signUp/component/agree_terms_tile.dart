@@ -1,8 +1,12 @@
-import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/infrastructure/constants/app_strings.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../../data/api/endpoint_constants.dart';
 import '../../../infrastructure/constants/app_colors.dart';
 
 class AgreeTermsTile extends StatelessWidget {
@@ -10,11 +14,15 @@ class AgreeTermsTile extends StatelessWidget {
     super.key,
     required this.onTap,
     required this.isChecked,
+    this.onTermsTap,
+    this.onPrivacyTap,
     this.titleText,
   });
 
   final VoidCallback onTap;
   final RxBool isChecked;
+  final VoidCallback? onTermsTap;
+  final VoidCallback? onPrivacyTap;
   final String? titleText;
 
   @override
@@ -44,13 +52,55 @@ class AgreeTermsTile extends StatelessWidget {
                       : null,
             ),
           ),
-          CustomText(
-            title: titleText ?? 'I agree with Terms & Services and Privacy Policy.',
-            color: AppColors.colorFF8600,
-            fontSize: 14,
+          Expanded(
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: "I agree to the ",
+                    style: TextStyle(
+                      color: AppColors.colorFFFFFF,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "Terms of Service",
+                    style: TextStyle(
+                      color: AppColors.colorFF8600,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      decoration: TextDecoration.underline,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = onTermsTap ?? _openTerms,
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
     );
   }
+
+  Future<void> _openTerms() async {
+    final uri = Uri.parse(
+      '${ApiEndPoints.basePoint}${AppStrings.termsConditions}',
+    );
+
+    final launched = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+
+    if (!launched) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Could not launch the Terms of Service',
+        isSuccess: false,
+      );
+    }
+  }
+
 }

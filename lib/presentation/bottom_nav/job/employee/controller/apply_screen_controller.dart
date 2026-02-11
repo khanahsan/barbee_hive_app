@@ -244,8 +244,7 @@ class ApplyScreenController extends GetxController {
           barrierDismissible: false,
           builder: (_) => const CustomDialog(
             title: 'Success',
-            subTitle: 'Email has been sent successfully',
-            email: 'example@email.com',
+            subTitle: 'Your Job Application Has Been Submitted',
           ),
         );
       } else {

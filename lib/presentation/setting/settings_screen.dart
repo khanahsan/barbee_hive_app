@@ -213,7 +213,9 @@ class SettingsScreen extends GetView<SettingController> {
         contentPadding: EdgeInsets.zero,
         value: currentValue,
         onChanged: onChanged,
+
         activeColor: AppColors.colorFF8600,
+        inactiveTrackColor: AppColors.colorC2C2C2,
         title: CustomText(
           title: tileText,
           fontSize: 16,

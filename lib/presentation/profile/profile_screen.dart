@@ -210,47 +210,78 @@ class ProfileScreen extends GetView<ProfileController> {
                                         color: AppColors.colorFFFFFF,
                                       ),
                                     ),
-                                    Obx(() => RichText(
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  controller.isEditing.value
-                                                      ? ""
-                                                      : "Skills",
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.titleMedium?.copyWith(
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w600,
-                                                color: AppColors.colorFF8600,
-                                              ),
+                                    Obx(() {
+                                      if (controller.isEditing.value) {
+                                        return SizedBox.shrink();
+                                      }
+
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          // CustomText(
+                                          //   title: "Skills",
+                                          //   fontSize: 16,
+                                          //   fontWeight: FontWeight.w600,
+                                          //   color: AppColors.colorFF8600,
+                                          // ),
+                                          SizedBox(height: 10.h),
+                                          if (controller
+                                              .selectedSkills.isNotEmpty)
+                                            Wrap(
+                                              spacing: 8.w,
+                                              runSpacing: 8.h,
+                                              children:
+                                                  controller.selectedSkills
+                                                      .map(
+                                                        (skill) => Chip(
+                                                          label: Text(
+                                                            skill,
+                                                            style: TextStyle(
+                                                              color:
+                                                                  AppColors
+                                                                      .colorFFFFFF,
+                                                              fontSize: 12.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                          ),
+                                                          backgroundColor:
+                                                              AppColors
+                                                                  .color262626,
+                                                          side: BorderSide(
+                                                            color: AppColors
+                                                                .colorFF8600,
+                                                          ),
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                      20.r,
+                                                                    ),
+                                                          ),
+                                                          materialTapTargetSize:
+                                                              MaterialTapTargetSize
+                                                                  .shrinkWrap,
+                                                          visualDensity:
+                                                              VisualDensity
+                                                                  .compact,
+                                                        ),
+                                                      )
+                                                      .toList(),
+                                            )
+                                          else
+                                            CustomText(
+                                              title: "No skills selected",
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.colorFFFFFF,
                                             ),
-                                            TextSpan(text: " "),
-                                            TextSpan(
-                                              text:
-                                                  controller
-                                                          .selectedSkills
-                                                          .isNotEmpty
-                                                      ? controller
-                                                          .selectedSkills
-                                                          .first
-                                                      : "No skills selected",
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.titleMedium?.copyWith(
-                                                fontSize: 16.sp,
-                                                fontWeight: FontWeight.w600,
-                                                color:
-                                                    controller.isEditing.value
-                                                        ? AppColors.colorFF8600
-                                                        : AppColors.colorFFFFFF,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                        ],
+                                      );
+                                    }),
                                     SizedBox(height: 40.h),
                                     if (controller.isEditing.value) ...[
                                       /// SHOW EMPLOYER EDIT PROFILE

@@ -14,6 +14,7 @@ import 'package:barbee_hive_app/presentation/changePassword/change_password_scre
 import 'package:barbee_hive_app/presentation/feedbackSupport/feedback_support_screen.dart';
 import 'package:barbee_hive_app/presentation/notifications/notifications_screen.dart';
 import 'package:barbee_hive_app/presentation/profile/profile_screen.dart';
+import 'package:barbee_hive_app/presentation/resetPassword/reset_password_screen.dart';
 import 'package:barbee_hive_app/presentation/setting/settings_screen.dart';
 import 'package:barbee_hive_app/presentation/signIn/binding/sign_in_binding.dart';
 import 'package:barbee_hive_app/presentation/signIn/sign_in_view.dart';
@@ -75,6 +76,11 @@ class Nav {
     GetPage(
       name: Routes.FORGOT_PASSWORD,
       page: () => const ForgotPasswordView(),
+      binding: InitialBindings(),
+    ),
+    GetPage(
+      name: Routes.resetPassScreen,
+      page: () => const ResetPasswordScreen(),
       binding: InitialBindings(),
     ),
     GetPage(

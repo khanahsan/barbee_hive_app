@@ -48,13 +48,10 @@ class ForgetPasswordController extends GetxController {
         await showResetPasswordDialog(
           Get.context!,
           email,
-          onDone: () {
-            Navigator.of(context, rootNavigator: true).pop();
-            Get.back();
+          onDone: (otp) async {
+            await verifyOtp(context, email, otp);
           },
-        ); // Wait for dialog to close
-        print('Dialog closed, navigating to SIGN_IN_VIEW');
-        Get.offNamed(Routes.SIGN_IN_VIEW); // Navigate after dialog is closed
+        );
       } else {
         Utilities.showSnackBar(
           title: "Error",
@@ -83,11 +80,57 @@ class ForgetPasswordController extends GetxController {
     }
   }
 
+  Future<void> verifyOtp(
+    BuildContext context,
+    String email,
+    String otp,
+  ) async {
+    fPasswordIsLoading.value = true;
+    try {
+      final response = await AuthApi.verifyOtp(email: email, otp: otp);
+      final status = response['status'] as bool;
+      final message = response['message'] as String;
+
+      if (status) {
+        Navigator.of(context, rootNavigator: true).pop();
+        Utilities.showSnackBar(
+          title: "Success",
+          message: message,
+          isSuccess: true,
+        );
+        Get.toNamed(Routes.resetPassScreen, arguments: {'email': email});
+      } else {
+        Utilities.showSnackBar(
+          title: "Error",
+          message: message,
+          isSuccess: false,
+        );
+      }
+    } catch (e) {
+      String errorMessage = e.toString().replaceFirst(
+        'Exception: POST request error: Exception: ',
+        '',
+      );
+      errorMessage =
+          errorMessage.startsWith('Exception: ')
+              ? errorMessage.replaceFirst('Exception: ', '')
+              : errorMessage;
+
+      Utilities.showSnackBar(
+        title: "Error",
+        message: errorMessage,
+        isSuccess: false,
+      );
+    } finally {
+      fPasswordIsLoading.value = false;
+    }
+  }
+
   // Method to show the dialog
   Future<void> showResetPasswordDialog(
     BuildContext context,
     String email, {
-    void Function()? onDone,
+    Future<void> Function(String otp)? onDone,
   }) async {
     print('Showing reset password dialog for email: $email'); // Debug log
     await showDialog(

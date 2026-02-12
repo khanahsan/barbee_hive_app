@@ -42,6 +42,38 @@ class AuthApi {
     };
   }
 
+  /// VERIFY OTP API
+  static Future<Map<String, dynamic>> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    final response = await ApiService.post(ApiEndPoints.verifyOtp, {
+      'email': email,
+      'otp': otp,
+    }, auth: false);
+    return {
+      'status': response['status'] ?? false,
+      'message': response['message'] ?? 'Request processed',
+    };
+  }
+
+  /// RESET PASSWORD API
+  static Future<Map<String, dynamic>> resetPassword({
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+  }) async {
+    final response = await ApiService.post(ApiEndPoints.resetPassword, {
+      'email': email,
+      'password': password,
+      'password_confirmation': passwordConfirmation,
+    }, auth: false);
+    return {
+      'status': response['status'] ?? false,
+      'message': response['message'] ?? 'Request processed',
+    };
+  }
+
   /// CHANGE PASSWORD API
   static Future<Map<String, dynamic>> changePassword({
     required String currentPass,

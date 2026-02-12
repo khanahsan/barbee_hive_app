@@ -7,6 +7,8 @@ class ApiEndPoints {
   static const String googleLogin = 'auth/google';
   static const String logout = 'logout';
   static const String forgotPassword = 'forgot-password';
+  static const String verifyOtp = 'verify-otp';
+  static const String resetPassword = 'reset-password';
   static const String changePassword = 'change-password';
   static const String dashboardUsers = 'dashboard/nearest-users';
   static const String deleteAccount = 'delete-account';

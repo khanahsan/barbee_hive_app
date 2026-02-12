@@ -1,5 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/widgets/customDrawer/controller/custom_drawer_controller.dart';
 import 'package:barbee_hive_app/presentation/auth/controllers/forget_password_controller.dart';
+import 'package:barbee_hive_app/presentation/resetPassword/controller/reset_password_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/controller/bottom_nav_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
@@ -77,6 +78,10 @@ class InitialBindings implements Bindings {
     );
     Get.lazyPut<ForgetPasswordController>(
       () => ForgetPasswordController(),
+      fenix: true,
+    );
+    Get.lazyPut<ResetPasswordController>(
+      () => ResetPasswordController(),
       fenix: true,
     );
   }

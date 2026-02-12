@@ -5,13 +5,14 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 class ResetPasswordOtpDialog extends StatefulWidget {
   const ResetPasswordOtpDialog({super.key, required this.email, this.onDone});
 
   final String email;
-  final VoidCallback? onDone;
+  final Future<void> Function(String otp)? onDone;
 
   @override
   State<ResetPasswordOtpDialog> createState() => _ResetPasswordOtpDialogState();
@@ -23,6 +24,7 @@ class _ResetPasswordOtpDialogState extends State<ResetPasswordOtpDialog> {
     (_) => TextEditingController(),
   );
   final _focusNodes = List<FocusNode>.generate(6, (_) => FocusNode());
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -129,7 +131,9 @@ class _ResetPasswordOtpDialogState extends State<ResetPasswordOtpDialog> {
                               FilteringTextInputFormatter.digitsOnly,
                               LengthLimitingTextInputFormatter(1),
                             ],
-                            contentPadding: EdgeInsets.symmetric(vertical: 15.h),
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 15.h,
+                            ),
                             fillColor: AppColors.colorFAFAFA,
                             enabledBorderColor: AppColors.colorE3E3E3,
                             focusedBorderColor: AppColors.colorFF8600,
@@ -144,10 +148,23 @@ class _ResetPasswordOtpDialogState extends State<ResetPasswordOtpDialog> {
 
                   CustomBtn(
                     btnTitle: "Done",
-                    onPressed:
-                        widget.onDone ??
-                        () =>
-                            Navigator.of(context, rootNavigator: true).pop(),
+                    isLoading: _isLoading,
+                    onPressed: () async {
+                      final otp = _controllers.map((c) => c.text).join();
+                      if (otp.length < 6) return;
+                      if (widget.onDone != null) {
+                        setState(() => _isLoading = true);
+                        try {
+                          await widget.onDone!(otp);
+                        } finally {
+                          if (mounted) {
+                            setState(() => _isLoading = false);
+                          }
+                        }
+                      } else {
+                        Navigator.of(context, rootNavigator: true).pop();
+                      }
+                    },
                     buttonHeight: 46,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -164,9 +181,9 @@ class _ResetPasswordOtpDialogState extends State<ResetPasswordOtpDialog> {
                   color: AppColors.colorFF8600,
                   size: 22.sp,
                 ),
-                onPressed:
-                    widget.onDone ??
-                    () => Navigator.of(context, rootNavigator: true).pop(),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
               ),
             ),
           ],

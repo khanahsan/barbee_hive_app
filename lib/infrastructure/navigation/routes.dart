@@ -6,6 +6,7 @@ class Routes {
   static const selectRole = '/select_role';
   static const SPLASH = '/splash';
   static const FORGOT_PASSWORD = '/forgot_password';
+  static const resetPassScreen = '/reset_password';
   static const SIGN_UP_VIEW = '/sign_up_view';
   static const SIGN_IN_VIEW = '/sign_in_view';
   static const CHANGE_PASSWORD = '/change_password';

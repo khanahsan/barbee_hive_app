@@ -382,16 +382,22 @@ class HexagonAvatar extends StatelessWidget {
 
   Widget _buildInitial(BuildContext context) {
     return Container(
-      color: AppColors.colorFF8600, // Background for initial
+      color: AppColors.colorFF8600,
       alignment: Alignment.center,
-      child: Text(
-        name != null && name!.isNotEmpty ? name![0].toUpperCase() : '?',
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontSize: 24.sp,
-          fontWeight: FontWeight.bold,
-          color: AppColors.colorFFFFFF,
-        ),
-      ),
+      child: name != null && name!.isNotEmpty
+          ? Text(
+              name![0].toUpperCase(),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.colorFFFFFF,
+              ),
+            )
+          : Icon(
+              Icons.person,
+              color: AppColors.colorFFFFFF,
+              size: 24.sp,
+            ),
     );
   }
 }

@@ -27,7 +27,7 @@ class DashboardScreen extends GetView<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Obx(() => Scaffold(
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {
       //     controller.getUnreadCount();
@@ -177,6 +177,7 @@ class DashboardScreen extends GetView<DashboardController> {
           Get.toNamed(Routes.PROFILE_SCREEN);
         },
         profileImagePath: controller.userProfileImage.value,
+        // profileName: controller.userName.value,
         context: context,
         leadingTapFunction: () {
           if (onMenuPressed != null) onMenuPressed!();
@@ -305,7 +306,10 @@ class DashboardScreen extends GetView<DashboardController> {
           );
         } else {
           return RefreshIndicator(
-            onRefresh: () => controller.fetchDashboardUsers(),
+            onRefresh: () async {
+              await controller.getUserLocationAndFetchDashboard();
+              await controller.fetchUserProfile();
+            },
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(), // <- Important
 
@@ -414,7 +418,7 @@ class DashboardScreen extends GetView<DashboardController> {
           );
         }
       }),
-    );
+    ));
   }
 
   final RxDouble hOfW = 0.0.obs;

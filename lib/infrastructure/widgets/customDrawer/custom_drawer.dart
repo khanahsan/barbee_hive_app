@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../presentation/auth/controllers/auth.controller.dart';
+import '../../../presentation/bottom_nav/dashboard/controller/dashboardController.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_images.dart';
 import '../../navigation/routes.dart';
@@ -50,7 +51,7 @@ class CustomDrawer extends GetView<CustomDrawerController> {
                           SizedBox(height: 30.h),
 
                           HexagonAvatar(
-                            imagePath: controller.userProfileImage.value,
+                            imagePath: Get.find<DashboardController>().userProfileImage.value,
                             width: 60.w,
                             height: 70.h,
                             borderColor: AppColors.colorFF8600,

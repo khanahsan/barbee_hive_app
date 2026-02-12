@@ -6,6 +6,7 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -76,7 +77,7 @@ class JobScreen extends GetView<JobController> {
               ],
             ),
           ),
-          profileImagePath: controller.userProfileImage.value,
+          profileImagePath: Get.find<DashboardController>().userProfileImage.value,
         ),
 
         backgroundColor: AppColors.black,

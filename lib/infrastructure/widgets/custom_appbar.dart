@@ -13,6 +13,7 @@ PreferredSizeWidget customAppbar({
   required VoidCallback leadingTapFunction,
   required String title,
   String? profileImagePath,
+  String? profileName,
   String? leadingIconPath,
   bool? showActions,
   List<Widget>? actions,
@@ -49,6 +50,7 @@ PreferredSizeWidget customAppbar({
               onTap: hexagonTapFunction?.call,
               child: HexagonAvatar(
                 imagePath: profileImagePath ?? '',
+                name: profileName,
                 width: 40.w,
                 height: 50.h,
               ),
@@ -112,6 +114,7 @@ PreferredSizeWidget customAppbar({
               onTap: hexagonTapFunction?.call,
               child: HexagonAvatar(
                 imagePath: profileImagePath ?? '',
+                name: profileName,
                 width: 40.w,
                 height: 50.h,
               ),

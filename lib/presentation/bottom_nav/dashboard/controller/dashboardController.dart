@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
+import 'package:barbee_hive_app/data/api/profile/profile_api.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/data/model/dropdown_response.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
@@ -24,6 +25,7 @@ class DashboardController extends GetxController {
   final RxInt count = 0.obs;
   final RxString errorMessage = ''.obs;
   RxString userProfileImage = ''.obs;
+  RxString userName = ''.obs;
   RxString fcmToken = ''.obs;
   RxString testToken = ''.obs;
   RxInt userID = 0.obs;
@@ -65,8 +67,8 @@ class DashboardController extends GetxController {
     loadBannerAd();
     AdsHelper().loadInterstitialAd();
     fetchDropdownData();
-    loadUserData();
-
+    // loadUserData();
+    fetchUserProfile();
   }
 
   getUnreadCount() async {
@@ -75,19 +77,36 @@ class DashboardController extends GetxController {
 
 
 
-  Future<void> loadUserData() async {
-    userProfileImage.value =
-        SharedPreferenceHelper.getString(SharedPrefKeys.userProfileImage) ?? '';
+  Future<void> fetchUserProfile() async {
+    try {
+      final userId = SharedPreferenceHelper.getInt(SharedPrefKeys.userId) ?? 0;
+      if (userId == 0) return;
 
-    fcmToken.value =
-        SharedPreferenceHelper.getString(SharedPrefKeys.fcmToken) ?? '';
+      final profile = await ProfileApi.getUserProfile(userId);
+      userProfileImage.value = profile.data.profileImage ?? '';
 
-    testToken.value =
-        SharedPreferenceHelper.getString(SharedPrefKeys.testToken) ?? '';
-
-    userID.value =
-        SharedPreferenceHelper.getInt(SharedPrefKeys.userId) ?? 0;
+      log("USER PROFILE PATH: ${userProfileImage.value}");
+      userName.value = profile.data.role == 2
+          ? profile.data.employer?.businessName ?? ''
+          : profile.data.employee?.name ?? '';
+    } catch (e) {
+      log('Error fetching user profile: $e');
+    }
   }
+
+  // Future<void> loadUserData() async {
+  //   userProfileImage.value =
+  //       SharedPreferenceHelper.getString(SharedPrefKeys.userProfileImage) ?? '';
+  //
+  //   fcmToken.value =
+  //       SharedPreferenceHelper.getString(SharedPrefKeys.fcmToken) ?? '';
+  //
+  //   testToken.value =
+  //       SharedPreferenceHelper.getString(SharedPrefKeys.testToken) ?? '';
+  //
+  //   userID.value =
+  //       SharedPreferenceHelper.getInt(SharedPrefKeys.userId) ?? 0;
+  // }
 
   void loadBannerAd() {
     AdsHelper().loadBannerAd(

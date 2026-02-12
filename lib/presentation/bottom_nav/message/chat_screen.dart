@@ -87,6 +87,10 @@ class ChatScreen extends StatelessWidget {
                 chatSnapshot.data!.data() as Map<String, dynamic>? ?? {};
             final blockedBy = chatData["blockedBy"];
             final isBlocked = blockedBy != null;
+            final isChatDisabled = chatData["disableChat"] == true;
+
+            log("IS BLOCKED VALUE: ${isBlocked}");
+            log("IS CHAT DISABLED VALUE: ${isChatDisabled}");
 
             final amIEmployer = chatController.isEmployer.value;
             final canBlock = amIEmployer && otherUserRole != 2; // FIXED
@@ -302,13 +306,15 @@ class ChatScreen extends StatelessWidget {
                     ),
                   ),
 
-                  /// SHOW BLOCK CHAT STATUS
-                  if (isBlocked)
+                  /// SHOW BLOCK / DISABLE CHAT STATUS
+                  if (isBlocked || isChatDisabled)
                     CustomText(
                       title:
-                          currentUserRole == 'employee'
-                              ? "The messages have been disabled by the employer"
-                              : "You cannot send a message to this user.",
+                          isChatDisabled
+                              ? "This chat has been disabled."
+                              : currentUserRole == 'employee'
+                                  ? "The messages have been disabled by the employer"
+                                  : "You cannot send a message to this user.",
                       color: AppColors.expiredBannerColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,

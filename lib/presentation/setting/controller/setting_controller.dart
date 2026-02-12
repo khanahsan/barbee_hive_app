@@ -190,6 +190,29 @@ class SettingController extends GetxController {
     }
   }
 
+  /// Update `disableChat` on all chats where the current user is a participant
+  Future<void> updateDisableChatForAllChats(bool disable) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null || uid.isEmpty) return;
+
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('chats')
+          .where('userIds', arrayContains: uid)
+          .get();
+
+      final batch = FirebaseFirestore.instance.batch();
+      for (final doc in querySnapshot.docs) {
+        batch.update(doc.reference, {'disableChat': disable});
+      }
+      await batch.commit();
+
+      log("disableChat set to $disable for ${querySnapshot.docs.length} chats");
+    } catch (e) {
+      log("Failed to update disableChat: $e");
+    }
+  }
+
   // UPDATE SETTINGS API CALL
   Future<void> updateSettings() async {
     isLoading.value = true;

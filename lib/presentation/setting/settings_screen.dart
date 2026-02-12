@@ -89,6 +89,7 @@ class SettingsScreen extends GetView<SettingController> {
             onChanged: (val) {
               controller.receiveMessage.value = val;
               controller.updateSettings();
+              controller.updateDisableChatForAllChats(!val);
             },
           ),
 

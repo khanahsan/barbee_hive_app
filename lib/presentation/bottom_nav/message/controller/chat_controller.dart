@@ -185,6 +185,7 @@ class ChatController extends GetxController {
         'userIds': [myUid, otherUid],
         'lastMessage': '',
         'blockedBy': null,
+        'disableChat': false,
         'updatedAt': FieldValue.serverTimestamp(),
         'chatType': chatType,
       });

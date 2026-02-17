@@ -31,7 +31,7 @@ class SettingController extends GetxController {
   RxBool sound = false.obs;
   RxBool vibrate = false.obs;
   RxBool location = false.obs;
-  RxBool showDistance = false.obs;
+  RxInt showDistance = 0.obs;
 
   TextEditingController passwordController = TextEditingController();
 
@@ -92,7 +92,7 @@ class SettingController extends GetxController {
         sound.value = response.data?.sound ?? false;
         vibrate.value = response.data?.vibrate ?? false;
         location.value = response.data?.location ?? false;
-        showDistance.value = response.data?.showDistance ?? false;
+        showDistance.value = response.data?.showDistance ?? 0;
       }
     } catch (e) {
       log("Failed to fetch Settings: $e");

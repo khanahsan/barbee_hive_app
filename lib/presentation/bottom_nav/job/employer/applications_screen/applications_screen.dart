@@ -311,8 +311,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
             children: [
               CustomProfileImage(
                 imagePath:
-                    application.applicant.profileImage ??
-                    AppAssets.profileImage,
+                    application.applicant.profileImage ?? '',
                 width: 100.w,
                 height: 110.h,
                 borderColor: AppColors.colorFF8600,

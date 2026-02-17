@@ -515,36 +515,36 @@ class JobPostingController extends GetxController {
   Future<void> postJob(BuildContext context) async {
     try {
       /// VALIDATION BEFORE API CALL
-      if (selectedSkill.value == null ||
-          selectedExperienceLevel.value == null ||
-          selectedJobType.value == null) {
-        Utilities.showSnackBar(
-          title: "Missing Fields",
-          message: "Please select Skill, Experience Level, and Job Type",
-          isSuccess: false,
-        );
-        return;
-      }
-
-      if (jobDesController.text.isEmpty ||
-          recruiterController.text.isEmpty ||
-          cityController.text.isEmpty) {
-        Utilities.showSnackBar(
-          title: "Missing Fields",
-          message: "Please fill all required fields",
-          isSuccess: false,
-        );
-        return;
-      }
-
-      if (selectedDuration.value == null) {
-        Utilities.showSnackBar(
-          title: "Missing Fields",
-          message: "Please select a duration",
-          isSuccess: false,
-        );
-        return;
-      }
+      // if (selectedSkill.value == null ||
+      //     selectedExperienceLevel.value == null ||
+      //     selectedJobType.value == null) {
+      //   Utilities.showSnackBar(
+      //     title: "Missing Fields",
+      //     message: "Please select Skill, Experience Level, and Job Type",
+      //     isSuccess: false,
+      //   );
+      //   return;
+      // }
+      //
+      // if (jobDesController.text.isEmpty ||
+      //     recruiterController.text.isEmpty ||
+      //     cityController.text.isEmpty) {
+      //   Utilities.showSnackBar(
+      //     title: "Missing Fields",
+      //     message: "Please fill all required fields",
+      //     isSuccess: false,
+      //   );
+      //   return;
+      // }
+      //
+      // if (selectedDuration.value == null) {
+      //   Utilities.showSnackBar(
+      //     title: "Missing Fields",
+      //     message: "Please select a duration",
+      //     isSuccess: false,
+      //   );
+      //   return;
+      // }
 
       print("===== FIELD VALUES BEFORE API CALL =====");
       print("Description: ${jobDesController.text}");

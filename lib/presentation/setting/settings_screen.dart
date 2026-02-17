@@ -93,23 +93,23 @@ class SettingsScreen extends GetView<SettingController> {
             },
           ),
 
-          _buildSwitchTile(
-            tileText: "Sound",
-            currentValue: controller.sound.value,
-            onChanged: (val) {
-              controller.sound.value = val;
-              controller.updateSettings();
-            },
-          ),
-
-          _buildSwitchTile(
-            tileText: "Vibrate",
-            currentValue: controller.vibrate.value,
-            onChanged: (val) {
-              controller.vibrate.value = val;
-              controller.updateSettings();
-            },
-          ),
+          // _buildSwitchTile(
+          //   tileText: "Sound",
+          //   currentValue: controller.sound.value,
+          //   onChanged: (val) {
+          //     controller.sound.value = val;
+          //     controller.updateSettings();
+          //   },
+          // ),
+          //
+          // _buildSwitchTile(
+          //   tileText: "Vibrate",
+          //   currentValue: controller.vibrate.value,
+          //   onChanged: (val) {
+          //     controller.vibrate.value = val;
+          //     controller.updateSettings();
+          //   },
+          // ),
 
           _buildSwitchTile(
             tileText: "Location",
@@ -141,9 +141,9 @@ class SettingsScreen extends GetView<SettingController> {
 
           _buildSwitchTile(
             tileText: "Show Distance",
-            currentValue: controller.showDistance.value,
+            currentValue: controller.showDistance.value == 1,
             onChanged: (val) {
-              controller.showDistance.value = val;
+              controller.showDistance.value = val ? 1 : 0;
               controller.updateSettings();
             },
           ),

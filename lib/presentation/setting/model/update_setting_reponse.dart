@@ -33,7 +33,7 @@ class SettingData {
   final bool sound;
   final bool vibrate;
   final bool location;
-  final bool showDistance;
+  final int showDistance;
   final String createdAt;
   final String updatedAt;
 
@@ -57,7 +57,7 @@ class SettingData {
       sound: json['sound'] ?? false,
       vibrate: json['vibrate'] ?? false,
       location: json['location'] ?? false,
-      showDistance: json['show_distance'] ?? false,
+      showDistance: json['show_distance'] ?? 0,
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
     );

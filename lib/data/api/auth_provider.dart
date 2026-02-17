@@ -143,7 +143,7 @@ class AuthProvider {
     required bool sound,
     required bool vibrate,
     required bool location,
-    required bool showDistance,
+    required int showDistance,
   }) async {
     final fields = {
       'receive_messages': receiveMessages,

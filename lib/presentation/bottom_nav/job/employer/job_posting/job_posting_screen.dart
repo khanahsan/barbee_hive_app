@@ -1,6 +1,3 @@
-
-
-
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
@@ -47,9 +44,7 @@ class JobPostingScreen extends GetView<JobPostingController> {
       body: Obx(() {
         if (controller.isLoading.value) {
           return const Center(
-            child: CircularProgressIndicator(
-              color: Colors.white,
-            ),
+            child: CircularProgressIndicator(color: Colors.white),
           );
         }
 
@@ -60,7 +55,10 @@ class JobPostingScreen extends GetView<JobPostingController> {
               width: double.infinity,
               padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 25.h),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(bottomRight: Radius.circular(25.r), bottomLeft: Radius.circular(25.r)),
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(25.r),
+                  bottomLeft: Radius.circular(25.r),
+                ),
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
@@ -110,6 +108,7 @@ class JobPostingScreen extends GetView<JobPostingController> {
                 ],
               ),
             ),
+
             /// Scrollable Form Fields
             Expanded(
               child: SingleChildScrollView(
@@ -121,51 +120,57 @@ class JobPostingScreen extends GetView<JobPostingController> {
 
                       /// Job Role
                       _dropdownField(
-                        validator: (value) =>
-                            FormValidators.validateRequired(
-                                value, "Job Role"),
+                        validator:
+                            (value) => FormValidators.validateRequired(
+                              value,
+                              "Job Role",
+                            ),
                         hint: 'Select Job Role',
                         iconPath: AppAssets.personIcon,
                         selectedValue: controller.selectedSkill,
                         onChanged: controller.updateSkill,
-                        items: controller.skills
-                            .map(
-                              (skill) =>
-                              DropdownMenuItem(
-                                value: skill.name,
-                                child: Text(
-                                  skill.name,
-                                  style: const TextStyle(
-                                      color: Colors.white),
-                                ),
-                              ),
-                        )
-                            .toList(),
+                        items:
+                            controller.skills
+                                .map(
+                                  (skill) => DropdownMenuItem(
+                                    value: skill.name,
+                                    child: Text(
+                                      skill.name,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
                       ),
                       SizedBox(height: 15.h),
 
                       /// Experience Level
                       _dropdownField(
-                        validator: (value) =>
-                            FormValidators.validateRequired(
-                                value, "Experience Level"),
+                        validator:
+                            (value) => FormValidators.validateRequired(
+                              value,
+                              "Experience Level",
+                            ),
                         hint: 'Experience Level',
                         iconPath: AppAssets.experienceLevel,
                         selectedValue: controller.selectedExperienceLevel,
                         onChanged: controller.updateExperienceLevel,
-                        items: controller.experienceLevels
-                            .map(
-                              (exp) =>
-                              DropdownMenuItem(
-                                value: exp.name,
-                                child: Text(
-                                  exp.name,
-                                  style: const TextStyle(
-                                      color: Colors.white),
-                                ),
-                              ),
-                        )
-                            .toList(),
+                        items:
+                            controller.experienceLevels
+                                .map(
+                                  (exp) => DropdownMenuItem(
+                                    value: exp.name,
+                                    child: Text(
+                                      exp.name,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
                       ),
                       SizedBox(height: 15.h),
 
@@ -180,11 +185,14 @@ class JobPostingScreen extends GetView<JobPostingController> {
                               controller: controller.minSalaryController,
                               keyboardType: TextInputType.number,
                               prefixIcon: SvgPicture.asset(
-                                  AppAssets.salary,
-                                  fit: BoxFit.scaleDown),
-                              validator: (v) =>
-                                  FormValidators.validateSalary(
-                                      v, "Min Salary"),
+                                AppAssets.salary,
+                                fit: BoxFit.scaleDown,
+                              ),
+                              validator:
+                                  (v) => FormValidators.validateSalary(
+                                    v,
+                                    "Min Salary",
+                                  ),
                             ),
                           ),
                           Expanded(
@@ -193,11 +201,15 @@ class JobPostingScreen extends GetView<JobPostingController> {
                               controller: controller.maxSalaryController,
                               keyboardType: TextInputType.number,
                               prefixIcon: SvgPicture.asset(
-                                  AppAssets.salary,
-                                  fit: BoxFit.scaleDown),
-                              validator: (v) =>
-                                  FormValidators.validateSalary(
-                                      v, "Max Salary", isMinField: false),
+                                AppAssets.salary,
+                                fit: BoxFit.scaleDown,
+                              ),
+                              validator:
+                                  (v) => FormValidators.validateSalary(
+                                    v,
+                                    "Max Salary",
+                                    isMinField: false,
+                                  ),
                             ),
                           ),
                         ],
@@ -206,54 +218,54 @@ class JobPostingScreen extends GetView<JobPostingController> {
 
                       /// Salary Type
                       _dropdownField(
-                        validator: (value) =>
-                            FormValidators.validateRequired(
-                                value, "Salary Type"),
+                        validator:
+                            (value) => FormValidators.validateRequired(
+                              value,
+                              "Salary Type",
+                            ),
                         hint: 'Select Salary Type',
                         iconPath: AppAssets.salaryLogo,
                         selectedValue: controller.selectedSalaryType,
                         onChanged: controller.updateSalaryType,
-                        items: controller.salaryTypes
-                            .map(
-                              (exp) =>
-                              DropdownMenuItem(
-                                value: exp.name,
-                                child: Text(
-                                  exp.name,
-                                  style: const TextStyle(
-                                      color: Colors.white),
-                                ),
-                              ),
-                        )
-                            .toList(),
+                        items:
+                            controller.salaryTypes
+                                .map(
+                                  (exp) => DropdownMenuItem(
+                                    value: exp.name,
+                                    child: Text(
+                                      exp.name,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
                       ),
                       SizedBox(height: 15.h),
 
                       /// Duration
                       _dropdownField(
-                        validator: (value) =>
-                            FormValidators.validateRequired(
-                                value, "Duration"),
+                        validator:
+                            (value) => FormValidators.validateRequired(
+                              value,
+                              "Duration",
+                            ),
                         hint: 'Select Duration',
                         iconPath: AppAssets.cardIcon,
                         selectedValue: controller.selectedDurationLabel,
                         onChanged: controller.updateDuration,
-                        items: controller.durations
-                            .map(
-                              (duration) {
-                                final label =
-                                    controller.durationLabel(duration);
-                                return DropdownMenuItem(
-                                  value: label,
-                                  child: Text(
-                                    label,
-                                    style: const TextStyle(
-                                        color: Colors.white),
-                                  ),
-                                );
-                              },
-                        )
-                            .toList(),
+                        items:
+                            controller.durations.map((duration) {
+                              final label = controller.durationLabel(duration);
+                              return DropdownMenuItem(
+                                value: label,
+                                child: Text(
+                                  label,
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              );
+                            }).toList(),
                       ),
                       SizedBox(height: 15.h),
                       //
@@ -267,32 +279,34 @@ class JobPostingScreen extends GetView<JobPostingController> {
                       //
                       // ),
 
-
                       /// Country
                       _dropdownField(
-                        validator: (value) =>
-                            FormValidators.validateRequired(
-                                value, "Country"),
+                        validator:
+                            (value) => FormValidators.validateRequired(
+                              value,
+                              "Country",
+                            ),
                         hint: 'Country',
                         iconPath: AppAssets.countryIcon,
                         selectedValue: controller.selectedCountry,
-                        onChanged: (value){
+                        onChanged: (value) {
                           print("value : $value");
                           controller.updateCountry(value);
                         },
-                        items: controller.countries
-                            .map(
-                              (exp) =>
-                              DropdownMenuItem(
-                                value: exp.name,
-                                child: Text(
-                                  exp.name,
-                                  style: const TextStyle(
-                                      color: Colors.white),
-                                ),
-                              ),
-                        )
-                            .toList(),
+                        items:
+                            controller.countries
+                                .map(
+                                  (exp) => DropdownMenuItem(
+                                    value: exp.name,
+                                    child: Text(
+                                      exp.name,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
                       ),
                       // _textField(
                       //   hintText: 'Country',
@@ -312,26 +326,29 @@ class JobPostingScreen extends GetView<JobPostingController> {
                           Expanded(
                             child: Obx(() {
                               return _dropdownField(
-                                validator: (value) =>
-                                    FormValidators.validateRequired(
-                                        value, "State"),
+                                validator:
+                                    (value) => FormValidators.validateRequired(
+                                      value,
+                                      "State",
+                                    ),
                                 hint: 'State',
                                 iconPath: AppAssets.stateIcon,
                                 selectedValue: controller.selectedState,
                                 onChanged: controller.updateState,
-                                items: controller.states
-                                    .map(
-                                      (exp) =>
-                                      DropdownMenuItem(
-                                        value: exp.name,
-                                        child: Text(
-                                          exp.name,
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                )
-                                    .toList(),
+                                items:
+                                    controller.states
+                                        .map(
+                                          (exp) => DropdownMenuItem(
+                                            value: exp.name,
+                                            child: Text(
+                                              exp.name,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
                               );
                             }),
                           ),
@@ -352,11 +369,14 @@ class JobPostingScreen extends GetView<JobPostingController> {
                               hintText: 'City',
                               controller: controller.cityController,
                               prefixIcon: SvgPicture.asset(
-                                  AppAssets.cityIcon,
-                                  fit: BoxFit.scaleDown),
-                              validator: (v) =>
-                                  FormValidators.validateRequired(
-                                      v, "City"),
+                                AppAssets.cityIcon,
+                                fit: BoxFit.scaleDown,
+                              ),
+                              validator:
+                                  (v) => FormValidators.validateRequired(
+                                    v,
+                                    "City",
+                                  ),
                             ),
                           ),
                         ],
@@ -368,34 +388,38 @@ class JobPostingScreen extends GetView<JobPostingController> {
                         hintText: 'Recruiter',
                         controller: controller.recruiterController,
                         prefixIcon: SvgPicture.asset(
-                            AppAssets.personTwoIcon,
-                            fit: BoxFit.scaleDown),
-                        validator: (v) =>
-                            FormValidators.validateRequired(
-                                v, "Recruiter"),
+                          AppAssets.personTwoIcon,
+                          fit: BoxFit.scaleDown,
+                        ),
+                        validator:
+                            (v) =>
+                                FormValidators.validateRequired(v, "Recruiter"),
                       ),
                       SizedBox(height: 15.h),
 
                       /// Upload Image
                       _textField(
-                        hintText: controller.selectedImage.value != null
-                            ? 'Selected: ${controller.selectedImage.value!
-                            .path
-                            .split('/')
-                            .last}'
-                            : 'Upload Image',
+                        hintText:
+                            controller.selectedImage.value != null
+                                ? 'Selected: ${controller.selectedImage.value!.path.split('/').last}'
+                                : 'Upload Image',
                         controller: TextEditingController(),
                         prefixIcon: SvgPicture.asset(
-                            AppAssets.imagePlusIcon,
-                            fit: BoxFit.scaleDown),
+                          AppAssets.imagePlusIcon,
+                          fit: BoxFit.scaleDown,
+                        ),
                         readOnly: true,
                         suffixIcon: GestureDetector(
                           onTap: () => controller.pickImage(context),
                           child: Container(
                             margin: EdgeInsets.symmetric(
-                                vertical: 15.h, horizontal: 10.w),
+                              vertical: 15.h,
+                              horizontal: 10.w,
+                            ),
                             padding: EdgeInsets.symmetric(
-                                horizontal: 5.w, vertical: 5.h),
+                              horizontal: 5.w,
+                              vertical: 5.h,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.grey,
                               borderRadius: BorderRadius.circular(5.r),
@@ -403,8 +427,9 @@ class JobPostingScreen extends GetView<JobPostingController> {
                             child: const Text(
                               "Upload Image",
                               style: TextStyle(
-                                  color: AppColors.colorFFFFFF,
-                                  fontSize: 12),
+                                color: AppColors.colorFFFFFF,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ),
@@ -413,24 +438,29 @@ class JobPostingScreen extends GetView<JobPostingController> {
 
                       /// Job Type
                       _dropdownField(
-                        validator: (value) =>
-                            FormValidators.validateRequired(
-                                value, "Job Type"),
+                        validator:
+                            (value) => FormValidators.validateRequired(
+                              value,
+                              "Job Type",
+                            ),
                         hint: 'Job Type',
                         iconPath: AppAssets.cardIcon,
                         selectedValue: controller.selectedJobType,
                         onChanged: controller.updateJobType,
-                        items: controller.jobTypes
-                            .map(
-                              (job) =>
-                              DropdownMenuItem(
-                                value: job.name,
-                                child: Text(job.name,
-                                    style: const TextStyle(
-                                        color: Colors.white)),
-                              ),
-                        )
-                            .toList(),
+                        items:
+                            controller.jobTypes
+                                .map(
+                                  (job) => DropdownMenuItem(
+                                    value: job.name,
+                                    child: Text(
+                                      job.name,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
                       ),
                       SizedBox(height: 15.h),
 
@@ -439,30 +469,29 @@ class JobPostingScreen extends GetView<JobPostingController> {
                         hintText: 'Job Description',
                         controller: controller.jobDesController,
                         maxLines: 4,
-                        validator: (v) =>
-                            FormValidators.validateRequired(
-                                v, "Job Description"),
+                        validator:
+                            (v) => FormValidators.validateRequired(
+                              v,
+                              "Job Description",
+                            ),
                       ),
                       SizedBox(height: 15.h),
 
                       /// Submit Button
                       Obx(
-                            () =>
-                            CustomBtn(
-                              btnTitle: 'Submit Now',
-                              buttonHeight: 50.h,
-                              btnBackgroundColor: AppColors.colorFF8600,
-                              btnTxtColor: Colors.white,
-                              buttonWidth: double.infinity,
-                              onPressed: () {
-                                controller.postJob(context);
-                                // if (controller.formKey.currentState!
-                                //     .validate()) {
-                                //
-                                // }
-                              },
-                              isLoading: controller.isLoading.value,
-                            ),
+                        () => CustomBtn(
+                          btnTitle: 'Submit Now',
+                          buttonHeight: 50.h,
+                          btnBackgroundColor: AppColors.colorFF8600,
+                          btnTxtColor: Colors.white,
+                          buttonWidth: double.infinity,
+                          onPressed: () {
+                            if (controller.formKey.currentState!.validate()) {
+                              controller.postJob(context);
+                            }
+                          },
+                          isLoading: controller.isLoading.value,
+                        ),
                       ),
                       SizedBox(height: 20.h),
                     ],
@@ -501,7 +530,6 @@ class JobPostingScreen extends GetView<JobPostingController> {
       validator: validator,
       fillColor: AppColors.textFieldBackground,
       enabled: enabled,
-
     );
   }
 
@@ -535,5 +563,4 @@ class JobPostingScreen extends GetView<JobPostingController> {
       validator: validator,
     );
   }
-
 }

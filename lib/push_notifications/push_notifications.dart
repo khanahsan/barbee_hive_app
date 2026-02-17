@@ -370,7 +370,7 @@ class NotificationService {
       log("NEW JOB POSTED NOTIFICATION");
       // var controller = Get.put(BottomNavController());
       var controller = Get.find<BottomNavController>();
-      controller.tabChangeForEmployeeNotifications(2);
+      controller.tabChangeForEmployeeNotifications(1);
     }
 
     if (message.data['type'] == 'new_application') {
@@ -381,8 +381,8 @@ class NotificationService {
         await Future.delayed(const Duration(milliseconds: 400));
 
         final bottomNavController = Get.find<BottomNavController>();
-        bottomNavController.tabChangeForEmployeeNotifications(2);
-        log('BOTTOM NAV CHANGED TO INDEX 2');
+        bottomNavController.tabChangeForEmployeeNotifications(1);
+        log('BOTTOM NAV CHANGED TO INDEX 1');
 
         // Allow tab switch animation/state to complete
         await Future.delayed(const Duration(milliseconds: 200));

@@ -68,12 +68,12 @@ class SplashController extends GetxController
           log("iOS Initial Message Payload: ${initialMessage.data}");
 
           if (type == 'new_job') {
-            indexToPass = 2;
+            indexToPass = 1;
 
             await goto(indexToPass);
           }
           if (type == 'new_application') {
-            indexToPass = 2;
+            indexToPass = 1;
 
             await goto(indexToPass, jobId: jobId);
           }
@@ -111,13 +111,13 @@ class SplashController extends GetxController
           log("Android Notification Payload: $payload");
 
           if (type == 'new_job') {
-            indexToPass = 2;
+            indexToPass = 1;
 
             await goto(indexToPass);
 
           }
           if (type == 'new_application') {
-            indexToPass = 2;
+            indexToPass = 1;
 
             await goto(indexToPass, jobId: jobId);
           }
@@ -133,22 +133,6 @@ class SplashController extends GetxController
     }
   }
 
-  // goto(int index) async {
-  //   final isRememberMe =
-  //       SharedPreferenceHelper.getBool(SharedPrefKeys.isRememberMe) ?? false;
-  //
-  //   log(
-  //     "IS REMEMBER ME : AND ${isRememberMe} and token ${await TokenStorage.getToken()}",
-  //   );
-  //
-  //   if (isRememberMe && await TokenStorage.getToken() != null) {
-  //     Get.offAllNamed(Routes.CUSTOMDRAWER, arguments: {
-  //       'index': index,
-  //     });
-  //   } else {
-  //     Get.offAllNamed(Routes.SIGN_IN_VIEW);
-  //   }
-  // }
 
   Future<void> goto(int index, {int? jobId}) async {
     final isRememberMe =
@@ -175,43 +159,4 @@ class SplashController extends GetxController
 
   void increment() => count.value++;
 
-  Future<void> _handleNotificationNavigation(
-    Map<String, dynamic>? data,
-  ) async {
-    if (data == null || data.isEmpty) return;
-
-    try {
-      await NotificationService.clearAppBadge();
-    } catch (e) {
-      log('Failed to clear badge on splash navigation: $e');
-    }
-
-    final type = data['type']?.toString();
-    if (type == null) return;
-
-    if (type == 'new_job') {
-      try {
-        Get.find<BottomNavController>().tabChangeForEmployeeNotifications(2);
-      } catch (e) {
-        log('Error switching tab for new_job: $e');
-      }
-      return;
-    }
-
-    if (type == 'new_application') {
-      try {
-        final bottomNavController = Get.find<BottomNavController>();
-        bottomNavController.tabChangeForEmployeeNotifications(2);
-
-        // Allow tab change to settle before navigating to applications
-        await Future.delayed(const Duration(milliseconds: 200));
-
-        final jobId = int.tryParse(data['job_id']?.toString() ?? '') ?? 0;
-        Get.toNamed(Routes.applicationsScreen, arguments: {'jobId': jobId});
-      } catch (e) {
-        log('Error handling new_application navigation: $e');
-      }
-      return;
-    }
-  }
 }

@@ -136,13 +136,13 @@ class SplashController extends GetxController
 
   Future<void> goto(int index, {int? jobId}) async {
     final isRememberMe =
-        SharedPreferenceHelper.getBool(SharedPrefKeys.isRememberMe) ?? false;
+        SharedPreferenceHelper.getString(SharedPrefKeys.authToken) ?? false;
 
     log(
       "IS REMEMBER ME : $isRememberMe | jobId: $jobId | token: ${await TokenStorage.getToken()}",
     );
 
-    if (isRememberMe && await TokenStorage.getToken() != null) {
+    if (TokenStorage.getToken() != null) {
       Get.offAllNamed(
         Routes.CUSTOMDRAWER,
         arguments: {
@@ -154,9 +154,5 @@ class SplashController extends GetxController
       Get.offAllNamed(Routes.SIGN_IN_VIEW);
     }
   }
-
-
-
-  void increment() => count.value++;
 
 }

@@ -106,6 +106,7 @@ class AuthApi {
   static Future<RegisterResponse> register({
     required String uid,
     required String name,
+    String? businessTaxNumber,
     required String email,
     required String password,
     required String passwordConfirmation,
@@ -142,6 +143,10 @@ class AuthApi {
     if (hairColorId != null) fields['hair_color_id'] = hairColorId.toString();
     if (height != null) fields['height'] = height.toString();
     // if (skillId != null) fields['skill_id'] = skillId.toString();
+
+    if (businessTaxNumber != null && businessTaxNumber.isNotEmpty) {
+      fields['business_tax'] = businessTaxNumber;
+    }
 
     if (skillIds != null && skillIds.isNotEmpty) {
       // For APIs that accept multiple values as skill_ids[]

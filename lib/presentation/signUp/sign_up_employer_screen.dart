@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:barbee_hive_app/presentation/signUp/component/agree_terms_tile.dart';
 import 'package:flutter/material.dart';
@@ -231,34 +229,35 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                           hint: 'State',
                                           iconPath: AppAssets.stateIcon,
                                           selectedValue:
-                                          controller.selectedState,
+                                              controller.selectedState,
                                           // new RxString
                                           onChanged: (value) {
                                             controller.updateState(value);
                                           },
                                           validator:
                                               (v) =>
-                                              FormValidators.validateRequired(
-                                                v,
-                                                'State',
-                                              ),
+                                                  FormValidators.validateRequired(
+                                                    v,
+                                                    'State',
+                                                  ),
                                           items:
-                                          controller.states
-                                              .map(
-                                                (state) => DropdownMenuItem(
-                                              value: state.name,
-                                              child: CustomText(
-                                                title: state.name,
-                                                color:
-                                                AppColors
-                                                    .color4C4C4C,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          )
-                                              .toList(),
+                                              controller.states
+                                                  .map(
+                                                    (state) => DropdownMenuItem(
+                                                      value: state.name,
+                                                      child: CustomText(
+                                                        title: state.name,
+                                                        color:
+                                                            AppColors
+                                                                .color4C4C4C,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .toList(),
                                         ),
                                       ),
+
                                       // Expanded(
                                       //   child: _buildTextField(
                                       //     hint: 'State',
@@ -273,7 +272,6 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                       //             ),
                                       //   ),
                                       // ),
-
                                       Expanded(
                                         child: _buildTextField(
                                           hint: 'City',
@@ -292,7 +290,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
 
                                   CustomMultiSelectDropdown(
                                     hint: "Position Seeking",
-                                    iconPath: AppAssets.experienceLogo,
+                                    iconPath: AppAssets.cardIcon,
                                     selectedValues: controller.selectedSkills,
                                     items:
                                         controller.skills
@@ -304,6 +302,19 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                       }
                                       return null;
                                     },
+                                  ),
+
+                                  /// Business Name Field
+                                  _buildTextField(
+                                    hint: 'Business Tax #',
+                                    controller: controller.businessTaxController,
+                                    icon: AppAssets.personIcon,
+                                    validator:
+                                        (value) =>
+                                            FormValidators.validateRequired(
+                                              value,
+                                              "Business Tax Number",
+                                            ),
                                   ),
 
                                   /// TERMS SECTION

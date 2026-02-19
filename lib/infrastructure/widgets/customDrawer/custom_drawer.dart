@@ -18,7 +18,6 @@ class CustomDrawer extends GetView<CustomDrawerController> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Obx(
@@ -51,7 +50,10 @@ class CustomDrawer extends GetView<CustomDrawerController> {
                           SizedBox(height: 30.h),
 
                           HexagonAvatar(
-                            imagePath: Get.find<DashboardController>().userProfileImage.value,
+                            imagePath:
+                                Get.find<DashboardController>()
+                                    .userProfileImage
+                                    .value,
                             width: 60.w,
                             height: 70.h,
                             borderColor: AppColors.colorFF8600,
@@ -73,7 +75,7 @@ class CustomDrawer extends GetView<CustomDrawerController> {
                               textOverflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          SizedBox(height: 60.h),
+                          SizedBox(height: 70.h),
 
                           drawerMenuTile(
                             title: "My Profile",
@@ -83,14 +85,17 @@ class CustomDrawer extends GetView<CustomDrawerController> {
                               Get.toNamed(Routes.PROFILE_SCREEN);
                             },
                           ),
-                          SizedBox(height: 25.h),
+                          SizedBox(height: 40.h),
 
                           drawerMenuTile(
                             title:
                                 controller.role == 2
                                     ? "My Jobs"
                                     : "My Applications",
-                            iconPath: AppAssets.jobIcon,
+                            iconPath:
+                                controller.role == 2
+                                    ? AppAssets.jobIcon
+                                    : AppAssets.personIconThree,
                             controller: controller,
                             onTap: () {
                               controller.role == 2
@@ -101,8 +106,7 @@ class CustomDrawer extends GetView<CustomDrawerController> {
                                   : Get.toNamed(Routes.myJobs);
                             },
                           ),
-
-                          SizedBox(height: 25.h),
+                          SizedBox(height: 40.h),
 
                           drawerMenuTile(
                             title: "Settings",
@@ -112,7 +116,7 @@ class CustomDrawer extends GetView<CustomDrawerController> {
                               Get.toNamed(Routes.settingsScreen);
                             },
                           ),
-                          SizedBox(height: 25.h),
+                          SizedBox(height: 40.h),
 
                           drawerMenuTile(
                             title: "Logout",

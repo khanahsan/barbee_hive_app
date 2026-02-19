@@ -41,6 +41,7 @@ class AppAssets {
   static String clockIcon = '$iconPath/clock_icon.svg';
   static String envelopeIcon = '$iconPath/envelope_icon.svg';
   static String personIcon = '$iconPath/person_icon.svg';
+  static String personIconThree = '$iconPath/person_icon_three.svg';
   static String emailIcon = '$iconPath/email_icon.svg';
   static String lockIcon = '$iconPath/lock_icon.svg';
   static String cardIcon = '$iconPath/card_icon.svg';

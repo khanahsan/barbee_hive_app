@@ -8,6 +8,7 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
 import '../../infrastructure/widgets/app_text_field.dart';
+import '../../infrastructure/widgets/custom_app_shimmer.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
 import '../../infrastructure/widgets/custom_dropdown.dart';
 import '../../infrastructure/widgets/custom_multi_select_dropdown.dart';
@@ -273,15 +274,47 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                       //   ),
                                       // ),
                                       Expanded(
-                                        child: _buildTextField(
-                                          hint: 'City',
-                                          controller: controller.cityController,
-                                          icon: AppAssets.cityIcon,
-                                          validator:
-                                              (value) =>
-                                                  FormValidators.validateRequired(
-                                                    value,
-                                                    "City",
+                                        child: Obx(
+                                          () =>
+                                              controller.isCitiesLoading.value
+                                                  ? AppShimmer(
+                                                    height: 56,
+                                                    width: double.infinity,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  )
+                                                  : _buildDropdown(
+                                                    hint: 'City',
+                                                    iconPath:
+                                                        AppAssets.cityIcon,
+                                                    selectedValue:
+                                                        controller.selectedCity,
+                                                    onChanged:
+                                                        controller.updateCity,
+                                                    validator:
+                                                        (v) =>
+                                                            FormValidators.validateRequired(
+                                                              v,
+                                                              'City',
+                                                            ),
+                                                    items:
+                                                        controller.cities
+                                                            .map(
+                                                              (city) => DropdownMenuItem(
+                                                                value: city.name,
+                                                                child: CustomText(
+                                                                  title:
+                                                                      city.name,
+                                                                  color:
+                                                                      AppColors
+                                                                          .color4C4C4C,
+                                                                  fontSize: 16,
+                                                                ),
+                                                              ),
+                                                            )
+                                                            .toList(),
                                                   ),
                                         ),
                                       ),
@@ -446,6 +479,24 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
         fit: BoxFit.scaleDown,
       ),
       suffixIcon: suffix,
+    );
+  }
+
+  Widget _buildDropdown({
+    required String hint,
+    required String iconPath,
+    required RxString selectedValue,
+    required List<DropdownMenuItem<String>> items,
+    required Function(String?) onChanged,
+    String? Function(String?)? validator,
+  }) {
+    return CustomDropdown(
+      hint: hint,
+      iconPath: iconPath,
+      selectedValue: selectedValue,
+      onChanged: onChanged,
+      validator: validator,
+      items: items,
     );
   }
 }

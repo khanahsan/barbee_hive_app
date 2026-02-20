@@ -47,6 +47,7 @@ class ProfileController extends GetxController {
   final stateController = TextEditingController();
   final cityController = TextEditingController();
   final addressController = TextEditingController();
+  final businessTaxController = TextEditingController();
   final dobController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
@@ -176,6 +177,7 @@ class ProfileController extends GetxController {
     stateController.dispose();
     cityController.dispose();
     addressController.dispose();
+    businessTaxController.dispose();
     dobController.dispose();
     super.onClose();
   }
@@ -278,6 +280,7 @@ class ProfileController extends GetxController {
       currentStateName.value = data.employer?.state?.name ?? '';
       currentStateId.value = data.employer?.state?.id ?? 0;
       currentCityName.value = data.employer?.city ?? '';
+      currentCityName.value = data.employer?.city ?? '';
 
       log(
         'STATE NAME: ${currentCountryName.value} --- STATE ID: ${currentCountryId.value}',
@@ -288,6 +291,9 @@ class ProfileController extends GetxController {
       countryController.text = data.employer?.country?.name ?? '';
       stateController.text = data.employer?.state?.name ?? '';
       cityController.text = data.employer?.city ?? '';
+      addressController.text = data.employer?.address ?? '';
+      businessTaxController.text = data.employer?.businessTaxNumber ?? '';
+
 
       if (currentStateId.value != 0) {
         fetchCities(stateId: currentStateId.value);
@@ -581,6 +587,7 @@ class ProfileController extends GetxController {
       final email = emailController.text.trim();
       final city = cityController.text.trim();
       final address = addressController.text.trim();
+      final businessTaxNumber = businessTaxController.text.trim();
       final country = countryController.text.trim();
       final state = stateController.text.trim();
       final dobText = dobController.text.trim();
@@ -595,6 +602,8 @@ class ProfileController extends GetxController {
       final response = await ProfileApi.updateUserProfile(
         city: city,
         address: address.isNotEmpty ? address : null,
+        businessTaxNumber:
+            businessTaxNumber.isNotEmpty ? businessTaxNumber : null,
         country: currentCountryId.value.toString(),
         state: currentStateId.value.toString(),
         resume: selectedResumeFile.value,

@@ -5,6 +5,7 @@ import 'package:barbee_hive_app/data/api/api_service.dart';
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
 import 'package:barbee_hive_app/data/api/firebase/firebase_service.dart';
+import 'package:barbee_hive_app/data/model/city_response.dart';
 import 'package:barbee_hive_app/data/model/country_response.dart';
 import 'package:barbee_hive_app/data/model/state_response.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
@@ -34,15 +35,18 @@ class SignUpEmployerController extends GetxController {
   final isPasswordVisible = false.obs;
   final isConfirmPasswordVisible = false.obs;
   final isLoading = false.obs;
+  final isCitiesLoading = false.obs;
   final errorMessage = ''.obs;
 
   final RxString selectedCountry = ''.obs;
   final RxString selectedState = ''.obs;
+  final RxString selectedCity = ''.obs;
 
   final selectedSkills = <String>[].obs; // for multi-select
   final skills = <Skill>[].obs;
   final RxList<Country> countries = <Country>[].obs;
   final RxList<StateModel> states = <StateModel>[].obs;
+  final RxList<City> cities = <City>[].obs;
 
   final RxString profileImageUrl = ''.obs;
   final RxString googleAccessToken = ''.obs;
@@ -87,7 +91,25 @@ class SignUpEmployerController extends GetxController {
   }
 
   void updateState(String? value) {
-    if (value != null) selectedState.value = value;
+    if (value == null) return;
+    selectedState.value = value;
+    selectedCity.value = '';
+    cityController.text = '';
+    cities.clear();
+
+    final state = states.firstWhere(
+      (s) => s.name == value,
+      orElse: () => StateModel(id: 0, name: ''),
+    );
+    if (state.id != 0) {
+      fetchCities(stateId: state.id);
+    }
+  }
+
+  void updateCity(String? value) {
+    if (value == null) return;
+    selectedCity.value = value;
+    cityController.text = value;
   }
 
   // ---------------------- IMAGE PICKER ---------------------- //
@@ -134,6 +156,18 @@ class SignUpEmployerController extends GetxController {
     }
   }
 
+  Future<void> fetchCities({required int stateId}) async {
+    isCitiesLoading.value = true;
+    try {
+      final response = await AuthProvider.getCities(stateId: stateId);
+      if (response.status) {
+        cities.assignAll(response.data);
+      }
+    } finally {
+      isCitiesLoading.value = false;
+    }
+  }
+
   // ---------------------- REGISTER EMPLOYER ---------------------- //
   Future<void> registerEmployer() async {
     if (googleAccessToken.value.isNotEmpty && googleIdToken.value.isNotEmpty) {
@@ -144,7 +178,8 @@ class SignUpEmployerController extends GetxController {
       return _registerWithAppleCredential();
     }
     // 1️⃣ Validate profile image and terms
-    if (!_validateImage() || !_validateTerms()) return;
+    // if (!_validateImage() || !_validateTerms()) return;
+    if (!_validateTerms()) return;
 
     // 2️⃣ Validate selected skills
     if (selectedSkills.isEmpty) {
@@ -216,10 +251,11 @@ class SignUpEmployerController extends GetxController {
         password: passwordController.text,
         passwordConfirmation: confirmPasswordController.text,
         role: 2,
+        address: addressController.text,
         // Employer role
         country: countryId.toString(),
         state: stateId.toString(),
-        city: cityController.text.trim(),
+        city: selectedCity.value,
         skillIds: userSkills.map((s) => s.id).toList(),
         profileImage: selectedImage.value,
       );
@@ -547,7 +583,7 @@ class SignUpEmployerController extends GetxController {
         // Employer role
         country: countryId.toString(),
         state: stateId.toString(),
-        city: cityController.text.trim(),
+        city: selectedCity.value,
         skillIds: userSkills.map((s) => s.id).toList(),
         profileImage: selectedImage.value,
       );
@@ -705,7 +741,7 @@ class SignUpEmployerController extends GetxController {
         // Employer role
         country: countryId.toString(),
         state: stateId.toString(),
-        city: cityController.text.trim(),
+        city: selectedCity.value,
         skillIds: userSkills.map((s) => s.id).toList(),
         profileImage: selectedImage.value,
       );

@@ -197,6 +197,8 @@ class Employer {
   final ProfileCountry? country;
   final ProfileState? state;
   final String? city;
+  final String? address;
+  final String? businessTaxNumber;
   final List<Skill> skills;
 
   Employer({
@@ -205,6 +207,8 @@ class Employer {
     this.country,
     this.state,
     this.city,
+    this.address,
+    this.businessTaxNumber,
     required this.skills,
   });
 
@@ -219,6 +223,8 @@ class Employer {
       state:
           json['state'] != null ? ProfileState.fromJson(json['state']) : null,
       city: json['city'],
+      address: json['address'] ?? '',
+      businessTaxNumber: json['business_tax'] ?? '',
       skills:
       json['skills'] != null
           ? List<Skill>.from(json['skills'].map((x) => Skill.fromJson(x)))

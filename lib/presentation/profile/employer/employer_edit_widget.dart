@@ -1,85 +1,4 @@
-/*
-import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
-import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import '../../../infrastructure/constants/app_colors.dart';
-import '../../../infrastructure/constants/app_images.dart';
-import '../../../infrastructure/widgets/custom_dropdown.dart';
-import '../../../infrastructure/widgets/app_text_field.dart';
-
-class EmployerEditWidget extends StatelessWidget {
-  EmployerEditWidget({super.key});
-
-  final controller = Get.put(ProfileController());
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 400.h,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          spacing: 15.h,
-          children: [
-            _buildCustomTextField(
-              hintText: "Name",
-              controller: controller.nameController,
-              prefixIconPath: AppAssets.editIcon,
-            ),
-            _buildCustomTextField(
-              hintText: "Email Address",
-              controller: controller.emailController,
-              prefixIconPath: AppAssets.envelopeIcon,
-            ),
-            _buildCustomTextField(
-              hintText: "Password",
-              controller: controller.passController,
-              prefixIconPath: AppAssets.lockIcon,
-            ),
-            _buildCustomTextField(
-              hintText: "Confirm Password",
-              controller: controller.confirmPassController,
-              prefixIconPath: AppAssets.lockIcon,
-            ),
-            CustomDropdown(
-              prefixIconPath: AppAssets.experienceIcon,
-              value: controller.selectedExperience.value,
-              hintText: "Experience",
-              items: controller.experienceList,
-              onChanged: (val) {
-                controller.selectedExperience.value = val ?? '';
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCustomTextField({
-    required TextEditingController controller,
-    required String hintText,
-    required String prefixIconPath,
-  }) {
-    return CustomTextField(
-      fontColor: AppColors.color4C4C4C,
-      controller: controller,
-      filled: true,
-      fillColor: AppColors.textFieldBackground,
-      enabledBorderColor: Colors.transparent,
-      hintText: hintText,
-      prefixIcon: SvgPicture.asset(
-        prefixIconPath,
-        fit: BoxFit.scaleDown,
-        color: AppColors.color4C4C4C,
-      ),
-    );
-  }
-}
-*/
 
 import 'dart:developer';
 
@@ -93,6 +12,7 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/widgets/app_text_field.dart';
+import '../../../infrastructure/widgets/custom_app_shimmer.dart';
 import '../../../infrastructure/widgets/custom_dropdown.dart';
 import '../../../infrastructure/widgets/custom_multi_select_dropdown.dart';
 
@@ -101,11 +21,20 @@ class EmployerEditWidget extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        spacing: 15.h,
-        children: [
+    return SizedBox(
+      height: 400.h,
+      child: SingleChildScrollView(
+        // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.manual,
+        child: AnimatedPadding(
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOut,
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 50,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 15.h,
+            children: [
           /// NAME FIELD
           _buildCustomTextField(
             hintText: "Name",
@@ -262,23 +191,7 @@ class EmployerEditWidget extends GetView<ProfileController> {
                     ),
                   )
                       .toList(),
-                  onChanged: (val) {
-                    controller.currentStateName.value = val ?? '';
-
-                    log('CURRENT STATE NAME: ${controller.currentStateName.value}');
-
-                    final selected = controller.states.firstWhereOrNull(
-                          (e) => e.name == val,
-                    );
-
-                    log('SELECTED STATE : $selected');
-
-
-                    controller.currentStateId.value = selected?.id ?? 0;
-
-                    log('SELECTED STATE ID: ${controller.currentStateId.value}');
-
-                  },
+                  onChanged: controller.updateStateSelection,
                 ),
               ),
               // Expanded(
@@ -291,15 +204,44 @@ class EmployerEditWidget extends GetView<ProfileController> {
               //   ),
               // ),
               Expanded(
-                child: _buildCustomTextField(
-                  hintText: 'City',
-                  controller: controller.cityController,
-                  prefixIconPath: AppAssets.cityIcon,
-                  validator:
-                      (v) => FormValidators.validateRequired(v, 'City'),
-                ),
+                child: Obx(() {
+                  if (controller.isCitiesLoading.value) {
+                    return AppShimmer(
+                      height: 56,
+                      width: double.infinity,
+                      borderRadius: BorderRadius.circular(10),
+                    );
+                  }
+                  return CustomDropdown(
+                    validator:
+                        (value) =>
+                            FormValidators.validateRequired(value, "City"),
+                    hint: "City",
+                    iconPath: AppAssets.cityIcon,
+                    selectedValue: controller.currentCityName,
+                    items:
+                        controller.cities
+                            .map(
+                              (e) => DropdownMenuItem<String>(
+                                value: e.name,
+                                child: Text(e.name),
+                              ),
+                            )
+                            .toList(),
+                    onChanged: controller.updateCitySelection,
+                  );
+                }),
               ),
             ],
+          ),
+
+          /// ADDRESS FIELD
+          _buildCustomTextField(
+            hintText: 'Address',
+            controller: controller.addressController,
+            prefixIconPath: AppAssets.cityIcon,
+            validator:
+                (v) => FormValidators.validateRequired(v, 'Address'),
           ),
 
           /// EXPERIENCE FIELD
@@ -314,6 +256,16 @@ class EmployerEditWidget extends GetView<ProfileController> {
               }
               return null;
             },
+          ),
+
+          /// BUSINESS TAX FIELD
+          _buildCustomTextField(
+            hintText: 'Business Tax #',
+            controller: controller.businessTaxController,
+            prefixIconPath: AppAssets.personIcon,
+            validator:
+                (v) =>
+                    FormValidators.validateRequired(v, 'Business Tax Number'),
           ),
           // Obx(
           //   () => CustomDropdown(
@@ -343,7 +295,9 @@ class EmployerEditWidget extends GetView<ProfileController> {
           //     },
           //   ),
           // ),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }

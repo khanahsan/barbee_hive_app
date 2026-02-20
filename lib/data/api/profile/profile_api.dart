@@ -24,6 +24,7 @@ class ProfileApi {
     required String state,
     required String city,
     String? address,
+    String? businessTaxNumber,
     String? dob,
     String? gender,
     int? eyeColorId,
@@ -41,6 +42,8 @@ class ProfileApi {
       'state_id': state,
       'city': city,
       if (address != null && address.isNotEmpty) 'address': address,
+      if (businessTaxNumber != null && businessTaxNumber.isNotEmpty)
+        'business_tax': businessTaxNumber,
       if (dob != null) 'dob': dob,
       if (gender != null) 'gender': gender,
       if (eyeColorId != null) 'eye_color_id': '$eyeColorId',

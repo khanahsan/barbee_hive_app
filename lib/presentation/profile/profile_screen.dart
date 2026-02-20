@@ -376,8 +376,8 @@ class ProfileScreen extends GetView<ProfileController> {
                         ],
                       ),
                     ),
-                  ],
-                ).paddingOnly(top: 25.h),
+                    ],
+                  ).paddingOnly(top: 25.h),
       ),
     );
   }

@@ -8,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 
-import '../../../data/api/token_storage.dart';
 import '../../../infrastructure/constants/shared_pref_keys.dart';
 import '../../../infrastructure/helpers/shared_preference_helper.dart';
 import '../../../infrastructure/navigation/routes.dart';
@@ -135,14 +134,13 @@ class SplashController extends GetxController
 
 
   Future<void> goto(int index, {int? jobId}) async {
-    final isRememberMe =
-        SharedPreferenceHelper.getString(SharedPrefKeys.authToken) ?? false;
+    final token = SharedPreferenceHelper.getString(SharedPrefKeys.authToken);
 
     log(
-      "IS REMEMBER ME : $isRememberMe | jobId: $jobId | token: ${await TokenStorage.getToken()}",
+      "jobId: $jobId | token: $token",
     );
 
-    if (TokenStorage.getToken() != null) {
+    if (token != null && token.isNotEmpty) {
       Get.offAllNamed(
         Routes.CUSTOMDRAWER,
         arguments: {

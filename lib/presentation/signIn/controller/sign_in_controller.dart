@@ -8,7 +8,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../data/api/api_service.dart';
 import '../../../data/api/firebase/firebase_service.dart';
 import '../../../infrastructure/helpers/shared_preference_helper.dart';
 
@@ -98,7 +97,10 @@ class SignInController extends GetxController {
       );
 
 
-      ApiService.setToken(response.token);
+      SharedPreferenceHelper.saveString(
+        SharedPrefKeys.authToken,
+        response.token,
+      );
 
       // Sync Firebase → Run in background (DO NOT AWAIT)
       FirebaseService.syncUserWithFirebase(
@@ -189,7 +191,10 @@ class SignInController extends GetxController {
           tokenResult.account.email,
           '', // no password for Google Sign-In
         );
-        ApiService.setToken(response.token);
+        SharedPreferenceHelper.saveString(
+          SharedPrefKeys.authToken,
+          response.token,
+        );
 
         // Successfully signed in
         Utilities.showSnackBar(
@@ -278,7 +283,10 @@ class SignInController extends GetxController {
           appleResult.email ?? '',
           '', // no password for Apple Sign-In
         );
-        ApiService.setToken(response.token);
+        SharedPreferenceHelper.saveString(
+          SharedPrefKeys.authToken,
+          response.token,
+        );
 
         // Successfully signed in
         Utilities.showSnackBar(

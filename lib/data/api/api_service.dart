@@ -3,7 +3,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
-import 'package:barbee_hive_app/data/api/token_storage.dart';
+import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
+import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/force_logout_dialog.dart';
@@ -19,16 +20,16 @@ class ApiService {
 
   static void setToken(String token) {
     _token = token;
-    TokenStorage.saveToken(token);
+    SharedPreferenceHelper.saveString(SharedPrefKeys.authToken, token);
   }
 
   static Future<void> initToken() async {
-    _token = await TokenStorage.getToken();
+    _token = SharedPreferenceHelper.getString(SharedPrefKeys.authToken);
   }
 
   static void clearToken() {
     _token = null; // Explicitly set to null
-    TokenStorage.clearToken(); // Clear from SharedPreferences
+    SharedPreferenceHelper.remove(SharedPrefKeys.authToken);
   }
 
   static Map<String, String> _headers({bool includeAuth = true}) {
@@ -37,8 +38,11 @@ class ApiService {
       'Accept': 'application/json',
     };
 
+    if (_token == null) {
+      _token = SharedPreferenceHelper.getString(SharedPrefKeys.authToken);
+    }
     log('TOKEN: $_token');
-    if (includeAuth && _token != null) {
+    if (includeAuth && _token != null && _token!.isNotEmpty) {
       headers['Authorization'] = 'Bearer $_token';
     }
     return headers;

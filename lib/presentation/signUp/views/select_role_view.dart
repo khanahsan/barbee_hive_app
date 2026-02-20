@@ -85,11 +85,11 @@ class SelectRoleView extends StatelessWidget {
           Get.toNamed(Routes.SIGN_UP_EMPLOYER, arguments: signUpArgs);
         }
       } catch (e) {
-        Utilities.showSnackBar(
-          title: 'Apple Sign-In Failed',
-          message: 'Please try again. $e',
-          isSuccess: false,
-        );
+        // Utilities.showSnackBar(
+        //   title: 'Apple Sign-In Failed',
+        //   message: 'Please try again. $e',
+        //   isSuccess: false,
+        // );
       }
     }
 

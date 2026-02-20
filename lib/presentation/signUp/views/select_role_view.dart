@@ -58,6 +58,41 @@ class SelectRoleView extends StatelessWidget {
       }
     }
 
+    Future<void> _handleAppleContinue() async {
+      if (selectedRole.value.isEmpty) {
+        Utilities.showSnackBar(
+          title: 'Select Role',
+          message: 'Please select Employee or Employer first',
+          isSuccess: false,
+        );
+        return;
+      }
+
+      try {
+        final appleResult = await FirebaseService.signInWithAppleTokensOnly();
+        if (appleResult == null) return;
+
+        final signUpArgs = {
+          'name': appleResult.fullName ?? '',
+          'email': appleResult.email ?? '',
+          'appleIdentityToken': appleResult.identityToken,
+          'appleAuthorizationCode': appleResult.authorizationCode,
+        };
+
+        if (selectedRole.value == 'employee') {
+          Get.toNamed(Routes.SIGN_UP_VIEW, arguments: signUpArgs);
+        } else {
+          Get.toNamed(Routes.SIGN_UP_EMPLOYER, arguments: signUpArgs);
+        }
+      } catch (e) {
+        Utilities.showSnackBar(
+          title: 'Apple Sign-In Failed',
+          message: 'Please try again. $e',
+          isSuccess: false,
+        );
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -198,36 +233,27 @@ class SelectRoleView extends StatelessWidget {
                       SizedBox(height: 15.h),
 
                       // Continue with Apple button
-                      // Obx(
-                      //       () => CustomBtn(
-                      //     buttonHeight: 55.h,
-                      //     btnTitle: "Continue With Apple",
-                      //     btnBackgroundColor: AppColors.color000000,
-                      //     borderColor: AppColors.colorFFFFFF,
-                      //     btnTxtColor: AppColors.colorFFFFFF,
-                      //     iconPath: AppAssets.appleLogo,
-                      //     onPressed:
-                      //     selectedRole.value.isEmpty
-                      //         ? () {
-                      //       Utilities.showSnackBar(
-                      //         title: 'Select Role',
-                      //         message:
-                      //         'Please select Employee or Employer first',
-                      //         isSuccess: false,
-                      //       );
-                      //     }
-                      //         : () {
-                      //       // TODO: Implement Apple Sign-In for registration
-                      //       Get.snackbar(
-                      //         'Coming Soon',
-                      //         'Apple Sign-Up will be available soon',
-                      //         backgroundColor: AppColors.colorFF8600,
-                      //         colorText: Colors.white,
-                      //         snackPosition: SnackPosition.BOTTOM,
-                      //       );
-                      //     },
-                      //   ),
-                      // ),
+                      Obx(
+                        () => CustomBtn(
+                          buttonHeight: 55.h,
+                          btnTitle: "Continue With Apple",
+                          btnBackgroundColor: AppColors.color000000,
+                          borderColor: AppColors.colorFFFFFF,
+                          btnTxtColor: AppColors.colorFFFFFF,
+                          iconPath: AppAssets.appleLogo,
+                          onPressed:
+                              selectedRole.value.isEmpty
+                                  ? () {
+                                    Utilities.showSnackBar(
+                                      title: 'Select Role',
+                                      message:
+                                          'Please select Employee or Employer first',
+                                      isSuccess: false,
+                                    );
+                                  }
+                                  : _handleAppleContinue,
+                        ),
+                      ),
                     ],
                   ],
                 ),

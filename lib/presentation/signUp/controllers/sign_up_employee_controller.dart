@@ -86,6 +86,7 @@ class SignUpEmployeeController extends GetxController {
   void onInit() {
     super.onInit();
     _prefillFromGoogle();
+    _prefillFromApple();
     // Fetch dropdown data
     fetchSignupDropdowns();
   }
@@ -709,6 +710,25 @@ class SignUpEmployeeController extends GetxController {
     }
     if (idToken != null && idToken.isNotEmpty) {
       googleIdToken.value = idToken;
+    }
+  }
+
+  void _prefillFromApple() {
+    final args = Get.arguments;
+    if (args is! Map) return;
+
+    final name = args['name'] as String?;
+    final email = args['email'] as String?;
+    final identityToken = args['appleIdentityToken'] as String?;
+    final authorizationCode = args['appleAuthorizationCode'] as String?;
+
+    if (name != null && name.isNotEmpty) nameController.text = name;
+    if (email != null && email.isNotEmpty) emailController.text = email;
+    if (identityToken != null && identityToken.isNotEmpty) {
+      appleIdentityToken.value = identityToken;
+    }
+    if (authorizationCode != null && authorizationCode.isNotEmpty) {
+      appleAuthorizationCode.value = authorizationCode;
     }
   }
 

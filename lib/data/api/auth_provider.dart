@@ -4,6 +4,7 @@ import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/data/model/color_response.dart';
 import 'package:barbee_hive_app/data/model/contact_types_response.dart';
 import 'package:barbee_hive_app/data/model/country_response.dart';
+import 'package:barbee_hive_app/data/model/city_response.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/data/model/dropdown_response.dart';
 import 'package:barbee_hive_app/data/model/duration_model.dart';
@@ -111,6 +112,15 @@ class AuthProvider {
   static Future<StateResponse> getStates() async {
     final data = await ApiService.get(ApiEndPoints.getStates, auth: false);
     return StateResponse.fromJson(data);
+  }
+
+  /// FETCH ALL CITIES (by state)
+  static Future<CityResponse> getCities({required int stateId}) async {
+    final data = await ApiService.get(
+      '${ApiEndPoints.getCities}?state_id=$stateId',
+      auth: false,
+    );
+    return CityResponse.fromJson(data);
   }
 
   /// FETCH ALL DURATIONS

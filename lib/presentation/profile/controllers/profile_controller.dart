@@ -2,6 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/model/country_response.dart';
+import 'package:barbee_hive_app/data/model/city_response.dart';
+import 'package:barbee_hive_app/data/model/experience_level_response.dart';
 import 'package:barbee_hive_app/data/model/gender_response.dart';
 import 'package:barbee_hive_app/data/model/height_response.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
@@ -28,6 +30,7 @@ class ProfileController extends GetxController {
   // ---------------- Rx Variables ----------------
   Rx<UserProfileResponse?> userProfile = Rx<UserProfileResponse?>(null);
   RxBool isLoading = false.obs;
+  RxBool isCitiesLoading = false.obs;
   RxInt currentUserId = 0.obs;
   RxInt currentUserRole = 0.obs;
   RxString userProfileImage = ''.obs;
@@ -43,6 +46,7 @@ class ProfileController extends GetxController {
   final countryController = TextEditingController();
   final stateController = TextEditingController();
   final cityController = TextEditingController();
+  final addressController = TextEditingController();
   final dobController = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
@@ -97,6 +101,8 @@ class ProfileController extends GetxController {
   final RxList<Height> heights = <Height>[].obs;
   final RxList<Country> countries = <Country>[].obs;
   final RxList<StateModel> states = <StateModel>[].obs;
+  final RxList<City> cities = <City>[].obs;
+  final RxList<ExperienceLevel> experienceLevels = <ExperienceLevel>[].obs;
 
   RxString currentSkillName = "".obs;
   RxInt currentSkillId = 0.obs;
@@ -109,11 +115,11 @@ class ProfileController extends GetxController {
   RxString currentStateName = "".obs;
   RxInt currentStateId = 0.obs;
 
+  RxString currentCityName = "".obs;
+
   RxString currentUID = "".obs;
 
-  // Dropdown lists
-  final experienceList = ["Fresher", "1-2 Years", "3-5 Years", "5+ Years"];
-  final heightList = [140, 150, 160];
+  // Dropdown selections
   final selectedExperience = ''.obs;
 
   // Resume file handling
@@ -169,6 +175,7 @@ class ProfileController extends GetxController {
     countryController.dispose();
     stateController.dispose();
     cityController.dispose();
+    addressController.dispose();
     dobController.dispose();
     super.onClose();
   }
@@ -187,6 +194,7 @@ class ProfileController extends GetxController {
       fetchEyeColors(),
       fetchHairColors(),
       fetchSkills(),
+      fetchExperienceLevels(),
       fetchGenders(),
       fetchHeights(),
       fetchCountries(),
@@ -269,6 +277,7 @@ class ProfileController extends GetxController {
 
       currentStateName.value = data.employer?.state?.name ?? '';
       currentStateId.value = data.employer?.state?.id ?? 0;
+      currentCityName.value = data.employer?.city ?? '';
 
       log(
         'STATE NAME: ${currentCountryName.value} --- STATE ID: ${currentCountryId.value}',
@@ -279,12 +288,18 @@ class ProfileController extends GetxController {
       countryController.text = data.employer?.country?.name ?? '';
       stateController.text = data.employer?.state?.name ?? '';
       cityController.text = data.employer?.city ?? '';
+
+      if (currentStateId.value != 0) {
+        fetchCities(stateId: currentStateId.value);
+      }
     } else {
       // Employee details
       nameController.text = data.employee?.name ?? '';
       countryController.text = data.employee?.country?.name ?? '';
       stateController.text = data.employee?.state?.name ?? '';
       cityController.text = data.employee?.city ?? '';
+      addressController.text = data.employee?.address ?? '';
+      currentCityName.value = data.employee?.city ?? '';
 
       currentEyeColorName.value = data.employee?.eyeColor?.name ?? '';
       currentEyeColorId.value = data.employee?.eyeColor?.id ?? 0;
@@ -295,6 +310,7 @@ class ProfileController extends GetxController {
 
       currentGender.value = (data.employee?.gender ?? '');
       currentHeight.value = data.employee?.height ?? 0;
+      selectedExperience.value = data.employee?.experienceYears ?? '';
 
       // Employee skills (multi-select)
       if (data.employee?.skills != null && data.employee!.skills.isNotEmpty) {
@@ -329,6 +345,10 @@ class ProfileController extends GetxController {
       userProfileImage.value = data.profileImage ?? '';
       userCoverImage.value = data.coverPhoto ?? '';
       dobController.text = data.employee?.dob ?? '';
+
+      if (currentStateId.value != 0) {
+        fetchCities(stateId: currentStateId.value);
+      }
 
       debugPrint("currentGender: ${currentGender.value}");
       log("currentSkillName: ${currentSkillName.value}");
@@ -480,6 +500,66 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future<void> fetchExperienceLevels() async {
+    isLoading.value = true;
+
+    try {
+      print('Fetching experience levels');
+      final response = await AuthProvider.getExperienceLevels();
+      if (response.status) {
+        experienceLevels.assignAll(response.data);
+      } else {
+        showError('Error', response.message);
+      }
+    } catch (e) {
+      showError('Error', 'Failed to fetch experience levels');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchCities({required int stateId}) async {
+    try {
+      isCitiesLoading.value = true;
+      print('Fetching Cities');
+      final response = await AuthProvider.getCities(stateId: stateId);
+      if (response.status) {
+        cities.assignAll(response.data);
+        if (currentCityName.value.isNotEmpty &&
+            !cities.any((c) => c.name == currentCityName.value)) {
+          currentCityName.value = '';
+          cityController.text = '';
+        }
+      } else {
+        showError('Error', response.message);
+      }
+    } catch (e) {
+      log('Failed to Cities');
+      showError('Error', 'Failed to Cities');
+    } finally {
+      isCitiesLoading.value = false;
+    }
+  }
+
+  void updateStateSelection(String? val) {
+    currentStateName.value = val ?? '';
+    final selected = states.firstWhereOrNull((e) => e.name == val);
+    currentStateId.value = selected?.id ?? 0;
+
+    currentCityName.value = '';
+    cityController.text = '';
+    cities.clear();
+
+    if (currentStateId.value != 0) {
+      fetchCities(stateId: currentStateId.value);
+    }
+  }
+
+  void updateCitySelection(String? val) {
+    currentCityName.value = val ?? '';
+    cityController.text = currentCityName.value;
+  }
+
   // ---------------- UI Helpers ----------------
   void showError(String title, String message) {
     Utilities.showSnackBar(title: title, message: message, isSuccess: false);
@@ -500,6 +580,7 @@ class ProfileController extends GetxController {
       final name = nameController.text.trim();
       final email = emailController.text.trim();
       final city = cityController.text.trim();
+      final address = addressController.text.trim();
       final country = countryController.text.trim();
       final state = stateController.text.trim();
       final dobText = dobController.text.trim();
@@ -513,6 +594,7 @@ class ProfileController extends GetxController {
       // ========== 1️⃣ API CALL ==========
       final response = await ProfileApi.updateUserProfile(
         city: city,
+        address: address.isNotEmpty ? address : null,
         country: currentCountryId.value.toString(),
         state: currentStateId.value.toString(),
         resume: selectedResumeFile.value,

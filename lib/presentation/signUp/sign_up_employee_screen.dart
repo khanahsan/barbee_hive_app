@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../infrastructure/widgets/app_text_field.dart';
+import '../../infrastructure/widgets/custom_app_shimmer.dart';
 import '../../infrastructure/widgets/custom_dropdown.dart';
 import '../../infrastructure/widgets/custom_multi_select_dropdown.dart';
 import '../../infrastructure/widgets/custom_profile_image.dart';
@@ -177,6 +178,35 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                       return null;
                                     },
                                   ),
+                                  SizedBox(height: 15.h),
+
+                                  _buildDropdown(
+                                    hint: 'Experience Level',
+                                    iconPath: AppAssets.cardIcon,
+                                    selectedValue:
+                                        controller.selectedExperienceLevel,
+                                    onChanged:
+                                        controller.updateExperienceLevel,
+                                    validator:
+                                        (value) =>
+                                            FormValidators.validateRequired(
+                                              value,
+                                              'Experience Level',
+                                            ),
+                                    items:
+                                        controller.experienceLevels
+                                            .map(
+                                              (level) => DropdownMenuItem(
+                                                value: level.name,
+                                                child: CustomText(
+                                                  title: level.name,
+                                                  color: AppColors.color4C4C4C,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                  ),
 
                                   // _buildDropdown(
                                   //   hint: 'Experience',
@@ -299,19 +329,67 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                         ),
                                       ),
                                       Expanded(
-                                        child: _buildTextField(
-                                          'City',
-                                          controller.cityController,
-                                          prefixIconPath: AppAssets.cityIcon,
-                                          validator:
-                                              (v) =>
-                                                  FormValidators.validateRequired(
-                                                    v,
-                                                    'City',
+                                        child: Obx(
+                                          () =>
+                                              controller.isCitiesLoading.value
+                                                  ? AppShimmer(
+                                                    height: 56,
+                                                    width: double.infinity,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  )
+                                                  : _buildDropdown(
+                                                    hint: 'City',
+                                                    iconPath:
+                                                        AppAssets.cityIcon,
+                                                    selectedValue:
+                                                        controller
+                                                            .selectedCity,
+                                                    onChanged:
+                                                        controller.updateCity,
+                                                    validator:
+                                                        (v) =>
+                                                            FormValidators.validateRequired(
+                                                              v,
+                                                              'City',
+                                                            ),
+                                                    items:
+                                                        controller.cities
+                                                            .map(
+                                                              (
+                                                                city,
+                                                              ) => DropdownMenuItem(
+                                                                value: city.name,
+                                                                child: CustomText(
+                                                                  title:
+                                                                      city.name,
+                                                                  color:
+                                                                      AppColors
+                                                                          .color4C4C4C,
+                                                                  fontSize: 16,
+                                                                ),
+                                                              ),
+                                                            )
+                                                            .toList(),
                                                   ),
                                         ),
                                       ),
                                     ],
+                                  ),
+                                  SizedBox(height: 15.h),
+
+                                  /// ADDRESS FIELD
+                                  _buildTextField(
+                                    'Address',
+                                    controller.addressController,
+                                    prefixIconPath: AppAssets.cityIcon,
+                                    validator:
+                                        (v) => FormValidators.validateRequired(
+                                          v,
+                                          'Address',
+                                        ),
                                   ),
                                   SizedBox(height: 15.h),
 

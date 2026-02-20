@@ -23,6 +23,7 @@ class ApiEndPoints {
   static const String getHeights = 'dashboard/heights';
   static const String getCountries = 'dashboard/countries';
   static const String getStates = 'dashboard/states';
+  static const String getCities = 'dashboard/cities';
   static const String getDuration = 'duration';
   static const String getSalaryTypes = 'dashboard/salary-types';
   static const String getContactTypes = 'dashboard/contact-types';

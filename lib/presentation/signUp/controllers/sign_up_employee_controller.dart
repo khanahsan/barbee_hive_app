@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
 import 'package:barbee_hive_app/data/api/firebase/firebase_service.dart';
+import 'package:barbee_hive_app/data/model/city_response.dart';
 import 'package:barbee_hive_app/data/model/country_response.dart';
+import 'package:barbee_hive_app/data/model/experience_level_response.dart';
 import 'package:barbee_hive_app/data/model/gender_response.dart';
 import 'package:barbee_hive_app/data/model/height_response.dart';
 import 'package:barbee_hive_app/data/model/state_response.dart';
@@ -31,7 +33,7 @@ class SignUpEmployeeController extends GetxController {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-  final TextEditingController cityController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
 
   // ======== Reactive Variables ========
@@ -42,16 +44,20 @@ class SignUpEmployeeController extends GetxController {
   final RxString selectedHairColor = ''.obs;
   final RxString selectedCountry = ''.obs;
   final RxString selectedState = ''.obs;
+  final RxString selectedCity = ''.obs;
+  final RxString selectedExperienceLevel = ''.obs;
 
   // final RxString selectedSkill = ''.obs;
 
   final RxList<EyeColor> eyeColors = <EyeColor>[].obs;
   final RxList<HairColor> hairColors = <HairColor>[].obs;
   final RxList<Skill> skills = <Skill>[].obs;
+  final RxList<ExperienceLevel> experienceLevels = <ExperienceLevel>[].obs;
   final RxList<Gender> genders = <Gender>[].obs;
   final RxList<Height> heights = <Height>[].obs;
   final RxList<Country> countries = <Country>[].obs;
   final RxList<StateModel> states = <StateModel>[].obs;
+  final RxList<City> cities = <City>[].obs;
 
   RxList<String> selectedSkills = <String>[].obs;
 
@@ -68,6 +74,7 @@ class SignUpEmployeeController extends GetxController {
   final isPasswordVisible = false.obs;
   final isConfirmPasswordVisible = false.obs;
   final isLoading = false.obs;
+  final isCitiesLoading = false.obs;
   final isGoogleSignInLoading = false.obs;
   final isAppleSignInLoading = false.obs;
   final errorMessage = ''.obs;
@@ -80,15 +87,7 @@ class SignUpEmployeeController extends GetxController {
     super.onInit();
     _prefillFromGoogle();
     // Fetch dropdown data
-    Future.wait([
-      fetchEyeColors(),
-      fetchHairColors(),
-      fetchSkills(),
-      fetchGenders(),
-      fetchHeights(),
-      fetchCountries(),
-      fetchStates(),
-    ]);
+    fetchSignupDropdowns();
   }
 
   @override
@@ -99,7 +98,7 @@ class SignUpEmployeeController extends GetxController {
     passwordController.dispose();
     confirmPasswordController.dispose();
     dateController.dispose();
-    cityController.dispose();
+    addressController.dispose();
     super.onClose();
   }
 
@@ -137,7 +136,26 @@ class SignUpEmployeeController extends GetxController {
   }
 
   void updateState(String? value) {
-    if (value != null) selectedState.value = value;
+    if (value == null) return;
+    selectedState.value = value;
+    selectedCity.value = '';
+    cities.clear();
+
+    final state = states.firstWhere(
+      (s) => s.name == value,
+      orElse: () => StateModel(id: 0, name: ''),
+    );
+    if (state.id != 0) {
+      fetchCities(stateId: state.id);
+    }
+  }
+
+  void updateCity(String? value) {
+    if (value != null) selectedCity.value = value;
+  }
+
+  void updateExperienceLevel(String? value) {
+    if (value != null) selectedExperienceLevel.value = value;
   }
 
   // ======== Date Picker ========
@@ -234,201 +252,134 @@ class SignUpEmployeeController extends GetxController {
   }
 
   // ======== Fetch Dropdown Data ========
-  Future<void> fetchEyeColors() async {
+  Future<void> fetchSignupDropdowns() async {
     isLoading.value = true;
     errorMessage.value = '';
 
     try {
-      print('Fetching eye colors');
-      final response = await AuthProvider.getEyeColors();
+      final response = await AuthProvider.getDashboardDropdowns();
       if (response.status) {
-        eyeColors.assignAll(response.data);
-      } else {
-        errorMessage.value = response.message;
-        Get.snackbar(
-          'Error',
-          errorMessage.value,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        final data = response.data;
+
+        eyeColors.assignAll(
+          data.eyeColors
+              .map(
+                (item) => EyeColor(
+                  id: _dropdownIdToInt(item.id),
+                  name: item.name,
+                ),
+              )
+              .toList(),
         );
-      }
-    } catch (e) {
-      print('Eye Colors Error: $e');
-      errorMessage.value = 'Failed to fetch eye colors';
-      Get.snackbar(
-        'Error',
-        errorMessage.value,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
 
-  Future<void> fetchHairColors() async {
-    isLoading.value = true;
-    errorMessage.value = '';
-
-    try {
-      print('Fetching hair colors');
-      final response = await AuthProvider.getHairColors();
-      if (response.status) {
-        hairColors.assignAll(response.data);
-        //print('Fetched ${hairColors.length} hair colors: ${hairColors.map((e) => e.name).toList()}');
-      } else {
-        errorMessage.value = response.message;
-        Get.snackbar(
-          'Error',
-          errorMessage.value,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        hairColors.assignAll(
+          data.hairColors
+              .map(
+                (item) => HairColor(
+                  id: _dropdownIdToInt(item.id),
+                  name: item.name,
+                ),
+              )
+              .toList(),
         );
-      }
-    } catch (e) {
-      print('Hair Colors Error: $e');
-      errorMessage.value = 'Failed to fetch hair colors';
-      Get.snackbar(
-        'Error',
-        errorMessage.value,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
 
-  Future<void> fetchSkills() async {
-    isLoading.value = true;
-    errorMessage.value = '';
-
-    try {
-      print('Fetching skills');
-      final response = await AuthProvider.getSkills();
-      if (response.status) {
-        skills.assignAll(response.data);
-      } else {
-        errorMessage.value = response.message;
-        Get.snackbar(
-          'Error',
-          errorMessage.value,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        skills.assignAll(
+          data.skills
+              .map(
+                (item) => Skill(
+                  id: _dropdownIdToInt(item.id),
+                  name: item.name,
+                ),
+              )
+              .toList(),
         );
-      }
-    } catch (e) {
-      print('Skills Error: $e');
-      errorMessage.value = 'Failed to fetch skills';
-      Get.snackbar(
-        'Error',
-        errorMessage.value,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
 
-  Future<void> fetchGenders() async {
-    isLoading.value = true;
-    errorMessage.value = '';
-
-    try {
-      print('Fetching Genders');
-      final response = await AuthProvider.getGenders();
-      if (response.status) {
-        genders.assignAll(response.data);
-      } else {
-        errorMessage.value = response.message;
-        Get.snackbar(
-          'Error',
-          errorMessage.value,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        experienceLevels.assignAll(
+          data.experienceLevels
+              .map(
+                (item) => ExperienceLevel(
+                  id: item.id.toString(),
+                  name: item.name,
+                ),
+              )
+              .toList(),
         );
-      }
-    } catch (e) {
-      print('Skills Error: $e');
-      errorMessage.value = 'Failed to fetch genders';
-      Get.snackbar(
-        'Error',
-        errorMessage.value,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
 
-  Future<void> fetchHeights() async {
-    isLoading.value = true;
-    errorMessage.value = '';
-
-    try {
-      print('Fetching Heights');
-      final response = await AuthProvider.getHeights();
-      if (response.status) {
-        heights.assignAll(response.data);
-      } else {
-        errorMessage.value = response.message;
-        Get.snackbar(
-          'Error',
-          errorMessage.value,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
+        genders.assignAll(
+          data.genders
+              .map(
+                (item) => Gender(
+                  id: item.id.toString(),
+                  name: item.name,
+                ),
+              )
+              .toList(),
         );
-      }
-    } catch (e) {
-      print('Skills Error: $e');
-      errorMessage.value = 'Failed to fetch heights';
-      Get.snackbar(
-        'Error',
-        errorMessage.value,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
 
-  Future<void> fetchCountries() async {
-    isLoading.value = true;
+        heights.assignAll(
+          data.heights
+              .map(
+                (item) => Height(
+                  id: _dropdownIdToInt(item.id),
+                  name: item.name,
+                ),
+              )
+              .toList(),
+        );
 
-    try {
-      print('Fetching countries');
-      final response = await AuthProvider.getCountries();
-      if (response.status) {
-        countries.assignAll(response.data);
+        countries.assignAll(
+          data.countries
+              .map(
+                (item) => Country(
+                  id: _dropdownIdToInt(item.id),
+                  name: item.name,
+                ),
+              )
+              .toList(),
+        );
+
+        states.assignAll(
+          data.states
+              .map(
+                (item) => StateModel(
+                  id: _dropdownIdToInt(item.id),
+                  name: item.name,
+                ),
+              )
+              .toList(),
+        );
       } else {
         _showError(response.message);
       }
     } catch (e) {
-      _showError('Failed to fetch countries');
+      _showError('Failed to fetch dropdown data');
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> fetchStates() async {
-    isLoading.value = true;
+  Future<void> fetchCities({required int stateId}) async {
+    isCitiesLoading.value = true;
 
     try {
-      print('Fetching states');
-      final response = await AuthProvider.getStates();
+      print('Fetching cities');
+      final response = await AuthProvider.getCities(stateId: stateId);
       if (response.status) {
-        states.assignAll(response.data);
+        cities.assignAll(response.data);
       } else {
         _showError(response.message);
       }
     } catch (e) {
-      _showError('Failed to fetch states');
+      _showError('Failed to fetch cities');
     } finally {
-      isLoading.value = false;
+      isCitiesLoading.value = false;
     }
+  }
+
+  int _dropdownIdToInt(dynamic id) {
+    if (id is int) return id;
+    if (id is String) return int.tryParse(id) ?? 0;
+    return 0;
   }
 
 
@@ -446,9 +397,9 @@ class SignUpEmployeeController extends GetxController {
     if (selectedResume.value == null) {
       return _showError('Please upload your resume');
     }
-    if (selectedImage.value == null && profileImageUrl.value.isEmpty) {
-      return _showError('Please upload a profile image');
-    }
+    // if (selectedImage.value == null && profileImageUrl.value.isEmpty) {
+    //   return _showError('Please upload a profile image');
+    // }
 
     late List<Skill> userSkills;
     late EyeColor eyeColor;
@@ -530,7 +481,9 @@ class SignUpEmployeeController extends GetxController {
         role: 3,
         country: countryId.toString(),
         state: stateId.toString(),
-        city: cityController.text,
+        city: selectedCity.value,
+        address: addressController.text.trim(),
+        experienceYears: selectedExperienceLevel.value,
         dob: selectedDate.value,
         gender: userGender.id,
         eyeColorId: eyeColor.id,
@@ -863,7 +816,9 @@ class SignUpEmployeeController extends GetxController {
         role: 3,
         country: countryId.toString(),
         state: stateId.toString(),
-        city: cityController.text,
+        city: selectedCity.value,
+        address: addressController.text.trim(),
+        experienceYears: selectedExperienceLevel.value,
         dob: selectedDate.value,
         gender: userGender.id,
         eyeColorId: eyeColor.id,
@@ -1010,7 +965,9 @@ class SignUpEmployeeController extends GetxController {
         role: 3,
         country: countryId.toString(),
         state: stateId.toString(),
-        city: cityController.text,
+        city: selectedCity.value,
+        address: addressController.text.trim(),
+        experienceYears: selectedExperienceLevel.value,
         dob: selectedDate.value,
         gender: userGender.id,
         eyeColorId: eyeColor.id,

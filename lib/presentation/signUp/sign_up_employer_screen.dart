@@ -288,6 +288,18 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                     ],
                                   ),
 
+                                  _buildTextField(
+                                    hint: 'Address',
+                                    controller: controller.addressController,
+                                    icon: AppAssets.cityIcon,
+                                    validator:
+                                        (value) =>
+                                            FormValidators.validateRequired(
+                                              value,
+                                              "Address",
+                                            ),
+                                  ),
+
                                   CustomMultiSelectDropdown(
                                     hint: "Position Seeking",
                                     iconPath: AppAssets.cardIcon,

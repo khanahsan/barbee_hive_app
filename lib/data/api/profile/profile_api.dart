@@ -23,6 +23,7 @@ class ProfileApi {
     required String country,
     required String state,
     required String city,
+    String? address,
     String? dob,
     String? gender,
     int? eyeColorId,
@@ -39,6 +40,7 @@ class ProfileApi {
       'country_id': country,
       'state_id': state,
       'city': city,
+      if (address != null && address.isNotEmpty) 'address': address,
       if (dob != null) 'dob': dob,
       if (gender != null) 'gender': gender,
       if (eyeColorId != null) 'eye_color_id': '$eyeColorId',
@@ -65,10 +67,35 @@ class ProfileApi {
     log("COVER IMAGE PATH: ${coverImage?.path}");
 
     final files = <String, File>{
+      if (resume != null && resume.path.isNotEmpty && resume.existsSync())
+        'resume': resume,
+
+      if (profileImage != null &&
+          profileImage.path.isNotEmpty &&
+          profileImage.existsSync())
+        'profile_image': profileImage,
+
+      if (coverImage != null &&
+          coverImage.path.isNotEmpty &&
+          coverImage.existsSync())
+        'cover_photo': coverImage,
+    };
+    /*  final files = <String, File>{
       if (resume != null) 'resume': resume,
       if (profileImage != null) 'profile_image': profileImage,
+
       if (coverImage != null) 'cover_photo': coverImage,
-    };
+    };*/
+    if (files.isNotEmpty) {
+      files.forEach((key, file) {
+        log("FILE KEY: $key");
+        log("FILE PATH: ${file.path}");
+        log("FILE EXISTS: ${file.existsSync()}");
+        log("FILE SIZE: ${file.lengthSync()} bytes");
+      });
+    } else {
+      log("No files selected");
+    }
 
     final data = await ApiService.multipartPost(
       ApiEndPoints.updateProfile,

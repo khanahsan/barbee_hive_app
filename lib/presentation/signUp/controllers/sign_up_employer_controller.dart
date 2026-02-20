@@ -27,6 +27,7 @@ class SignUpEmployerController extends GetxController {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final cityController = TextEditingController();
+  final addressController = TextEditingController();
 
   // ---------------------- OBSERVABLES ---------------------- //
   final isChecked = false.obs;
@@ -70,6 +71,7 @@ class SignUpEmployerController extends GetxController {
     passwordController.dispose();
     confirmPasswordController.dispose();
     cityController.dispose();
+    addressController.dispose();
     super.onClose();
   }
 

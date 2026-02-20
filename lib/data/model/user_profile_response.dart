@@ -129,6 +129,7 @@ class Employee {
   final ProfileCountry? country;
   final ProfileState? state;
   final String city;
+  final String address;
   final String dob;
   final String? gender;
   final int? height;
@@ -145,6 +146,7 @@ class Employee {
     this.country,
     this.state,
     required this.city,
+    required this.address,
     required this.dob,
     this.gender,
     this.height,
@@ -167,6 +169,7 @@ class Employee {
       state:
           json['state'] != null ? ProfileState.fromJson(json['state']) : null,
       city: json['city'] ?? '',
+      address: json['address'] ?? '',
       dob: json['dob'] ?? '',
       gender: json['gender'],
       height: json['height'],

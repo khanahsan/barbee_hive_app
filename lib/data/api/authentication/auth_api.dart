@@ -114,6 +114,8 @@ class AuthApi {
     required String country,
     required String state,
     required String city,
+    String? address,
+    String? experienceYears,
     String? dob,
     String? gender,
     int? eyeColorId,
@@ -137,6 +139,10 @@ class AuthApi {
     };
 
     // Add nullable fields only if they are not null
+    if (address != null && address.isNotEmpty) fields['address'] = address;
+    if (experienceYears != null && experienceYears.isNotEmpty) {
+      fields['experience_years'] = experienceYears;
+    }
     if (dob != null) fields['dob'] = dob;
     if (gender != null) fields['gender'] = gender;
     if (eyeColorId != null) fields['eye_color_id'] = eyeColorId.toString();

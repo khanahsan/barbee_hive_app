@@ -26,56 +26,8 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
       controller.fetchApplications(jobId);
     });
 
-    Widget _buildDropdown({
-      required String label,
-      required String? value,
-      required List<String> items,
-      required ValueChanged<String?> onChanged,
-    }) {
-      return DropdownButtonFormField<String>(
-        dropdownColor: AppColors.color101010,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: AppColors.colorFFFFFF,
-          contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: AppColors.colorA3A3A3),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: AppColors.colorA3A3A3),
-          ),
-        ),
-        hint: Text(
-          label,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontSize: 15.sp,
-            color: AppColors.colorA3A3A3,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        iconEnabledColor: AppColors.colorA3A3A3,
-        value: value,
-        items:
-            items.map((String item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Text(
-                  item,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontSize: 15.sp,
-                    color: AppColors.colorA3A3A3,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              );
-            }).toList(),
-        onChanged: onChanged,
-      );
-    }
 
-    void _showFilterDialog(BuildContext context) {
+    void showFilterDialog(BuildContext context) {
       showDialog(
         context: context,
         builder: (context) {
@@ -216,63 +168,75 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
         title: "Applications",
       ),
       body: Obx(
-        () => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppTextField(
-              enabledBorderColor: AppColors.lightgrey,
-              fillColor: AppColors.color101010,
-              // cursorColor: AppColors.grey,
-              // focusedBorderColor: AppColors.grey,
-              // hintColor: Colors.grey.shade700,
-              fontColor: Colors.white,
-              filled: true,
-              hintText: "Search by Filters",
-              controller: controller.searchController,
-              onChanged: (value) => controller.filterApplicationsByText(value),
-              suffixIcon: GestureDetector(
-                onTap: () => _showFilterDialog(context),
-                child: SvgPicture.asset(
-                  AppAssets.searchFilterIcon,
-                  fit: BoxFit.scaleDown,
+        () => RefreshIndicator(
+          onRefresh: () => controller.fetchApplications(jobId),
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+            children: [
+              AppTextField(
+                enabledBorderColor: AppColors.lightgrey,
+                fillColor: AppColors.color101010,
+                // cursorColor: AppColors.grey,
+                // focusedBorderColor: AppColors.grey,
+                // hintColor: Colors.grey.shade700,
+                fontColor: Colors.white,
+                filled: true,
+                hintText: "Search by Filters",
+                controller: controller.searchController,
+                onChanged: (value) =>
+                    controller.filterApplicationsByText(value),
+                suffixIcon: GestureDetector(
+                  onTap: () => showFilterDialog(context),
+                  child: SvgPicture.asset(
+                    AppAssets.searchFilterIcon,
+                    fit: BoxFit.scaleDown,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20.h),
-            if (controller.isLoading.value)
-              const Center(
-                child: CircularProgressIndicator(color: AppColors.colorFF8600),
-              )
-            else if (controller.errorMessage.isNotEmpty)
-              Column(
-                children: [
-                  Text(
-                    controller.errorMessage.value,
-                    style: TextStyle(color: Colors.red, fontSize: 16.sp),
-                    textAlign: TextAlign.center,
+              SizedBox(height: 20.h),
+              if (controller.isLoading.value)
+                const Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors.colorFF8600,
                   ),
-                  SizedBox(height: 10.h),
-                  CustomButton(
-                    buttonText: 'Retry',
-                    onTap: () => controller.fetchApplications(jobId),
-                    buttonWidth: 100.w,
-                    buttonColor: AppColors.colorFF8600,
-                    buttonHeight: 40.h,
-                    buttonTextSize: 16.sp,
+                )
+              else if (controller.errorMessage.isNotEmpty)
+                Column(
+                  children: [
+                    Text(
+                      controller.errorMessage.value,
+                      style: TextStyle(color: Colors.red, fontSize: 16.sp),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 10.h),
+                    CustomButton(
+                      buttonText: 'Retry',
+                      onTap: () => controller.fetchApplications(jobId),
+                      buttonWidth: 100.w,
+                      buttonColor: AppColors.colorFF8600,
+                      buttonHeight: 40.h,
+                      buttonTextSize: 16.sp,
+                    ),
+                  ],
+                )
+              else if (controller.filteredApplications.isEmpty)
+                Center(
+                  child: Text(
+                    'No applications found',
+                    style: TextStyle(
+                      color: AppColors.colorFFFFFF,
+                      fontSize: 16.sp,
+                    ),
                   ),
-                ],
-              )
-            else if (controller.filteredApplications.isEmpty)
-              Text(
-                'No applications found',
-                style: TextStyle(color: AppColors.colorFFFFFF, fontSize: 16.sp),
-              )
-            else
-              Flexible(
-                child: ListView.separated(
-                  separatorBuilder: (context, index) => SizedBox(height: 15.h),
+                )
+              else
+                ListView.separated(
+                  separatorBuilder: (context, index) =>
+                      SizedBox(height: 15.h),
                   itemCount: controller.filteredApplications.length,
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     print('Building card for index: $index'); // Debug
                     return _applicationsCard(
@@ -281,9 +245,9 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     );
                   },
                 ),
-              ),
-          ],
-        ).paddingSymmetric(horizontal: 15.w, vertical: 15.h),
+            ],
+          ),
+        ),
       ),
     );
   }

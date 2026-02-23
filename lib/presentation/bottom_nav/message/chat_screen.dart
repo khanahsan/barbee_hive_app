@@ -118,18 +118,27 @@ class ChatScreen extends StatelessWidget {
                 actions:
                     canBlock
                         ? [
-                          Switch(
-                            value: isBlocked,
-                            onChanged: (value) {
-                              if (value) {
-                                chatController.blockEmployee(chatId);
-                              } else {
-                                chatController.unblockEmployee(chatId);
-                              }
-                            },
-                            activeColor: AppColors.colorFF8600,
-                            inactiveThumbColor: AppColors.grey,
-                            inactiveTrackColor: AppColors.grey.withOpacity(0.5),
+                          Transform.scale(
+                            scale: 0.7,
+                            child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  useMaterial3: false,
+                                ),
+                                child: Switch(
+                                  inactiveTrackColor: AppColors.colorFFFFFF,
+                                  activeColor: AppColors.colorFFFFFF,
+                              activeThumbColor: AppColors.colorFF8600,
+                              activeTrackColor: AppColors.colorFFFFFF,
+                              inactiveThumbColor: AppColors.colorFF8600,
+                              value: isBlocked,
+                              onChanged: (value) {
+                                if (value) {
+                                  chatController.blockEmployee(chatId);
+                                } else {
+                                  chatController.unblockEmployee(chatId);
+                                }
+                              },
+                            )),
                           ),
                         ]
                         : null,

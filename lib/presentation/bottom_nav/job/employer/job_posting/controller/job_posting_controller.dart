@@ -268,6 +268,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
+import 'package:barbee_hive_app/data/model/city_response.dart';
 import 'package:barbee_hive_app/data/model/dropdown_response.dart';
 import 'package:barbee_hive_app/data/model/duration_model.dart';
 import 'package:barbee_hive_app/data/model/job_posting_model.dart';
@@ -288,7 +289,6 @@ class JobPostingController extends GetxController {
 
   // final TextEditingController countryController = TextEditingController();
   // final TextEditingController stateController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
   final TextEditingController recruiterController = TextEditingController();
   final TextEditingController jobDesController = TextEditingController();
 
@@ -303,6 +303,7 @@ class JobPostingController extends GetxController {
   final RxString selectedSalaryType = ''.obs;
   final RxString selectedCountry = ''.obs;
   final RxString selectedState = ''.obs;
+  final RxString selectedCity = ''.obs;
   final RxString selectedDurationLabel = ''.obs;
   final Rx<DurationModel?> selectedDuration = Rx<DurationModel?>(null);
 
@@ -317,8 +318,10 @@ class JobPostingController extends GetxController {
   final RxList<DropdownItem> countries = <DropdownItem>[].obs;
   final RxList<DurationModel> durations = <DurationModel>[].obs;
   final RxList<DropdownItem> states = <DropdownItem>[].obs;
+  final RxList<City> cities = <City>[].obs;
 
   final formKey = GlobalKey<FormState>();
+  final isCitiesLoading = false.obs;
 
   @override
   void onInit() {
@@ -380,7 +383,6 @@ class JobPostingController extends GetxController {
     maxSalaryController.dispose();
     // countryController.dispose();
     // stateController.dispose();
-    cityController.dispose();
     recruiterController.dispose();
     jobDesController.dispose();
     super.onClose();
@@ -399,7 +401,46 @@ class JobPostingController extends GetxController {
 
   void updateCountry(String? value) => selectedCountry.value = value ?? '';
 
-  void updateState(String? value) => selectedState.value = value ?? '';
+  void updateState(String? value) {
+    if (value == null) return;
+    selectedState.value = value;
+    selectedCity.value = '';
+    cities.clear();
+
+    final state = states.firstWhere(
+      (s) => s.name == value,
+      orElse: () => DropdownItem(id: 0, name: ''),
+    );
+    if (state.id != 0) {
+      fetchCities(stateId: state.id);
+    }
+  }
+
+  void updateCity(String? value) => selectedCity.value = value ?? '';
+
+  Future<void> fetchCities({required int stateId}) async {
+    isCitiesLoading.value = true;
+    try {
+      final response = await AuthProvider.getCities(stateId: stateId);
+      if (response.status) {
+        cities.assignAll(response.data);
+      } else {
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: response.message,
+          isSuccess: false,
+        );
+      }
+    } catch (_) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Failed to fetch cities',
+        isSuccess: false,
+      );
+    } finally {
+      isCitiesLoading.value = false;
+    }
+  }
 
   Future<bool> _processPaymentIfRequired(JobPostResult? data) async {
     if (data == null || data.paymentRequired != true) return true;
@@ -550,7 +591,7 @@ class JobPostingController extends GetxController {
       print("Description: ${jobDesController.text}");
       print("Min Salary: ${minSalaryController.text}");
       print("Max Salary: ${maxSalaryController.text}");
-      print("City: ${cityController.text}");
+      print("City: ${selectedCity.value}");
       print("Recruiter: ${recruiterController.text}");
       print("Selected Skill: ${selectedSkill.value}");
       print("Selected Experience Level: ${selectedExperienceLevel.value}");
@@ -599,7 +640,7 @@ class JobPostingController extends GetxController {
         jobType: userJob.id,
         country: country.id.toString(),
         state: state.id.toString(),
-        city: cityController.text,
+        city: selectedCity.value,
         recruiterName: recruiterController.text,
         noOfDays: selectedDuration.value?.days ?? 0,
         skillId: userSkill.id,

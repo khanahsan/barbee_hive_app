@@ -1,5 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/job_update/controller/job_update_controller.dart';
 import 'package:flutter/material.dart';
@@ -192,14 +193,42 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                               ),
                               SizedBox(width: 10.w),
                               Expanded(
-                                child: _textField(
-                                  hintText: 'City',
-                                  controller: controller.cityController,
-                                  prefixIcon: SvgPicture.asset(AppAssets.cityIcon,
-                                      fit: BoxFit.scaleDown),
-                                  validator: (v) => FormValidators.validateRequired(
-                                      v, "City"),
-                                ),
+                                child: Obx(() {
+                                  if (controller.isCitiesLoading.value) {
+                                    return AppShimmer(
+                                      height: 56,
+                                      width: double.infinity,
+                                      borderRadius: BorderRadius.circular(10),
+                                    );
+                                  }
+
+                                  return _dropdownField(
+                                    validator:
+                                        (value) =>
+                                            FormValidators.validateRequired(
+                                              value,
+                                              "City",
+                                            ),
+                                    hint: 'City',
+                                    iconPath: AppAssets.cityIcon,
+                                    selectedValue: controller.selectedCity,
+                                    onChanged: controller.updateCity,
+                                    items:
+                                        controller.cities
+                                            .map(
+                                              (city) => DropdownMenuItem(
+                                                value: city.name,
+                                                child: Text(
+                                                  city.name,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                  );
+                                }),
                               ),
                             ],
                           ),

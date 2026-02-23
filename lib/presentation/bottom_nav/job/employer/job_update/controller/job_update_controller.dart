@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
+import 'package:barbee_hive_app/data/model/city_response.dart';
 import 'package:barbee_hive_app/data/model/experience_level_response.dart';
 import 'package:barbee_hive_app/data/model/job_list_response.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
@@ -21,7 +22,6 @@ class JobUpdateController extends GetxController {
   final TextEditingController minSalaryController = TextEditingController();
   final TextEditingController maxSalaryController = TextEditingController();
 
-  final TextEditingController cityController = TextEditingController();
   final TextEditingController recruiterController = TextEditingController();
   final TextEditingController jobDesController = TextEditingController();
 
@@ -36,6 +36,7 @@ class JobUpdateController extends GetxController {
   final RxString selectedCountry = ''.obs;
   final RxString selectedSalaryType = ''.obs;
   final RxString selectedState = ''.obs;
+  final RxString selectedCity = ''.obs;
   final RxString selectedJobType = ''.obs;
   final RxString imageUrl = ''.obs;
 
@@ -49,6 +50,8 @@ class JobUpdateController extends GetxController {
   final RxList<SalaryType> salaryTypes = <SalaryType>[].obs;
   final RxList<JobType> jobTypes = <JobType>[].obs;
   final RxList<StateModel> states = <StateModel>[].obs;
+  final RxList<City> cities = <City>[].obs;
+  final isCitiesLoading = false.obs;
 
   late JobListData job;
 
@@ -69,7 +72,7 @@ class JobUpdateController extends GetxController {
       selectedSalaryType.value = job.salaryRange.type.name;
 
       selectedState.value = job.state?.name ?? '';
-      cityController.text = job.city;
+      selectedCity.value = job.city;
       recruiterController.text = job.recruiterName ?? "";
       jobDesController.text = job.description;
       imageUrl.value = job.image ?? '';
@@ -88,7 +91,6 @@ class JobUpdateController extends GetxController {
     maxSalaryController.dispose();
     // countryController.dispose();
     // stateController.dispose();
-    cityController.dispose();
     recruiterController.dispose();
     jobDesController.dispose();
     super.onClose();
@@ -147,8 +149,43 @@ class JobUpdateController extends GetxController {
   Future<void> fetchStates() async {
     try {
       final response = await AuthProvider.getStates();
-      if (response.status) states.assignAll(response.data);
+      if (response.status) {
+        states.assignAll(response.data);
+        if (selectedState.value.isNotEmpty) {
+          final state = states.firstWhere(
+            (s) => s.name == selectedState.value,
+            orElse: () => StateModel(id: 0, name: ''),
+          );
+          if (state.id != 0) {
+            await fetchCities(stateId: state.id);
+          }
+        }
+      }
     } catch (_) {}
+  }
+
+  Future<void> fetchCities({required int stateId}) async {
+    isCitiesLoading.value = true;
+    try {
+      final response = await AuthProvider.getCities(stateId: stateId);
+      if (response.status) {
+        cities.assignAll(response.data);
+      } else {
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: response.message,
+          isSuccess: false,
+        );
+      }
+    } catch (_) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Failed to fetch cities',
+        isSuccess: false,
+      );
+    } finally {
+      isCitiesLoading.value = false;
+    }
   }
 
 
@@ -208,7 +245,7 @@ class JobUpdateController extends GetxController {
         selectedJobType.value == null ||
         // countryController.text.isEmpty ||
         // stateController.text.isEmpty ||
-        cityController.text.isEmpty ||
+        selectedCity.value.isEmpty ||
         recruiterController.text.isEmpty ||
         selectedSkill.value == null) {
       Utilities.showSnackBar(
@@ -265,7 +302,7 @@ class JobUpdateController extends GetxController {
         jobType: jobType.id,
         country: jobCountry.id.toString(),
         state: jobState.id.toString(),
-        city: cityController.text,
+        city: selectedCity.value,
         recruiterName: recruiterController.text,
         noOfDays: 2,
         // If you have a controller, replace this
@@ -331,7 +368,22 @@ class JobUpdateController extends GetxController {
 
   void updateCountry(String? val) => selectedCountry.value = val ?? '';
 
-  void updateState(String? val) => selectedState.value = val ?? '';
+  void updateState(String? val) {
+    if (val == null) return;
+    selectedState.value = val;
+    selectedCity.value = '';
+    cities.clear();
+
+    final state = states.firstWhere(
+      (s) => s.name == val,
+      orElse: () => StateModel(id: 0, name: ''),
+    );
+    if (state.id != 0) {
+      fetchCities(stateId: state.id);
+    }
+  }
+
+  void updateCity(String? val) => selectedCity.value = val ?? '';
 
   void updateSalaryType(String? val) => selectedSalaryType.value = val ?? '';
 }

@@ -173,7 +173,7 @@ class SelectRoleView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 40.h),
+                    SizedBox(height: 150.h),
 
                     // Continue with Email button
                     Obx(

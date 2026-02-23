@@ -34,6 +34,7 @@ class ApiEndPoints {
   static const String jobStore = 'jobs/store';
   static const String jobUpdate = 'jobs/update';
   static const String finalizeJob = 'jobs/finalize-job';
+  static const String jobRenewIntent = 'job/renew/intent';
   static const String updateProfile = 'profiles/update';
   static const String jobs = 'jobs';
   static const String appliedJobs = 'jobs/applied';

@@ -82,6 +82,21 @@ class JobApi {
     return JobPostResponse.fromJson(data);
   }
 
+  static Future<JobPostResponse> renewJobIntent({
+    required int jobId,
+    required int days,
+  }) async {
+    final payload = {'job_id': jobId, 'days': days};
+
+    final data = await ApiService.post(
+      ApiEndPoints.jobRenewIntent,
+      payload,
+      auth: true,
+    );
+
+    return JobPostResponse.fromJson(data);
+  }
+
   // static Future<JobPostResponse> postJob({
   //   required String title,
   //   required String description,

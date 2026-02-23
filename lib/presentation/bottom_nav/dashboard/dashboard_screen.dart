@@ -34,11 +34,13 @@ class DashboardScreen extends GetView<DashboardController> {
       //   },
       // ),
       key: _scaffoldKey,
-      endDrawer: Drawer(
-        backgroundColor: AppColors.black,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
+      endDrawer: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.7,
+        child: Drawer(
+          backgroundColor: AppColors.black,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
               AppBar(
                 backgroundColor: AppColors.colorFF8600,
                 title: const Text("Filters"),
@@ -167,7 +169,8 @@ class DashboardScreen extends GetView<DashboardController> {
               ).paddingSymmetric(horizontal: 15.w),
 
               SizedBox(height: 30.h),
-            ],
+              ],
+            ),
           ),
         ),
       ),

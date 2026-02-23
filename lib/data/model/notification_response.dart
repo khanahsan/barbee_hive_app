@@ -48,18 +48,28 @@ class AppNotification {
   });
 
   factory AppNotification.fromJson(Map<String, dynamic> json) {
+    NotificationData? parsedData;
+    final rawData = json['data'];
+    if (rawData != null && rawData is String && rawData.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(rawData);
+        if (decoded is Map<String, dynamic>) {
+          parsedData = NotificationData.fromJson(decoded);
+        }
+      } catch (_) {
+        parsedData = null;
+      }
+    }
+
     return AppNotification(
       id: json['id'],
       userId: json['user_id'],
       type: json['type'],
       title: json['title'],
       message: json['message'],
-      data: json['data'] != null
-          ? NotificationData.fromJson(jsonDecode(json['data']))
-          : null,
+      data: parsedData,
       isRead: json['is_read'],
-      readAt:
-      json['read_at'] != null ? DateTime.parse(json['read_at']) : null,
+      readAt: json['read_at'] != null ? DateTime.parse(json['read_at']) : null,
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );
@@ -67,21 +77,36 @@ class AppNotification {
 }
 
 class NotificationData {
-  final int jobId;
-  final String jobTitle;
-  final String employerName;
+  final int? applicationId;
+  final int? jobId;
+  final String? jobTitle;
+  final String? applicantName;
+  final int? applicantId;
+  final String? employerName;
 
   NotificationData({
+    required this.applicationId,
     required this.jobId,
     required this.jobTitle,
+    required this.applicantName,
+    required this.applicantId,
     required this.employerName,
   });
 
   factory NotificationData.fromJson(Map<String, dynamic> json) {
     return NotificationData(
-      jobId: json['job_id'],
-      jobTitle: json['job_title'],
-      employerName: json['employer_name'],
+      applicationId: json['application_id'] is int
+          ? json['application_id']
+          : int.tryParse(json['application_id']?.toString() ?? ''),
+      jobId: json['job_id'] is int
+          ? json['job_id']
+          : int.tryParse(json['job_id']?.toString() ?? ''),
+      jobTitle: json['job_title']?.toString(),
+      applicantName: json['applicant_name']?.toString(),
+      applicantId: json['applicant_id'] is int
+          ? json['applicant_id']
+          : int.tryParse(json['applicant_id']?.toString() ?? ''),
+      employerName: json['employer_name']?.toString(),
     );
   }
 }

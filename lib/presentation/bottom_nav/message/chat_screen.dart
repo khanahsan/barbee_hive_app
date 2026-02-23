@@ -12,6 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:intl/intl.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -32,6 +33,15 @@ class ChatScreen extends StatelessWidget {
   String formatTimestamp(Timestamp timestamp) {
     final dateTime = timestamp.toDate();
     return "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
+  }
+
+  String formatDateHeader(Timestamp timestamp) {
+    return DateFormat('EEE, MMM d').format(timestamp.toDate());
+  }
+
+  bool _isSameDay(Timestamp? a, Timestamp? b) {
+    if (a == null || b == null) return false;
+    return DateUtils.isSameDay(a.toDate(), b.toDate());
   }
 
   @override
@@ -168,72 +178,125 @@ class ChatScreen extends StatelessWidget {
                           separatorBuilder: (_, __) => SizedBox(height: 15.h),
                           itemCount: messages.length,
                             itemBuilder: (context, index) {
-                              final msg = messages[index].data() as Map<String, dynamic>;
-                              final isMe = msg["senderId"] == chatController.currentUserId.value;
+                              final msg =
+                                  messages[index].data() as Map<String, dynamic>;
+                              final isMe =
+                                  msg["senderId"] ==
+                                  chatController.currentUserId.value;
+                              final Timestamp? currentTimestamp =
+                                  msg["timestamp"];
+                              final Timestamp? nextTimestamp =
+                                  index + 1 < messages.length
+                                      ? (messages[index + 1].data()
+                                          as Map<String, dynamic>)["timestamp"]
+                                      : null;
+                              final showDateHeader =
+                                  currentTimestamp != null &&
+                                  (index == messages.length - 1 ||
+                                      !_isSameDay(
+                                        currentTimestamp,
+                                        nextTimestamp,
+                                      ));
 
-                              return Row(
-                                mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.end,
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  if (!isMe) ...[
-                                    HexagonAvatar(
-                                      imagePath: otherUserImage,
-                                      width: 50.w,
-                                      height: 60.h,
+                                  if (showDateHeader)
+                                    Center(
+                                      child: CustomText(
+                                        title: formatDateHeader(
+                                          currentTimestamp,
+                                        ),
+                                        color: AppColors.colorEBEBF5,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
-                                    SizedBox(width: 5.w),
-                                  ],
+                                  if (showDateHeader) SizedBox(height: 10.h),
+                                  Row(
+                                    mainAxisAlignment:
+                                        isMe
+                                            ? MainAxisAlignment.end
+                                            : MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.end,
+                                    children: [
+                                      if (!isMe) ...[
+                                        HexagonAvatar(
+                                          imagePath: otherUserImage,
+                                          width: 50.w,
+                                          height: 60.h,
+                                        ),
+                                        SizedBox(width: 5.w),
+                                      ],
 
-                                  // This ensures the bubble takes only necessary width
-                                  IntrinsicWidth(
-                                    stepWidth: 0,
-                                    child: ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        maxWidth: MediaQuery.of(context).size.width * 0.6, // max 70% width
-                                      ),
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 12.w,
-                                          vertical: 10.h,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: isMe ? AppColors.colorFF8600 : AppColors.color27272A,
-                                          borderRadius: BorderRadius.circular(10.r),
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            if (!isMe)
-                                              CustomText(
-                                                title: otherUserName,
-                                                color: AppColors.colorFF8600,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12,
-                                              ),
-                                            SizedBox(height: 3.h),
-                                            CustomText(
-                                              title: msg["text"] ?? "",
-                                              color: Colors.white,
-                                              fontSize: 15,
-                                              maxLines: null,
-                                              softWrap: true,
+                                      // This ensures the bubble takes only necessary width
+                                      IntrinsicWidth(
+                                        stepWidth: 0,
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth:
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.6, // max 70% width
+                                          ),
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 12.w,
+                                              vertical: 10.h,
                                             ),
-                                            SizedBox(height: 5.h),
-                                            Align(
-                                              alignment: Alignment.centerRight,
-                                              child: CustomText(
-                                                title: msg["timestamp"] != null
-                                                    ? formatTimestamp(msg["timestamp"])
-                                                    : "",
-                                                color: Colors.white70,
-                                                fontSize: 12,
-                                              ),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  isMe
+                                                      ? AppColors.colorFF8600
+                                                      : AppColors.color27272A,
+                                              borderRadius:
+                                                  BorderRadius.circular(10.r),
                                             ),
-                                          ],
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                if (!isMe)
+                                                  CustomText(
+                                                    title: otherUserName,
+                                                    color:
+                                                        AppColors.colorFF8600,
+                                                    fontWeight:
+                                                        FontWeight.bold,
+                                                    fontSize: 12,
+                                                  ),
+                                                SizedBox(height: 3.h),
+                                                CustomText(
+                                                  title: msg["text"] ?? "",
+                                                  color: Colors.white,
+                                                  fontSize: 15,
+                                                  maxLines: null,
+                                                  softWrap: true,
+                                                ),
+                                                SizedBox(height: 5.h),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: CustomText(
+                                                    title:
+                                                        msg["timestamp"] != null
+                                                            ? formatTimestamp(
+                                                              msg["timestamp"],
+                                                            )
+                                                            : "",
+                                                    color: Colors.white70,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ],
                               );

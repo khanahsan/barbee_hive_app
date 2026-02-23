@@ -24,6 +24,7 @@ class AppColors {
   static const Color completedBannerColor = Color(0x993B93E6);
   static const Color transparentColor = Color(0x00000000);
   static const Color color101010 = Color(0xff101010);
+  static const Color colorEBEBF5 = Color(0xffEBEBF5);
   static const Color color1F1F1F = Color(0xff1F1F1F);
   static const Color color2E2E2E = Color(0xff2E2E2E);
   static const Color colorC2C2C2 = Color(0xffC2C2C2);

@@ -66,10 +66,11 @@ class CustomDrawer extends GetView<CustomDrawerController> {
                             fontWeight: FontWeight.w600,
                           ),
                           SizedBox(
-                            width: 160.w,
+                            width: 165.w,
                             child: CustomText(
                               title: controller.userName.value,
                               fontSize: 30,
+                              maxLines: 2,
                               color: AppColors.colorFFFFFF,
                               fontWeight: FontWeight.w600,
                               textOverflow: TextOverflow.ellipsis,

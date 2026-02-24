@@ -57,7 +57,7 @@ PreferredSizeWidget customAppbar({
             ),
         ],
       ).paddingSymmetric(horizontal: 15.w),
-      leadingWidth: 120.w,
+      leadingWidth: 115.w,
       title: titleWidget ?? Text(
         title,
         style: Theme.of(context).textTheme.titleSmall?.copyWith(

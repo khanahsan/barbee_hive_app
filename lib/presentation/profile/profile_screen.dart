@@ -28,29 +28,34 @@ class ProfileScreen extends GetView<ProfileController> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
-        child: Obx(
-          () => customAppbar(
-            context: context,
-            leadingTapFunction: () {
-              Get.back();
-            },
-            title: controller.isEditing.value ? "Edit Profile" : "Profile",
-            showActions: true,
-            leadingIconPath: AppAssets.backIcon,
-            showHexagon: false,
-            actions: [
-              GestureDetector(
-                onTap: () => Get.toNamed(Routes.settingsScreen),
-                child: SvgPicture.asset(
-                  AppAssets.settingIcon,
-                  fit: BoxFit.cover,
-                  height: 23.h,
-                  width: 23.w,
-                  color: AppColors.colorFFFFFF,
-                ),
-              ),
-            ],
+        child: customAppbar(
+          context: context,
+          leadingTapFunction: () {
+            Get.back();
+          },
+          title: '',
+          titleWidget: SvgPicture.asset(
+            AppAssets.appIconTwo,
+            width: 50.w,
+            height: 50.h,
+            fit: BoxFit.cover,
           ),
+          // title: controller.isEditing.value ? "Edit Profile" : "Profile",
+          showActions: false,
+          leadingIconPath: AppAssets.backIcon,
+          showHexagon: false,
+          // actions: [
+          //   GestureDetector(
+          //     onTap: () => Get.toNamed(Routes.settingsScreen),
+          //     child: SvgPicture.asset(
+          //       AppAssets.settingIcon,
+          //       fit: BoxFit.cover,
+          //       height: 23.h,
+          //       width: 23.w,
+          //       color: AppColors.colorFFFFFF,
+          //     ),
+          //   ),
+          // ],
         ),
       ),
       bottomNavigationBar: Obx(

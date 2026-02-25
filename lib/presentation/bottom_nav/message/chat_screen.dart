@@ -408,16 +408,18 @@ class ChatScreen extends StatelessWidget {
                             AppTextField(
                               contentPadding: EdgeInsets.symmetric(
                                 horizontal: 3.w,
-                                vertical: 5.h,
+                                vertical: 6.h,
                               ),
                               fillColor: AppColors.color000000,
                               filled: true,
-                              enabledBorderColor: Colors.transparent,
                               hintText: 'Type here...',
                               controller: messageController,
                               keyboardType: TextInputType.multiline,
-                              textInputAction: TextInputAction.done,
-                              maxLines: 3,
+                              textInputAction: TextInputAction.newline,
+                              minLines: 1,
+                              maxLines: 5,
+                              focusedBorderColor: Colors.transparent,
+                              enabledBorderColor: Colors.transparent,
                             ),
 
                             Positioned(

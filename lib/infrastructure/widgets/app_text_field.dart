@@ -211,6 +211,7 @@ class AppTextField extends StatelessWidget {
     this.validator,
     this.autofillHints,
     this.maxLines = 1,
+    this.minLines,
     this.readOnly = false,
     this.autoValidateMode = AutovalidateMode.disabled,
     this.fontColor = AppColors.colorA3A3A3,
@@ -232,6 +233,7 @@ class AppTextField extends StatelessWidget {
   final TextAlignVertical? textAlignVertical;
   final EdgeInsets? contentPadding;
   final int maxLines;
+  final int? minLines;
   final Color fillColor, prefixIconColor, suffixIconColor;
   final Widget? prefixIcon, suffixIcon;
   final String hintText;
@@ -267,6 +269,7 @@ class AppTextField extends StatelessWidget {
       focusNode: focusNode,
       obscureText: isObscuredText,
       maxLines: maxLines,
+      minLines: minLines,
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
       validator: validator,

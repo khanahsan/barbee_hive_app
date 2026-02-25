@@ -176,7 +176,7 @@ class _EmployeeCardState extends State<EmployeeCard>
 
               infoRow(
                 iconPath: AppAssets.locationIcon,
-                rowTitle: widget.job.city,
+                rowTitle: '${widget.job.country?.name}, ${widget.job.state?.name}, ${widget.job.city}',
               ),
 
               infoRow(

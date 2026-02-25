@@ -109,7 +109,7 @@ class ApplyScreenController extends GetxController {
           context: context,
           barrierDismissible: false,
           builder: (_) => const CustomDialog(
-            title: 'Success',
+            title: 'Congratulations',
             subTitle: 'Your Job Application Has Been Submitted',
           ),
         );

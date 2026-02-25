@@ -62,21 +62,42 @@ class EmployerPlansCard extends GetView<PricingPlansController> {
           mainAxisSize: MainAxisSize.min,
           children: [
             /// PLAN NAME
-            CustomText(
-              title: plan.name,
-              fontSize: 25,
-              color: primaryColor,
-              fontWeight: FontWeight.w600,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomText(
+                  title: plan.name,
+                  fontSize: 25,
+                  color: primaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+
+                if(plan.id == 8 || plan.id == 10)
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.r),
+                    color: AppColors.color35D79C.withValues(alpha: 0.2),
+                  ),
+                  child: CustomText(
+                    title: 'Most Popular',
+                    fontSize: 14,
+                    color: primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 5.h),
 
             /// PLAN DURATION
             CustomText(
-              title: plan.durationDays == 0
-                  ? "For Free Users"
-                  : plan.durationDays == 30
-                  ? "Per Month"
-                  : "For ${plan.durationDisplay}",
+              title:
+                  plan.durationDays == 0
+                      ? "For Free Users"
+                      : plan.durationDays == 30
+                      ? "Per Month"
+                      : "For ${plan.durationDisplay}",
               fontSize: 16,
               color: AppColors.colorFFFFFF,
               fontWeight: FontWeight.w400,

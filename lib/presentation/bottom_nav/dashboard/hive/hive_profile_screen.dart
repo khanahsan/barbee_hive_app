@@ -2,8 +2,10 @@ import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_profile_image.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/hive_profile_controller.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -29,6 +31,7 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
     });
 
     return Scaffold(
+      backgroundColor: AppColors.color000000,
       extendBodyBehindAppBar: true,
       appBar: customAppbar(
         context: context,
@@ -48,12 +51,7 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
             child: SizedBox(
               height: 300.h,
               width: double.infinity,
-              child: Image.network(
-                currentUser.coverPhoto ??
-                    currentUser.profileImage ??
-                    AppAssets.nullProfile,
-                fit: BoxFit.cover,
-              ),
+              child: _buildCoverPhoto(currentUser.coverPhoto),
             ),
           ),
 
@@ -64,116 +62,127 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Container(
-              padding: EdgeInsets.only(top: 3.h),
-              decoration: BoxDecoration(
-                color: AppColors.colorFF8600,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0.r),
-                  topRight: Radius.circular(20.0.r),
-                ),
-              ),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColors.black,
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(18.0),
-                    topLeft: Radius.circular(18.0),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(top: 3.h),
+                  decoration: BoxDecoration(
+                    color: AppColors.colorFF8600,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0.r),
+                      topRight: Radius.circular(20.0.r),
+                    ),
                   ),
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      /// USER NAME
-                      CustomText(
-                        title: currentUser.employee?.name ?? "",
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.colorFFFFFF,
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      left: 15.w,
+                      right: 15.w,
+                      top: 65.h,
+                      bottom: 5.h,
+                    ),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.black,
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(18.0),
+                        topLeft: Radius.circular(18.0),
                       ),
-
-                      /// USER DISTANCE
-                      CustomText(
-                        title: "${currentUser.distance} mi away",
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.colorFF8600,
-                      ),
-                      SizedBox(height: 25.h),
-                      Column(
-                        spacing: 1.5.h,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          /// USER EXPERIENCE
-                          _infoRow(
-                            "Experience",
-                              currentUser.employee?.skills
-                                  .map((skill) => skill.name)
-                                  .join(', ') ?? ''
+                          /// USER NAME
+                          CustomText(
+                            title: currentUser.employee?.name ?? "",
+                            fontSize: 22,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.colorFFFFFF,
                           ),
 
-                          /// USER GENDER
-                          _infoRow(
-                            "Gender",
-                            currentUser.employee?.gender ?? "",
+                          /// USER DISTANCE
+                          CustomText(
+                            title: "${currentUser.distance} mi away",
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.colorFF8600,
                           ),
+                          SizedBox(height: 25.h),
+                          Column(
+                            spacing: 1.5.h,
+                            children: [
+                              /// USER EXPERIENCE
+                              _infoRow(
+                                "Skills",
+                                currentUser.employee?.skills
+                                        .map((skill) => skill.name)
+                                        .join(', ') ??
+                                    '',
+                              ),
 
-                          /// USER EYE COLOR
-                          _infoRow(
-                            "Eye Color",
-                            currentUser.employee?.eyeColor?.name ?? "",
+                              /// USER GENDER
+                              _infoRow(
+                                "Gender",
+                                currentUser.employee?.gender ?? "",
+                              ),
+
+                              /// USER EYE COLOR
+                              _infoRow(
+                                "Eye Color",
+                                currentUser.employee?.eyeColor?.name ?? "",
+                              ),
+
+                              /// USER HAIR COLOR
+                              _infoRow(
+                                "Hair Color",
+                                currentUser.employee?.hairColor?.name ?? "",
+                              ),
+
+                              /// USER RESUME
+                              _resumeRow(currentUser),
+                            ],
                           ),
+                          SizedBox(height: 20.h),
 
-                          /// USER HAIR COLOR
-                          _infoRow(
-                            "Hair Color",
-                            currentUser.employee?.hairColor?.name ?? "",
-                          ),
-
-                          /// USER RESUME
-                          _resumeRow(currentUser),
+                          /// CHAT OPTION (SHOW IF THE USER IS DIFFERENT)
+                          if (!controller.isSameUser(currentUser.id))
+                            CustomButton(
+                              onTap: () {
+                                Get.toNamed(
+                                  Routes.chatScreen,
+                                  arguments: {'otherUserID': currentUser.uid},
+                                );
+                              },
+                              buttonText: "Send Message",
+                              buttonWidth: double.infinity,
+                              buttonColor: AppColors.colorFF8600,
+                              textColor: AppColors.colorFFFFFF,
+                              buttonHeight: 55.h,
+                              buttonTextSize: 16.sp,
+                            ),
                         ],
                       ),
-                      SizedBox(height: 20.h),
-
-                      /// CHAT OPTION (SHOW IF THE USER IS DIFFERENT)
-                      if (!controller.isSameUser(currentUser.id))
-                        CustomButton(
-                          // onTap: () {
-                          //   Get.to(
-                          //     () => ChatScreen(
-                          //       chatId:
-                          //           "${chatController.currentUserId.value}-${currentUser.uid}",
-                          //       otherUserId: currentUser.uid,
-                          //       otherName: currentUser.employee!.name,
-                          //       otherImage: currentUser.profileImage!,
-                          //       employeeData: {
-                          //         'uid': currentUser.uid,
-                          //         'name': currentUser.employee!.name,
-                          //         'profileImage': currentUser.profileImage,
-                          //       },
-                          //     ),
-                          //   );
-                          // },
-                          onTap: () {
-                            Get.toNamed(
-                              Routes.chatScreen,
-                              arguments: {'otherUserID': currentUser.uid},
-                            );
-                          },
-                          buttonText: "Send Message",
-                          buttonWidth: double.infinity,
-                          buttonColor: AppColors.colorFF8600,
-                          textColor: AppColors.colorFFFFFF,
-                          buttonHeight: 55.h,
-                          buttonTextSize: 16.sp,
-                        ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+
+                Positioned(
+                  right: 0,
+                  left: 0,
+                  top: -80.h,
+                  child: Center(
+                    child: CustomProfileImage(
+                      width: 130,
+                      height: 140,
+                      imagePath: currentUser.profileImage ?? '',
+                      text: currentUser.employee?.name ?? "",
+                      isEditMode: false,
+                      wholeAvatarClickable: false,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -188,6 +197,43 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
         Expanded(child: _infoTile(label, AppColors.colorFFFFFF, false)),
         Expanded(child: _infoTile(value, AppColors.color5E5E5E, true)),
       ],
+    );
+  }
+
+  Widget _buildCoverPhoto(String? coverPhoto) {
+    final rawUrl = coverPhoto?.trim();
+    final normalizedUrl =
+        (rawUrl == null || rawUrl.isEmpty || rawUrl.toLowerCase() == 'null')
+            ? null
+            : rawUrl;
+    final uri = normalizedUrl == null ? null : Uri.tryParse(normalizedUrl);
+    final isNetwork =
+        uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
+
+    if (!isNetwork) {
+      return _noCoverPhotoAvailable();
+    }
+
+    return CachedNetworkImage(
+      imageUrl: normalizedUrl!,
+      fit: BoxFit.cover,
+      placeholder: (context, url) => _noCoverPhotoAvailable(),
+      errorWidget: (context, url, error) => _noCoverPhotoAvailable(),
+    );
+  }
+
+  Widget _noCoverPhotoAvailable() {
+    return Container(
+      color: AppColors.color101010,
+      alignment: Alignment.center,
+      child: Text(
+        'No Cover Photo Available',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
     );
   }
 

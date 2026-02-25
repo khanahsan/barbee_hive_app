@@ -45,8 +45,10 @@ class ApplyScreen extends GetView<ApplyScreenController> {
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
       body: Obx(
-        () => Stack(
-          children: [
+        () {
+          final isLoading = controller.isLoading.value;
+          return Stack(
+            children: [
             // Top Image
             Positioned(
               left: 0.w,
@@ -446,17 +448,23 @@ class ApplyScreen extends GetView<ApplyScreenController> {
             ),
 
             // Loading Overlay
-            if (controller.isLoading.value)
-              Container(
-                color: Colors.black54,
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.color000000,
+            if (isLoading)
+              Positioned.fill(
+                child: IgnorePointer(
+                  ignoring: true,
+                  child: Container(
+                    color: Colors.black,
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.colorFF8600,
+                      ),
+                    ),
                   ),
                 ),
               ),
           ],
-        ),
+        );
+        },
       ),
     );
   }
@@ -472,19 +480,29 @@ class ApplyScreen extends GetView<ApplyScreenController> {
         uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
 
     if (!isNetwork) {
-      return Image.asset(AppAssets.profileImage, fit: BoxFit.cover);
+      return _noImageAvailable();
     }
 
     return CachedNetworkImage(
       imageUrl: normalizedUrl!,
       fit: BoxFit.cover,
-      placeholder:
-          (context, url) => const Center(
-            child: CircularProgressIndicator(color: AppColors.colorFF8600),
-          ),
-      errorWidget:
-          (context, url, error) =>
-              Image.asset(AppAssets.profileImage, fit: BoxFit.cover),
+      placeholder: (context, url) => _noImageAvailable(),
+      errorWidget: (context, url, error) => _noImageAvailable(),
+    );
+  }
+
+  Widget _noImageAvailable() {
+    return Container(
+      color: AppColors.color101010,
+      alignment: Alignment.center,
+      child: Text(
+        'No Image Available',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
     );
   }
 

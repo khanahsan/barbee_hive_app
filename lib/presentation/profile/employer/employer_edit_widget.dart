@@ -236,13 +236,13 @@ class EmployerEditWidget extends GetView<ProfileController> {
           ),
 
           /// ADDRESS FIELD
-          _buildCustomTextField(
-            hintText: 'Address',
-            controller: controller.addressController,
-            prefixIconPath: AppAssets.cityIcon,
-            validator:
-                (v) => FormValidators.validateRequired(v, 'Address'),
-          ),
+          // _buildCustomTextField(
+          //   hintText: 'Address',
+          //   controller: controller.addressController,
+          //   prefixIconPath: AppAssets.cityIcon,
+          //   validator:
+          //       (v) => FormValidators.validateRequired(v, 'Address'),
+          // ),
 
           /// EXPERIENCE FIELD
           CustomMultiSelectDropdown(

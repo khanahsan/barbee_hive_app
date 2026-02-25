@@ -368,9 +368,11 @@ class NotificationService {
 
     if (message.data['type'] == 'new_job') {
       log("NEW JOB POSTED NOTIFICATION");
-      // var controller = Get.put(BottomNavController());
-      var controller = Get.find<BottomNavController>();
-      controller.tabChangeForEmployeeNotifications(1);
+
+      Get.toNamed(Routes.jobs, arguments: {"showBackButton": true});
+
+      // var controller = Get.find<BottomNavController>();
+      // controller.tabChangeForEmployeeNotifications(1);
     }
 
     if (message.data['type'] == 'new_application') {

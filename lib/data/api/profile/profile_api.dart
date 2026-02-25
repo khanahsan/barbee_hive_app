@@ -55,6 +55,7 @@ class ProfileApi {
     if (skillIds != null && skillIds.isNotEmpty) {
       for (var i = 0; i < skillIds.length; i++) {
         fields['skill_id[$i]'] = skillIds[i].toString();
+
       }
 
       // ✅ Print the skill IDs
@@ -100,6 +101,8 @@ class ProfileApi {
       log("No files selected");
     }
 
+    _logFieldsAndFiles(fields, files);
+
     final data = await ApiService.multipartPost(
       ApiEndPoints.updateProfile,
       fields: fields,
@@ -108,5 +111,19 @@ class ProfileApi {
     );
 
     return UserProfileResponse.fromJson(data);
+  }
+
+  static void _logFieldsAndFiles(Map<String, String> fields, Map<String, File> files) {
+    log("=== PROFILE FIELDS ===");
+    fields.forEach((key, value) => log("$key: $value"));
+
+    if (files.isNotEmpty) {
+      log("=== FILES ===");
+      files.forEach((key, file) {
+        log("$key -> Path: ${file.path}, Exists: ${file.existsSync()}, Size: ${file.lengthSync()} bytes");
+      });
+    } else {
+      log("No files selected");
+    }
   }
 }

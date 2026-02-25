@@ -12,7 +12,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import '../../../infrastructure/widgets/custom_btn.dart';
 import '../../../infrastructure/widgets/custom_dropdown.dart';
 import 'controller/job_controller.dart';
 import 'employee/component/employee_card.dart';
@@ -77,7 +76,8 @@ class JobScreen extends GetView<JobController> {
               ],
             ),
           ),
-          profileImagePath: Get.find<DashboardController>().userProfileImage.value,
+          profileImagePath:
+              Get.find<DashboardController>().userProfileImage.value,
         ),
 
         backgroundColor: AppColors.black,
@@ -103,7 +103,6 @@ class JobScreen extends GetView<JobController> {
                 ),
                 suffixIcon: GestureDetector(
                   onTap: () async {
-
                     print("12333");
                     // Fetch all dropdown data before opening
 
@@ -111,26 +110,35 @@ class JobScreen extends GetView<JobController> {
                       context: context,
                       builder: (_) {
                         return JobFilterDialog(
-                          onCloseTap: (){
-                            if (Navigator.of(context, rootNavigator: true).canPop()) {
+                          onCloseTap: () {
+                            if (Navigator.of(
+                              context,
+                              rootNavigator: true,
+                            ).canPop()) {
                               Navigator.of(context, rootNavigator: true).pop();
                             }
                           },
-                          onDone: (){
-                            if (Navigator.of(context, rootNavigator: true).canPop()) {
+                          onDone: () {
+                            if (Navigator.of(
+                              context,
+                              rootNavigator: true,
+                            ).canPop()) {
                               Navigator.of(context, rootNavigator: true).pop();
                             }
                             controller.applyFilters();
                           },
-                          onClear:(){
-                            if (Navigator.of(context, rootNavigator: true).canPop()) {
+                          onClear: () {
+                            if (Navigator.of(
+                              context,
+                              rootNavigator: true,
+                            ).canPop()) {
                               Navigator.of(context, rootNavigator: true).pop();
                             }
                             controller.clearFilters();
                           },
                         );
-                      });
-
+                      },
+                    );
                   },
                   child: SvgPicture.asset(
                     AppAssets.searchFilterIcon,

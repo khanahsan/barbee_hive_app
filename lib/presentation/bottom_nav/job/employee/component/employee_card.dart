@@ -76,7 +76,7 @@ class _EmployeeCardState extends State<EmployeeCard>
                         ),
 
                         Text(
-                          widget.job.recruiterName,
+                          widget.job.employer.businessName,
                           style: Theme.of(context).textTheme.titleSmall?.copyWith(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w500,

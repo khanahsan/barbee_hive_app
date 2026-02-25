@@ -1,7 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employee/controller/apply_screen_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../../infrastructure/constants/app_colors.dart';
 import '../../../../infrastructure/constants/app_images.dart';
 import '../../../../infrastructure/widgets/custom_btn.dart';
-import '../../../../infrastructure/widgets/custom_dialog.dart';
 import '../../../../infrastructure/widgets/custom_dropdown.dart';
 
 class ApplyScreen extends GetView<ApplyScreenController> {
@@ -26,10 +24,11 @@ class ApplyScreen extends GetView<ApplyScreenController> {
     super.key,
   });
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+
       appBar: customAppbar(
         showHexagon: false,
         leadingIconPath: AppAssets.backIcon,
@@ -40,9 +39,10 @@ class ApplyScreen extends GetView<ApplyScreenController> {
           width: 50.w,
           height: 50.h,
           fit: BoxFit.cover,
-        ), leadingTapFunction: () => Get.back(),
+        ),
+        leadingTapFunction: () => Get.back(),
       ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
       body: Obx(
         () => Stack(
@@ -51,11 +51,8 @@ class ApplyScreen extends GetView<ApplyScreenController> {
             Positioned(
               left: 0.w,
               right: 0.w,
-              top: -20.h,
-              child: SizedBox(
-                height: 320.h,
-                child: _buildProfileImage(),
-              ),
+              top: 105.h,
+              child: SizedBox(height: 450.h, child: _buildProfileImage()),
             ),
 
             // Top Bar
@@ -102,12 +99,190 @@ class ApplyScreen extends GetView<ApplyScreenController> {
             // ),
 
             // Bottom Form
+            // Positioned(
+            //   bottom: -160.h,
+            //   left: 0.w,
+            //   right: 0.w,
+            //   child: Container(
+            //     height: 532.h,
+            //     margin: EdgeInsets.only(top: 20.h),
+            //     padding: EdgeInsets.only(top: 3.h),
+            //     decoration: BoxDecoration(
+            //       color: AppColors.colorFF8600,
+            //       borderRadius: BorderRadius.only(
+            //         topLeft: Radius.circular(24.r),
+            //         topRight: Radius.circular(24.r),
+            //       ),
+            //     ),
+            //     child: AnimatedPadding(
+            //       duration: const Duration(milliseconds: 200),
+            //       curve: Curves.easeOut,
+            //       padding: EdgeInsets.only(
+            //         bottom: MediaQuery.of(context).viewInsets.bottom,
+            //       ),
+            //       child: Container(
+            //         padding: EdgeInsets.symmetric(horizontal: 16.w),
+            //         width: double.infinity,
+            //         decoration: BoxDecoration(
+            //           color: AppColors.black,
+            //           borderRadius: BorderRadius.only(
+            //             topRight: Radius.circular(18.0),
+            //             topLeft: Radius.circular(18.0),
+            //           ),
+            //         ),
+            //         child: Column(
+            //           children: [
+            //             Expanded(
+            //               child: SingleChildScrollView(
+            //                 physics: BouncingScrollPhysics(),
+            //                 keyboardDismissBehavior:
+            //                     ScrollViewKeyboardDismissBehavior.onDrag,
+            //                 reverse: false,
+            //                 padding: EdgeInsets.only(
+            //                   top: 30.h,
+            //                   bottom: 20.h,
+            //                 ),
+            //                 child: Form(
+            //                   key: controller.formKey,
+            //                   child: Column(
+            //                     mainAxisSize: MainAxisSize.min,
+            //                     children: [
+            //                       _dropdownField(
+            //                         validator:
+            //                             (value) => FormValidators.validateRequired(
+            //                               value,
+            //                               "Experience Level",
+            //                             ),
+            //                         hint: 'Select Experience Level',
+            //                         iconPath: AppAssets.experienceLevel,
+            //                         selectedValue: controller.selectedExperienceLevel,
+            //                         items:
+            //                             controller.experienceLevels
+            //                                 .map(
+            //                                   (e) => DropdownMenuItem(
+            //                                     value: e.name,
+            //                                     child: Text(
+            //                                       e.name,
+            //                                       style: const TextStyle(
+            //                                         color: Colors.white,
+            //                                       ),
+            //                                     ),
+            //                                   ),
+            //                                 )
+            //                                 .toList(),
+            //                         onChanged: controller.updateExperienceLevel,
+            //                       ),
+            //                       SizedBox(height: 18.h),
+            //                       _textField(
+            //                         validator:
+            //                             (value) => FormValidators.validateRequired(
+            //                               value,
+            //                               "Years of Experience",
+            //                             ),
+            //                         controller: controller.yearsOfExperience,
+            //                         hintText: "Years of Experience",
+            //                         prefixIcon: SvgPicture.asset(
+            //                           AppAssets.calenderIcon,
+            //                           height: 15.h,
+            //                           width: 15.w,
+            //                           fit: BoxFit.scaleDown,
+            //                         ),
+            //                         inputFormatter: [
+            //                           LengthLimitingTextInputFormatter(2),
+            //                           FilteringTextInputFormatter.digitsOnly,
+            //                         ],
+            //                       ),
+            //                       SizedBox(height: 18.h),
+            //                       _textField(
+            //                         validator:
+            //                             (value) => FormValidators.validateRequired(
+            //                               value,
+            //                               "Expected Salary",
+            //                             ),
+            //                         controller: controller.expectedSalary,
+            //                         hintText: "Expected Salary",
+            //                         prefixIcon: SvgPicture.asset(
+            //                           AppAssets.cashIcon,
+            //                           height: 15.h,
+            //                           width: 15.w,
+            //                           fit: BoxFit.scaleDown,
+            //                         ),
+            //                         inputFormatter: [
+            //                           LengthLimitingTextInputFormatter(6),
+            //                           FilteringTextInputFormatter.digitsOnly,
+            //                         ],
+            //                       ),
+            //                       SizedBox(height: 18.h),
+            //                       _dropdownField(
+            //                         validator:
+            //                             (value) => FormValidators.validateRequired(
+            //                               value,
+            //                               "Job Type",
+            //                             ),
+            //                         hint: 'Job Type',
+            //                         iconPath: AppAssets.cardIcon,
+            //                         selectedValue: controller.selectedJobType,
+            //                         onChanged: controller.updateJobType,
+            //                         items:
+            //                             controller.jobTypes
+            //                                 .map(
+            //                                   (job) => DropdownMenuItem(
+            //                                     value: job.name,
+            //                                     child: Text(
+            //                                       job.name,
+            //                                       style: const TextStyle(
+            //                                         color: Colors.white,
+            //                                       ),
+            //                                     ),
+            //                                   ),
+            //                                 )
+            //                                 .toList(),
+            //                         ),
+            //                       SizedBox(height: 18.h),
+            //                       SizedBox(
+            //                         height:
+            //                             MediaQuery.of(context).viewInsets.bottom,
+            //                       ),
+            //                     ],
+            //                   ),
+            //                 ),
+            //               ),
+            //             ),
+            //             CustomBtn(
+            //               btnTitle: 'Submit Now',
+            //               buttonHeight: 50.h,
+            //               btnBackgroundColor: AppColors.colorFF8600,
+            //               btnTxtColor: Colors.white,
+            //               buttonWidth: double.infinity,
+            //               onPressed: () {
+            //                 if (controller.formKey.currentState!.validate()) {
+            //                   if (jobId != null) {
+            //                     controller.applyForJob(jobId!, context);
+            //                   } else {
+            //                     Get.snackbar(
+            //                       'Error',
+            //                       'Job ID is missing',
+            //                       backgroundColor: Colors.red,
+            //                       colorText: Colors.white,
+            //                     );
+            //                   }
+            //                 }
+            //               },
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Positioned(
-              bottom: 0.h,
-              left: 0.w,
-              right: 0.w,
+              bottom: 0,
+              left: 0,
+              right: 0,
               child: Container(
-                height: 532.h,
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.75,
+                ),
                 margin: EdgeInsets.only(top: 20.h),
                 padding: EdgeInsets.only(top: 3.h),
                 decoration: BoxDecoration(
@@ -118,8 +293,10 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                   ),
                 ),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 15.h,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.black,
                     borderRadius: BorderRadius.only(
@@ -128,30 +305,27 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                     ),
                   ),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
+                      Flexible(
                         child: SingleChildScrollView(
                           physics: BouncingScrollPhysics(),
-                          reverse: false,
-                          padding: EdgeInsets.only(
-                            top: 30.h,
-                            bottom: MediaQuery.of(context).viewInsets.bottom + 20.h,
-                          ),
                           child: Form(
                             key: controller.formKey,
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
-                              spacing: 18.h,
                               children: [
                                 _dropdownField(
                                   validator:
-                                      (value) => FormValidators.validateRequired(
-                                        value,
-                                        "Experience Level",
-                                      ),
+                                      (value) =>
+                                          FormValidators.validateRequired(
+                                            value,
+                                            "Experience Level",
+                                          ),
                                   hint: 'Select Experience Level',
                                   iconPath: AppAssets.experienceLevel,
-                                  selectedValue: controller.selectedExperienceLevel,
+                                  selectedValue:
+                                      controller.selectedExperienceLevel,
                                   items:
                                       controller.experienceLevels
                                           .map(
@@ -168,12 +342,14 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                                           .toList(),
                                   onChanged: controller.updateExperienceLevel,
                                 ),
+                                SizedBox(height: 18.h),
                                 _textField(
                                   validator:
-                                      (value) => FormValidators.validateRequired(
-                                        value,
-                                        "Years of Experience",
-                                      ),
+                                      (value) =>
+                                          FormValidators.validateRequired(
+                                            value,
+                                            "Years of Experience",
+                                          ),
                                   controller: controller.yearsOfExperience,
                                   hintText: "Years of Experience",
                                   prefixIcon: SvgPicture.asset(
@@ -187,12 +363,14 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                                     FilteringTextInputFormatter.digitsOnly,
                                   ],
                                 ),
+                                SizedBox(height: 18.h),
                                 _textField(
                                   validator:
-                                      (value) => FormValidators.validateRequired(
-                                        value,
-                                        "Expected Salary",
-                                      ),
+                                      (value) =>
+                                          FormValidators.validateRequired(
+                                            value,
+                                            "Expected Salary",
+                                          ),
                                   controller: controller.expectedSalary,
                                   hintText: "Expected Salary",
                                   prefixIcon: SvgPicture.asset(
@@ -206,12 +384,14 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                                     FilteringTextInputFormatter.digitsOnly,
                                   ],
                                 ),
+                                SizedBox(height: 18.h),
                                 _dropdownField(
                                   validator:
-                                      (value) => FormValidators.validateRequired(
-                                        value,
-                                        "Job Type",
-                                      ),
+                                      (value) =>
+                                          FormValidators.validateRequired(
+                                            value,
+                                            "Job Type",
+                                          ),
                                   hint: 'Job Type',
                                   iconPath: AppAssets.cardIcon,
                                   selectedValue: controller.selectedJobType,
@@ -231,16 +411,12 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                                           )
                                           .toList(),
                                 ),
-                                //SizedBox(height: 10.h),
-
-
-
                               ],
                             ),
                           ),
                         ),
                       ),
-                //      Spacer(),
+                      SizedBox(height: 16.h),
                       CustomBtn(
                         btnTitle: 'Submit Now',
                         buttonHeight: 50.h,
@@ -262,6 +438,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                           }
                         },
                       ),
+                      SizedBox(height: 16.h),
                     ],
                   ),
                 ),
@@ -274,7 +451,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
                 color: Colors.black54,
                 child: const Center(
                   child: CircularProgressIndicator(
-                    color: AppColors.colorFF8600,
+                    color: AppColors.color000000,
                   ),
                 ),
               ),
@@ -295,27 +472,21 @@ class ApplyScreen extends GetView<ApplyScreenController> {
         uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
 
     if (!isNetwork) {
-      return Image.asset(
-        AppAssets.profileImage,
-        fit: BoxFit.cover,
-      );
+      return Image.asset(AppAssets.profileImage, fit: BoxFit.cover);
     }
 
     return CachedNetworkImage(
       imageUrl: normalizedUrl!,
       fit: BoxFit.cover,
-      placeholder: (context, url) => const Center(
-        child: CircularProgressIndicator(
-          color: AppColors.colorFF8600,
-        ),
-      ),
-      errorWidget: (context, url, error) => Image.asset(
-        AppAssets.profileImage,
-        fit: BoxFit.cover,
-      ),
+      placeholder:
+          (context, url) => const Center(
+            child: CircularProgressIndicator(color: AppColors.colorFF8600),
+          ),
+      errorWidget:
+          (context, url, error) =>
+              Image.asset(AppAssets.profileImage, fit: BoxFit.cover),
     );
   }
-
 
   /// Dropdown
   Widget _dropdownField({

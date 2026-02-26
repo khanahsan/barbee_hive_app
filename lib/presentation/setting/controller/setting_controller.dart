@@ -300,9 +300,18 @@ class SettingController extends GetxController {
 
       Utilities.showSnackBar(
         title: "Success",
-        message: "Account deleted successfully",
+        message: message,
         isSuccess: true,
       );
+
+      await TokenStorage.clearToken();
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userRole);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.authToken);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userId);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userProfileImage);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.userName);
+      await SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
+      ApiService.clearToken();
 
       Get.offAllNamed(Routes.SIGN_IN_VIEW);
 

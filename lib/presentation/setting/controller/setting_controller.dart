@@ -257,6 +257,95 @@ class SettingController extends GetxController {
     isLoading.value = true;
 
     try {
+      // final user = FirebaseAuth.instance.currentUser;
+
+      // if (user == null) {
+      //   throw Exception("No user logged in");
+      // }
+
+      // 1️⃣ Reauthenticate Firebase user
+      // final credential = EmailAuthProvider.credential(
+      //   email: user.email!,
+      //   password: password,
+      // );
+      // await user.reauthenticateWithCredential(credential);
+
+      // 2️⃣ Call backend API to delete account
+      final response = await AuthApi.deleteAccount(
+        // email: user.email ?? '',
+        email: '', // Provide email from your local storage if needed
+        password: password,
+      );
+
+      final status = response['status'] as bool;
+      final message = response['message'] as String;
+
+      if (!status) {
+        Utilities.showSnackBar(
+          title: "Error",
+          message: message,
+          isSuccess: false,
+        );
+        return;
+      }
+
+      // 3️⃣ Delete Firestore user document
+      // await FirebaseFirestore.instance
+      //     .collection('users')
+      //     .doc(user.uid)
+      //     .delete();
+
+      // 4️⃣ Delete FirebaseAuth account
+      // await user.delete();
+
+      Utilities.showSnackBar(
+        title: "Success",
+        message: "Account deleted successfully",
+        isSuccess: true,
+      );
+
+      Get.offAllNamed(Routes.SIGN_IN_VIEW);
+
+      // } on FirebaseAuthException catch (e) {
+      //   if (e.code == 'wrong-password') {
+      //     Utilities.showSnackBar(
+      //       title: "Error",
+      //       message: "Incorrect password",
+      //       isSuccess: false,
+      //     );
+      //   } else {
+      //     Utilities.showSnackBar(
+      //       title: "Error",
+      //       message: e.message ?? "Firebase error",
+      //       isSuccess: false,
+      //     );
+      //   }
+
+    } catch (e) {
+      Utilities.showSnackBar(
+        title: "Error",
+        message: e.toString().replaceFirst('Exception: ', ''),
+        isSuccess: false,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+/*  Future<void> deleteAccount() async {
+    final password = passwordController.text.trim();
+    if (password.isEmpty) {
+      Utilities.showSnackBar(
+        title: "Error",
+        message: "Password cannot be empty",
+        isSuccess: false,
+      );
+      return;
+    }
+
+    isLoading.value = true;
+
+    try {
       final user = FirebaseAuth.instance.currentUser;
 
       if (user == null) {
@@ -326,7 +415,7 @@ class SettingController extends GetxController {
     } finally {
       isLoading.value = false;
     }
-  }
+  }*/
 
   void showDeleteAccountDialog() {
     final ctrl = this;

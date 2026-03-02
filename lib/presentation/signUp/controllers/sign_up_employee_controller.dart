@@ -27,6 +27,8 @@ import '../../../data/model/color_response.dart';
 import '../../../infrastructure/navigation/routes.dart';
 
 class SignUpEmployeeController extends GetxController {
+  static const int _maxResumeSizeKb = 5000;
+
   // ======== Text Controllers ========
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -265,10 +267,8 @@ class SignUpEmployeeController extends GetxController {
         eyeColors.assignAll(
           data.eyeColors
               .map(
-                (item) => EyeColor(
-                  id: _dropdownIdToInt(item.id),
-                  name: item.name,
-                ),
+                (item) =>
+                    EyeColor(id: _dropdownIdToInt(item.id), name: item.name),
               )
               .toList(),
         );
@@ -276,10 +276,8 @@ class SignUpEmployeeController extends GetxController {
         hairColors.assignAll(
           data.hairColors
               .map(
-                (item) => HairColor(
-                  id: _dropdownIdToInt(item.id),
-                  name: item.name,
-                ),
+                (item) =>
+                    HairColor(id: _dropdownIdToInt(item.id), name: item.name),
               )
               .toList(),
         );
@@ -287,10 +285,7 @@ class SignUpEmployeeController extends GetxController {
         skills.assignAll(
           data.skills
               .map(
-                (item) => Skill(
-                  id: _dropdownIdToInt(item.id),
-                  name: item.name,
-                ),
+                (item) => Skill(id: _dropdownIdToInt(item.id), name: item.name),
               )
               .toList(),
         );
@@ -298,32 +293,23 @@ class SignUpEmployeeController extends GetxController {
         experienceLevels.assignAll(
           data.experienceLevels
               .map(
-                (item) => ExperienceLevel(
-                  id: item.id.toString(),
-                  name: item.name,
-                ),
+                (item) =>
+                    ExperienceLevel(id: item.id.toString(), name: item.name),
               )
               .toList(),
         );
 
         genders.assignAll(
           data.genders
-              .map(
-                (item) => Gender(
-                  id: item.id.toString(),
-                  name: item.name,
-                ),
-              )
+              .map((item) => Gender(id: item.id.toString(), name: item.name))
               .toList(),
         );
 
         heights.assignAll(
           data.heights
               .map(
-                (item) => Height(
-                  id: _dropdownIdToInt(item.id),
-                  name: item.name,
-                ),
+                (item) =>
+                    Height(id: _dropdownIdToInt(item.id), name: item.name),
               )
               .toList(),
         );
@@ -331,10 +317,8 @@ class SignUpEmployeeController extends GetxController {
         countries.assignAll(
           data.countries
               .map(
-                (item) => Country(
-                  id: _dropdownIdToInt(item.id),
-                  name: item.name,
-                ),
+                (item) =>
+                    Country(id: _dropdownIdToInt(item.id), name: item.name),
               )
               .toList(),
         );
@@ -342,10 +326,8 @@ class SignUpEmployeeController extends GetxController {
         states.assignAll(
           data.states
               .map(
-                (item) => StateModel(
-                  id: _dropdownIdToInt(item.id),
-                  name: item.name,
-                ),
+                (item) =>
+                    StateModel(id: _dropdownIdToInt(item.id), name: item.name),
               )
               .toList(),
         );
@@ -383,12 +365,12 @@ class SignUpEmployeeController extends GetxController {
     return 0;
   }
 
-
   Future<void> registerEmployee() async {
     if (googleAccessToken.value.isNotEmpty && googleIdToken.value.isNotEmpty) {
       return _registerWithGoogleCredential();
     }
-    if (appleIdentityToken.value.isNotEmpty && appleAuthorizationCode.value.isNotEmpty) {
+    if (appleIdentityToken.value.isNotEmpty &&
+        appleAuthorizationCode.value.isNotEmpty) {
       return _registerWithAppleCredential();
     }
     // 1️⃣ Validate Terms, Resume, Profile Image, and Skills
@@ -397,6 +379,9 @@ class SignUpEmployeeController extends GetxController {
     }
     if (selectedResume.value == null) {
       return _showError('Please upload your resume');
+    }
+    if (!await _ensureResumeWithinLimit()) {
+      return;
     }
     // if (selectedImage.value == null && profileImageUrl.value.isEmpty) {
     //   return _showError('Please upload a profile image');
@@ -532,10 +517,34 @@ class SignUpEmployeeController extends GetxController {
     }
   }
 
-
   // ======== Helper Method for Error SnackBar ========
   void _showError(String message) {
     Utilities.showSnackBar(title: 'Error', message: message, isSuccess: false);
+  }
+
+  Future<bool> _ensureResumeWithinLimit() async {
+    final file = selectedResume.value;
+    if (file == null) {
+      return false;
+    }
+
+    try {
+      final sizeBytes = await file.length();
+      final maxBytes = _maxResumeSizeKb * 1024;
+      if (sizeBytes > maxBytes) {
+        final maxMb = _maxResumeSizeKb / 1024;
+        final sizeMb = sizeBytes / (1024 * 1024);
+        _showError(
+          'Resume must be less than ${maxMb.toStringAsFixed(2)} MB (current: ${sizeMb.toStringAsFixed(2)} MB).',
+        );
+        return false;
+      }
+    } catch (e) {
+      _showError('Unable to read resume file size');
+      return false;
+    }
+
+    return true;
   }
 
   // ======== Google Sign Up Method ========
@@ -597,7 +606,8 @@ class SignUpEmployeeController extends GetxController {
 
         Utilities.showSnackBar(
           title: "Complete Your Profile",
-          message: "Please fill in the remaining details to complete registration",
+          message:
+              "Please fill in the remaining details to complete registration",
           isSuccess: true,
         );
       }
@@ -674,7 +684,8 @@ class SignUpEmployeeController extends GetxController {
 
         Utilities.showSnackBar(
           title: "Complete Your Profile",
-          message: "Please fill in the remaining details to complete registration",
+          message:
+              "Please fill in the remaining details to complete registration",
           isSuccess: true,
         );
       }
@@ -744,6 +755,9 @@ class SignUpEmployeeController extends GetxController {
     if (selectedResume.value == null) {
       return _showError('Please upload your resume');
     }
+    if (!await _ensureResumeWithinLimit()) {
+      return;
+    }
     if (selectedImage.value == null && profileImageUrl.value.isEmpty) {
       return _showError('Please upload a profile image');
     }
@@ -764,8 +778,9 @@ class SignUpEmployeeController extends GetxController {
         accessToken: googleAccessToken.value,
         idToken: googleIdToken.value,
       );
-      final userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
       final uid = userCredential.user?.uid;
       final email = userCredential.user?.email ?? emailController.text.trim();
 
@@ -786,9 +801,10 @@ class SignUpEmployeeController extends GetxController {
       late int stateId;
 
       try {
-        userSkills = skills
-            .where((skill) => selectedSkills.contains(skill.name))
-            .toList();
+        userSkills =
+            skills
+                .where((skill) => selectedSkills.contains(skill.name))
+                .toList();
         if (userSkills.isEmpty) {
           throw Exception('Please select valid skills');
         }
@@ -809,22 +825,22 @@ class SignUpEmployeeController extends GetxController {
           (height) => height.name == selectedHeight.value,
           orElse: () => throw Exception('Please select a height'),
         );
-        countryId = countries
-            .firstWhere(
-              (c) => c.name == selectedCountry.value,
-              orElse: () => throw Exception('Please select a country'),
-            )
-            .id;
-        stateId = states
-            .firstWhere(
-              (s) => s.name == selectedState.value,
-              orElse: () => throw Exception('Please select a state'),
-            )
-            .id;
+        countryId =
+            countries
+                .firstWhere(
+                  (c) => c.name == selectedCountry.value,
+                  orElse: () => throw Exception('Please select a country'),
+                )
+                .id;
+        stateId =
+            states
+                .firstWhere(
+                  (s) => s.name == selectedState.value,
+                  orElse: () => throw Exception('Please select a state'),
+                )
+                .id;
       } catch (e) {
-        return _showError(
-          e.toString().replaceFirst('Exception: ', ''),
-        );
+        return _showError(e.toString().replaceFirst('Exception: ', ''));
       }
 
       final response = await AuthApi.register(
@@ -873,16 +889,15 @@ class SignUpEmployeeController extends GetxController {
     } on FirebaseAuthException catch (e) {
       return _showError('${e.code}: ${e.message}');
     } catch (e) {
-      return _showError(
-        e.toString().replaceFirst('Exception: ', ''),
-      );
+      return _showError(e.toString().replaceFirst('Exception: ', ''));
     } finally {
       isLoading.value = false;
     }
   }
 
   Future<void> _registerWithAppleCredential() async {
-    if (appleIdentityToken.value.isEmpty || appleAuthorizationCode.value.isEmpty) {
+    if (appleIdentityToken.value.isEmpty ||
+        appleAuthorizationCode.value.isEmpty) {
       return _showError('Apple sign-in token missing. Please try again.');
     }
 
@@ -892,6 +907,9 @@ class SignUpEmployeeController extends GetxController {
     }
     if (selectedResume.value == null) {
       return _showError('Please upload your resume');
+    }
+    if (!await _ensureResumeWithinLimit()) {
+      return;
     }
     if (selectedImage.value == null && profileImageUrl.value.isEmpty) {
       return _showError('Please upload a profile image');
@@ -913,8 +931,9 @@ class SignUpEmployeeController extends GetxController {
         idToken: appleIdentityToken.value,
         accessToken: appleAuthorizationCode.value,
       );
-      final userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
       final uid = userCredential.user?.uid;
       final email = userCredential.user?.email ?? emailController.text.trim();
 
@@ -935,9 +954,10 @@ class SignUpEmployeeController extends GetxController {
       late int stateId;
 
       try {
-        userSkills = skills
-            .where((skill) => selectedSkills.contains(skill.name))
-            .toList();
+        userSkills =
+            skills
+                .where((skill) => selectedSkills.contains(skill.name))
+                .toList();
         if (userSkills.isEmpty) {
           throw Exception('Please select valid skills');
         }
@@ -958,22 +978,22 @@ class SignUpEmployeeController extends GetxController {
           (height) => height.name == selectedHeight.value,
           orElse: () => throw Exception('Please select a height'),
         );
-        countryId = countries
-            .firstWhere(
-              (c) => c.name == selectedCountry.value,
-              orElse: () => throw Exception('Please select a country'),
-            )
-            .id;
-        stateId = states
-            .firstWhere(
-              (s) => s.name == selectedState.value,
-              orElse: () => throw Exception('Please select a state'),
-            )
-            .id;
+        countryId =
+            countries
+                .firstWhere(
+                  (c) => c.name == selectedCountry.value,
+                  orElse: () => throw Exception('Please select a country'),
+                )
+                .id;
+        stateId =
+            states
+                .firstWhere(
+                  (s) => s.name == selectedState.value,
+                  orElse: () => throw Exception('Please select a state'),
+                )
+                .id;
       } catch (e) {
-        return _showError(
-          e.toString().replaceFirst('Exception: ', ''),
-        );
+        return _showError(e.toString().replaceFirst('Exception: ', ''));
       }
 
       final response = await AuthApi.register(
@@ -1022,9 +1042,7 @@ class SignUpEmployeeController extends GetxController {
     } on FirebaseAuthException catch (e) {
       return _showError('${e.code}: ${e.message}');
     } catch (e) {
-      return _showError(
-        e.toString().replaceFirst('Exception: ', ''),
-      );
+      return _showError(e.toString().replaceFirst('Exception: ', ''));
     } finally {
       isLoading.value = false;
     }

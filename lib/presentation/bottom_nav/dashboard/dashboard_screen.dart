@@ -76,9 +76,20 @@ class DashboardScreen extends GetView<DashboardController> {
                 () => _buildDropdown(
                   context,
                   value: controller.selectedPosition.value,
-                  hintText: "Position",
+                  hintText: "Experience Level",
                   items: controller.positionList,
                   onChanged: (val) => controller.selectedPosition.value = val,
+                ).paddingSymmetric(horizontal: 15.w),
+              ),
+
+              SizedBox(height: 25.h),
+              Obx(
+                () => _buildDropdown(
+                  context,
+                  value: controller.selectedSkill.value,
+                  hintText: "Position",
+                  items: controller.skillList,
+                  onChanged: (val) => controller.selectedSkill.value = val,
                 ).paddingSymmetric(horizontal: 15.w),
               ),
 

@@ -45,6 +45,7 @@ class DashboardController extends GetxController {
   final RxList<DropdownMenuItem<String>> heightList = <DropdownMenuItem<String>>[].obs;
   final RxList<DropdownMenuItem<String>> eyeColorList = <DropdownMenuItem<String>>[].obs;
   final RxList<DropdownMenuItem<String>> hairColorList = <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> skillList = <DropdownMenuItem<String>>[].obs;
 
   // Selected values
   final Rx<String?> selectedJob = Rx<String?>(null);
@@ -55,6 +56,7 @@ class DashboardController extends GetxController {
   final Rx<String?> selectedHeight = Rx<String?>(null);
   final Rx<String?> selectedEyeColor = Rx<String?>(null);
   final Rx<String?> selectedHairColor = Rx<String?>(null);
+  final Rx<String?> selectedSkill = Rx<String?>(null);
 
 
 
@@ -226,6 +228,16 @@ class DashboardController extends GetxController {
           ).toList(),
         );
 
+        // Convert skills to dropdown items
+        skillList.assignAll(
+          response.data.skills.map(
+            (item) => DropdownMenuItem<String>(
+              value: item.id.toString(),
+              child: Text(item.name),
+            ),
+          ).toList(),
+        );
+
         // Generate age lists (18-65)
         final ageList = List.generate(48, (index) => (18 + index).toString());
         minAgeList.assignAll(
@@ -288,6 +300,7 @@ class DashboardController extends GetxController {
         log('Dropdown data fetched successfully');
         log('Job Types: ${jobList.length}');
         log('Positions: ${positionList.length}');
+        log('Skills: ${skillList.length}');
         log('Genders: ${genderList.length}');
         log('Heights: ${heightList.length}');
         log('Eye Colors: ${eyeColorList.length}');
@@ -313,6 +326,7 @@ class DashboardController extends GetxController {
     log('Selected Height: ${selectedHeight.value}');
     log('Selected Eye Color: ${selectedEyeColor.value}');
     log('Selected Hair Color: ${selectedHairColor.value}');
+    log('Selected Skill: ${selectedSkill.value}');
 
     // Filter employees based on selected criteria
     List<User> filteredEmployees = allEmployees.where((user) {
@@ -360,6 +374,17 @@ class DashboardController extends GetxController {
         if (employee.experienceYears == null ||
             employee.experienceYears!.toLowerCase() != selectedPosition.value!.toLowerCase()) {
           return false;
+        }
+      }
+
+      // Filter by skill
+      if (selectedSkill.value != null && selectedSkill.value!.isNotEmpty) {
+        final selectedSkillId = int.tryParse(selectedSkill.value!);
+        if (selectedSkillId != null) {
+          final hasSkill = employee.skills.any((skill) => skill.id == selectedSkillId);
+          if (!hasSkill) {
+            return false;
+          }
         }
       }
 
@@ -428,6 +453,7 @@ class DashboardController extends GetxController {
     selectedHeight.value = null;
     selectedEyeColor.value = null;
     selectedHairColor.value = null;
+    selectedSkill.value = null;
 
     // Restore all employees and employers
     log('Restoring employees: ${allEmployees.length}');

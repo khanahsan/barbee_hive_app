@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
@@ -75,13 +73,11 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                         ),
                                         onPressed: () => Get.back(),
                                       ),
-                                      Text(
-                                        'Sign Up as Employee',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 25.0.sp,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                      CustomText(
+                                        title: 'Sign Up as Employee',
+                                        color: AppColors.colorFFFFFF,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ],
                                   ),
@@ -185,8 +181,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                     iconPath: AppAssets.cardIcon,
                                     selectedValue:
                                         controller.selectedExperienceLevel,
-                                    onChanged:
-                                        controller.updateExperienceLevel,
+                                    onChanged: controller.updateExperienceLevel,
                                     validator:
                                         (value) =>
                                             FormValidators.validateRequired(
@@ -345,8 +340,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                     iconPath:
                                                         AppAssets.cityIcon,
                                                     selectedValue:
-                                                        controller
-                                                            .selectedCity,
+                                                        controller.selectedCity,
                                                     onChanged:
                                                         controller.updateCity,
                                                     validator:
@@ -361,7 +355,8 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                               (
                                                                 city,
                                                               ) => DropdownMenuItem(
-                                                                value: city.name,
+                                                                value:
+                                                                    city.name,
                                                                 child: CustomText(
                                                                   title:
                                                                       city.name,

@@ -41,20 +41,13 @@ class FavouriteScreen extends GetView<JobController> {
 
       backgroundColor: AppColors.black,
       body: Center(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 25.h),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.r),
-            color: AppColors.textFieldBackground,
-          ),
-          child: CustomText(
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            title: "Coming\nSoon!",
-            color: AppColors.colorFFFFFF,
-            fontSize: 40,
-            fontWeight: FontWeight.w600,
-          ),
+        child: CustomText(
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          title: "Coming Soon!",
+          color: AppColors.colorFFFFFF,
+          fontSize: 18,
+          fontWeight: FontWeight.w400,
         ),
       ),
     );

@@ -72,13 +72,11 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                         ),
                                         onPressed: () => Get.back(),
                                       ),
-                                      Text(
-                                        'Sign Up as Employer',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 25.0.sp,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                      CustomText(
+                                        title: 'Sign Up as Employer',
+                                        color: AppColors.colorFFFFFF,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ],
                                   ),
@@ -302,8 +300,11 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                                     items:
                                                         controller.cities
                                                             .map(
-                                                              (city) => DropdownMenuItem(
-                                                                value: city.name,
+                                                              (
+                                                                city,
+                                                              ) => DropdownMenuItem(
+                                                                value:
+                                                                    city.name,
                                                                 child: CustomText(
                                                                   title:
                                                                       city.name,
@@ -352,7 +353,8 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                   /// Business Name Field
                                   _buildTextField(
                                     hint: 'Business Tax #',
-                                    controller: controller.businessTaxController,
+                                    controller:
+                                        controller.businessTaxController,
                                     icon: AppAssets.personIcon,
                                     validator:
                                         (value) =>

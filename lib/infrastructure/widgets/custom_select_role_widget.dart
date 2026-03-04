@@ -23,7 +23,7 @@ class CustomSelectRoleWidget extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        width: 160.w,
+        width: 300.w,
         height: 140.h,
         decoration: BoxDecoration(
           color: isSelected ? AppColors.color101010 : AppColors.boxBackground,

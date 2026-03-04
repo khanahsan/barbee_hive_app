@@ -4,6 +4,7 @@ import 'package:barbee_hive_app/data/api/firebase/firebase_service.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_select_role_widget.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -95,26 +96,26 @@ class SelectRoleView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Get.back(),
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back, color: Colors.white),
+      //     onPressed: () => Get.back(),
+      //   ),
+      // ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 30.h),
+            SizedBox(height: 50.h),
             // Logo
-            SvgPicture.asset(
-              AppAssets.appIcon,
-              width: 85.w,
-              height: 85.h,
-              fit: BoxFit.cover,
-            ),
-            SizedBox(height: 40.h),
+            // SvgPicture.asset(
+            //   AppAssets.appIcon,
+            //   width: 85.w,
+            //   height: 85.h,
+            //   fit: BoxFit.cover,
+            // ),
+            // SizedBox(height: 40.h),
 
             // Main content container
             Container(
@@ -137,21 +138,36 @@ class SelectRoleView extends StatelessWidget {
                   ),
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Title
-                    const Text(
-                      'Choose an account type',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: GestureDetector(
+                        onTap: Get.back,
+                        child: SvgPicture.asset(
+                          AppAssets.backIcon,
+                          width: 20.w,
+                          height: 20.h,
+                          fit: BoxFit.cover,
+                        ),
                       ),
+                    ),
+                    SizedBox(height: 60.h),
+
+                    CustomText(
+                      title: 'Choose an account type',
+                      color: AppColors.colorFFFFFF,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w500,
                     ),
                     SizedBox(height: 25.h),
 
                     // Role selection cards
                     Obx(
-                      () => Row(
+                      () => Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        spacing: 10.h,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           CustomSelectRoleWidget(
@@ -173,15 +189,15 @@ class SelectRoleView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 150.h),
+                    SizedBox(height: 80.h),
 
                     // Continue with Email button
                     Obx(
                       () => CustomBtn(
                         buttonHeight: 55.h,
                         btnTitle: "Continue With Email",
-                        btnBackgroundColor: AppColors.color000000,
-                        borderColor: AppColors.colorFFFFFF,
+                        btnBackgroundColor: AppColors.colorFF8600,
+                        borderColor: AppColors.colorFF8600,
                         btnTxtColor: AppColors.colorFFFFFF,
                         iconPath: AppAssets.emailLogo,
                         iconColor: AppColors.colorFFFFFF,
@@ -205,7 +221,7 @@ class SelectRoleView extends StatelessWidget {
                                 },
                       ),
                     ),
-                    SizedBox(height: 15.h),
+                    SizedBox(height: 60.h),
 
                     // Continue with Google button
                     Obx(
@@ -229,7 +245,7 @@ class SelectRoleView extends StatelessWidget {
                                 : _handleGoogleContinue,
                       ),
                     ),
-                    if(Platform.isIOS)...[
+                    if (Platform.isIOS) ...[
                       SizedBox(height: 15.h),
 
                       // Continue with Apple button

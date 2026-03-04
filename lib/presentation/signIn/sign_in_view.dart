@@ -52,21 +52,30 @@ class SignInView extends GetView<SignInController> {
               //   child: Image.asset(AppAssets.backgroundLogo, fit: BoxFit.cover),
               // ),
 
-              /// LABEL
+              // /// LABEL
               // CustomText(
-              //   title: '${AppStrings.loginTo}\n${AppStrings.appName}',
-              //   fontSize: 36,
-              //   color: AppColors.colorFFFFFF,
+              //   title: 'Buzz in or Signup',
+              //   fontSize: 22,
+              //   fontWeight: FontWeight.w700,
+              //   color: AppColors.colorFF8600,
               // ).paddingSymmetric(horizontal: 20.w),
 
+
               /// SUB LABEL
+              // CustomText(
+              //   textAlign: TextAlign.center,
+              //   title: AppStrings.welcomeBackTo,
+              //   fontSize: 15,
+              //   fontWeight: FontWeight.w400,
+              //   color: AppColors.colorFFFFFF,
+              // ).paddingSymmetric(horizontal: 20.w),
               RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
                   style: TextStyle(fontSize: 12, color: AppColors.colorFFFFFF),
                   children: [
                     TextSpan(
-                      text: 'Back at it ',
+                      text: 'Buzz in or Signup ',
                       style: TextStyle(
                         color: AppColors.colorFF8600,
                         fontSize: 15.sp,

@@ -143,25 +143,38 @@ class SelectRoleView extends StatelessWidget {
                     // Title
                     Align(
                       alignment: Alignment.topLeft,
-                      child: GestureDetector(
-                        onTap: Get.back,
-                        child: SvgPicture.asset(
-                          AppAssets.backIcon,
-                          width: 20.w,
-                          height: 20.h,
-                          fit: BoxFit.cover,
-                        ),
+                      child: Row(
+                        spacing: 110.w,
+                        children: [
+                          GestureDetector(
+                            onTap: Get.back,
+                            child: SvgPicture.asset(
+                              AppAssets.backIcon,
+                              width: 20.w,
+                              height: 20.h,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Text(
+                            'Create account',
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                              color: AppColors.colorFFFFFF,
+                              fontSize: 25.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 60.h),
+                    SizedBox(height: 100.h),
 
-                    CustomText(
-                      title: 'Choose an account type',
-                      color: AppColors.colorFFFFFF,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    SizedBox(height: 25.h),
+                    // CustomText(
+                    //   title: 'Choose an account type',
+                    //   color: AppColors.colorFFFFFF,
+                    //   fontSize: 22,
+                    //   fontWeight: FontWeight.w500,
+                    // ),
+                    // SizedBox(height: 25.h),
 
                     // Role selection cards
                     Obx(

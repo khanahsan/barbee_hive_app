@@ -53,8 +53,8 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                           ? Center(child: CircularProgressIndicator())
                           : SingleChildScrollView(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 15.w,
-                              vertical: 20.h,
+                              horizontal: 18.w,
+                              vertical: 30.h,
                             ),
                             child: Form(
                               key: controller.formKey,
@@ -62,24 +62,53 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                 mainAxisSize: MainAxisSize.min,
                                 spacing: 15.h,
                                 children: [
-                                  Row(
-                                    spacing: 30.w,
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(
-                                          Icons.arrow_back,
-                                          color: Colors.white,
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        // Back Arrow (Top Left)
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: GestureDetector(
+                                            onTap: Get.back,
+                                            child: SvgPicture.asset(
+                                              AppAssets.backIcon,
+                                              width: 20.w,
+                                              height: 20.h,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
                                         ),
-                                        onPressed: () => Get.back(),
-                                      ),
-                                      CustomText(
-                                        title: 'Sign Up as Employer',
-                                        color: AppColors.colorFFFFFF,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ],
+
+                                        // Center Title
+                                        CustomText(
+                                          title: 'Sign-Up as Employer',
+                                          color: AppColors.colorFFFFFF,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ],
+                                    ),
                                   ),
+                                  // Row(
+                                  //   spacing: 30.w,
+                                  //   children: [
+                                  //     IconButton(
+                                  //       icon: const Icon(
+                                  //         Icons.arrow_back,
+                                  //         color: Colors.white,
+                                  //       ),
+                                  //       onPressed: () => Get.back(),
+                                  //     ),
+                                  //     CustomText(
+                                  //       title: 'Sign Up as Employer',
+                                  //       color: AppColors.colorFFFFFF,
+                                  //       fontSize: 22,
+                                  //       fontWeight: FontWeight.w500,
+                                  //     ),
+                                  //   ],
+                                  // ),
 
                                   /// PROFILE IMAGE
                                   CustomProfileImage(

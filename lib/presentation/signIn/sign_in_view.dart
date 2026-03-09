@@ -75,7 +75,7 @@ class SignInView extends GetView<SignInController> {
                   style: TextStyle(fontSize: 12, color: AppColors.colorFFFFFF),
                   children: [
                     TextSpan(
-                      text: 'Buzz in or Signup ',
+                      text: 'Buzz in or Sign-up ',
                       style: TextStyle(
                         color: AppColors.colorFF8600,
                         fontSize: 15.sp,

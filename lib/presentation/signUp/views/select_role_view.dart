@@ -141,20 +141,26 @@ class SelectRoleView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Title
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Row(
-                        spacing: 110.w,
+                    SizedBox(
+                      width: double.infinity,
+                      child: Stack(
+                        alignment: Alignment.center,
                         children: [
-                          GestureDetector(
-                            onTap: Get.back,
-                            child: SvgPicture.asset(
-                              AppAssets.backIcon,
-                              width: 20.w,
-                              height: 20.h,
-                              fit: BoxFit.cover,
+                          // Back Arrow (Top Left)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: GestureDetector(
+                              onTap: Get.back,
+                              child: SvgPicture.asset(
+                                AppAssets.backIcon,
+                                width: 20.w,
+                                height: 20.h,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
+
+                          // Center Title
                           Text(
                             'Create account',
                             style: Theme.of(context).textTheme.titleSmall?.copyWith(

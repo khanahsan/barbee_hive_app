@@ -21,9 +21,7 @@ class ProfileScreen extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     final topOffset = 170.h;
-    final fullHeight = screenHeight - topOffset;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -174,13 +172,13 @@ class ProfileScreen extends GetView<ProfileController> {
                       // 50.h
                       left: 0,
                       right: 0,
+                      bottom: 0,
                       child: Stack(
                         alignment: Alignment.topCenter,
                         clipBehavior: Clip.none,
                         children: [
                           Container(
-                            height:
-                                controller.isEditing.value ? null : fullHeight,
+                            height: double.infinity,
                             padding: EdgeInsets.only(top: 3.h),
                             decoration: BoxDecoration(
                               color: AppColors.colorFF8600,
@@ -203,145 +201,156 @@ class ProfileScreen extends GetView<ProfileController> {
                                   topLeft: Radius.circular(18.0),
                                 ),
                               ),
-                              child: Form(
-                                key: controller.formKey,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Obx(() => CustomText(
-                                        title: controller.userName.value,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.colorFFFFFF,
+                              child: LayoutBuilder(
+                                builder: (context, constraints) => SingleChildScrollView(
+                                  physics: const AlwaysScrollableScrollPhysics(),
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      minHeight: constraints.maxHeight,
+                                    ),
+                                    child: Form(
+                                      key: controller.formKey,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                      Obx(() => CustomText(
+                                          title: controller.userName.value,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w600,
+                                          color: AppColors.colorFFFFFF,
+                                        ),
+                                      ),
+                                      Obx(() {
+                                        if (controller.isEditing.value) {
+                                          return SizedBox.shrink();
+                                        }
+
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            // CustomText(
+                                            //   title: "Skills",
+                                            //   fontSize: 16,
+                                            //   fontWeight: FontWeight.w600,
+                                            //   color: AppColors.colorFF8600,
+                                            // ),
+                                            SizedBox(height: 10.h),
+                                            if (controller
+                                                .selectedSkills.isNotEmpty)
+                                              Wrap(
+                                                spacing: 8.w,
+                                                runSpacing: 8.h,
+                                                children:
+                                                    controller.selectedSkills
+                                                        .map(
+                                                          (skill) => Chip(
+                                                            label: Text(
+                                                              skill,
+                                                              style: TextStyle(
+                                                                color:
+                                                                    AppColors
+                                                                        .colorFFFFFF,
+                                                                fontSize: 12.sp,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                            ),
+                                                            backgroundColor:
+                                                                AppColors
+                                                                    .color262626,
+                                                            side: BorderSide(
+                                                              color: AppColors
+                                                                  .colorFF8600,
+                                                            ),
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                        20.r,
+                                                                      ),
+                                                            ),
+                                                            materialTapTargetSize:
+                                                                MaterialTapTargetSize
+                                                                    .shrinkWrap,
+                                                            visualDensity:
+                                                                VisualDensity
+                                                                    .compact,
+                                                          ),
+                                                        )
+                                                        .toList(),
+                                              )
+                                            else
+                                              CustomText(
+                                                title: "No skills selected",
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                color: AppColors.colorFFFFFF,
+                                              ),
+                                          ],
+                                        );
+                                      }),
+                                      SizedBox(height: 40.h),
+                                      if (controller.isEditing.value) ...[
+                                        /// SHOW EMPLOYER EDIT PROFILE
+                                        if (controller.currentUserRole.value == 2)
+                                          EmployerEditWidget(),
+
+                                        /// SHOW EMPLOYEE EDIT PROFILE
+                                        if (controller.currentUserRole.value == 3)
+                                          EmployeeEditWidget(),
+
+                                        SizedBox(height: 5.h),
+                                      ],
+
+                                          if (!controller.isEditing.value)
+                                            CustomBtn(
+                                              buttonHeight: 58.h,
+                                              btnTitle: 'Edit Profile',
+                                              btnBackgroundColor:
+                                                  AppColors.colorFF8600,
+                                              btnTxtColor: Colors.white,
+                                              onPressed: () {
+                                                controller.toggleEditing();
+                                              },
+                                            ),
+                                          SizedBox(height: 20.h),
+
+                                      // Obx(
+                                      //   () => CustomBtn(
+                                      //     buttonHeight: 58.h,
+                                      //     btnTitle:
+                                      //         controller.isEditing.value == true
+                                      //             ? "Submit Now"
+                                      //             : 'Edit Profile',
+                                      //     btnBackgroundColor:
+                                      //         AppColors.colorFF8600,
+                                      //     btnTxtColor: Colors.white,
+                                      //     // width: double.infinity,
+                                      //     onPressed: () {
+                                      //       log(
+                                      //         "BUTTON PRESSED ${!controller.isEditing.value}",
+                                      //       );
+                                      //
+                                      //       if (!controller.isEditing.value) {
+                                      //         controller.toggleEditing();
+                                      //         return;
+                                      //       }
+                                      //
+                                      //       if (controller.formKey.currentState!
+                                      //           .validate()) {
+                                      //         log("Calling updateUserProfile()");
+                                      //         controller.updateUserProfile();
+                                      //       }
+                                      //     },
+                                      //   ),
+                                      // ),
+                                        ],
                                       ),
                                     ),
-                                    Obx(() {
-                                      if (controller.isEditing.value) {
-                                        return SizedBox.shrink();
-                                      }
-
-                                      return Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          // CustomText(
-                                          //   title: "Skills",
-                                          //   fontSize: 16,
-                                          //   fontWeight: FontWeight.w600,
-                                          //   color: AppColors.colorFF8600,
-                                          // ),
-                                          SizedBox(height: 10.h),
-                                          if (controller
-                                              .selectedSkills.isNotEmpty)
-                                            Wrap(
-                                              spacing: 8.w,
-                                              runSpacing: 8.h,
-                                              children:
-                                                  controller.selectedSkills
-                                                      .map(
-                                                        (skill) => Chip(
-                                                          label: Text(
-                                                            skill,
-                                                            style: TextStyle(
-                                                              color:
-                                                                  AppColors
-                                                                      .colorFFFFFF,
-                                                              fontSize: 12.sp,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                            ),
-                                                          ),
-                                                          backgroundColor:
-                                                              AppColors
-                                                                  .color262626,
-                                                          side: BorderSide(
-                                                            color: AppColors
-                                                                .colorFF8600,
-                                                          ),
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                      20.r,
-                                                                    ),
-                                                          ),
-                                                          materialTapTargetSize:
-                                                              MaterialTapTargetSize
-                                                                  .shrinkWrap,
-                                                          visualDensity:
-                                                              VisualDensity
-                                                                  .compact,
-                                                        ),
-                                                      )
-                                                      .toList(),
-                                            )
-                                          else
-                                            CustomText(
-                                              title: "No skills selected",
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              color: AppColors.colorFFFFFF,
-                                            ),
-                                        ],
-                                      );
-                                    }),
-                                    SizedBox(height: 40.h),
-                                    if (controller.isEditing.value) ...[
-                                      /// SHOW EMPLOYER EDIT PROFILE
-                                      if (controller.currentUserRole.value == 2)
-                                        EmployerEditWidget(),
-
-                                      /// SHOW EMPLOYEE EDIT PROFILE
-                                      if (controller.currentUserRole.value == 3)
-                                        EmployeeEditWidget(),
-
-                                      SizedBox(height: 5.h),
-                                    ],
-
-                                    if (!controller.isEditing.value)
-                                      CustomBtn(
-                                        buttonHeight: 58.h,
-                                        btnTitle: 'Edit Profile',
-                                        btnBackgroundColor:
-                                            AppColors.colorFF8600,
-                                        btnTxtColor: Colors.white,
-                                        onPressed: () {
-                                          controller.toggleEditing();
-                                        },
-                                      ),
-
-                                    // Obx(
-                                    //   () => CustomBtn(
-                                    //     buttonHeight: 58.h,
-                                    //     btnTitle:
-                                    //         controller.isEditing.value == true
-                                    //             ? "Submit Now"
-                                    //             : 'Edit Profile',
-                                    //     btnBackgroundColor:
-                                    //         AppColors.colorFF8600,
-                                    //     btnTxtColor: Colors.white,
-                                    //     // width: double.infinity,
-                                    //     onPressed: () {
-                                    //       log(
-                                    //         "BUTTON PRESSED ${!controller.isEditing.value}",
-                                    //       );
-                                    //
-                                    //       if (!controller.isEditing.value) {
-                                    //         controller.toggleEditing();
-                                    //         return;
-                                    //       }
-                                    //
-                                    //       if (controller.formKey.currentState!
-                                    //           .validate()) {
-                                    //         log("Calling updateUserProfile()");
-                                    //         controller.updateUserProfile();
-                                    //       }
-                                    //     },
-                                    //   ),
-                                    // ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),

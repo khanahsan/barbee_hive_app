@@ -329,6 +329,8 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                           onChanged: (value) {
                                             controller.updateState(value);
                                           },
+                                          enableSearch: true,
+                                          searchHint: 'Search state',
                                           validator:
                                               (v) =>
                                                   FormValidators.validateRequired(
@@ -372,6 +374,8 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                         controller.selectedCity,
                                                     onChanged:
                                                         controller.updateCity,
+                                                    enableSearch: true,
+                                                    searchHint: 'Search city',
                                                     validator:
                                                         (v) =>
                                                             FormValidators.validateRequired(
@@ -782,6 +786,8 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
     required RxString selectedValue,
     required List<DropdownMenuItem<String>> items,
     required Function(String?) onChanged,
+    bool enableSearch = false,
+    String? searchHint,
     String? Function(String?)? validator,
   }) {
     return CustomDropdown(
@@ -791,6 +797,8 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
       onChanged: onChanged,
       validator: validator,
       items: items,
+      enableSearch: enableSearch,
+      searchHint: searchHint,
     );
   }
 }

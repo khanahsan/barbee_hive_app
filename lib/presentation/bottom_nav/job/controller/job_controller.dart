@@ -273,15 +273,9 @@ class JobController extends GetxController {
 }
 */
 
-
 import 'dart:developer';
 
-import 'package:barbee_hive_app/data/model/dropdown_response.dart';
 import 'package:barbee_hive_app/data/model/job_list_response.dart';
-import 'package:barbee_hive_app/data/model/job_type_response.dart';
-import 'package:barbee_hive_app/data/model/color_response.dart' as colorModel;
-import 'package:barbee_hive_app/data/model/salary_type_response.dart';
-import 'package:barbee_hive_app/data/model/experience_level_response.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
@@ -314,19 +308,23 @@ class JobController extends GetxController {
   final filteredJobs = <JobListData>[].obs;
 
   /// Dropdown Data
-  final RxList<DropdownMenuItem<String>> skills = <DropdownMenuItem<String>>[].obs;
-  final RxList<DropdownMenuItem<String>> experienceLevels =  <DropdownMenuItem<String>>[].obs;
-  final RxList<DropdownMenuItem<String>> salaryTypes =  <DropdownMenuItem<String>>[].obs;
-  final RxList<DropdownMenuItem<String>> jobTypes =  <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> skills =
+      <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> experienceLevels =
+      <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> salaryTypes =
+      <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> jobTypes =
+      <DropdownMenuItem<String>>[].obs;
 
   @override
   void onInit() {
     super.onInit();
 
-    loadRole();
-    fetchDropdownData();
-   loadScreen();
+    Future.wait([loadRole(), loadUserProfile(), fetchDropdownData()]);
 
+    fetchDropdownData();
+    loadScreen();
 
     print("JOB CONTROLLER :: ");
   }
@@ -334,16 +332,19 @@ class JobController extends GetxController {
   loadScreen() async {
     await Future.delayed(Duration(seconds: 3));
     isScreenLoaded = true;
-
   }
 
-  /// Load user role & profile
+  /// Load user profile
+  Future<void> loadUserProfile() async {
+    userProfileImage.value = SharedPreferenceHelper.getString(
+      SharedPrefKeys.userProfileImage,
+    );
+  }
+
+  /// Load user role
   Future<void> loadRole() async {
     final role = SharedPreferenceHelper.getInt(SharedPrefKeys.userRole);
     isEmployer.value = role == 2;
-
-    userProfileImage.value =
-        SharedPreferenceHelper.getString(SharedPrefKeys.userProfileImage);
 
     if (isEmployer.value) {
       await fetchEmployerJobs();
@@ -398,12 +399,16 @@ class JobController extends GetxController {
     var filtered = employeeJobs.toList();
 
     if (query.isNotEmpty) {
-      filtered = filtered.where((job) {
-        final titleMatch = job.title.toLowerCase().contains(query.toLowerCase());
-        final skillMatch =
-        job.skills!.name.toLowerCase().contains(query.toLowerCase());
-        return titleMatch || skillMatch;
-      }).toList();
+      filtered =
+          filtered.where((job) {
+            final titleMatch = job.title.toLowerCase().contains(
+              query.toLowerCase(),
+            );
+            final skillMatch = job.skills!.name.toLowerCase().contains(
+              query.toLowerCase(),
+            );
+            return titleMatch || skillMatch;
+          }).toList();
     }
 
     filteredJobs.assignAll(_applyDropdownFilters(filtered));
@@ -414,34 +419,47 @@ class JobController extends GetxController {
     var filtered = jobs;
 
     if (selectedJobRole.value.isNotEmpty) {
-      filtered = filtered
-          .where((job) =>
-      job.skills.id.toString() == selectedJobRole.value.toLowerCase())
-          .toList();
+      filtered =
+          filtered
+              .where(
+                (job) =>
+                    job.skills.id.toString() ==
+                    selectedJobRole.value.toLowerCase(),
+              )
+              .toList();
     }
 
     if (selectedExperience.value.isNotEmpty) {
-      filtered = filtered
-          .where((job) =>
-      job.experienceLevel.toLowerCase() ==
-          selectedExperience.value.toLowerCase())
-          .toList();
+      filtered =
+          filtered
+              .where(
+                (job) =>
+                    job.experienceLevel.toLowerCase() ==
+                    selectedExperience.value.toLowerCase(),
+              )
+              .toList();
     }
 
     if (selectedSalary.value.isNotEmpty) {
-      filtered = filtered
-          .where((job) =>
-      job.salaryRange.type.name.toLowerCase() ==
-          selectedSalary.value.toLowerCase())
-          .toList();
+      filtered =
+          filtered
+              .where(
+                (job) =>
+                    job.salaryRange.type.name.toLowerCase() ==
+                    selectedSalary.value.toLowerCase(),
+              )
+              .toList();
     }
 
     if (selectedJobType.value.isNotEmpty) {
-      filtered = filtered
-          .where((job) =>
-      job.jobType.name.toLowerCase() ==
-          selectedJobType.value.toLowerCase())
-          .toList();
+      filtered =
+          filtered
+              .where(
+                (job) =>
+                    job.jobType.name.toLowerCase() ==
+                    selectedJobType.value.toLowerCase(),
+              )
+              .toList();
     }
 
     return filtered;
@@ -452,11 +470,13 @@ class JobController extends GetxController {
     filterApplicationsByText(searchController.text);
     filteredJobs.assignAll(_applyDropdownFilters(filteredJobs));
 
-    log('Filters Applied: '
-        'JobRole=${selectedJobRole.value}, '
-        'Experience=${selectedExperience.value}, '
-        'Salary=${selectedSalary.value}, '
-        'JobType=${selectedJobType.value}');
+    log(
+      'Filters Applied: '
+      'JobRole=${selectedJobRole.value}, '
+      'Experience=${selectedExperience.value}, '
+      'Salary=${selectedSalary.value}, '
+      'JobType=${selectedJobType.value}',
+    );
   }
 
   /// Clear all filters
@@ -469,54 +489,55 @@ class JobController extends GetxController {
     filteredJobs.assignAll(employeeJobs);
   }
 
-
-
   Future<void> fetchDropdownData() async {
     try {
-
-      if(!isEmployer.value) {
-
+      if (!isEmployer.value) {
         final response = await AuthProvider.getDashboardDropdowns();
 
         if (response.status) {
-
           skills.assignAll(
-            response.data.skills.map(
+            response.data.skills
+                .map(
                   (item) => DropdownMenuItem<String>(
-                value: item.id.toString(),
-                child: Text(item.name),
-              ),
-            ).toList(),
+                    value: item.id.toString(),
+                    child: Text(item.name),
+                  ),
+                )
+                .toList(),
           );
 
           experienceLevels.assignAll(
-            response.data.experienceLevels.map(
+            response.data.experienceLevels
+                .map(
                   (item) => DropdownMenuItem<String>(
-                value: item.id.toString(),
-                child: Text(item.name),
-              ),
-            ).toList(),
+                    value: item.id.toString(),
+                    child: Text(item.name),
+                  ),
+                )
+                .toList(),
           );
 
           salaryTypes.assignAll(
-            response.data.salaryTypes.map(
+            response.data.salaryTypes
+                .map(
                   (item) => DropdownMenuItem<String>(
-                value: item.id.toString(),
-                child: Text(item.name),
-              ),
-            ).toList(),
+                    value: item.id.toString(),
+                    child: Text(item.name),
+                  ),
+                )
+                .toList(),
           );
 
           jobTypes.assignAll(
-            response.data.jobTypes.map(
+            response.data.jobTypes
+                .map(
                   (item) => DropdownMenuItem<String>(
-                value: item.id.toString(),
-                child: Text(item.name),
-              ),
-            ).toList(),
+                    value: item.id.toString(),
+                    child: Text(item.name),
+                  ),
+                )
+                .toList(),
           );
-
-
         }
       }
     } catch (e) {
@@ -529,10 +550,9 @@ class JobController extends GetxController {
     }
   }
 
-
-
   /// Loading helpers
   void _startLoading() => isLoading.value = true;
+
   void _stopLoading() => isLoading.value = false;
 
   void _showError(String message) {

@@ -253,15 +253,16 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                     spacing: 10.w,
                                     children: [
                                       Expanded(
-                                        child: CustomDropdown(
+                                        child: _buildDropdown(
                                           hint: 'State',
                                           iconPath: AppAssets.stateIcon,
                                           selectedValue:
                                               controller.selectedState,
-                                          // new RxString
                                           onChanged: (value) {
                                             controller.updateState(value);
                                           },
+                                          enableSearch: true,
+                                          searchHint: 'Search state',
                                           validator:
                                               (v) =>
                                                   FormValidators.validateRequired(
@@ -320,6 +321,8 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                                         controller.selectedCity,
                                                     onChanged:
                                                         controller.updateCity,
+                                                    enableSearch: true,
+                                                    searchHint: 'Search city',
                                                     validator:
                                                         (v) =>
                                                             FormValidators.validateRequired(
@@ -519,6 +522,8 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
     required RxString selectedValue,
     required List<DropdownMenuItem<String>> items,
     required Function(String?) onChanged,
+    bool enableSearch = false,
+    String? searchHint,
     String? Function(String?)? validator,
   }) {
     return CustomDropdown(
@@ -528,6 +533,8 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
       onChanged: onChanged,
       validator: validator,
       items: items,
+      enableSearch: enableSearch,
+      searchHint: searchHint,
     );
   }
 }

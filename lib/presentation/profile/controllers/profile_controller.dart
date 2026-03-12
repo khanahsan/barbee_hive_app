@@ -30,6 +30,9 @@ class ProfileController extends GetxController {
   // ---------------- Rx Variables ----------------
   Rx<UserProfileResponse?> userProfile = Rx<UserProfileResponse?>(null);
   RxBool isLoading = false.obs;
+  RxBool isProfileLoading = false.obs;
+  RxBool isDropdownLoading = false.obs;
+  RxBool isUpdating = false.obs;
   RxBool isCitiesLoading = false.obs;
   RxInt currentUserId = 0.obs;
   RxInt currentUserRole = 0.obs;
@@ -188,14 +191,23 @@ class ProfileController extends GetxController {
     debugPrint("isEditing: ${isEditing.value}");
   }
 
+  void _recomputeLoading() {
+    isLoading.value =
+        isProfileLoading.value ||
+        isDropdownLoading.value ||
+        isUpdating.value;
+  }
+
   // ---------------- Initialization ----------------
   Future<void> initController() async {
     getUserRole();
-    getUserIdAndFetchProfile();
-    await fetchProfileDropdowns();
+    await Future.wait([
+      getUserIdAndFetchProfile(),
+      fetchProfileDropdowns(),
+    ]);
   }
 
-  void getUserIdAndFetchProfile() async {
+  Future<void> getUserIdAndFetchProfile() async {
     final userId = SharedPreferenceHelper.getInt(SharedPrefKeys.userId);
     currentUserId.value = userId ?? 0;
 
@@ -218,7 +230,8 @@ class ProfileController extends GetxController {
   // ---------------- Fetch Profile Data ----------------
   Future<void> fetchUserProfile(int userId) async {
     try {
-      isLoading.value = true;
+      isProfileLoading.value = true;
+      _recomputeLoading();
       final profile = await ProfileApi.getUserProfile(userId);
       userProfile.value = profile;
 
@@ -232,7 +245,8 @@ class ProfileController extends GetxController {
       debugPrint('Error fetching profile: $e');
       showError('Error', 'Failed to fetch user profile');
     } finally {
-      isLoading.value = false;
+      isProfileLoading.value = false;
+      _recomputeLoading();
     }
   }
 
@@ -245,114 +259,103 @@ class ProfileController extends GetxController {
     currentUID.value = data.uid;
 
     if (isEmployer) {
-      nameController.text = data.employer?.businessName ?? '';
-      // currentSkillName.value = data.employer?.skill?.name ?? '';
-      // currentSkillId.value = data.employer?.skill?.id ?? 0;
-
-      if (data.employer?.skills != null && data.employer!.skills.isNotEmpty) {
-        // safe: map over non-nullable list
-        selectedSkills.assignAll(data.employer!.skills.map((s) => s.name));
-        currentSkillId.value =
-            data.employer!.skills.first.id; // keep first for API if needed
-
-        log("SELECTED SKILLS: $selectedSkills");
-      } else {
-        selectedSkills.clear();
-        currentSkillId.value = 0;
-      }
-
-      currentCountryName.value = data.employer?.country?.name ?? '';
-      currentCountryId.value = data.employer?.country?.id ?? 0;
-
-      log(
-        'COUNTRY NAME: ${currentCountryName.value} --- COUNTRY ID: ${currentCountryId.value}',
-      );
-
-      currentStateName.value = data.employer?.state?.name ?? '';
-      currentStateId.value = data.employer?.state?.id ?? 0;
-      currentCityName.value = data.employer?.city ?? '';
-      currentCityName.value = data.employer?.city ?? '';
-
-      log(
-        'STATE NAME: ${currentCountryName.value} --- STATE ID: ${currentCountryId.value}',
-      );
-
-      userProfileImage.value = data.profileImage ?? '';
-      userCoverImage.value = data.coverPhoto ?? '';
-      countryController.text = data.employer?.country?.name ?? '';
-      stateController.text = data.employer?.state?.name ?? '';
-      cityController.text = data.employer?.city ?? '';
-      addressController.text = data.employer?.address ?? '';
-      businessTaxController.text = data.employer?.businessTaxNumber ?? '';
-
-
-      if (currentStateId.value != 0) {
-        fetchCities(stateId: currentStateId.value);
-      }
+      _populateEmployerData(data);
     } else {
-      // Employee details
-      nameController.text = data.employee?.name ?? '';
-      countryController.text = data.employee?.country?.name ?? '';
-      stateController.text = data.employee?.state?.name ?? '';
-      cityController.text = data.employee?.city ?? '';
-      addressController.text = data.employee?.address ?? '';
-      currentCityName.value = data.employee?.city ?? '';
-
-      currentEyeColorName.value = data.employee?.eyeColor?.name ?? '';
-      currentEyeColorId.value = data.employee?.eyeColor?.id ?? 0;
-      selectedResumeFilePath.value = data.employee?.resumePath ?? '';
-
-      currentHairColorName.value = data.employee?.hairColor?.name ?? '';
-      currentHairColorId.value = data.employee?.hairColor?.id ?? 0;
-
-      currentGender.value = (data.employee?.gender ?? '');
-      currentHeight.value = data.employee?.height ?? 0;
-      selectedExperience.value = data.employee?.experienceYears ?? '';
-
-      // Employee skills (multi-select)
-      if (data.employee?.skills != null && data.employee!.skills.isNotEmpty) {
-        // safe: map over non-nullable list
-        selectedSkills.assignAll(data.employee!.skills.map((s) => s.name));
-        currentSkillId.value =
-            data.employee!.skills.first.id; // keep first for API if needed
-
-        log("SELECTED SKILLS: $selectedSkills");
-      } else {
-        selectedSkills.clear();
-        currentSkillId.value = 0;
-      }
-
-      // currentSkillName.value = data.employee?.skill.name ?? '';
-      // currentSkillId.value = data.employee?.skill.id ?? 0;
-
-      currentCountryName.value = data.employee?.country?.name ?? '';
-      currentCountryId.value = data.employee?.country?.id ?? 0;
-
-      log(
-        'COUNTRY NAME: ${currentCountryName.value} --- COUNTRY ID: ${currentCountryId.value}',
-      );
-
-      currentStateName.value = data.employee?.state?.name ?? '';
-      currentStateId.value = data.employee?.state?.id ?? 0;
-
-      log(
-        'STATE NAME: ${currentCountryName.value} --- STATE ID: ${currentCountryId.value}',
-      );
-
-      userProfileImage.value = data.profileImage ?? '';
-      userCoverImage.value = data.coverPhoto ?? '';
-      dobController.text = data.employee?.dob ?? '';
-
-      if (currentStateId.value != 0) {
-        fetchCities(stateId: currentStateId.value);
-      }
-
-      debugPrint("currentGender: ${currentGender.value}");
-      log("currentSkillName: ${currentSkillName.value}");
-      log("currentGender: ${currentGender.value}");
-      log("currentHeight: ${currentHeight.value}");
-      log("cover photo: ${userCoverImage.value}");
+      _populateEmployeeData(data);
     }
+  }
+
+  void _populateEmployerData(UserProfileData data) {
+    nameController.text = data.employer?.businessName ?? '';
+
+    if (data.employer?.skills != null && data.employer!.skills.isNotEmpty) {
+      selectedSkills.assignAll(data.employer!.skills.map((s) => s.name));
+      currentSkillId.value = data.employer!.skills.first.id;
+      log("SELECTED SKILLS: $selectedSkills");
+    } else {
+      selectedSkills.clear();
+      currentSkillId.value = 0;
+    }
+
+    currentCountryName.value = data.employer?.country?.name ?? '';
+    currentCountryId.value = data.employer?.country?.id ?? 0;
+    log(
+      'COUNTRY NAME: ${currentCountryName.value} --- COUNTRY ID: ${currentCountryId.value}',
+    );
+
+    currentStateName.value = data.employer?.state?.name ?? '';
+    currentStateId.value = data.employer?.state?.id ?? 0;
+    currentCityName.value = data.employer?.city ?? '';
+    log(
+      'STATE NAME: ${currentCountryName.value} --- STATE ID: ${currentCountryId.value}',
+    );
+
+    userProfileImage.value = data.profileImage ?? '';
+    userCoverImage.value = data.coverPhoto ?? '';
+    countryController.text = data.employer?.country?.name ?? '';
+    stateController.text = data.employer?.state?.name ?? '';
+    cityController.text = data.employer?.city ?? '';
+    addressController.text = data.employer?.address ?? '';
+    businessTaxController.text = data.employer?.businessTaxNumber ?? '';
+
+    if (currentStateId.value != 0) {
+      fetchCities(stateId: currentStateId.value);
+    }
+  }
+
+  void _populateEmployeeData(UserProfileData data) {
+    nameController.text = data.employee?.name ?? '';
+    countryController.text = data.employee?.country?.name ?? '';
+    stateController.text = data.employee?.state?.name ?? '';
+    cityController.text = data.employee?.city ?? '';
+    addressController.text = data.employee?.address ?? '';
+    currentCityName.value = data.employee?.city ?? '';
+
+    currentEyeColorName.value = data.employee?.eyeColor?.name ?? '';
+    currentEyeColorId.value = data.employee?.eyeColor?.id ?? 0;
+    selectedResumeFilePath.value = data.employee?.resumePath ?? '';
+
+    currentHairColorName.value = data.employee?.hairColor?.name ?? '';
+    currentHairColorId.value = data.employee?.hairColor?.id ?? 0;
+
+    currentGender.value = (data.employee?.gender ?? '');
+    currentHeight.value = data.employee?.height ?? 0;
+    selectedExperience.value = data.employee?.experienceYears ?? '';
+
+    if (data.employee?.skills != null && data.employee!.skills.isNotEmpty) {
+      selectedSkills.assignAll(data.employee!.skills.map((s) => s.name));
+      currentSkillId.value = data.employee!.skills.first.id;
+      log("SELECTED SKILLS: $selectedSkills");
+    } else {
+      selectedSkills.clear();
+      currentSkillId.value = 0;
+    }
+
+    currentCountryName.value = data.employee?.country?.name ?? '';
+    currentCountryId.value = data.employee?.country?.id ?? 0;
+    log(
+      'COUNTRY NAME: ${currentCountryName.value} --- COUNTRY ID: ${currentCountryId.value}',
+    );
+
+    currentStateName.value = data.employee?.state?.name ?? '';
+    currentStateId.value = data.employee?.state?.id ?? 0;
+    log(
+      'STATE NAME: ${currentCountryName.value} --- STATE ID: ${currentCountryId.value}',
+    );
+
+    userProfileImage.value = data.profileImage ?? '';
+    userCoverImage.value = data.coverPhoto ?? '';
+    dobController.text = data.employee?.dob ?? '';
+
+    if (currentStateId.value != 0) {
+      fetchCities(stateId: currentStateId.value);
+    }
+
+    debugPrint("currentGender: ${currentGender.value}");
+    log("currentSkillName: ${currentSkillName.value}");
+    log("currentGender: ${currentGender.value}");
+    log("currentHeight: ${currentHeight.value}");
+    log("cover photo: ${userCoverImage.value}");
   }
 
   // ---------------- Getters ----------------
@@ -369,7 +372,8 @@ class ProfileController extends GetxController {
 
   // ---------------- Fetch Supporting Data ----------------
   Future<void> fetchProfileDropdowns() async {
-    isLoading.value = true;
+    isDropdownLoading.value = true;
+    _recomputeLoading();
 
     try {
       print('Fetching profile dropdowns');
@@ -457,7 +461,8 @@ class ProfileController extends GetxController {
     } catch (e) {
       showError('Error', 'Failed to fetch dropdown data');
     } finally {
-      isLoading.value = false;
+      isDropdownLoading.value = false;
+      _recomputeLoading();
     }
   }
 
@@ -524,15 +529,14 @@ class ProfileController extends GetxController {
     // );
 
     try {
-      isLoading.value = true;
+      isUpdating.value = true;
+      _recomputeLoading();
 
       final name = nameController.text.trim();
       final email = emailController.text.trim();
       final city = cityController.text.trim();
       final address = addressController.text.trim();
       final businessTaxNumber = businessTaxController.text.trim();
-      final country = countryController.text.trim();
-      final state = stateController.text.trim();
       final dobText = dobController.text.trim();
       final gender = currentGender.value.toLowerCase();
 
@@ -614,8 +618,7 @@ class ProfileController extends GetxController {
         Get.find<CustomDrawerController>().loadUserData(),
         Get.find<DashboardController>().fetchUserProfile(),
         Get.find<DashboardController>().getUserLocationAndFetchDashboard(),
-        // Get.find<ChatController>().loadUserData(),
-        Get.find<JobController>().loadRole(),
+        Get.find<JobController>().loadUserProfile(),
 
       ]);
 
@@ -633,7 +636,8 @@ class ProfileController extends GetxController {
       debugPrint("Error updating profile: $e");
       showError("Error", "Something went wrong");
     } finally {
-      isLoading.value = false;
+      isUpdating.value = false;
+      _recomputeLoading();
     }
   }
 }

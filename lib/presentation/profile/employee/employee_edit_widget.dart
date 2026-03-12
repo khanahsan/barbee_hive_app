@@ -125,6 +125,8 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                               FormValidators.validateRequired(value, "State"),
                       hint: "State",
                       iconPath: AppAssets.stateIcon,
+                      enableSearch: true,
+                      searchHint: "Search state",
                       selectedValue: controller.currentStateName,
                       items:
                           controller.states
@@ -162,6 +164,8 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                                 FormValidators.validateRequired(value, "City"),
                         hint: "City",
                         iconPath: AppAssets.cityIcon,
+                        enableSearch: true,
+                        searchHint: "Search city",
                         selectedValue: controller.currentCityName,
                         items:
                             controller.cities

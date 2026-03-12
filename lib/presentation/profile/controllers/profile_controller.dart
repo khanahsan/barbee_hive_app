@@ -192,16 +192,7 @@ class ProfileController extends GetxController {
   Future<void> initController() async {
     getUserRole();
     getUserIdAndFetchProfile();
-    await Future.wait([
-      fetchEyeColors(),
-      fetchHairColors(),
-      fetchSkills(),
-      fetchExperienceLevels(),
-      fetchGenders(),
-      fetchHeights(),
-      fetchCountries(),
-      fetchStates(),
-    ]);
+    await fetchProfileDropdowns();
   }
 
   void getUserIdAndFetchProfile() async {
@@ -377,151 +368,103 @@ class ProfileController extends GetxController {
   //         : userProfile.value?.data.employee?.skill.name ?? '';
 
   // ---------------- Fetch Supporting Data ----------------
-  Future<void> fetchEyeColors() async {
+  Future<void> fetchProfileDropdowns() async {
     isLoading.value = true;
 
     try {
-      print('Fetching eye colors');
-      final response = await AuthProvider.getEyeColors();
+      print('Fetching profile dropdowns');
+      final response = await AuthProvider.getDashboardDropdowns();
       if (response.status) {
-        eyeColors.assignAll(response.data);
+        final data = response.data;
+
+        eyeColors.assignAll(
+          data.eyeColors
+              .map(
+                (item) => colorModel.EyeColor(
+                  id: _dropdownIdToInt(item.id),
+                  name: item.name,
+                ),
+              )
+              .toList(),
+        );
+
+        hairColors.assignAll(
+          data.hairColors
+              .map(
+                (item) => colorModel.HairColor(
+                  id: _dropdownIdToInt(item.id),
+                  name: item.name,
+                ),
+              )
+              .toList(),
+        );
+
+        skills.assignAll(
+          data.skills
+              .map(
+                (item) => colorModel.Skill(
+                  id: _dropdownIdToInt(item.id),
+                  name: item.name,
+                ),
+              )
+              .toList(),
+        );
+
+        experienceLevels.assignAll(
+          data.experienceLevels
+              .map(
+                (item) =>
+                    ExperienceLevel(id: item.id.toString(), name: item.name),
+              )
+              .toList(),
+        );
+
+        genders.assignAll(
+          data.genders
+              .map((item) => Gender(id: item.id.toString(), name: item.name))
+              .toList(),
+        );
+
+        heights.assignAll(
+          data.heights
+              .map(
+                (item) =>
+                    Height(id: _dropdownIdToInt(item.id), name: item.name),
+              )
+              .toList(),
+        );
+
+        countries.assignAll(
+          data.countries
+              .map(
+                (item) =>
+                    Country(id: _dropdownIdToInt(item.id), name: item.name),
+              )
+              .toList(),
+        );
+
+        states.assignAll(
+          data.states
+              .map(
+                (item) =>
+                    StateModel(id: _dropdownIdToInt(item.id), name: item.name),
+              )
+              .toList(),
+        );
       } else {
         showError('Error', response.message);
       }
     } catch (e) {
-      showError('Error', 'Failed to fetch eye colors');
+      showError('Error', 'Failed to fetch dropdown data');
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> fetchHairColors() async {
-    isLoading.value = true;
-
-    try {
-      print('Fetching hair colors');
-      final response = await AuthProvider.getHairColors();
-      if (response.status) {
-        hairColors.assignAll(response.data);
-      } else {
-        showError('Error', response.message);
-      }
-    } catch (e) {
-      showError('Error', 'Failed to fetch hair colors');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> fetchSkills() async {
-    isLoading.value = true;
-
-    try {
-      print('Fetching skills');
-      final response = await AuthProvider.getSkills();
-      if (response.status) {
-        skills.assignAll(response.data);
-      } else {
-        showError('Error', response.message);
-      }
-    } catch (e) {
-      showError('Error', 'Failed to fetch skills');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> fetchGenders() async {
-    isLoading.value = true;
-
-    try {
-      print('Fetching genders');
-      final response = await AuthProvider.getGenders();
-      if (response.status) {
-        genders.assignAll(response.data);
-      } else {
-        showError('Error', response.message);
-      }
-    } catch (e) {
-      showError('Error', 'Failed to genders');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> fetchHeights() async {
-    isLoading.value = true;
-
-    try {
-      print('Fetching heights');
-      final response = await AuthProvider.getHeights();
-      if (response.status) {
-        heights.assignAll(response.data);
-      } else {
-        showError('Error', response.message);
-      }
-    } catch (e) {
-      showError('Error', 'Failed to heights');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> fetchCountries() async {
-    isLoading.value = true;
-
-    try {
-      print('Fetching Countries');
-      final response = await AuthProvider.getCountries();
-      if (response.status) {
-        countries.assignAll(response.data);
-      } else {
-        showError('Error', response.message);
-      }
-    } catch (e) {
-      log('Failed to countries');
-      showError('Error', 'Failed to countries');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> fetchStates() async {
-    isLoading.value = true;
-
-    try {
-      print('Fetching States');
-      final response = await AuthProvider.getStates();
-      if (response.status) {
-        states.assignAll(response.data);
-      } else {
-        showError('Error', response.message);
-      }
-    } catch (e) {
-      log('Failed to States');
-
-      showError('Error', 'Failed to States');
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> fetchExperienceLevels() async {
-    isLoading.value = true;
-
-    try {
-      print('Fetching experience levels');
-      final response = await AuthProvider.getExperienceLevels();
-      if (response.status) {
-        experienceLevels.assignAll(response.data);
-      } else {
-        showError('Error', response.message);
-      }
-    } catch (e) {
-      showError('Error', 'Failed to fetch experience levels');
-    } finally {
-      isLoading.value = false;
-    }
+  int _dropdownIdToInt(dynamic id) {
+    if (id is int) return id;
+    if (id is String) return int.tryParse(id) ?? 0;
+    return 0;
   }
 
   Future<void> fetchCities({required int stateId}) async {
@@ -671,8 +614,9 @@ class ProfileController extends GetxController {
         Get.find<CustomDrawerController>().loadUserData(),
         Get.find<DashboardController>().fetchUserProfile(),
         Get.find<DashboardController>().getUserLocationAndFetchDashboard(),
-        Get.find<ChatController>().loadUserData(),
+        // Get.find<ChatController>().loadUserData(),
         Get.find<JobController>().loadRole(),
+
       ]);
 
       // ========== 5️⃣ SUCCESS UI ==========

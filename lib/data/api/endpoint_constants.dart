@@ -1,6 +1,13 @@
 class ApiEndPoints {
-  static const String baseUrl = 'https://barbeehive.staging.pegasync.com/api/';
-  static const String basePoint = 'https://barbeehive.staging.pegasync.com/';
+
+
+  /// Staging
+  // static const String baseUrl = 'https://barbeehive.staging.pegasync.com/api/';
+
+  /// Live
+  static const String baseUrl = 'https://barbeehive.com/api/';
+
+  static const String basePoint = 'https://barbeehive.com/';
 
   /// AUTH
   static const String login = 'login';

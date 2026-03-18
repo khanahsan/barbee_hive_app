@@ -63,7 +63,7 @@ class FeedbackSupportScreen extends GetView<FeedbackSupportController> {
                       }),
 
                       //Cancel Button
-                      CustomBtn(
+                  /*    CustomBtn(
                         btnTxtColor: AppColors.colorA3A3A3,
                         btnTitle: 'Cancel',
                         btnBackgroundColor: AppColors.color000000,
@@ -75,7 +75,7 @@ class FeedbackSupportScreen extends GetView<FeedbackSupportController> {
                         onPressed: () {
                           Get.back<void>();
                         },
-                      ),
+                      ),*/
                     ],
                   ),
                 ),

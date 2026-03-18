@@ -190,6 +190,9 @@ class CustomDropdown extends StatelessWidget {
   void _showSearchDialog(BuildContext context, FormFieldState<String> state) {
     final TextEditingController searchController = TextEditingController();
 
+    final dialogBg = dropdownColor ?? AppColors.textFieldBackground;
+    final dialogTextColor = textColor ?? AppColors.colorFFFFFF;
+
     Get.dialog(
       StatefulBuilder(
         builder: (context, setStateSB) {
@@ -203,8 +206,8 @@ class CustomDropdown extends StatelessWidget {
                   }).toList();
 
           return AlertDialog(
-            backgroundColor: AppColors.textFieldBackground,
-            title: Text(hint, style: const TextStyle(color: Colors.white)),
+            backgroundColor: dialogBg,
+            title: Text(hint, style: TextStyle(color: dialogTextColor)),
             content: SizedBox(
               width: double.maxFinite,
               height: 360.h,
@@ -213,20 +216,26 @@ class CustomDropdown extends StatelessWidget {
                 children: [
                   TextField(
                     controller: searchController,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: dialogTextColor),
                     decoration: InputDecoration(
                       hintText: searchHint ?? 'Search',
-                      hintStyle: TextStyle(color: AppColors.colorA3A3A3),
+                      hintStyle: TextStyle(
+                        color: dialogTextColor.withValues(alpha: 0.7),
+                      ),
                       prefixIcon: Icon(
                         Icons.search,
-                        color: AppColors.colorA3A3A3,
+                        color: dialogTextColor.withValues(alpha: 0.7),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.color4C4C4C),
+                        borderSide: BorderSide(
+                          color: dialogTextColor.withValues(alpha: 0.5),
+                        ),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.colorFF8600),
+                        borderSide: BorderSide(
+                          color: dialogTextColor,
+                        ),
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
@@ -240,7 +249,7 @@ class CustomDropdown extends StatelessWidget {
                               child: Text(
                                 'No results',
                                 style: TextStyle(
-                                  color: AppColors.colorA3A3A3,
+                                  color: dialogTextColor.withValues(alpha: 0.7),
                                   fontSize: 14.sp,
                                 ),
                               ),
@@ -254,7 +263,7 @@ class CustomDropdown extends StatelessWidget {
                                 return ListTile(
                                   title: Text(
                                     label,
-                                    style: const TextStyle(color: Colors.white),
+                                    style: TextStyle(color: dialogTextColor),
                                   ),
                                   onTap: () {
                                     selectedValue.value = value;

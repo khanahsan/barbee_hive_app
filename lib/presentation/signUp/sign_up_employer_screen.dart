@@ -209,6 +209,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                   /// Country Field
                                   CustomDropdown(
                                     textColor: AppColors.colorFFFFFF,
+                                    dropdownColor: AppColors.colorFF8600,
                                     hint: 'Country',
                                     iconPath: AppAssets.countryIcon,
                                     selectedValue: controller.selectedCountry,
@@ -228,7 +229,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                                 value: country.name,
                                                 child: CustomText(
                                                   title: country.name,
-                                                  color: AppColors.color4C4C4C,
+                                                  color: AppColors.colorFFFFFF,
                                                   fontSize: 16,
                                                 ),
                                               ),
@@ -279,7 +280,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                                         title: state.name,
                                                         color:
                                                             AppColors
-                                                                .color4C4C4C,
+                                                                .colorFFFFFF,
                                                         fontSize: 16,
                                                       ),
                                                     ),
@@ -343,7 +344,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                                                       city.name,
                                                                   color:
                                                                       AppColors
-                                                                          .color4C4C4C,
+                                                                          .colorFFFFFF,
                                                                   fontSize: 16,
                                                                 ),
                                                               ),
@@ -369,6 +370,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
 
                                   CustomMultiSelectDropdown(
                                     textColor: AppColors.colorFFFFFF,
+                                    dropdownColor: AppColors.colorFF8600,
                                     hint: "Position Seeking",
                                     iconPath: AppAssets.cardIcon,
                                     selectedValues: controller.selectedSkills,
@@ -531,6 +533,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
   }) {
     return CustomDropdown(
       textColor: AppColors.colorFFFFFF,
+      dropdownColor: AppColors.colorFF8600,
       hint: hint,
       iconPath: iconPath,
       selectedValue: selectedValue,

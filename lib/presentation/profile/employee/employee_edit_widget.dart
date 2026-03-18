@@ -48,6 +48,7 @@ class EmployeeEditWidget extends GetView<ProfileController> {
               /// SKILLS FIELD
               CustomMultiSelectDropdown(
                 textColor: AppColors.colorFFFFFF,
+                dropdownColor: AppColors.colorFF8600,
                 hint: 'Skills',
                 iconPath: AppAssets.cardIcon,
                 selectedValues: controller.selectedSkills,
@@ -63,6 +64,7 @@ class EmployeeEditWidget extends GetView<ProfileController> {
               /// EXPERIENCE LEVEL FIELD
               CustomDropdown(
                 textColor: AppColors.colorFFFFFF,
+                dropdownColor: AppColors.colorFF8600,
                 validator:
                     (value) =>
                         FormValidators.validateRequired(value, "Experience"),
@@ -86,6 +88,7 @@ class EmployeeEditWidget extends GetView<ProfileController> {
               /// COUNTRY FIELD
               CustomDropdown(
                 textColor: AppColors.colorFFFFFF,
+                dropdownColor: AppColors.colorFF8600,
                 validator:
                     (value) =>
                         FormValidators.validateRequired(value, "Country"),
@@ -122,6 +125,8 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                 children: [
                   Expanded(
                     child: CustomDropdown(
+                      textColor: AppColors.colorFFFFFF,
+                      dropdownColor: AppColors.colorFF8600,
                       validator:
                           (value) =>
                               FormValidators.validateRequired(value, "State"),
@@ -161,6 +166,8 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                         );
                       }
                       return CustomDropdown(
+                        textColor: AppColors.colorFFFFFF,
+                        dropdownColor: AppColors.colorFF8600,
                         validator:
                             (value) =>
                                 FormValidators.validateRequired(value, "City"),
@@ -215,6 +222,8 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                   Expanded(
                     child: Obx(() {
                       return CustomDropdown(
+                        textColor: AppColors.colorFFFFFF,
+                        dropdownColor: AppColors.colorFF8600,
                         validator:
                             (value) => FormValidators.validateRequired(
                               value,
@@ -241,6 +250,8 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                   Expanded(
                     child: Obx(() {
                       return CustomDropdown(
+                        textColor: AppColors.colorFFFFFF,
+                        dropdownColor: AppColors.colorFF8600,
                         validator:
                             (value) => FormValidators.validateRequired(
                               value,
@@ -290,6 +301,8 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                 children: [
                   Expanded(
                     child: CustomDropdown(
+                      textColor: AppColors.colorFFFFFF,
+                      dropdownColor: AppColors.colorFF8600,
                       validator:
                           (value) => FormValidators.validateRequired(
                             value,
@@ -318,6 +331,8 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                   ),
                   Expanded(
                     child: CustomDropdown(
+                      textColor: AppColors.colorFFFFFF,
+                      dropdownColor: AppColors.colorFF8600,
                       validator:
                           (value) => FormValidators.validateRequired(
                             value,

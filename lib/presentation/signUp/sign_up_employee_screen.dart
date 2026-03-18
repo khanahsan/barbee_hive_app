@@ -190,6 +190,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                   /// EXPERIENCE
                                   CustomMultiSelectDropdown(
                                     textColor: AppColors.colorFFFFFF,
+                                    dropdownColor: AppColors.colorFF8600,
 
                                     hint: 'Skills',
                                     iconPath: AppAssets.cardIcon,
@@ -226,7 +227,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                 value: level.name,
                                                 child: CustomText(
                                                   title: level.name,
-                                                  color: AppColors.color4C4C4C,
+                                                  color: AppColors.colorFFFFFF,
                                                   fontSize: 16,
                                                 ),
                                               ),
@@ -282,7 +283,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                 value: country.name,
                                                 child: CustomText(
                                                   title: country.name,
-                                                  color: AppColors.color4C4C4C,
+                                                  color: AppColors.colorFFFFFF,
                                                   fontSize: 16,
                                                 ),
                                               ),
@@ -348,7 +349,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                         title: state.name,
                                                         color:
                                                             AppColors
-                                                                .color4C4C4C,
+                                                                .colorFFFFFF,
                                                         fontSize: 16,
                                                       ),
                                                     ),
@@ -397,7 +398,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                                       city.name,
                                                                   color:
                                                                       AppColors
-                                                                          .color4C4C4C,
+                                                                          .colorFFFFFF,
                                                                   fontSize: 16,
                                                                 ),
                                                               ),
@@ -475,7 +476,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                         title: gender.name,
                                                         color:
                                                             AppColors
-                                                                .color4C4C4C,
+                                                                .colorFFFFFF,
                                                         fontSize: 16,
                                                       ),
                                                     ),
@@ -507,7 +508,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                         title: height.name,
                                                         color:
                                                             AppColors
-                                                                .color4C4C4C,
+                                                                .colorFFFFFF,
                                                         fontSize: 16,
                                                       ),
                                                     ),
@@ -547,7 +548,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                         title: e.name,
                                                         color:
                                                             AppColors
-                                                                .color4C4C4C,
+                                                                .colorFFFFFF,
                                                         fontSize: 16,
                                                       ),
                                                     ),
@@ -577,7 +578,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                         title: e.name,
                                                         color:
                                                             AppColors
-                                                                .color4C4C4C,
+                                                                .colorFFFFFF,
                                                         fontSize: 16,
                                                       ),
                                                     ),
@@ -794,6 +795,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
   }) {
     return CustomDropdown(
       textColor: AppColors.colorFFFFFF,
+      dropdownColor: AppColors.colorFF8600,
       hint: hint,
       iconPath: iconPath,
       selectedValue: selectedValue,

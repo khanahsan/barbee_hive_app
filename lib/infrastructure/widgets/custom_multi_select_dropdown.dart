@@ -116,15 +116,20 @@ class CustomMultiSelectDropdown extends StatelessWidget {
       builder: (_) {
         return StatefulBuilder(
           builder: (context, setStateSB) {
+            final dialogBg = dropdownColor ?? AppColors.textFieldBackground;
+            final dialogTextColor = textColor ?? AppColors.colorFFFFFF;
             return AlertDialog(
-              backgroundColor: Colors.grey[900],
-              title: Text(hint, style: const TextStyle(color: Colors.white)),
+              backgroundColor: dialogBg,
+              title: Text(hint, style: TextStyle(color: dialogTextColor)),
               content: SingleChildScrollView(
                 child: Column(
                   children: items.map((item) {
                     bool isChecked = tempSelected.contains(item);
                     return CheckboxListTile(
-                      title: Text(item, style: const TextStyle(color: Colors.white)),
+                      title: Text(
+                        item,
+                        style: TextStyle(color: dialogTextColor),
+                      ),
                       value: isChecked,
                       activeColor: AppColors.colorFF8600,
                       onChanged: (val) {
@@ -148,7 +153,10 @@ class CustomMultiSelectDropdown extends StatelessWidget {
                 Navigator.of(context, rootNavigator: true).pop();
               }
             },
-                  child: const Text("Cancel", style: TextStyle(color: Colors.white)),
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: dialogTextColor),
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
@@ -165,7 +173,10 @@ class CustomMultiSelectDropdown extends StatelessWidget {
                       Navigator.of(context, rootNavigator: true).pop();
                     }
                   },
-                  child: const Text("OK", style: TextStyle(color: AppColors.colorFF8600)),
+                  child: Text(
+                    "OK",
+                    style: TextStyle(color: dialogTextColor),
+                  ),
                 ),
               ],
             );

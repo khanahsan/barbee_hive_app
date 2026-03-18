@@ -281,7 +281,7 @@ class _EmployeeCardState extends State<EmployeeCard>
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
               fontSize: 15.sp,
               fontWeight: FontWeight.w600,
-              color: AppColors.color5E5E5E,
+              color: AppColors.colorFFFFFF,
             ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,

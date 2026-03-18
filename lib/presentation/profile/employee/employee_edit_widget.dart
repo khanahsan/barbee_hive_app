@@ -9,10 +9,10 @@ import '../../../data/model/height_response.dart';
 import '../../../infrastructure/constants/app_colors.dart';
 import '../../../infrastructure/constants/app_images.dart';
 import '../../../infrastructure/widgets/app_text_field.dart';
+import '../../../infrastructure/widgets/custom_app_shimmer.dart';
 import '../../../infrastructure/widgets/custom_dropdown.dart';
 import '../../../infrastructure/widgets/custom_multi_select_dropdown.dart';
 import '../../../infrastructure/widgets/custom_resume_widget.dart';
-import '../../../infrastructure/widgets/custom_app_shimmer.dart';
 
 class EmployeeEditWidget extends GetView<ProfileController> {
   const EmployeeEditWidget({super.key});
@@ -45,9 +45,9 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                 validator: FormValidators.validateEmail,
               ),
 
-
               /// SKILLS FIELD
               CustomMultiSelectDropdown(
+                textColor: AppColors.colorFFFFFF,
                 hint: 'Skills',
                 iconPath: AppAssets.cardIcon,
                 selectedValues: controller.selectedSkills,
@@ -62,6 +62,7 @@ class EmployeeEditWidget extends GetView<ProfileController> {
 
               /// EXPERIENCE LEVEL FIELD
               CustomDropdown(
+                textColor: AppColors.colorFFFFFF,
                 validator:
                     (value) =>
                         FormValidators.validateRequired(value, "Experience"),
@@ -82,11 +83,12 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                 },
               ),
 
-
               /// COUNTRY FIELD
               CustomDropdown(
+                textColor: AppColors.colorFFFFFF,
                 validator:
-                    (value) => FormValidators.validateRequired(value, "Country"),
+                    (value) =>
+                        FormValidators.validateRequired(value, "Country"),
                 hint: "Country",
                 iconPath: AppAssets.countryIcon,
                 selectedValue: controller.currentCountryName,
@@ -214,8 +216,10 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                     child: Obx(() {
                       return CustomDropdown(
                         validator:
-                            (value) =>
-                                FormValidators.validateRequired(value, "Gender"),
+                            (value) => FormValidators.validateRequired(
+                              value,
+                              "Gender",
+                            ),
                         hint: "Gender",
                         iconPath: AppAssets.genderLogo,
                         selectedValue: controller.currentGender,
@@ -238,8 +242,10 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                     child: Obx(() {
                       return CustomDropdown(
                         validator:
-                            (value) =>
-                                FormValidators.validateRequired(value, "Height"),
+                            (value) => FormValidators.validateRequired(
+                              value,
+                              "Height",
+                            ),
                         hint: "Height",
                         iconPath: AppAssets.heightLogo,
                         selectedValue:
@@ -285,8 +291,10 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                   Expanded(
                     child: CustomDropdown(
                       validator:
-                          (value) =>
-                              FormValidators.validateRequired(value, "Eye Color"),
+                          (value) => FormValidators.validateRequired(
+                            value,
+                            "Eye Color",
+                          ),
                       hint: "Eye Color",
                       iconPath: AppAssets.personIcon,
                       selectedValue: controller.currentEyeColorName,
@@ -363,6 +371,7 @@ class EmployeeEditWidget extends GetView<ProfileController> {
     String? Function(String?)? validator,
   }) {
     return AppTextField(
+      fontColor: AppColors.colorFFFFFF,
       fontSize: 16,
       contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
       validator: validator,

@@ -207,7 +207,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
       spacing: 1.5.w,
       children: [
         Expanded(child: _infoTile(label, AppColors.colorFFFFFF, false)),
-        Expanded(child: _infoTile(value, AppColors.color5E5E5E, true)),
+        Expanded(child: _infoTile(value, AppColors.colorFFFFFF, true)),
       ],
     );
   }

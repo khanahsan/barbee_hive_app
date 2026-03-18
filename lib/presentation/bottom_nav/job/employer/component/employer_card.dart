@@ -466,7 +466,7 @@ class EmployerCard extends StatelessWidget {
                 title: job.title,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.grey,
+                color: AppColors.colorFFFFFF,
               ),
               SizedBox(height: 15.h),
 
@@ -474,7 +474,7 @@ class EmployerCard extends StatelessWidget {
                 title: job.experienceLevel,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.grey,
+                color: AppColors.colorFFFFFF,
               ),
               SizedBox(height: 15.h),
 
@@ -482,7 +482,7 @@ class EmployerCard extends StatelessWidget {
                 title: '\$${job.salaryRange.min} - ${job.salaryRange.max}',
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.grey,
+                color: AppColors.colorFFFFFF,
               ),
               SizedBox(height: 15.h),
 
@@ -490,7 +490,7 @@ class EmployerCard extends StatelessWidget {
                 title: job.jobType.name,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.grey,
+                color: AppColors.colorFFFFFF,
               ),
               SizedBox(height: 15.h),
 
@@ -502,7 +502,7 @@ class EmployerCard extends StatelessWidget {
                       '${job.country?.name}, ${job.state?.name}, ${job.city}',
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.grey,
+                  color: AppColors.colorFFFFFF,
                 ),
               ),
             ],

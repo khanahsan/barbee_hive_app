@@ -517,6 +517,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
     String? Function(String?)? validator,
   }) {
     return CustomDropdown(
+      textColor: AppColors.colorFFFFFF,
       hint: hint,
       iconPath: iconPath,
       selectedValue: selectedValue,
@@ -539,6 +540,7 @@ class ApplyScreen extends GetView<ApplyScreenController> {
     List<TextInputFormatter>? inputFormatter,
   }) {
     return AppTextField(
+      fontColor: AppColors.colorFFFFFF,
       textInputAction: TextInputAction.done,
       controller: controller,
       hintText: hintText,

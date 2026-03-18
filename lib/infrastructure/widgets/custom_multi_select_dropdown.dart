@@ -40,14 +40,14 @@ class CustomMultiSelectDropdown extends StatelessWidget {
     if (iconPath.toLowerCase().endsWith('.svg')) {
       iconWidget = SvgPicture.asset(
         iconPath,
-        color: textColor ?? AppColors.textFieldTextColor,
+        color: AppColors.textFieldTextColor,
         width: iconSize ?? 24.w,
         height: iconSize ?? 24.h,
       );
     } else {
       iconWidget = Image.asset(
         iconPath,
-        color: textColor ?? AppColors.textFieldTextColor,
+        color: AppColors.textFieldTextColor,
         width: iconSize ?? 20.w,
         height: iconSize ?? 20.h,
       );

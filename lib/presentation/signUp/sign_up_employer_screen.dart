@@ -208,6 +208,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
 
                                   /// Country Field
                                   CustomDropdown(
+                                    textColor: AppColors.colorFFFFFF,
                                     hint: 'Country',
                                     iconPath: AppAssets.countryIcon,
                                     selectedValue: controller.selectedCountry,
@@ -367,6 +368,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                   ),
 
                                   CustomMultiSelectDropdown(
+                                    textColor: AppColors.colorFFFFFF,
                                     hint: "Position Seeking",
                                     iconPath: AppAssets.cardIcon,
                                     selectedValues: controller.selectedSkills,
@@ -500,6 +502,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
     TextInputType? keyboardType,
   }) {
     return AppTextField(
+      fontColor: AppColors.colorFFFFFF,
       keyboardType: keyboardType,
       validator: validator,
       hintText: hint,
@@ -527,6 +530,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
     String? Function(String?)? validator,
   }) {
     return CustomDropdown(
+      textColor: AppColors.colorFFFFFF,
       hint: hint,
       iconPath: iconPath,
       selectedValue: selectedValue,

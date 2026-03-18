@@ -134,9 +134,8 @@ class SignInView extends GetView<SignInController> {
                             useUnderlineBorder: true,
                             enabledBorderColor: AppColors.color4C4C4C,
                             focusedBorderColor: AppColors.colorFF8600,
-                            hintText: 'Email',
                             fontColor: AppColors.colorFFFFFF,
-
+                            hintText: 'Email',
                             prefixIcon: SvgPicture.asset(
                               AppAssets.personIcon,
                               fit: BoxFit.scaleDown,

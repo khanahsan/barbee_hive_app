@@ -344,6 +344,7 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
     String? Function(String?)? validator,
   }) {
     return CustomDropdown(
+      textColor: AppColors.colorFFFFFF,
       hint: hint,
       iconPath: iconPath,
       selectedValue: selectedValue,
@@ -365,6 +366,7 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
     String? Function(String?)? validator,
   }) {
     return AppTextField(
+      fontColor: AppColors.colorFFFFFF,
       textInputAction: TextInputAction.done,
       controller: controller,
       hintText: hintText,

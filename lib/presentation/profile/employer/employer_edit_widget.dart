@@ -50,6 +50,7 @@ class EmployerEditWidget extends GetView<ProfileController> {
 
               /// COUNTRY FIELD
               CustomDropdown(
+                textColor: AppColors.colorFFFFFF,
                 validator:
                     (value) =>
                         FormValidators.validateRequired(value, "Country"),
@@ -87,6 +88,7 @@ class EmployerEditWidget extends GetView<ProfileController> {
                 children: [
                   Expanded(
                     child: CustomDropdown(
+                      textColor: AppColors.colorFFFFFF,
                       validator:
                           (value) =>
                               FormValidators.validateRequired(value, "State"),
@@ -126,6 +128,7 @@ class EmployerEditWidget extends GetView<ProfileController> {
                         );
                       }
                       return CustomDropdown(
+                        textColor: AppColors.colorFFFFFF,
                         validator:
                             (value) =>
                                 FormValidators.validateRequired(value, "City"),
@@ -161,6 +164,7 @@ class EmployerEditWidget extends GetView<ProfileController> {
 
               /// EXPERIENCE FIELD
               CustomMultiSelectDropdown(
+                textColor: AppColors.colorFFFFFF,
                 hint: "Position Seeking",
                 iconPath: AppAssets.cardIcon,
                 selectedValues: controller.selectedSkills,
@@ -227,6 +231,7 @@ class EmployerEditWidget extends GetView<ProfileController> {
     bool? isReadOnly,
   }) {
     return AppTextField(
+      fontColor: AppColors.colorFFFFFF,
       validator: validator,
       readOnly: isReadOnly ?? false,
       controller: controller,

@@ -765,8 +765,8 @@ class DashboardScreen extends GetView<DashboardController> {
       iconSize: 24.0,
       borderRadius: 10.0,
       backgroundColor: AppColors.color000000,
-      textColor: AppColors.colorA3A3A3,
-      dropdownColor: Colors.white,
+      textColor: AppColors.colorFFFFFF,
+      dropdownColor: AppColors.colorFF8600,
       borderColor: AppColors.colorA3A3A3,
     );
   }

@@ -108,7 +108,7 @@ class User {
     employer: json['employer'] is Map
         ? Employer.fromJson(Map<String, dynamic>.from(json['employer']))
         : null,
-    distance: json['distance']?.toString() ?? '0.0',
+    distance: json['distance']?.toString() ?? null,
     age: json['age'] is int ? json['age'] : null,
   );
 

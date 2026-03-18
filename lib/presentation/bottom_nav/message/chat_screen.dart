@@ -463,7 +463,7 @@ class ChatScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                    ),
+                    ).paddingSymmetric(horizontal: 10.w, vertical: 10.h),
                 ],
               ),
             );

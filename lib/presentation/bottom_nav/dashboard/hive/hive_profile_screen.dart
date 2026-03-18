@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
@@ -23,7 +25,12 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
 
   @override
   Widget build(BuildContext context) {
-    // final chatController = Get.find<ChatController>();
+    final userData = {
+      ...currentUser.toJson(),
+      'distance': currentUser.distance,
+      'age': currentUser.age,
+    };
+    log("CURRENT USER: $userData");
 
     /// Replacing initState()
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -102,12 +109,13 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
                           ),
 
                           /// USER DISTANCE
-                          CustomText(
-                            title: "${currentUser.distance} mi away",
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.colorFF8600,
-                          ),
+                          if (currentUser.distance != null)
+                            CustomText(
+                              title: "${currentUser.distance} mi away",
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.colorFF8600,
+                            ),
                           SizedBox(height: 25.h),
                           Column(
                             spacing: 1.5.h,

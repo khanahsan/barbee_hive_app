@@ -1,5 +1,5 @@
 import 'package:barbee_hive_app/data/model/job_list_response.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:flutter/material.dart';
@@ -207,16 +207,18 @@ class _EmployeeCardState extends State<EmployeeCard>
                     ),
                   ],
                 ),
-              CustomButton(
+              CustomBtn(
                 buttonHeight: 60.h,
-                buttonText: widget.job.isApplied == 1
+                btnTitle: widget.job.isApplied == 1
                     ? "Applied"
                     : (isExpanded ? "Apply Now" : "View Detail"),
                 buttonWidth: double.infinity,
-                buttonColor: AppColors.color101010,
+                btnBackgroundColor: AppColors.color101010,
                 borderColor: AppColors.colorFF8600,
-                onTap: widget.job.isApplied == 1
-                    ? null // disables the tap if already applied
+                borderWidth: 1.0,
+                btnTxtColor: AppColors.colorFFFFFF,
+                onPressed: widget.job.isApplied == 1
+                    ? () {} // keep disabled-like behavior while preventing tap
                     : () {
                   if (isExpanded) {
                     Get.toNamed(

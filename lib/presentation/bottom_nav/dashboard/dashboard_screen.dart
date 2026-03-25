@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dropdown.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -160,22 +159,22 @@ class DashboardScreen extends GetView<DashboardController> {
               ),
 
               SizedBox(height: 25.h),
-              CustomButton(
-                buttonText: "Apply Filters",
-                onTap: controller.applyFilters,
+              CustomBtn(
+                btnTitle: "Apply Filters",
+                onPressed: controller.applyFilters,
                 buttonWidth: double.infinity,
                 buttonHeight: 60.h,
-                buttonColor: AppColors.colorFF8600,
+                btnBackgroundColor: AppColors.colorFF8600,
                 borderRadius: 10.r,
               ).paddingSymmetric(horizontal: 15.w),
 
               SizedBox(height: 15.h),
-              CustomButton(
-                buttonText: "Reset Filters",
-                onTap: controller.resetFilters,
+              CustomBtn(
+                btnTitle: "Reset Filters",
+                onPressed: controller.resetFilters,
                 buttonWidth: double.infinity,
                 buttonHeight: 60.h,
-                buttonColor: AppColors.colorA3A3A3,
+                btnBackgroundColor: AppColors.colorA3A3A3,
                 borderRadius: 10.r,
               ).paddingSymmetric(horizontal: 15.w),
 

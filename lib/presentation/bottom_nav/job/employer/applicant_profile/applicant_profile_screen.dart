@@ -2,7 +2,7 @@ import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_pdf_view.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -45,14 +45,15 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 10.h),
-                CustomButton(
-                  buttonText: 'Retry',
-                  // onTap: () => controller.fetchProfile(
+                CustomBtn(
+                  btnTitle: 'Retry',
+                  // onPressed: () => controller.fetchProfile(
                   //     Get.arguments?['userId'] ?? 38),
                   buttonWidth: 100.w,
-                  buttonColor: AppColors.colorFF8600,
+                  btnBackgroundColor: AppColors.colorFF8600,
                   buttonHeight: 40.h,
-                  buttonTextSize: 16.sp,
+                  fontSize: 16.sp,
+                  onPressed: () {},
                 ),
               ],
             ),
@@ -175,19 +176,19 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                         SizedBox(height: 20.h),
 
                         /// Send Message Button
-                        CustomButton(
-                          onTap: () {
+                        CustomBtn(
+                          btnTitle: 'Send Message',
+                          buttonWidth: double.infinity,
+                          btnBackgroundColor: AppColors.colorFF8600,
+                          btnTxtColor: AppColors.colorFFFFFF,
+                          buttonHeight: 55.h,
+                          fontSize: 16.sp,
+                          onPressed: () {
                             Get.toNamed(
                               Routes.chatScreen,
                               arguments: {'otherUserID': profile.applicant.uid},
                             );
                           },
-                          buttonText: 'Send Message',
-                          buttonWidth: double.infinity,
-                          buttonColor: AppColors.colorFF8600,
-                          textColor: AppColors.colorFFFFFF,
-                          buttonHeight: 55.h,
-                          buttonTextSize: 16.sp,
                         ),
                       ],
                     ),

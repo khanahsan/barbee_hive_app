@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_profile_image.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/hive_profile_controller.dart';
@@ -155,19 +155,19 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
 
                           /// CHAT OPTION (SHOW IF THE USER IS DIFFERENT)
                           if (!controller.isSameUser(currentUser.id))
-                            CustomButton(
-                              onTap: () {
+                            CustomBtn(
+                              btnTitle: "Send Message",
+                              buttonWidth: double.infinity,
+                              btnBackgroundColor: AppColors.colorFF8600,
+                              btnTxtColor: AppColors.colorFFFFFF,
+                              buttonHeight: 55.h,
+                              fontSize: 16,
+                              onPressed: () {
                                 Get.toNamed(
                                   Routes.chatScreen,
                                   arguments: {'otherUserID': currentUser.uid},
                                 );
                               },
-                              buttonText: "Send Message",
-                              buttonWidth: double.infinity,
-                              buttonColor: AppColors.colorFF8600,
-                              textColor: AppColors.colorFFFFFF,
-                              buttonHeight: 55.h,
-                              buttonTextSize: 16.sp,
                             ),
                         ],
                       ),

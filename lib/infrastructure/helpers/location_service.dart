@@ -1,5 +1,17 @@
 import 'package:geolocator/geolocator.dart';
 
+enum LocationErrorCode { serviceDisabled, permissionDenied, permissionDeniedForever }
+
+class LocationException implements Exception {
+  LocationException(this.code, this.message);
+
+  final LocationErrorCode code;
+  final String message;
+
+  @override
+  String toString() => message;
+}
+
 class LocationService {
   static Future<Position> determinePosition() async {
     bool serviceEnabled;
@@ -7,21 +19,30 @@ class LocationService {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      throw Exception('Location services are disabled.');
+      // Do not auto-redirect to Settings. Let UI decide how to prompt.
+      throw LocationException(
+        LocationErrorCode.serviceDisabled,
+        'Location services are disabled.',
+      );
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        throw LocationException(
+          LocationErrorCode.permissionDenied,
+          'Location permissions are denied.',
+        );
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      await Geolocator.openAppSettings();
-      throw Exception('Location permissions are permanently denied.');
+      // Do not auto-redirect to Settings after denial.
+      throw LocationException(
+        LocationErrorCode.permissionDeniedForever,
+        'Location permissions are permanently denied.',
+      );
     }
 
     return await Geolocator.getCurrentPosition(

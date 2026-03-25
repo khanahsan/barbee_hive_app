@@ -4,7 +4,7 @@ import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/employer/applications_screen/controller/application_controller.dart';
 import 'package:flutter/material.dart';
@@ -133,14 +133,14 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                       'Experience',
                       controller.experienceController,
                     ),
-                    CustomButton(
-                      buttonText: "Done",
+                    CustomBtn(
+                      btnTitle: "Done",
                       buttonWidth: double.infinity,
-                      buttonTextSize: 15.sp,
-                      buttonColor: AppColors.colorFF8600,
+                      fontSize: 15,
+                      btnBackgroundColor: AppColors.colorFF8600,
                       buttonHeight: 55.h,
                       borderRadius: 10.r,
-                      onTap: () {
+                      onPressed: () {
                         controller.filterApplicationsByText(
                           controller.searchController.text,
                         ); // Reapply filters
@@ -210,13 +210,13 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 10.h),
-                    CustomButton(
-                      buttonText: 'Retry',
-                      onTap: () => controller.fetchApplications(jobId),
+                    CustomBtn(
+                      btnTitle: 'Retry',
+                      onPressed: () => controller.fetchApplications(jobId),
                       buttonWidth: 100.w,
-                      buttonColor: AppColors.colorFF8600,
+                      btnBackgroundColor: AppColors.colorFF8600,
                       buttonHeight: 40.h,
-                      buttonTextSize: 16.sp,
+                      fontSize: 16.sp,
                     ),
                   ],
                 )
@@ -426,14 +426,15 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
-                child: CustomButton(
-                  buttonText: 'View Profile',
+                child: CustomBtn(
+                  btnTitle: 'View Profile',
                   buttonWidth: double.infinity,
-                  buttonColor: AppColors.color101010,
+                  btnBackgroundColor: AppColors.color101010,
                   borderColor: AppColors.colorFF8600,
-                  buttonTextSize: 15.sp,
+                  borderWidth: 1.0,
+                  fontSize: 15.sp,
                   buttonHeight: 55.h,
-                  onTap: () => Get.toNamed(
+                  onPressed: () => Get.toNamed(
                     Routes.applicantProfile,
                     arguments: {'applicationData': application},
                   ),
@@ -447,11 +448,11 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
               ),
               SizedBox(width: 8.w),
               Expanded(
-                child: CustomButton(
-                  buttonText: 'Send Message',
+                child: CustomBtn(
+                  btnTitle: 'Send Message',
                   buttonWidth: double.infinity,
-                  buttonColor: AppColors.colorFF8600,
-                  buttonTextSize: 15.sp,
+                  btnBackgroundColor: AppColors.colorFF8600,
+                  fontSize: 15.sp,
                   buttonHeight: 55.h,
                   // onTap: () {
                   //   Get.to(
@@ -474,7 +475,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                   //     ),
                   //   );
                   // },
-                  onTap: () {
+                  onPressed: () {
                     Get.toNamed(
                       Routes.chatScreen,
                       arguments: {"otherUserID": application.applicant.uid},

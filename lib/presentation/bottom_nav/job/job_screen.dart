@@ -4,7 +4,7 @@ import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
 import 'package:flutter/material.dart';
@@ -265,13 +265,14 @@ class JobScreen extends GetView<JobController> {
 
             /// CREATE JOB OPTION (FOR EMPLOYER ONLY)
             if (isEmployer)
-              CustomButton(
-                buttonText: "Create a Job",
+              CustomBtn(
+                btnTitle: "Create a Job",
                 buttonWidth: double.infinity,
-                buttonColor: AppColors.colorFF8600,
-                buttonTextSize: 16.sp,
+                btnBackgroundColor: AppColors.colorFF8600,
+                fontSize: 16.sp,
                 buttonHeight: 60.h,
-                onTap: () {
+                btnTxtColor: AppColors.colorFFFFFF,
+                onPressed: () {
                   Get.toNamed(Routes.jobPostingScreen);
                 },
               ).paddingOnly(bottom: 20.h),

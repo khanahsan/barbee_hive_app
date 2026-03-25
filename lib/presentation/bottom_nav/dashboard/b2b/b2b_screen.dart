@@ -4,7 +4,7 @@ import 'package:barbee_hive_app/data/model/dashboard_response.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/b2b/b2b_fading_carousel.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/b2b_controller.dart';
@@ -113,19 +113,19 @@ class B2BScreen extends GetView<B2BController> {
                     /// SEND MESSAGE OPTION
                     if (controller.canSendMessage &&
                         !controller.isSameUser(currentUser.id))
-                      CustomButton(
-                        onTap: () {
+                      CustomBtn(
+                        btnTitle: "Send Message",
+                        buttonWidth: double.infinity,
+                        btnBackgroundColor: AppColors.colorFF8600,
+                        btnTxtColor: AppColors.colorFFFFFF,
+                        buttonHeight: 55.h,
+                        fontSize: 16,
+                        onPressed: () {
                           Get.toNamed(
                             Routes.chatScreen,
                             arguments: {"otherUserID": currentUser.uid},
                           );
                         },
-                        buttonText: "Send Message",
-                        buttonWidth: double.infinity,
-                        buttonColor: AppColors.colorFF8600,
-                        textColor: AppColors.colorFFFFFF,
-                        buttonHeight: 55.h,
-                        buttonTextSize: 16.sp,
                       ),
                   ],
                 ),

@@ -9,6 +9,7 @@ import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../../../data/api/notifications/notifications_api.dart';
@@ -16,7 +17,7 @@ import '../../../../infrastructure/constants/shared_pref_keys.dart';
 import '../../../../infrastructure/helpers/location_service.dart';
 import '../../../../infrastructure/helpers/shared_preference_helper.dart';
 
-class DashboardController extends GetxController {
+class DashboardController extends GetxController with WidgetsBindingObserver {
   final RxList<User> employees = <User>[].obs; // Role 3 (Hive) - Displayed list
   final RxList<User> employers = <User>[].obs; // Role 2 (B2B) - Displayed list
   final RxList<User> allEmployees = <User>[].obs; // All employees (unfiltered)
@@ -63,6 +64,7 @@ class DashboardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    WidgetsBinding.instance.addObserver(this);
     // fetchDashboardUsers();
     getUnreadCount();
     getUserLocationAndFetchDashboard();
@@ -71,6 +73,28 @@ class DashboardController extends GetxController {
     fetchDropdownData();
     // loadUserData();
     fetchUserProfile();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+
+    if (Get.isDialogOpen ?? false) {
+      Get.back<void>(closeOverlays: true);
+    }
+
+    _refreshLocationIfAvailable();
+  }
+
+  Future<void> _refreshLocationIfAvailable() async {
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
+
+    final permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      await getUserLocationAndFetchDashboard();
+    }
   }
 
   getUnreadCount() async {
@@ -139,12 +163,63 @@ class DashboardController extends GetxController {
       await fetchDashboardUsers(); // ✅ Fetch users after getting location
     } catch (e) {
       print('Location error: $e');
+
+      String message = "Could not get current location.";
+      LocationErrorCode? code;
+      if (e is LocationException) {
+        message = e.message;
+        code = e.code;
+      }
+
       Utilities.showSnackBar(
         title: "Location Error",
-        message: "Could not get current location.",
+        message: message,
         isSuccess: false,
       );
+
+      if (code == LocationErrorCode.permissionDeniedForever) {
+        _showLocationSettingsDialog(
+          title: "Location Permission Needed",
+          message:
+              "Location access is required to show nearby users. You can enable it in Settings.",
+          onOpenSettings: () => Geolocator.openAppSettings(),
+        );
+      } else if (code == LocationErrorCode.serviceDisabled) {
+        _showLocationSettingsDialog(
+          title: "Location Services Off",
+          message:
+              "Turn on location services to see nearby users. You can enable it in Settings.",
+          onOpenSettings: () => Geolocator.openLocationSettings(),
+        );
+      }
     }
+  }
+
+  void _showLocationSettingsDialog({
+    required String title,
+    required String message,
+    required VoidCallback onOpenSettings,
+  }) {
+    Get.dialog<void>(
+      AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back<void>(closeOverlays: true),
+            child: const Text("Not Now"),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back<void>(closeOverlays: true);
+              onOpenSettings();
+            },
+            child: const Text("Open Settings"),
+          ),
+        ],
+      ),
+      barrierDismissible: true,
+    );
   }
 
   Future<void> fetchDashboardUsers() async {
@@ -479,6 +554,7 @@ class DashboardController extends GetxController {
 
   @override
   void onClose() {
+    WidgetsBinding.instance.removeObserver(this);
     bannerAd?.dispose();
     super.onClose();
   }

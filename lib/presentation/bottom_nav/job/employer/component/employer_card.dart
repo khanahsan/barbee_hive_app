@@ -9,7 +9,6 @@ import 'package:barbee_hive_app/infrastructure/services/stripe_service.dart';
 import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dropdown.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -197,34 +196,38 @@ class EmployerCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: CustomButton(
+                child: CustomBtn(
                   buttonWidth: 0.w,
-                  onTap: () {
+                  onPressed: () {
                     LogUtil.logError('job.id ${job.id}');
                     Get.toNamed(
                       Routes.applicationsScreen,
                       arguments: {'jobId': job.id},
                     );
                   },
-                  buttonText: "View Applications",
-                  buttonColor: AppColors.color101010,
+                  btnTitle: "View Applications",
+                  btnBackgroundColor: AppColors.color101010,
                   borderColor: AppColors.colorFF8600,
+                  borderWidth: 1.0,
                   buttonHeight: 50.h,
-                  buttonTextSize: 15.sp,
+                  fontSize: 15.sp,
+                  btnTxtColor: AppColors.colorFFFFFF,
                 ),
               ),
               SizedBox(width: 10.w), // spacing between buttons
               Expanded(
-                child: CustomButton(
+                child: CustomBtn(
                   buttonWidth: 0.w,
-                  onTap: () {
+                  onPressed: () {
                     Get.toNamed(Routes.jobUpdateScreen, arguments: job);
                   },
-                  buttonText: "Edit Job",
-                  buttonColor: AppColors.color101010,
+                  btnTitle: "Edit Job",
+                  btnBackgroundColor: AppColors.color101010,
                   borderColor: AppColors.colorFF8600,
+                  borderWidth: 1.0,
                   buttonHeight: 50.h,
-                  buttonTextSize: 15.sp,
+                  fontSize: 15.sp,
+                  btnTxtColor: AppColors.colorFFFFFF,
                 ),
               ),
             ],

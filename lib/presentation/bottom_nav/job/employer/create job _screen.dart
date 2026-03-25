@@ -2,7 +2,7 @@ import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
-import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -116,17 +116,16 @@ class CreateJobScreen extends StatelessWidget {
     Color? iconColor,
     Color? borderColor,
   }) {
-    return CustomButton(
-      onTap: onTap,
-      buttonText: text,
+    return CustomBtn(
+      onPressed: onTap,
+      btnTitle: text,
       buttonWidth: double.infinity,
-      buttonColor: buttonColor,
-      borderColor: borderColor,
-      buttonTextSize: textSize ?? 16.sp,
+      btnBackgroundColor: buttonColor,
+      borderColor: borderColor ?? Colors.transparent,
+      borderWidth: borderColor == null ? 0.0 : 1.0,
+      fontSize: textSize ?? 16,
       buttonHeight: height ?? 62.h,
-      isIcon: isIcon,
-      iconPath: iconPath,
-      iconSize: iconSize,
+      iconPath: isIcon ? iconPath : null,
       iconColor: iconColor,
     ).paddingSymmetric(horizontal: 15.w);
   }

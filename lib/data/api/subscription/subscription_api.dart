@@ -24,11 +24,17 @@ class SubscriptionApi {
   static Future<ApplySubscriptionResponse> finalizeSubscription({
     required int planID,
     String? paymentIntentID,
+    String? purchaseToken,
+    String? source,
+    String? productId,
   }) async {
     // Build request body
     final requestData = {
       "plan_id": planID,
       if (paymentIntentID != null) "payment_intent_id": paymentIntentID,
+      if (purchaseToken != null) "purchase_token": purchaseToken,
+      if (source != null) "source": source,
+      if (productId != null) "product_id": productId,
     };
 
     final data = await ApiService.post(

@@ -115,6 +115,7 @@ class SubscriptionPlan {
   final double additionalJobCost;
   final int boostCount;
   final double boostCost;
+  final String? productID;
   final bool isActive;
 
   SubscriptionPlan({
@@ -130,6 +131,7 @@ class SubscriptionPlan {
     required this.additionalJobCost,
     required this.boostCount,
     required this.boostCost,
+    this.productID,
     required this.isActive,
   });
 
@@ -153,6 +155,7 @@ class SubscriptionPlan {
       boostCost: (json['boost_cost'] is int)
           ? (json['boost_cost'] as int).toDouble()
           : (json['boost_cost'] ?? 0.0).toDouble(),
+      productID: json['product_id'] ?? '',
       isActive: json['is_active'] ?? false,
     );
   }
@@ -171,6 +174,7 @@ class SubscriptionPlan {
       'additional_job_cost': additionalJobCost,
       'boost_count': boostCount,
       'boost_cost': boostCost,
+      'product_id': productID,
       'is_active': isActive,
     };
   }

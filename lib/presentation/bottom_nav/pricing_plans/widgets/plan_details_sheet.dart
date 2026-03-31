@@ -117,7 +117,7 @@ class PlanDetailsBottomSheet extends GetView<PricingPlansController> {
 
           SizedBox(height: 25.h),
 
-          /// Pay with Stripe Button
+          /// Subscribe Button
           Obx(() {
             return CustomBtn(
               isLoading: controller.isApplying.value,
@@ -126,9 +126,9 @@ class PlanDetailsBottomSheet extends GetView<PricingPlansController> {
               buttonHeight: 55.h,
               fontSize: 18.sp,
               fontWeight: FontWeight.w600,
-              btnTitle: "Pay with Stripe",
+              btnTitle: "Subscribe",
               onPressed: () {
-                controller.applySubscription(planId: plan.id);
+                controller.purchaseSubscription(plan: plan);
               },
             );
           }),

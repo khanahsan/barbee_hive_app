@@ -1,5 +1,6 @@
 import '../../../presentation/bottom_nav/pricing_plans/model/apply_subscription_model.dart';
 import '../../../presentation/bottom_nav/pricing_plans/model/pricing_plans_model.dart';
+import '../../../presentation/bottom_nav/pricing_plans/model/store_in_app_purchase_response.dart';
 import '../api_service.dart';
 import '../endpoint_constants.dart';
 
@@ -42,5 +43,29 @@ class SubscriptionApi {
       requestData,
     );
     return ApplySubscriptionResponse.fromJson(data);
+  }
+
+  /// STORE IN-APP PURCHASE
+  static Future<StoreInAppPurchaseResponse> storeInAppPurchase({
+    required String productId,
+    required int planId,
+    required String purchaseToken,
+    required String platform,
+    required String status,
+    required String transactionId,
+    required String expiresAt,
+    required String purchasedAt,
+  }) async {
+    final data = await ApiService.post(ApiEndPoints.storeInAppPurchase, {
+      'product_id': productId,
+      'plan_id': planId,
+      'purchase_token': purchaseToken,
+      'platform': platform,
+      'status': status,
+      'transaction_id': transactionId,
+      'expires_at': expiresAt,
+      'purchased_at': purchasedAt,
+    });
+    return StoreInAppPurchaseResponse.fromJson(data);
   }
 }

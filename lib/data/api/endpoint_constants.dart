@@ -57,6 +57,7 @@ class ApiEndPoints {
   static const String subscriptionPlans = 'subscription/plans';
   static const String applySubscription = 'subscription/apply';
   static const String finalizeSubscription = 'subscription/finalize';
+  static const String storeInAppPurchase = 'in-app-purchases/store';
 
 
   /// DASHBOARD

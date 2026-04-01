@@ -7,6 +7,7 @@ import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../data/api/subscription/subscription_api.dart';
 import '../../../../infrastructure/constants/shared_pref_keys.dart';
@@ -246,59 +247,91 @@ class PricingPlansController extends GetxController {
     }
 
     String purchaseToken = '';
-    String source = '';
+    String platform = '';
+    String transactionId = purchaseDetails.purchaseID ?? '';
+    String? purchasedAt;
+    String? expiresAt;
+    Map<String, dynamic> localDataMap = const {};
 
     if (Platform.isAndroid) {
       final androidPurchase = purchaseDetails as GooglePlayPurchaseDetails;
       purchaseToken = androidPurchase.billingClientPurchase.purchaseToken;
-      source = 'play_store';
+      platform = 'android';
+      transactionId = androidPurchase.billingClientPurchase.orderId;
+      purchasedAt = _formatPurchaseDate(purchaseDetails.transactionDate);
+      localDataMap = _decodeLocalVerificationData(
+        purchaseDetails.verificationData.localVerificationData,
+      );
     } else if (Platform.isIOS) {
-      final String? purchaseId =
-          purchaseDetails.verificationData.serverVerificationData;
-      purchaseToken = purchaseId ?? '';
-      source = 'app_store';
+      purchaseToken = purchaseDetails.verificationData.serverVerificationData;
+      platform = 'ios';
+      localDataMap = _decodeLocalVerificationData(
+        purchaseDetails.verificationData.localVerificationData,
+      );
+      transactionId = (localDataMap['transactionId'] ??
+              purchaseDetails.purchaseID ??
+              '')
+          .toString();
+      purchasedAt = _parseAndFormatDate(localDataMap['purchaseDate']) ??
+          _formatPurchaseDate(purchaseDetails.transactionDate);
+      expiresAt = _parseAndFormatDate(localDataMap['expiresDate']);
+
+      if (localDataMap.isNotEmpty) {
+        log('transactionId: ${localDataMap['transactionId']}');
+        log('originalTransactionId: ${localDataMap['originalTransactionId']}');
+        log('webOrderLineItemId: ${localDataMap['webOrderLineItemId']}');
+        log('bundleId: ${localDataMap['bundleId']}');
+        log('productId: ${localDataMap['productId']}');
+        log(
+          'subscriptionGroupIdentifier: ${localDataMap['subscriptionGroupIdentifier']}',
+        );
+        log('purchaseDate: ${localDataMap['purchaseDate']}');
+        log('originalPurchaseDate: ${localDataMap['originalPurchaseDate']}');
+        log('expiresDate: ${localDataMap['expiresDate']}');
+        log('quantity: ${localDataMap['quantity']}');
+        log('type: ${localDataMap['type']}');
+        log(
+          'deviceVerificationNonce: ${localDataMap['deviceVerificationNonce']}',
+        );
+        log('inAppOwnershipType: ${localDataMap['inAppOwnershipType']}');
+        log('deviceVerification: ${localDataMap['deviceVerification']}');
+        log('signedDate: ${localDataMap['signedDate']}');
+        log('environment: ${localDataMap['environment']}');
+        log('transactionReason: ${localDataMap['transactionReason']}');
+        log('storefront: ${localDataMap['storefront']}');
+        log('storefrontId: ${localDataMap['storefrontId']}');
+        log('price: ${localDataMap['price']}');
+        log('currency: ${localDataMap['currency']}');
+        log('appTransactionId: ${localDataMap['appTransactionId']}');
+      }
     }
 
-    final String? localData =
-        purchaseDetails.verificationData.localVerificationData;
-    if (localData != null && localData.isNotEmpty) {
-      final Map<String, dynamic> data = jsonDecode(localData);
-      log('transactionId: ${data['transactionId']}');
-      log('originalTransactionId: ${data['originalTransactionId']}');
-      log('webOrderLineItemId: ${data['webOrderLineItemId']}');
-      log('bundleId: ${data['bundleId']}');
-      log('productId: ${data['productId']}');
-      log('subscriptionGroupIdentifier: ${data['subscriptionGroupIdentifier']}');
-      log('purchaseDate: ${data['purchaseDate']}');
-      log('originalPurchaseDate: ${data['originalPurchaseDate']}');
-      log('expiresDate: ${data['expiresDate']}');
-      log('quantity: ${data['quantity']}');
-      log('type: ${data['type']}');
-      log('deviceVerificationNonce: ${data['deviceVerificationNonce']}');
-      log('inAppOwnershipType: ${data['inAppOwnershipType']}');
-      log('deviceVerification: ${data['deviceVerification']}');
-      log('signedDate: ${data['signedDate']}');
-      log('environment: ${data['environment']}');
-      log('transactionReason: ${data['transactionReason']}');
-      log('storefront: ${data['storefront']}');
-      log('storefrontId: ${data['storefrontId']}');
-      log('price: ${data['price']}');
-      log('currency: ${data['currency']}');
-      log('appTransactionId: ${data['appTransactionId']}');
-    }
+    final SubscriptionPlan? plan = _getPendingPlan();
+    purchasedAt ??=
+        _formatPurchaseDate(purchaseDetails.transactionDate) ??
+        _formatDateTime(DateTime.now().toUtc());
+    expiresAt ??= _buildFallbackExpiryDate(plan, purchasedAt);
+    final String resolvedPurchasedAt = purchasedAt;
+    final String resolvedExpiresAt = expiresAt;
 
     log('purchaseDetails.purchaseID ${purchaseDetails.purchaseID}');
     log(
       'purchaseDetails.verificationData.serverVerificationData ${purchaseDetails.verificationData.serverVerificationData}',
     );
-    log('SOURCE: $source');
+    log('PLATFORM: $platform');
+    log('TRANSACTION ID: $transactionId');
+    log('PURCHASED AT: $resolvedPurchasedAt');
+    log('EXPIRES AT: $resolvedExpiresAt');
     log('PURCHASE TOKEN: $purchaseToken');
 
-    await finalizeSubscription(
+    await storeInAppPurchase(
       planId: _pendingPlanId!,
+      productId: _pendingProductId ?? purchaseDetails.productID,
       purchaseToken: purchaseToken,
-      source: source,
-      productId: _pendingProductId,
+      platform: platform,
+      transactionId: transactionId,
+      purchasedAt: resolvedPurchasedAt,
+      expiresAt: resolvedExpiresAt,
     );
   }
 
@@ -309,7 +342,7 @@ class PricingPlansController extends GetxController {
 
     try {
       if (plan.price == 0) {
-        await finalizeSubscription(planId: plan.id);
+        // await finalizeSubscription(planId: plan.id);
         return;
       }
 
@@ -417,5 +450,132 @@ class PricingPlansController extends GetxController {
         isSuccess: false,
       );
     }
+  }
+
+  Future<void> storeInAppPurchase({
+    required int planId,
+    required String productId,
+    required String purchaseToken,
+    required String platform,
+    required String transactionId,
+    required String purchasedAt,
+    required String expiresAt,
+  }) async {
+    try {
+      final response = await SubscriptionApi.storeInAppPurchase(
+        productId: productId,
+        planId: planId,
+        purchaseToken: purchaseToken,
+        platform: platform,
+        status: 'completed',
+        transactionId: transactionId,
+        expiresAt: expiresAt,
+        purchasedAt: purchasedAt,
+      );
+
+      if (response.status) {
+        await fetchSubscriptionPlans();
+
+        Get.close(1);
+
+        Utilities.showSnackBar(
+          title: 'Success',
+          message: response.message,
+          isSuccess: true,
+        );
+      } else {
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: response.message,
+          isSuccess: false,
+        );
+      }
+    } catch (e) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Failed to store in-app purchase: $e',
+        isSuccess: false,
+      );
+    }
+  }
+
+  SubscriptionPlan? _getPendingPlan() {
+    if (_pendingPlanId == null) return null;
+
+    try {
+      return plans.firstWhere((plan) => plan.id == _pendingPlanId);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Map<String, dynamic> _decodeLocalVerificationData(String? localData) {
+    if (localData == null || localData.isEmpty) {
+      return const {};
+    }
+
+    try {
+      final decoded = jsonDecode(localData);
+      if (decoded is Map<String, dynamic>) {
+        return decoded;
+      }
+    } catch (_) {
+      log('Local verification data is not JSON decodable.');
+    }
+
+    return const {};
+  }
+
+  String? _formatPurchaseDate(String? transactionDate) {
+    if (transactionDate == null || transactionDate.isEmpty) return null;
+
+    final int? milliseconds = int.tryParse(transactionDate);
+    if (milliseconds == null) return null;
+
+    return _formatDateTime(
+      DateTime.fromMillisecondsSinceEpoch(milliseconds, isUtc: true),
+    );
+  }
+
+  String? _parseAndFormatDate(dynamic rawValue) {
+    if (rawValue == null) return null;
+
+    final String value = rawValue.toString().trim();
+    if (value.isEmpty) return null;
+
+    final int? milliseconds = int.tryParse(value);
+    if (milliseconds != null) {
+      final int normalizedMilliseconds =
+          value.length <= 10 ? milliseconds * 1000 : milliseconds;
+      return _formatDateTime(
+        DateTime.fromMillisecondsSinceEpoch(
+          normalizedMilliseconds,
+          isUtc: true,
+        ),
+      );
+    }
+
+    try {
+      return _formatDateTime(DateTime.parse(value).toUtc());
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String _buildFallbackExpiryDate(SubscriptionPlan? plan, String purchasedAt) {
+    try {
+      final DateTime baseDate = DateTime.parse(
+        purchasedAt.replaceFirst(' ', 'T'),
+      ).toUtc();
+      return _formatDateTime(
+        baseDate.add(Duration(days: plan?.durationDays ?? 30)),
+      );
+    } catch (_) {
+      return purchasedAt;
+    }
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
   }
 }

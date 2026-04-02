@@ -49,23 +49,31 @@ class SubscriptionApi {
   static Future<StoreInAppPurchaseResponse> storeInAppPurchase({
     required String productId,
     required int planId,
-    required String purchaseToken,
+    required String platformReceipt,
     required String platform,
     required String status,
     required String transactionId,
     required String expiresAt,
     required String purchasedAt,
   }) async {
-    final data = await ApiService.post(ApiEndPoints.storeInAppPurchase, {
+    final requestData = {
       'product_id': productId,
       'plan_id': planId,
-      'purchase_token': purchaseToken,
       'platform': platform,
       'status': status,
       'transaction_id': transactionId,
       'expires_at': expiresAt,
       'purchased_at': purchasedAt,
-    });
+      if (platform == 'ios')
+        'receipt_data': platformReceipt
+      else
+        'purchase_token': platformReceipt,
+    };
+
+    final data = await ApiService.post(
+      ApiEndPoints.storeInAppPurchase,
+      requestData,
+    );
     return StoreInAppPurchaseResponse.fromJson(data);
   }
 }

@@ -246,7 +246,7 @@ class PricingPlansController extends GetxController {
       return;
     }
 
-    String purchaseToken = '';
+    String platformReceipt = '';
     String platform = '';
     String transactionId = purchaseDetails.purchaseID ?? '';
     String? purchasedAt;
@@ -255,7 +255,7 @@ class PricingPlansController extends GetxController {
 
     if (Platform.isAndroid) {
       final androidPurchase = purchaseDetails as GooglePlayPurchaseDetails;
-      purchaseToken = androidPurchase.billingClientPurchase.purchaseToken;
+      platformReceipt = androidPurchase.billingClientPurchase.purchaseToken;
       platform = 'android';
       transactionId = androidPurchase.billingClientPurchase.orderId;
       purchasedAt = _formatPurchaseDate(purchaseDetails.transactionDate);
@@ -263,7 +263,8 @@ class PricingPlansController extends GetxController {
         purchaseDetails.verificationData.localVerificationData,
       );
     } else if (Platform.isIOS) {
-      purchaseToken = purchaseDetails.verificationData.serverVerificationData;
+      // platformReceipt = purchaseDetails.verificationData.serverVerificationData;
+      platformReceipt = purchaseDetails.toString();
       platform = 'ios';
       localDataMap = _decodeLocalVerificationData(
         purchaseDetails.verificationData.localVerificationData,
@@ -322,12 +323,12 @@ class PricingPlansController extends GetxController {
     log('TRANSACTION ID: $transactionId');
     log('PURCHASED AT: $resolvedPurchasedAt');
     log('EXPIRES AT: $resolvedExpiresAt');
-    log('PURCHASE TOKEN: $purchaseToken');
+    log('PLATFORM RECEIPT: $platformReceipt');
 
     await storeInAppPurchase(
       planId: _pendingPlanId!,
       productId: _pendingProductId ?? purchaseDetails.productID,
-      purchaseToken: purchaseToken,
+      platformReceipt: platformReceipt,
       platform: platform,
       transactionId: transactionId,
       purchasedAt: resolvedPurchasedAt,
@@ -455,17 +456,19 @@ class PricingPlansController extends GetxController {
   Future<void> storeInAppPurchase({
     required int planId,
     required String productId,
-    required String purchaseToken,
+    required String platformReceipt,
     required String platform,
     required String transactionId,
     required String purchasedAt,
     required String expiresAt,
   }) async {
     try {
+
+      log("PLATFORM RECEIPT ${platformReceipt}");
       final response = await SubscriptionApi.storeInAppPurchase(
         productId: productId,
         planId: planId,
-        purchaseToken: purchaseToken,
+        platformReceipt: platformReceipt,
         platform: platform,
         status: 'completed',
         transactionId: transactionId,

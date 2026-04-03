@@ -25,6 +25,7 @@ class PricingPlansController extends GetxController {
   final InAppPurchase _iap = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _purchasesSubscription;
   bool _isRestoredProcessed = false;
+  final Set<String> _processedPurchaseKeys = <String>{};
   int? _pendingPlanId;
   String? _pendingProductId;
 
@@ -197,19 +198,31 @@ class PricingPlansController extends GetxController {
     );
   }
 
-  void handlePurchaseUpdates(List<PurchaseDetails> purchaseDetailsList) {
+  Future<void> handlePurchaseUpdates(
+    List<PurchaseDetails> purchaseDetailsList,
+  ) async {
     for (final purchaseDetails in purchaseDetailsList) {
       final purchaseStatus = purchaseDetails.status;
       log('Purchase Status: $purchaseStatus');
       log('PURCHASE DETAILS: $purchaseDetails');
 
       if (purchaseStatus == PurchaseStatus.restored && !_isRestoredProcessed) {
-        onPurchaseSuccess(purchaseDetails);
+        final String purchaseKey = _buildPurchaseKey(purchaseDetails);
+        if (_processedPurchaseKeys.add(purchaseKey)) {
+          await onPurchaseSuccess(purchaseDetails);
+        } else {
+          log('Skipping duplicate restored purchase: $purchaseKey');
+        }
         _isRestoredProcessed = true;
       }
 
       if (purchaseStatus == PurchaseStatus.purchased) {
-        onPurchaseSuccess(purchaseDetails);
+        final String purchaseKey = _buildPurchaseKey(purchaseDetails);
+        if (_processedPurchaseKeys.add(purchaseKey)) {
+          await onPurchaseSuccess(purchaseDetails);
+        } else {
+          log('Skipping duplicate purchased event: $purchaseKey');
+        }
       }
 
       if (purchaseStatus == PurchaseStatus.error) {
@@ -229,7 +242,7 @@ class PricingPlansController extends GetxController {
       }
 
       if (purchaseDetails.pendingCompletePurchase) {
-        _iap.completePurchase(purchaseDetails);
+        await _iap.completePurchase(purchaseDetails);
       }
     }
   }
@@ -263,8 +276,7 @@ class PricingPlansController extends GetxController {
         purchaseDetails.verificationData.localVerificationData,
       );
     } else if (Platform.isIOS) {
-      // platformReceipt = purchaseDetails.verificationData.serverVerificationData;
-      platformReceipt = purchaseDetails.toString();
+      platformReceipt = purchaseDetails.verificationData.serverVerificationData;
       platform = 'ios';
       localDataMap = _decodeLocalVerificationData(
         purchaseDetails.verificationData.localVerificationData,
@@ -305,6 +317,13 @@ class PricingPlansController extends GetxController {
         log('currency: ${localDataMap['currency']}');
         log('appTransactionId: ${localDataMap['appTransactionId']}');
       }
+    }
+
+    final String? transactionReason =
+        localDataMap['transactionReason']?.toString();
+    if (Platform.isIOS && transactionReason == 'RENEWAL') {
+      log('Skipping renewal transaction: $transactionId');
+      return;
     }
 
     final SubscriptionPlan? plan = _getPendingPlan();
@@ -388,8 +407,8 @@ class PricingPlansController extends GetxController {
       final PurchaseParam purchaseParam =
           PurchaseParam(productDetails: productDetails);
 
-      await _iap.buyNonConsumable(purchaseParam: purchaseParam);
       startListeningToPurchases();
+      await _iap.buyNonConsumable(purchaseParam: purchaseParam);
     } catch (e) {
       Utilities.showSnackBar(
         title: 'Error',
@@ -464,7 +483,7 @@ class PricingPlansController extends GetxController {
   }) async {
     try {
 
-      log("PLATFORM RECEIPT ${platformReceipt}");
+      log('PLATFORM RECEIPT $platformReceipt');
       final response = await SubscriptionApi.storeInAppPurchase(
         productId: productId,
         planId: planId,
@@ -580,5 +599,12 @@ class PricingPlansController extends GetxController {
 
   String _formatDateTime(DateTime dateTime) {
     return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+  }
+
+  String _buildPurchaseKey(PurchaseDetails purchaseDetails) {
+    final String purchaseId = purchaseDetails.purchaseID ?? 'no_purchase_id';
+    final String transactionDate =
+        purchaseDetails.transactionDate ?? 'no_transaction_date';
+    return '${purchaseDetails.productID}|$purchaseId|$transactionDate';
   }
 }

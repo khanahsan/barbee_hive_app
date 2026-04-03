@@ -50,6 +50,19 @@ class SettingData {
   });
 
   factory SettingData.fromJson(Map<String, dynamic> json) {
+    int parseShowDistance(dynamic value) {
+      if (value is bool) return value ? 1 : 0;
+      if (value is int) return value;
+      if (value is String) {
+        final parsed = int.tryParse(value);
+        if (parsed != null) return parsed;
+        final lower = value.toLowerCase();
+        if (lower == 'true') return 1;
+        if (lower == 'false') return 0;
+      }
+      return 0;
+    }
+
     return SettingData(
       id: json['id'],
       userId: json['user_id'],
@@ -57,7 +70,7 @@ class SettingData {
       sound: json['sound'] ?? false,
       vibrate: json['vibrate'] ?? false,
       location: json['location'] ?? false,
-      showDistance: json['show_distance'] ?? 0,
+      showDistance: parseShowDistance(json['show_distance']),
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
     );

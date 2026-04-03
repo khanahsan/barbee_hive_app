@@ -213,6 +213,20 @@ class SettingController extends GetxController {
     }
   }
 
+  Future<void> syncMessagingPreferenceToFirestore() async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null || uid.isEmpty) return;
+
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'receiveMessages': receiveMessage.value,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      log("Failed to sync receiveMessages: $e");
+    }
+  }
+
   // UPDATE SETTINGS API CALL
   Future<void> updateSettings() async {
     isLoading.value = true;
@@ -232,6 +246,8 @@ class SettingController extends GetxController {
           message: response.message ?? "",
           isSuccess: false,
         );
+      } else {
+        await syncMessagingPreferenceToFirestore();
       }
     } catch (e) {
       Utilities.showSnackBar(

@@ -8,6 +8,7 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_profile_image.dart
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/hive_profile_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -22,6 +23,26 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
   const HiveProfileScreen({super.key, required this.currentUser});
 
   final User currentUser;
+
+  bool _parseReceiveMessages(dynamic value) {
+    if (value is bool) return value;
+    if (value is int) return value == 1;
+    if (value is String) {
+      final normalized = value.trim().toLowerCase();
+      return normalized == 'true' || normalized == '1';
+    }
+    return true;
+  }
+
+  Future<bool> _canReceiveMessages(String uid) async {
+    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    if (!doc.exists) return true;
+
+    final data = doc.data() ?? {};
+    return _parseReceiveMessages(
+      data['receiveMessages'] ?? data['receive_messages'],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,10 +183,25 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
                               btnTxtColor: AppColors.colorFFFFFF,
                               buttonHeight: 55.h,
                               fontSize: 16,
-                              onPressed: () {
+                              onPressed: () async {
+                                final receiverUid = currentUser.uid.trim();
+                                if (receiverUid.isEmpty) return;
+
+                                final canReceiveMessages =
+                                    await _canReceiveMessages(receiverUid);
+                                if (!canReceiveMessages) {
+                                  Utilities.showSnackBar(
+                                    title: "Messaging Disabled",
+                                    message:
+                                        "This user is not accepting messages right now.",
+                                    isSuccess: false,
+                                  );
+                                  return;
+                                }
+
                                 Get.toNamed(
                                   Routes.chatScreen,
-                                  arguments: {'otherUserID': currentUser.uid},
+                                  arguments: {'otherUserID': receiverUid},
                                 );
                               },
                             ),

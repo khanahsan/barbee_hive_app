@@ -17,6 +17,16 @@ class ChatController extends GetxController {
   var isLoading = true.obs;
   RxString userProfileImage = ''.obs;
 
+  bool _parseReceiveMessages(dynamic value) {
+    if (value is bool) return value;
+    if (value is int) return value == 1;
+    if (value is String) {
+      final normalized = value.trim().toLowerCase();
+      return normalized == 'true' || normalized == '1';
+    }
+    return true;
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -155,6 +165,16 @@ class ChatController extends GetxController {
 
     final generatedChatId = generateChatId(myUid, otherUid);
 
+    final canReceiveMessages = await otherUserCanReceiveMessages(otherUid);
+    if (!canReceiveMessages) {
+      Utilities.showSnackBar(
+        title: "Messaging Disabled",
+        message: "This user is not accepting messages right now.",
+        isSuccess: false,
+      );
+      return '';
+    }
+
     log("GENERATE CHAT ID: $generatedChatId");
     final chatRef = FirebaseFirestore.instance
         .collection('chats')
@@ -205,6 +225,7 @@ class ChatController extends GetxController {
         'name': 'User',
         'profileImage': '',
         'role': 0,
+        'receiveMessages': true,
       };
     }
 
@@ -212,12 +233,25 @@ class ChatController extends GetxController {
       'name': doc['name'] ?? 'User',
       'profileImage': doc['profileImage'] ?? '',
       'role': doc['role'] ?? 0,
+      'receiveMessages': _parseReceiveMessages(
+        doc.data()?['receiveMessages'] ?? doc.data()?['receive_messages'],
+      ),
     };
   }
 
   Future<Map<String, dynamic>> currentUserLiveData(String userId) async {
     final doc = await FirebaseFirestore.instance.collection("users").doc(userId).get();
     return doc.data() ?? {};
+  }
+
+  Future<bool> otherUserCanReceiveMessages(String uid) async {
+    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    if (!doc.exists) return true;
+
+    final data = doc.data() ?? {};
+    return _parseReceiveMessages(
+      data['receiveMessages'] ?? data['receive_messages'],
+    );
   }
 
 
@@ -460,12 +494,41 @@ class ChatController extends GetxController {
 
     log("CHAT TYPE: $chatType");
 
+    final receiverId =
+        otherUserData?['uid']?.toString() ??
+        chatId.split('-').firstWhere((id) => id != currentUserId.value);
+
+    final canReceiveMessages = await otherUserCanReceiveMessages(receiverId);
+    if (!canReceiveMessages) {
+      Utilities.showSnackBar(
+        title: "Messaging Disabled",
+        message: "This user is not accepting messages right now.",
+        isSuccess: false,
+      );
+      return;
+    }
+
     final chatRef = FirebaseFirestore.instance.collection('chats').doc(chatId);
     final chatDoc = await chatRef.get();
 
+    if (chatDoc.exists) {
+      final chatData = chatDoc.data() ?? {};
+      if (chatData['disableChat'] == true) {
+        Utilities.showSnackBar(
+          title: "Messaging Disabled",
+          message: "This user is not accepting messages right now.",
+          isSuccess: false,
+        );
+        return;
+      }
+    }
+
     // ✅ Only create chat if it doesn't exist
     if (!chatDoc.exists && otherUserData != null) {
-      await startChat(otherUserData, chatType: chatType);
+      final createdChatId = await startChat(otherUserData, chatType: chatType);
+      if (createdChatId.isEmpty) {
+        return;
+      }
     }
     if (!chatDoc.exists && otherUserData == null) {
       log("sendMessage skipped: chat not found and otherUserData missing ($chatId)");
@@ -521,5 +584,4 @@ class ChatController extends GetxController {
     });
   }
 }
-
 

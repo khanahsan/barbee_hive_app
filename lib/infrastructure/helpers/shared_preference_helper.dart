@@ -47,10 +47,12 @@ class SharedPreferenceHelper {
     await _prefs?.clear();
   }
 
-  static saveInfo(LoginResponse response,
-      bool isRememberMe,
-      String email,
-      String password,) async {
+  static saveInfo(
+    LoginResponse response,
+    bool isRememberMe,
+    String email,
+    String password,
+  ) async {
     await Future.wait([
       TokenStorage.saveToken(response.token),
       SharedPreferenceHelper.saveInt(
@@ -85,12 +87,22 @@ class SharedPreferenceHelper {
     );
 
     if (isRememberMe) {
-      SharedPreferenceHelper.saveString(SharedPrefKeys.savedEmail, email);
-      SharedPreferenceHelper.saveString(SharedPrefKeys.savedPassword, password);
-      SharedPreferenceHelper.saveBool(SharedPrefKeys.isRememberMe, true);
+      await Future.wait([
+        SharedPreferenceHelper.saveString(SharedPrefKeys.savedEmail, email),
+        SharedPreferenceHelper.saveString(
+          SharedPrefKeys.savedPassword,
+          password,
+        ),
+        SharedPreferenceHelper.remove(SharedPrefKeys.isRememberMe),
+        SharedPreferenceHelper.remove(SharedPrefKeys.rememberMe),
+      ]);
     } else {
-      SharedPreferenceHelper.remove(SharedPrefKeys.savedEmail);
-      SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
+      await Future.wait([
+        SharedPreferenceHelper.remove(SharedPrefKeys.savedEmail),
+        SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword),
+        SharedPreferenceHelper.remove(SharedPrefKeys.isRememberMe),
+        SharedPreferenceHelper.remove(SharedPrefKeys.rememberMe),
+      ]);
     }
   }
 }

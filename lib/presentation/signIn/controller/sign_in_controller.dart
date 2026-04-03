@@ -2,8 +2,6 @@ import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -33,20 +31,14 @@ class SignInController extends GetxController {
   }
 
   void _loadSavedCredentials() {
-    String savedEmail =
+    final savedEmail =
         SharedPreferenceHelper.getString(SharedPrefKeys.savedEmail) ?? '';
-    String savedPassword =
+    final savedPassword =
         SharedPreferenceHelper.getString(SharedPrefKeys.savedPassword) ?? '';
 
     emailController.text = savedEmail;
-
-    if (savedPassword.isNotEmpty) {
-      passwordController.text = savedPassword;
-      rememberMe.value = true;
-    } else {
-      passwordController.clear();
-      rememberMe.value = false;
-    }
+    passwordController.text = savedPassword;
+    rememberMe.value = savedEmail.isNotEmpty && savedPassword.isNotEmpty;
   }
 
   void togglePasswordVisibility() {
@@ -93,7 +85,7 @@ class SignInController extends GetxController {
 
       SharedPreferenceHelper.saveString(
         SharedPrefKeys.fcmToken,
-        fcmToken ?? '',
+        fcmToken,
       );
 
 

@@ -203,8 +203,21 @@ class PricingPlansController extends GetxController {
   ) async {
     for (final purchaseDetails in purchaseDetailsList) {
       final purchaseStatus = purchaseDetails.status;
+      final String eventProductId = _extractPurchaseProductId(purchaseDetails);
       log('Purchase Status: $purchaseStatus');
       log('PURCHASE DETAILS: $purchaseDetails');
+      log('EVENT PRODUCT ID: $eventProductId');
+
+      if (_pendingProductId != null && eventProductId != _pendingProductId) {
+        log(
+          'Ignoring purchase update for product $eventProductId while pending product is $_pendingProductId',
+        );
+
+        if (purchaseDetails.pendingCompletePurchase) {
+          await _iap.completePurchase(purchaseDetails);
+        }
+        continue;
+      }
 
       if (purchaseStatus == PurchaseStatus.restored && !_isRestoredProcessed) {
         final String purchaseKey = _buildPurchaseKey(purchaseDetails);
@@ -388,6 +401,8 @@ class PricingPlansController extends GetxController {
 
       _pendingPlanId = plan.id;
       _pendingProductId = productId;
+      _processedPurchaseKeys.clear();
+      _isRestoredProcessed = false;
 
       final Set<String> productIds = {productId};
       final ProductDetailsResponse response =
@@ -602,9 +617,35 @@ class PricingPlansController extends GetxController {
   }
 
   String _buildPurchaseKey(PurchaseDetails purchaseDetails) {
-    final String purchaseId = purchaseDetails.purchaseID ?? 'no_purchase_id';
-    final String transactionDate =
-        purchaseDetails.transactionDate ?? 'no_transaction_date';
-    return '${purchaseDetails.productID}|$purchaseId|$transactionDate';
+    final Map<String, dynamic> localDataMap = _decodeLocalVerificationData(
+      purchaseDetails.verificationData.localVerificationData,
+    );
+    final String productId = _extractPurchaseProductId(
+      purchaseDetails,
+      localDataMap: localDataMap,
+    );
+    final String purchaseId = (localDataMap['transactionId'] ??
+            purchaseDetails.purchaseID ??
+            'no_purchase_id')
+        .toString();
+    final String transactionDate = (localDataMap['purchaseDate'] ??
+            purchaseDetails.transactionDate ??
+            'no_transaction_date')
+        .toString();
+    return '$productId|$purchaseId|$transactionDate';
+  }
+
+  String _extractPurchaseProductId(
+    PurchaseDetails purchaseDetails, {
+    Map<String, dynamic>? localDataMap,
+  }) {
+    final Map<String, dynamic> resolvedLocalDataMap =
+        localDataMap ??
+        _decodeLocalVerificationData(
+          purchaseDetails.verificationData.localVerificationData,
+        );
+
+    return (resolvedLocalDataMap['productId'] ?? purchaseDetails.productID)
+        .toString();
   }
 }

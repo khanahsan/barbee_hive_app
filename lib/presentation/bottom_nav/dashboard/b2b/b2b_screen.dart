@@ -97,6 +97,7 @@ class B2BScreen extends GetView<B2BController> {
                     ),
 
                     /// DISTANCE
+                    if(currentUser.distance != null)
                     CustomText(
                       title: "${currentUser.distance} mi away",
                       fontSize: 12,

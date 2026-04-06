@@ -333,6 +333,9 @@ class JobPostingScreen extends GetView<JobPostingController> {
                                       "State",
                                     ),
                                 hint: 'State',
+                                enableSearch: true,
+                                searchHint: 'Search state',
+
                                 iconPath: AppAssets.stateIcon,
                                 selectedValue: controller.selectedState,
                                 onChanged: controller.updateState,
@@ -382,6 +385,8 @@ class JobPostingScreen extends GetView<JobPostingController> {
                                       "City",
                                     ),
                                 hint: 'City',
+                                enableSearch: true,
+                                searchHint: 'Search city',
                                 iconPath: AppAssets.cityIcon,
                                 selectedValue: controller.selectedCity,
                                 onChanged: controller.updateCity,
@@ -567,11 +572,17 @@ class JobPostingScreen extends GetView<JobPostingController> {
     double? iconSize,
     double? borderRadius,
     Color? backgroundColor,
+    bool? enableSearch,
     Color? textColor,
     Color? dropdownColor,
+    String? searchHint,
     String? Function(String?)? validator,
   }) {
     return CustomDropdown(
+      searchHint: searchHint,
+      enableSearch: enableSearch ?? false,
+      textColor: textColor ?? AppColors.colorFFFFFF,
+      dropdownColor: dropdownColor ?? AppColors.colorFF8600,
       hint: hint,
       iconPath: iconPath,
       selectedValue: selectedValue,
@@ -581,8 +592,6 @@ class JobPostingScreen extends GetView<JobPostingController> {
       iconSize: iconSize,
       borderRadius: borderRadius,
       backgroundColor: backgroundColor,
-      textColor: textColor,
-      dropdownColor: dropdownColor,
       validator: validator,
     );
   }

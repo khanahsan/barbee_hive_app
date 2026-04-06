@@ -85,21 +85,30 @@ class CustomBtn extends StatelessWidget {
                 )
                 : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     if (iconPath != null) ...[
-                      Image.asset(
-                        iconPath!,
-                        width: 20.w, // Adjust size as needed
-                        height: 20.h,
-                        color: iconColor ?? null,
+                      Flexible(
+                        flex: 0,
+                        child: Image.asset(
+                          iconPath!,
+                          width: 20.w, // Adjust size as needed
+                          height: 20.h,
+                          color: iconColor,
+                        ),
                       ),
                       SizedBox(width: 8.w), // Space between image and text
                     ],
-                    CustomText(
-                      title: btnTitle,
-                      color: btnTxtColor,
-                      fontSize: fontSize ?? AppFontSize.small,
-                      fontWeight: fontWeight,
+                    Flexible(
+                      child: CustomText(
+                        title: btnTitle,
+                        color: btnTxtColor,
+                        fontSize: fontSize ?? AppFontSize.small,
+                        fontWeight: fontWeight,
+                        maxLines: 1,
+                        textOverflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),

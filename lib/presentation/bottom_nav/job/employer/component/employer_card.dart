@@ -197,7 +197,6 @@ class EmployerCard extends StatelessWidget {
             children: [
               Expanded(
                 child: CustomBtn(
-                  buttonWidth: 0.w,
                   onPressed: () {
                     LogUtil.logError('job.id ${job.id}');
                     Get.toNamed(
@@ -217,7 +216,6 @@ class EmployerCard extends StatelessWidget {
               SizedBox(width: 10.w), // spacing between buttons
               Expanded(
                 child: CustomBtn(
-                  buttonWidth: 0.w,
                   onPressed: () {
                     Get.toNamed(Routes.jobUpdateScreen, arguments: job);
                   },

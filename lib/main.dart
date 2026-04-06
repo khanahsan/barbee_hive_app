@@ -1,8 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:barbee_hive_app/push_notifications/push_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart'; // To load environment variables
@@ -42,25 +42,12 @@ void main() async {
 
   /// Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await NotificationService.instance.initialize();
-
-  // Initialize Firebase Messaging
-  //  await NotificationService().initNotification();
-
-  // Request Notification permissions (iOS)
-  await FirebaseMessaging.instance.requestPermission();
-
-  // Get the FCM token (ensure it's available after permissions)
-  // String? token = await FirebaseMessaging.instance.getToken();
-  // if (token != null) {
-  //   print("FCM Token: $token");
-  // } else {
-  //   print("Failed to get FCM Token.");
-  // }
-
-  // Initialize other services
   await ApiService.initToken();
   await SharedPreferenceHelper.init();
+
+  await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+    DeviceOrientation.portraitUp,
+  ]);
 
   // Optionally, handle test device configuration for ads
   // RequestConfiguration configuration = RequestConfiguration(
@@ -69,17 +56,23 @@ void main() async {
   // MobileAds.instance.updateRequestConfiguration(configuration);
 
   // Load the initial route (for navigation)
-  var initialRoute = await Routes.initialRoute;
+  final initialRoute = Routes.initialRoute;
 
   // Run the app
   runApp(
     MaterialApp(debugShowCheckedModeBanner: false, home: Main(initialRoute)),
   );
 
-  // Set the device orientation (optional)
-  SystemChrome.setPreferredOrientations(<DeviceOrientation>[
-    DeviceOrientation.portraitUp,
-  ]);
+  unawaited(_initializeRuntimeServices());
+}
+
+Future<void> _initializeRuntimeServices() async {
+  try {
+    await NotificationService.instance.initialize();
+  } catch (e, stackTrace) {
+    debugPrint("NotificationService initialization failed: $e");
+    debugPrintStack(stackTrace: stackTrace);
+  }
 }
 
 // Future<void> getToken() async {

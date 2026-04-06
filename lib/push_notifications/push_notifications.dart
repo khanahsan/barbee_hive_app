@@ -20,7 +20,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     "FIREBASE MESSAGING BACKGROUND HANDLER NOTIFICATION ${message.notification?.title}",
   );
 
-  String? notificationType = message.data['notificationType'] as String?;
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await NotificationService.instance.setupFlutterNotifications();
@@ -94,44 +93,12 @@ class NotificationService {
   // }
 
   Future<void> _requestPermission() async {
-    if (Platform.isIOS) {
-      await _messaging.requestPermission(
-        alert: true,
-        announcement: true,
-        badge: true,
-        carPlay: true,
-        criticalAlert: true,
-        provisional: false,
-        sound: true,
-      );
-
-      // Request local notifications permissions
-
-      // final iosPlugin =
-      //     _localNotifications.resolvePlatformSpecificImplementation<
-      //         IOSFlutterLocalNotificationsPlugin>();
-      //
-      // await iosPlugin?.requestPermissions(
-      //   alert: true,
-      //   // announcement: true,
-      //   badge: true,
-      //   // carPlay: true,
-      //   // criticalAlert: true,
-      //   provisional: false,
-      //   sound: true,
-      //   critical: true,
-      // );
-      // // Check permission status
-      // final permissionStatus = await iosPlugin?.checkPermissions();
-      //
-      // log("Notification Permission Status: $permissionStatus");
-    }
     final settings = await _messaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
       provisional: false,
-      announcement: false,
+      announcement: Platform.isIOS,
       carPlay: false,
       criticalAlert: false,
     );
@@ -420,8 +387,6 @@ class NotificationService {
       debugPrint(
         "MESSAGE NOTIFICATION ------------ ${message.notification?.title}",
       );
-      String? notificationType = message.data['notificationType'] as String?;
-
       if (Platform.isAndroid) {
         showNotification(message);
         // if (notificationType == "1") {

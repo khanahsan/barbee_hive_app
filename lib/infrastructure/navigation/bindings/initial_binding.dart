@@ -41,7 +41,7 @@ class InitialBindings implements Bindings {
       fenix: true,
     );
     Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
-    Get.put<SignInController>(SignInController());
+    Get.lazyPut<SignInController>(() => SignInController(), fenix: true);
     Get.lazyPut<ChangePasswordController>(() => ChangePasswordController());
     Get.lazyPut<SignUpEmployeeController>(() => SignUpEmployeeController());
     Get.lazyPut<SplashController>(() => SplashController());
@@ -86,3 +86,4 @@ class InitialBindings implements Bindings {
     );
   }
 }
+

@@ -7,7 +7,7 @@ class ApiEndPoints {
   /// Live
   // static const String baseUrl = 'https://barbeehive.com/api/';
 
-  static const String basePoint = 'https://barbeehive.com/';
+  static const String basePoint = 'https://barbeehive.staging.pegasync.com/';
 
   /// AUTH
   static const String login = 'login';

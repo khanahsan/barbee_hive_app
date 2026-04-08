@@ -5,8 +5,10 @@ import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/services/logout_service.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/presentation/signIn/controller/sign_in_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -108,79 +110,88 @@ class CustomDrawerController extends GetxController
     //isAnimated.value = !isAnimated.value;  // Toggle drawer state
   }
 
+  // Future<void> logout() async {
+  //   // Show loading dialog
+  //   Get.dialog<void>(
+  //     Center(
+  //       child: Container(
+  //         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+  //         decoration: BoxDecoration(
+  //           borderRadius: BorderRadius.circular(10.r),
+  //           color: AppColors.colorFFFFFF,
+  //         ),
+  //         child: Column(
+  //           spacing: 20.h,
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: <Widget>[
+  //             CircularProgressIndicator(color: AppColors.colorE4A74C),
+  //             const CustomText(
+  //               title: 'Signing Out..',
+  //               fontSize: 16,
+  //               fontWeight: FontWeight.w500,
+  //               color: AppColors.color000000,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //     barrierDismissible: false,
+  //   );
+  //
+  //   try {
+  //     // 🔄 Use Function 2 API call
+  //     await AuthApi.logout();
+  //
+  //     // 🔐 Clear tokens (from Function 2)
+  //     await TokenStorage.clearToken();
+  //     await SharedPreferenceHelper.remove(SharedPrefKeys.userRole);
+  //     await SharedPreferenceHelper.remove(SharedPrefKeys.authToken);
+  //     await SharedPreferenceHelper.remove(SharedPrefKeys.userId);
+  //     await SharedPreferenceHelper.remove(SharedPrefKeys.userProfileImage);
+  //     await SharedPreferenceHelper.remove(SharedPrefKeys.userName);
+  //     await SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
+  //     ApiService.clearToken();
+  //
+  //     // Refresh sign-in fields to reflect saved credentials after logout
+  //     // if (Get.isRegistered<SignInController>()) {
+  //     //   Get.find<SignInController>().refreshSavedCredentials();
+  //     // }// close dialog
+  //
+  //     // 🟢 Success
+  //     // Utilities.showSnackBar(
+  //     //   message: "Logged out successfully",
+  //     //   title: 'Sign Out',
+  //     //   isSuccess: true,
+  //     // );
+  //
+  //     Get.back<void>();
+  //
+  //     // navigate
+  //     Get.offAllNamed<void>(Routes.SIGN_IN_VIEW);
+  //   } catch (e) {
+  //     Get.back<void>(); // close dialog
+  //
+  //     // Clean error message (from Function 2)
+  //     String errorMessage = e.toString().replaceFirst(
+  //       'Exception: POST request error: Exception: ',
+  //       '',
+  //     );
+  //     errorMessage =
+  //     errorMessage.startsWith('Exception: ')
+  //         ? errorMessage.replaceFirst('Exception: ', '')
+  //         : errorMessage;
+  //
+  //     // 🔴 Error
+  //     Utilities.showSnackBar(
+  //       message: errorMessage,
+  //       title: 'Error',
+  //       isSuccess: false,
+  //     );
+  //   }
+  // }
+
   Future<void> logout() async {
-    // Show loading dialog
-    Get.dialog<void>(
-      Center(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.r),
-            color: AppColors.colorFFFFFF,
-          ),
-          child: Column(
-            spacing: 20.h,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              CircularProgressIndicator(color: AppColors.colorE4A74C),
-              const CustomText(
-                title: 'Signing Out..',
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: AppColors.color000000,
-              ),
-            ],
-          ),
-        ),
-      ),
-      barrierDismissible: false,
-    );
-
-    try {
-      // 🔄 Use Function 2 API call
-      await AuthApi.logout();
-
-      // 🔐 Clear tokens (from Function 2)
-      await TokenStorage.clearToken();
-      await SharedPreferenceHelper.remove(SharedPrefKeys.userRole);
-      await SharedPreferenceHelper.remove(SharedPrefKeys.authToken);
-      await SharedPreferenceHelper.remove(SharedPrefKeys.userId);
-      await SharedPreferenceHelper.remove(SharedPrefKeys.userProfileImage);
-      await SharedPreferenceHelper.remove(SharedPrefKeys.userName);
-      await SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
-      ApiService.clearToken();
-
-      Get.back<void>(); // close dialog
-
-      // 🟢 Success
-      Utilities.showSnackBar(
-        message: "Logged out successfully",
-        title: 'Sign Out',
-        isSuccess: true,
-      );
-
-      // navigate
-      Get.offAllNamed<void>(Routes.SIGN_IN_VIEW);
-    } catch (e) {
-      Get.back<void>(); // close dialog
-
-      // Clean error message (from Function 2)
-      String errorMessage = e.toString().replaceFirst(
-        'Exception: POST request error: Exception: ',
-        '',
-      );
-      errorMessage =
-      errorMessage.startsWith('Exception: ')
-          ? errorMessage.replaceFirst('Exception: ', '')
-          : errorMessage;
-
-      // 🔴 Error
-      Utilities.showSnackBar(
-        message: errorMessage,
-        title: 'Error',
-        isSuccess: false,
-      );
-    }
+    await LogoutService.logout();
   }
 
   Future<void> loadUserData() async {

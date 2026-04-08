@@ -59,9 +59,7 @@ void main() async {
   final initialRoute = Routes.initialRoute;
 
   // Run the app
-  runApp(
-    MaterialApp(debugShowCheckedModeBanner: false, home: Main(initialRoute)),
-  );
+  runApp(Main(initialRoute));
 
   unawaited(_initializeRuntimeServices());
 }

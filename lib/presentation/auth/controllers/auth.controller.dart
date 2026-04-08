@@ -573,6 +573,11 @@ class AuthController extends GetxController {
       ApiService.clearToken();
       passwordController.clear();
 
+      // Refresh sign-in fields to reflect saved credentials after logout
+      if (Get.isRegistered<SignInController>()) {
+        Get.find<SignInController>().refreshSavedCredentials();
+      }
+
       // Get.back<void>(); // close dialog
 
       closeLogoutLoader(context); // close dialo

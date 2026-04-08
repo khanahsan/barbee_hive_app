@@ -6,7 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import '../../../presentation/auth/controllers/auth.controller.dart';
 import '../../../presentation/bottom_nav/dashboard/controller/dashboardController.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_images.dart';
@@ -124,7 +123,7 @@ class CustomDrawer extends GetView<CustomDrawerController> {
                             iconPath: AppAssets.exitIcon,
                             controller: controller,
                             onTap: () {
-                              Get.find<AuthController>().logout(context);
+                              controller.logout();
                             },
                           ),
                         ],

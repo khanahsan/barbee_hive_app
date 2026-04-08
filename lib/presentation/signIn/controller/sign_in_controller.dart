@@ -30,6 +30,11 @@ class SignInController extends GetxController {
     _loadSavedCredentials();
   }
 
+  /// Re-apply saved credentials (used after logout when controller is permanent).
+  void refreshSavedCredentials() {
+    _loadSavedCredentials();
+  }
+
   void _loadSavedCredentials() {
     final savedEmail =
         SharedPreferenceHelper.getString(SharedPrefKeys.savedEmail) ?? '';

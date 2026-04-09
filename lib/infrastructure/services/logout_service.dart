@@ -27,7 +27,7 @@ class LogoutService {
 
       await _clearSession();
 
-      Get.offAllNamed(Routes.SIGN_IN_VIEW);
+      Get.offAllNamed(Routes.SPLASH);
     } catch (e) {
       _closeDialog();
 
@@ -104,7 +104,7 @@ class LogoutService {
     await SharedPreferenceHelper.remove(SharedPrefKeys.userId);
     await SharedPreferenceHelper.remove(SharedPrefKeys.userProfileImage);
     await SharedPreferenceHelper.remove(SharedPrefKeys.userName);
-    await SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
+    // await SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
 
     ApiService.clearToken();
   }

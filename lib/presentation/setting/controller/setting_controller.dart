@@ -10,6 +10,7 @@ import 'package:barbee_hive_app/infrastructure/constants/app_strings.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/services/logout_service.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
@@ -108,86 +109,7 @@ class SettingController extends GetxController {
   }
 
   Future<void> logout() async {
-    // Show loading dialog
-    Get.dialog<void>(
-      Center(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.r),
-            color: AppColors.colorFFFFFF,
-          ),
-          child: Column(
-            spacing: 20.h,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              CircularProgressIndicator(color: AppColors.colorE4A74C),
-              const CustomText(
-                title: 'Signing Out..',
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: AppColors.color000000,
-              ),
-            ],
-          ),
-        ),
-      ),
-      barrierDismissible: false,
-    );
-
-    try {
-      // 🔄 Use Function 2 API call
-      await AuthApi.logout();
-
-      // 🔐 Clear tokens (from Function 2)
-      await TokenStorage.clearToken();
-      await SharedPreferenceHelper.remove(SharedPrefKeys.userRole);
-      await SharedPreferenceHelper.remove(SharedPrefKeys.authToken);
-      await SharedPreferenceHelper.remove(SharedPrefKeys.userId);
-      await SharedPreferenceHelper.remove(SharedPrefKeys.userProfileImage);
-      await SharedPreferenceHelper.remove(SharedPrefKeys.userName);
-      await SharedPreferenceHelper.remove(SharedPrefKeys.savedPassword);
-      ApiService.clearToken();
-
-      // Close loading dialog from root navigator
-      final ctx = Get.overlayContext;
-      if (ctx != null) {
-        Navigator.of(ctx, rootNavigator: true).pop();
-      }
-
-      // 🟢 Success
-      Utilities.showSnackBar(
-        message: "Logged out successfully",
-        title: 'Sign Out',
-        isSuccess: true,
-      );
-
-      // navigate
-      Get.offAllNamed<void>(Routes.SIGN_IN_VIEW);
-    } catch (e) {
-      // Close loading dialog from root navigator
-      final ctx = Get.overlayContext;
-      if (ctx != null) {
-        Navigator.of(ctx, rootNavigator: true).pop();
-      }
-
-      // Clean error message (from Function 2)
-      String errorMessage = e.toString().replaceFirst(
-        'Exception: POST request error: Exception: ',
-        '',
-      );
-      errorMessage =
-          errorMessage.startsWith('Exception: ')
-              ? errorMessage.replaceFirst('Exception: ', '')
-              : errorMessage;
-
-      // 🔴 Error
-      Utilities.showSnackBar(
-        message: errorMessage,
-        title: 'Error',
-        isSuccess: false,
-      );
-    }
+    await LogoutService.logout();
   }
 
   /// Update `disableChat` on all chats where the current user is a participant

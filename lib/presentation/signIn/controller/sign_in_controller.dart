@@ -43,7 +43,7 @@ class SignInController extends GetxController {
 
     emailController.text = savedEmail;
     passwordController.text = savedPassword;
-    rememberMe.value = savedEmail.isNotEmpty && savedPassword.isNotEmpty;
+    rememberMe.value = false;
   }
 
   void togglePasswordVisibility() {
@@ -80,10 +80,11 @@ class SignInController extends GetxController {
       }
       final response = await AuthApi.login(email, password, fcmToken,);
 
+      final shouldRemember = rememberMe.value;
       // Save most values in parallel
       SharedPreferenceHelper.saveInfo(
         response,
-        rememberMe.value,
+        shouldRemember,
         email,
         password,
       );
@@ -117,6 +118,10 @@ class SignInController extends GetxController {
         message: response.message,
         isSuccess: true,
       );
+
+      if (shouldRemember) {
+        rememberMe.value = false; // reset checkbox after saving credentials
+      }
 
       Get.offAllNamed(Routes.CUSTOMDRAWER);
     } catch (e) {

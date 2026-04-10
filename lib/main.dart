@@ -13,6 +13,7 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import 'data/api/api_service.dart';
 import 'firebase_options.dart';
 import 'infrastructure/helpers/shared_preference_helper.dart';
+import 'infrastructure/utils/utilities.dart';
 import 'infrastructure/navigation/bindings/initial_binding.dart';
 import 'infrastructure/navigation/navigation.dart';
 import 'infrastructure/navigation/routes.dart'; // Adjust based on your bindings
@@ -113,6 +114,7 @@ class Main extends StatelessWidget {
       baseHeight: 956,
       baseWidth: 440,
       child: GetMaterialApp(
+        scaffoldMessengerKey: Utilities.messengerKey,
         builder: (context, child) {
           return SafeArea(
             top: false,

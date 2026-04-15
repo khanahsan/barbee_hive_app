@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.barbee_hive_app"
+    namespace = "com.barbee.hive.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -24,7 +24,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.barbeeinc.app"
+        applicationId = "com.barbee.hive.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

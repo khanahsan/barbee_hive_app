@@ -7,6 +7,50 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:545979703872:android:07753e53a43642ed7db5a5",
+        "android_client_info": {
+          "package_name": "com.barbee.hive.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "545979703872-66qu8eti465aebv5omgfd19f1aarpggo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.barbee.hive.app",
+            "certificate_hash": "f17d69aeaef3af758fb2a959296418c131edae7d"
+          }
+        },
+        {
+          "client_id": "545979703872-ias8r3rn9j32il4j3tj2ptaq2tg0euca.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxM2cUz_nFmqdyVn0xlS0_sJ1KVpf5z2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "545979703872-ias8r3rn9j32il4j3tj2ptaq2tg0euca.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "545979703872-5m6fb3en9nt5revti6td10ndkn3gpqod.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.barbeeinc.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:545979703872:android:d4ee853875e9208e7db5a5",
         "android_client_info": {
           "package_name": "com.barbeeinc.app"

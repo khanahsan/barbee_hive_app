@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
@@ -373,7 +372,6 @@ class PricingPlansController extends GetxController {
       final Set<String> productIds = {productId};
       final ProductDetailsResponse response = await _iap.queryProductDetails(productIds);
 
-      debugPrint('ERRRRRRR ' + response.error.toString()!);
       if (response.notFoundIDs.isNotEmpty || response.productDetails.isEmpty) {
         Utilities.showSnackBar(title: 'Error', message: 'Product not found in store.', isSuccess: false);
         return;

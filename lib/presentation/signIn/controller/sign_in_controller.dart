@@ -97,7 +97,7 @@ class SignInController extends GetxController {
       SharedPreferenceHelper.saveString(SharedPrefKeys.authToken, response.token);
 
       final firebaseCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
+        email: FirebaseService.firestoreEmailForEmailPasswordFlow(email),
         password: password,
       );
       final uid = firebaseCredential.user?.uid;

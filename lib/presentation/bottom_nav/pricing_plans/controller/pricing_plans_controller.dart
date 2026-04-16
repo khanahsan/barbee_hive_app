@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
@@ -28,7 +29,6 @@ class PricingPlansController extends GetxController {
   final Set<String> _processedPurchaseKeys = <String>{};
   int? _pendingPlanId;
   String? _pendingProductId;
-
 
   // Future<void> loadActivePlan() async {
   //   final savedId = SharedPreferenceHelper.getInt(
@@ -189,18 +189,12 @@ class PricingPlansController extends GetxController {
         handlePurchaseUpdates(purchaseDetailsList);
       },
       onError: (Object error) {
-        Utilities.showSnackBar(
-          title: 'Error',
-          message: error.toString(),
-          isSuccess: false,
-        );
+        Utilities.showSnackBar(title: 'Error', message: error.toString(), isSuccess: false);
       },
     );
   }
 
-  Future<void> handlePurchaseUpdates(
-    List<PurchaseDetails> purchaseDetailsList,
-  ) async {
+  Future<void> handlePurchaseUpdates(List<PurchaseDetails> purchaseDetailsList) async {
     for (final purchaseDetails in purchaseDetailsList) {
       final purchaseStatus = purchaseDetails.status;
       final String eventProductId = _extractPurchaseProductId(purchaseDetails);
@@ -209,9 +203,7 @@ class PricingPlansController extends GetxController {
       log('EVENT PRODUCT ID: $eventProductId');
 
       if (_pendingProductId != null && eventProductId != _pendingProductId) {
-        log(
-          'Ignoring purchase update for product $eventProductId while pending product is $_pendingProductId',
-        );
+        log('Ignoring purchase update for product $eventProductId while pending product is $_pendingProductId');
 
         if (purchaseDetails.pendingCompletePurchase) {
           await _iap.completePurchase(purchaseDetails);
@@ -247,11 +239,7 @@ class PricingPlansController extends GetxController {
       }
 
       if (purchaseStatus == PurchaseStatus.canceled) {
-        Utilities.showSnackBar(
-          title: 'Purchase Canceled',
-          message: 'The purchase was canceled.',
-          isSuccess: false,
-        );
+        Utilities.showSnackBar(title: 'Purchase Canceled', message: 'The purchase was canceled.', isSuccess: false);
       }
 
       if (purchaseDetails.pendingCompletePurchase) {
@@ -264,11 +252,7 @@ class PricingPlansController extends GetxController {
     log('ON PURCHASE SUCCESS CALLED');
 
     if (_pendingPlanId == null) {
-      Utilities.showSnackBar(
-        title: 'Error',
-        message: 'Missing plan information. Please try again.',
-        isSuccess: false,
-      );
+      Utilities.showSnackBar(title: 'Error', message: 'Missing plan information. Please try again.', isSuccess: false);
       return;
     }
 
@@ -285,21 +269,14 @@ class PricingPlansController extends GetxController {
       platform = 'android';
       transactionId = androidPurchase.billingClientPurchase.orderId;
       purchasedAt = _formatPurchaseDate(purchaseDetails.transactionDate);
-      localDataMap = _decodeLocalVerificationData(
-        purchaseDetails.verificationData.localVerificationData,
-      );
+      localDataMap = _decodeLocalVerificationData(purchaseDetails.verificationData.localVerificationData);
     } else if (Platform.isIOS) {
       platformReceipt = purchaseDetails.verificationData.serverVerificationData;
       platform = 'ios';
-      localDataMap = _decodeLocalVerificationData(
-        purchaseDetails.verificationData.localVerificationData,
-      );
-      transactionId = (localDataMap['transactionId'] ??
-              purchaseDetails.purchaseID ??
-              '')
-          .toString();
-      purchasedAt = _parseAndFormatDate(localDataMap['purchaseDate']) ??
-          _formatPurchaseDate(purchaseDetails.transactionDate);
+      localDataMap = _decodeLocalVerificationData(purchaseDetails.verificationData.localVerificationData);
+      transactionId = (localDataMap['transactionId'] ?? purchaseDetails.purchaseID ?? '').toString();
+      purchasedAt =
+          _parseAndFormatDate(localDataMap['purchaseDate']) ?? _formatPurchaseDate(purchaseDetails.transactionDate);
       expiresAt = _parseAndFormatDate(localDataMap['expiresDate']);
 
       if (localDataMap.isNotEmpty) {
@@ -308,17 +285,13 @@ class PricingPlansController extends GetxController {
         log('webOrderLineItemId: ${localDataMap['webOrderLineItemId']}');
         log('bundleId: ${localDataMap['bundleId']}');
         log('productId: ${localDataMap['productId']}');
-        log(
-          'subscriptionGroupIdentifier: ${localDataMap['subscriptionGroupIdentifier']}',
-        );
+        log('subscriptionGroupIdentifier: ${localDataMap['subscriptionGroupIdentifier']}');
         log('purchaseDate: ${localDataMap['purchaseDate']}');
         log('originalPurchaseDate: ${localDataMap['originalPurchaseDate']}');
         log('expiresDate: ${localDataMap['expiresDate']}');
         log('quantity: ${localDataMap['quantity']}');
         log('type: ${localDataMap['type']}');
-        log(
-          'deviceVerificationNonce: ${localDataMap['deviceVerificationNonce']}',
-        );
+        log('deviceVerificationNonce: ${localDataMap['deviceVerificationNonce']}');
         log('inAppOwnershipType: ${localDataMap['inAppOwnershipType']}');
         log('deviceVerification: ${localDataMap['deviceVerification']}');
         log('signedDate: ${localDataMap['signedDate']}');
@@ -332,17 +305,14 @@ class PricingPlansController extends GetxController {
       }
     }
 
-    final String? transactionReason =
-        localDataMap['transactionReason']?.toString();
+    final String? transactionReason = localDataMap['transactionReason']?.toString();
     if (Platform.isIOS && transactionReason == 'RENEWAL') {
       log('Skipping renewal transaction: $transactionId');
       return;
     }
 
     final SubscriptionPlan? plan = _getPendingPlan();
-    purchasedAt ??=
-        _formatPurchaseDate(purchaseDetails.transactionDate) ??
-        _formatDateTime(DateTime.now().toUtc());
+    purchasedAt ??= _formatPurchaseDate(purchaseDetails.transactionDate) ?? _formatDateTime(DateTime.now().toUtc());
     expiresAt ??= _buildFallbackExpiryDate(plan, purchasedAt);
     final String resolvedPurchasedAt = purchasedAt;
     final String resolvedExpiresAt = expiresAt;
@@ -391,11 +361,7 @@ class PricingPlansController extends GetxController {
 
       final String? productId = plan.productID;
       if (productId == null || productId.isEmpty) {
-        Utilities.showSnackBar(
-          title: 'Error',
-          message: 'Missing product id for this plan.',
-          isSuccess: false,
-        );
+        Utilities.showSnackBar(title: 'Error', message: 'Missing product id for this plan.', isSuccess: false);
         return;
       }
 
@@ -405,31 +371,21 @@ class PricingPlansController extends GetxController {
       _isRestoredProcessed = false;
 
       final Set<String> productIds = {productId};
-      final ProductDetailsResponse response =
-          await _iap.queryProductDetails(productIds);
+      final ProductDetailsResponse response = await _iap.queryProductDetails(productIds);
 
-      if (response.notFoundIDs.isNotEmpty ||
-          response.productDetails.isEmpty) {
-        Utilities.showSnackBar(
-          title: 'Error',
-          message: 'Product not found in store.',
-          isSuccess: false,
-        );
+      debugPrint('ERRRRRRR ' + response.error.toString()!);
+      if (response.notFoundIDs.isNotEmpty || response.productDetails.isEmpty) {
+        Utilities.showSnackBar(title: 'Error', message: 'Product not found in store.', isSuccess: false);
         return;
       }
 
       final ProductDetails productDetails = response.productDetails.first;
-      final PurchaseParam purchaseParam =
-          PurchaseParam(productDetails: productDetails);
+      final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails);
 
       startListeningToPurchases();
       await _iap.buyNonConsumable(purchaseParam: purchaseParam);
     } catch (e) {
-      Utilities.showSnackBar(
-        title: 'Error',
-        message: e.toString(),
-        isSuccess: false,
-      );
+      Utilities.showSnackBar(title: 'Error', message: e.toString(), isSuccess: false);
     } finally {
       isApplying.value = false;
     }
@@ -454,10 +410,7 @@ class PricingPlansController extends GetxController {
         final membershipId = finalizeResponse.data?.planId;
 
         if (membershipId != null) {
-          await SharedPreferenceHelper.saveInt(
-            SharedPrefKeys.activatedSubscriptionId,
-            membershipId,
-          );
+          await SharedPreferenceHelper.saveInt(SharedPrefKeys.activatedSubscriptionId, membershipId);
 
           activePlanId.value = membershipId;
         }
@@ -466,24 +419,12 @@ class PricingPlansController extends GetxController {
 
         Get.close(1);
 
-        Utilities.showSnackBar(
-          title: 'Success',
-          message: finalizeResponse.message,
-          isSuccess: true,
-        );
+        Utilities.showSnackBar(title: 'Success', message: finalizeResponse.message, isSuccess: true);
       } else {
-        Utilities.showSnackBar(
-          title: 'Error',
-          message: finalizeResponse.message,
-          isSuccess: false,
-        );
+        Utilities.showSnackBar(title: 'Error', message: finalizeResponse.message, isSuccess: false);
       }
     } catch (e) {
-      Utilities.showSnackBar(
-        title: 'Error',
-        message: 'Failed to finalize subscription: $e',
-        isSuccess: false,
-      );
+      Utilities.showSnackBar(title: 'Error', message: 'Failed to finalize subscription: $e', isSuccess: false);
     }
   }
 
@@ -497,7 +438,6 @@ class PricingPlansController extends GetxController {
     required String expiresAt,
   }) async {
     try {
-
       log('PLATFORM RECEIPT $platformReceipt');
       final response = await SubscriptionApi.storeInAppPurchase(
         productId: productId,
@@ -515,24 +455,12 @@ class PricingPlansController extends GetxController {
 
         Get.close(1);
 
-        Utilities.showSnackBar(
-          title: 'Success',
-          message: response.message,
-          isSuccess: true,
-        );
+        Utilities.showSnackBar(title: 'Success', message: response.message, isSuccess: true);
       } else {
-        Utilities.showSnackBar(
-          title: 'Error',
-          message: response.message,
-          isSuccess: false,
-        );
+        Utilities.showSnackBar(title: 'Error', message: response.message, isSuccess: false);
       }
     } catch (e) {
-      Utilities.showSnackBar(
-        title: 'Error',
-        message: 'Failed to store in-app purchase: $e',
-        isSuccess: false,
-      );
+      Utilities.showSnackBar(title: 'Error', message: 'Failed to store in-app purchase: $e', isSuccess: false);
     }
   }
 
@@ -569,9 +497,7 @@ class PricingPlansController extends GetxController {
     final int? milliseconds = int.tryParse(transactionDate);
     if (milliseconds == null) return null;
 
-    return _formatDateTime(
-      DateTime.fromMillisecondsSinceEpoch(milliseconds, isUtc: true),
-    );
+    return _formatDateTime(DateTime.fromMillisecondsSinceEpoch(milliseconds, isUtc: true));
   }
 
   String? _parseAndFormatDate(dynamic rawValue) {
@@ -582,14 +508,8 @@ class PricingPlansController extends GetxController {
 
     final int? milliseconds = int.tryParse(value);
     if (milliseconds != null) {
-      final int normalizedMilliseconds =
-          value.length <= 10 ? milliseconds * 1000 : milliseconds;
-      return _formatDateTime(
-        DateTime.fromMillisecondsSinceEpoch(
-          normalizedMilliseconds,
-          isUtc: true,
-        ),
-      );
+      final int normalizedMilliseconds = value.length <= 10 ? milliseconds * 1000 : milliseconds;
+      return _formatDateTime(DateTime.fromMillisecondsSinceEpoch(normalizedMilliseconds, isUtc: true));
     }
 
     try {
@@ -601,12 +521,8 @@ class PricingPlansController extends GetxController {
 
   String _buildFallbackExpiryDate(SubscriptionPlan? plan, String purchasedAt) {
     try {
-      final DateTime baseDate = DateTime.parse(
-        purchasedAt.replaceFirst(' ', 'T'),
-      ).toUtc();
-      return _formatDateTime(
-        baseDate.add(Duration(days: plan?.durationDays ?? 30)),
-      );
+      final DateTime baseDate = DateTime.parse(purchasedAt.replaceFirst(' ', 'T')).toUtc();
+      return _formatDateTime(baseDate.add(Duration(days: plan?.durationDays ?? 30)));
     } catch (_) {
       return purchasedAt;
     }
@@ -620,32 +536,18 @@ class PricingPlansController extends GetxController {
     final Map<String, dynamic> localDataMap = _decodeLocalVerificationData(
       purchaseDetails.verificationData.localVerificationData,
     );
-    final String productId = _extractPurchaseProductId(
-      purchaseDetails,
-      localDataMap: localDataMap,
-    );
-    final String purchaseId = (localDataMap['transactionId'] ??
-            purchaseDetails.purchaseID ??
-            'no_purchase_id')
-        .toString();
-    final String transactionDate = (localDataMap['purchaseDate'] ??
-            purchaseDetails.transactionDate ??
-            'no_transaction_date')
-        .toString();
+    final String productId = _extractPurchaseProductId(purchaseDetails, localDataMap: localDataMap);
+    final String purchaseId =
+        (localDataMap['transactionId'] ?? purchaseDetails.purchaseID ?? 'no_purchase_id').toString();
+    final String transactionDate =
+        (localDataMap['purchaseDate'] ?? purchaseDetails.transactionDate ?? 'no_transaction_date').toString();
     return '$productId|$purchaseId|$transactionDate';
   }
 
-  String _extractPurchaseProductId(
-    PurchaseDetails purchaseDetails, {
-    Map<String, dynamic>? localDataMap,
-  }) {
+  String _extractPurchaseProductId(PurchaseDetails purchaseDetails, {Map<String, dynamic>? localDataMap}) {
     final Map<String, dynamic> resolvedLocalDataMap =
-        localDataMap ??
-        _decodeLocalVerificationData(
-          purchaseDetails.verificationData.localVerificationData,
-        );
+        localDataMap ?? _decodeLocalVerificationData(purchaseDetails.verificationData.localVerificationData);
 
-    return (resolvedLocalDataMap['productId'] ?? purchaseDetails.productID)
-        .toString();
+    return (resolvedLocalDataMap['productId'] ?? purchaseDetails.productID).toString();
   }
 }

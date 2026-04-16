@@ -2,6 +2,7 @@ import 'package:barbee_hive_app/data/api/authentication/auth_api.dart';
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,7 @@ class SignInController extends GetxController {
 
   FocusNode emailFocusNode = FocusNode();
   FocusNode passFocusNode = FocusNode();
+
   // Form & state
   final formKey = GlobalKey<FormState>();
   final RxBool isLoading = false.obs;
@@ -36,10 +38,8 @@ class SignInController extends GetxController {
   }
 
   void _loadSavedCredentials() {
-    final savedEmail =
-        SharedPreferenceHelper.getString(SharedPrefKeys.savedEmail) ?? '';
-    final savedPassword =
-        SharedPreferenceHelper.getString(SharedPrefKeys.savedPassword) ?? '';
+    final savedEmail = SharedPreferenceHelper.getString(SharedPrefKeys.savedEmail) ?? '';
+    final savedPassword = SharedPreferenceHelper.getString(SharedPrefKeys.savedPassword) ?? '';
 
     emailController.text = savedEmail;
     passwordController.text = savedPassword;
@@ -54,22 +54,25 @@ class SignInController extends GetxController {
     rememberMe.value = value;
   }
 
+  String _resolveUserName(dynamic user) {
+    return user.role == 3 ? user.employee?.name ?? '' : user.employer?.businessName ?? '';
+  }
+
   Future<void> login() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
-    if(emailFocusNode.hasFocus){
+    if (emailFocusNode.hasFocus) {
       emailFocusNode.unfocus();
     }
 
-    if(passFocusNode.hasFocus){
+    if (passFocusNode.hasFocus) {
       passFocusNode.unfocus();
     }
 
     isLoading.value = true;
 
     try {
-
       String fcmToken = '';
       try {
         fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
@@ -78,46 +81,38 @@ class SignInController extends GetxController {
         debugPrint("⚠️ Failed to get FCM token: $e");
         // Continue without FCM token if it fails
       }
-      final response = await AuthApi.login(email, password, fcmToken,);
-
-      final shouldRemember = rememberMe.value;
-      // Save most values in parallel
-      SharedPreferenceHelper.saveInfo(
-        response,
-        shouldRemember,
-        email,
+      final response = await AuthApi.login(
+        ///emai check wrt to running environment
+        FirebaseService.firestoreEmailForEmailPasswordFlow(email),
         password,
-      );
-
-      SharedPreferenceHelper.saveString(
-        SharedPrefKeys.fcmToken,
         fcmToken,
       );
 
+      final shouldRemember = rememberMe.value;
+      // Save most values in parallel
+      SharedPreferenceHelper.saveInfo(response, shouldRemember, email, password);
 
-      SharedPreferenceHelper.saveString(
-        SharedPrefKeys.authToken,
-        response.token,
+      SharedPreferenceHelper.saveString(SharedPrefKeys.fcmToken, fcmToken);
+
+      SharedPreferenceHelper.saveString(SharedPrefKeys.authToken, response.token);
+
+      final firebaseCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
       );
+      final uid = firebaseCredential.user?.uid;
+      if (uid != null && uid.isNotEmpty) {
+        await FirebaseService.upsertUserInFirestore(
+          uid: uid,
+          apiUserId: response.user.id,
+          email: response.user.email,
+          name: _resolveUserName(response.user),
+          role: response.user.role == 3 ? 'employee' : 'employer',
+          profileImage: response.user.profileImage,
+        );
+      }
 
-      // Sync Firebase → Run in background (DO NOT AWAIT)
-      // FirebaseService.syncUserWithFirebase(
-      //   apiUserId: response.user.id,
-      //   email: response.user.email,
-      //   password: password,
-      //   name:
-      //       response.user.role == 3
-      //           ? response.user.employee?.name ?? ""
-      //           : response.user.employer?.businessName ?? "",
-      //   role: response.user.role == 3 ? "employee" : "employer",
-      //   profileImage: response.user.profileImage,
-      // );
-
-      Utilities.showSnackBar(
-        title: "Success",
-        message: response.message,
-        isSuccess: true,
-      );
+      Utilities.showSnackBar(title: "Success", message: response.message, isSuccess: true);
 
       if (shouldRemember) {
         rememberMe.value = false; // reset checkbox after saving credentials
@@ -130,11 +125,7 @@ class SignInController extends GetxController {
           .replaceFirst('Exception: POST request error: Exception: ', '')
           .replaceFirst('Exception: ', '');
 
-      Utilities.showSnackBar(
-        title: "Login Failed",
-        message: cleaned,
-        isSuccess: false,
-      );
+      Utilities.showSnackBar(title: "Login Failed", message: cleaned, isSuccess: false);
     } finally {
       isLoading.value = false;
     }
@@ -148,11 +139,7 @@ class SignInController extends GetxController {
       final tokenResult = await FirebaseService.signInWithGoogleTokensOnly();
 
       if (tokenResult == null) {
-        Utilities.showSnackBar(
-          title: "Cancelled",
-          message: "Google Sign-In was cancelled",
-          isSuccess: false,
-        );
+        Utilities.showSnackBar(title: "Cancelled", message: "Google Sign-In was cancelled", isSuccess: false);
         return;
       }
 
@@ -164,11 +151,7 @@ class SignInController extends GetxController {
 
       // Step 2: Validate access token
       if (accessToken == null || accessToken.isEmpty) {
-        Utilities.showSnackBar(
-          title: "Error",
-          message: "Unable to retrieve Google access token",
-          isSuccess: false,
-        );
+        Utilities.showSnackBar(title: "Error", message: "Unable to retrieve Google access token", isSuccess: false);
         return;
       }
 
@@ -193,17 +176,25 @@ class SignInController extends GetxController {
           tokenResult.account.email,
           '', // no password for Google Sign-In
         );
-        SharedPreferenceHelper.saveString(
-          SharedPrefKeys.authToken,
-          response.token,
-        );
+        SharedPreferenceHelper.saveString(SharedPrefKeys.authToken, response.token);
+
+        final credential = GoogleAuthProvider.credential(accessToken: accessToken, idToken: idToken);
+        final firebaseCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+        final uid = firebaseCredential.user?.uid;
+        if (uid != null && uid.isNotEmpty) {
+          await FirebaseService.upsertUserInFirestore(
+            uid: uid,
+            apiUserId: response.user.id,
+            email: response.user.email,
+            name: _resolveUserName(response.user),
+            role: response.user.role == 3 ? 'employee' : 'employer',
+            profileImage: response.user.profileImage,
+            authProvider: 'google',
+          );
+        }
 
         // Successfully signed in
-        Utilities.showSnackBar(
-          title: "Success",
-          message: response.message,
-          isSuccess: true,
-        );
+        Utilities.showSnackBar(title: "Success", message: response.message, isSuccess: true);
 
         // Navigate to main screen
         Get.offAllNamed(Routes.CUSTOMDRAWER);
@@ -215,20 +206,12 @@ class SignInController extends GetxController {
             .replaceFirst('Exception: POST request error: Exception: ', '')
             .replaceFirst('Exception: ', '');
 
-        Utilities.showSnackBar(
-          title: "Not Registered",
-          message: errorMessage,
-          isSuccess: false,
-        );
+        Utilities.showSnackBar(title: "Not Registered", message: errorMessage, isSuccess: false);
         return;
       }
     } catch (e) {
       final errorMessage = e.toString().replaceFirst('Exception: ', '');
-      Utilities.showSnackBar(
-        title: "Google Sign-In Failed",
-        message: errorMessage,
-        isSuccess: false,
-      );
+      Utilities.showSnackBar(title: "Google Sign-In Failed", message: errorMessage, isSuccess: false);
     } finally {
       isGoogleSignInLoading.value = false;
     }
@@ -239,15 +222,10 @@ class SignInController extends GetxController {
 
     try {
       // Step 1: Sign in with Apple for tokens only (no Firebase user creation)
-      final appleResult =
-      await FirebaseService.signInWithAppleTokensOnly();
+      final appleResult = await FirebaseService.signInWithAppleTokensOnly();
 
       if (appleResult == null) {
-        Utilities.showSnackBar(
-          title: "Cancelled",
-          message: "Apple Sign-In was cancelled",
-          isSuccess: false,
-        );
+        Utilities.showSnackBar(title: "Cancelled", message: "Apple Sign-In was cancelled", isSuccess: false);
         return;
       }
 
@@ -256,11 +234,7 @@ class SignInController extends GetxController {
 
       // Step 2: Validate identity token
       if (identityToken.isEmpty) {
-        Utilities.showSnackBar(
-          title: "Error",
-          message: "Unable to retrieve Apple identity token",
-          isSuccess: false,
-        );
+        Utilities.showSnackBar(title: "Error", message: "Unable to retrieve Apple identity token", isSuccess: false);
         return;
       }
 
@@ -285,17 +259,27 @@ class SignInController extends GetxController {
           appleResult.email ?? '',
           '', // no password for Apple Sign-In
         );
-        SharedPreferenceHelper.saveString(
-          SharedPrefKeys.authToken,
-          response.token,
-        );
+        SharedPreferenceHelper.saveString(SharedPrefKeys.authToken, response.token);
+
+        final credential = OAuthProvider(
+          'apple.com',
+        ).credential(idToken: appleResult.identityToken, accessToken: appleResult.authorizationCode);
+        final firebaseCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+        final uid = firebaseCredential.user?.uid;
+        if (uid != null && uid.isNotEmpty) {
+          await FirebaseService.upsertUserInFirestore(
+            uid: uid,
+            apiUserId: response.user.id,
+            email: response.user.email,
+            name: _resolveUserName(response.user),
+            role: response.user.role == 3 ? 'employee' : 'employer',
+            profileImage: response.user.profileImage,
+            authProvider: 'apple',
+          );
+        }
 
         // Successfully signed in
-        Utilities.showSnackBar(
-          title: "Success",
-          message: response.message,
-          isSuccess: true,
-        );
+        Utilities.showSnackBar(title: "Success", message: response.message, isSuccess: true);
 
         // Navigate to main screen
         Get.offAllNamed(Routes.CUSTOMDRAWER);
@@ -307,25 +291,16 @@ class SignInController extends GetxController {
             .replaceFirst('Exception: POST request error: Exception: ', '')
             .replaceFirst('Exception: ', '');
 
-        Utilities.showSnackBar(
-          title: "Not Registered",
-          message: errorMessage,
-          isSuccess: false,
-        );
+        Utilities.showSnackBar(title: "Not Registered", message: errorMessage, isSuccess: false);
         return;
       }
     } catch (e) {
       final errorMessage = e.toString().replaceFirst('Exception: ', '');
-      Utilities.showSnackBar(
-        title: "Apple Sign-In Failed",
-        message: errorMessage,
-        isSuccess: false,
-      );
+      Utilities.showSnackBar(title: "Apple Sign-In Failed", message: errorMessage, isSuccess: false);
     } finally {
       isAppleSignInLoading.value = false;
     }
   }
-
 
   @override
   void onClose() {

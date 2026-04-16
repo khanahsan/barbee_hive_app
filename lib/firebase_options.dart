@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDxM2cUz_nFmqdyVn0xlS0_sJ1KVpf5z2M',
-    appId: '1:545979703872:android:d4ee853875e9208e7db5a5',
+    appId: '1:545979703872:android:07753e53a43642ed7db5a5',
     messagingSenderId: '545979703872',
     projectId: 'barbee-hive-67829',
     storageBucket: 'barbee-hive-67829.firebasestorage.app',
@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '545979703872',
     projectId: 'barbee-hive-67829',
     storageBucket: 'barbee-hive-67829.firebasestorage.app',
+    androidClientId: '545979703872-66qu8eti465aebv5omgfd19f1aarpggo.apps.googleusercontent.com',
+    iosClientId: '545979703872-5m6fb3en9nt5revti6td10ndkn3gpqod.apps.googleusercontent.com',
     iosBundleId: 'com.barbeeinc.app',
   );
 

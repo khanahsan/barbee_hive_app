@@ -73,9 +73,8 @@ class NotificationService {
       //handleBackgroundMessage(initialMessage);
     }
 
-    //Get FCM Token
-    // final token = await _messaging.getToken();
-    // log("FCM Token $token");
+    final token = await _messaging.getToken();
+    log("FCM $token");
   }
 
   // Future<void> _requestPermission() async {

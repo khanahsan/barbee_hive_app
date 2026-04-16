@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import 'data/api/api_service.dart';
+import 'data/api/firebase/firebase_service.dart';
 import 'firebase_options.dart';
 import 'infrastructure/helpers/shared_preference_helper.dart';
 import 'infrastructure/utils/utilities.dart';
@@ -43,6 +44,9 @@ void main() async {
 
   /// Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  debugPrint(
+    'running environment: ${FirebaseService.isStagingEnvironment ? 'staging' : 'production'}',
+  );
   await ApiService.initToken();
   await SharedPreferenceHelper.init();
 

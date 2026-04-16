@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:barbee_hive_app/presentation/signUp/component/agree_terms_tile.dart';
 import 'package:flutter/material.dart';
@@ -415,8 +417,12 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                     btnTxtColor: Colors.white,
                                     buttonWidth: double.infinity,
                                     onPressed: () {
-                                      if (controller.formKey.currentState!
-                                          .validate()) {
+                                      log('Create Account button pressed', name: 'SignUpEmployerScreen');
+                                      debugPrint('Create Account button pressed');
+                                      final isValid = controller.formKey.currentState!.validate();
+                                      log('Employer signup form validation result: $isValid', name: 'SignUpEmployerScreen');
+                                      debugPrint('Employer signup form validation result: $isValid');
+                                      if (isValid) {
                                         controller.registerEmployer();
                                       }
                                     },

@@ -17,11 +17,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
 
-#IOS VERSION
-#version: 1.0.1+13
 
-#ANDROID VERSION
-version: 1.0.0+2
+version: 1.0.1+13
+
+
 
 
 #new android bundleId com.barbee.hive.app

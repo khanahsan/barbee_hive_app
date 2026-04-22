@@ -1,11 +1,16 @@
 import 'dart:developer';
 
+import 'package:barbee_hive_app/infrastructure/services/current_user_subscription_controller.dart';
+import 'package:barbee_hive_app/infrastructure/services/subscription_feature_guard.dart';
 import 'package:get/get.dart';
 
 import '../../../../infrastructure/constants/shared_pref_keys.dart';
 import '../../../../infrastructure/helpers/shared_preference_helper.dart';
 
 class B2BController extends GetxController {
+  final CurrentUserSubscriptionController currentUserSubscriptionController =
+      Get.find<CurrentUserSubscriptionController>();
+
   RxInt userRole = 0.obs;
   RxInt userId = 0.obs;
 
@@ -37,8 +42,14 @@ class B2BController extends GetxController {
 
   /// Check if the displayed user is the same as the logged-in user.
   bool isSameUser(int otherUserId) {
-    
     log('AAA ${userId.value == otherUserId}');
     return userId.value == otherUserId;
   }
+
+  SubscriptionFeatureGuard get featureGuard => SubscriptionFeatureGuard(
+    subscription: currentUserSubscriptionController.currentSubscription,
+    userRole: userRole.value,
+  );
+
+  bool get shouldShowProfileVisitAds => featureGuard.shouldShowProfileVisitAds;
 }

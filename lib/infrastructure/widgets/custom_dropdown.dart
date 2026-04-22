@@ -11,6 +11,7 @@ class CustomDropdown extends StatelessWidget {
   final String? iconPath; // Nullable now
   final RxString selectedValue;
   final Function(String?) onChanged;
+  final bool Function()? onBeforeOpen;
   final List<DropdownMenuItem<String>> items;
   final bool enableSearch;
   final String? searchHint;
@@ -29,6 +30,7 @@ class CustomDropdown extends StatelessWidget {
     this.iconPath, // Nullable
     required this.selectedValue,
     required this.onChanged,
+    this.onBeforeOpen,
     required this.items,
     this.enableSearch = false,
     this.searchHint,
@@ -72,7 +74,12 @@ class CustomDropdown extends StatelessWidget {
           if (enableSearch) {
             return GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => _showSearchDialog(context, state),
+              onTap: () {
+                final canOpen = onBeforeOpen?.call() ?? true;
+                if (canOpen) {
+                  _showSearchDialog(context, state);
+                }
+              },
               child: Row(
                 spacing: 20.w,
                 children: [
@@ -233,9 +240,7 @@ class CustomDropdown extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: dialogTextColor,
-                        ),
+                        borderSide: BorderSide(color: dialogTextColor),
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),

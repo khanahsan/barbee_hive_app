@@ -1,21 +1,33 @@
 import 'dart:developer';
 
+import 'package:barbee_hive_app/data/model/user_profile_response.dart'
+    as profile_model;
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
+import 'package:barbee_hive_app/infrastructure/services/current_user_subscription_controller.dart';
+import 'package:barbee_hive_app/infrastructure/services/subscription_feature_guard.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 class ChatController extends GetxController {
+  static const String _messageUsageCollection = 'message_usage';
+  final CurrentUserSubscriptionController currentUserSubscriptionController =
+      Get.find<CurrentUserSubscriptionController>();
+
   var isEmployer = false.obs;
   var currentUserId = "".obs;
   var currentUserName = "".obs;
   var currentUserImage = "".obs;
   var currentUserRole = "".obs;
+  var currentUserRoleId = 0.obs;
   var chats = <QueryDocumentSnapshot>[].obs;
   var isLoading = true.obs;
   RxString userProfileImage = ''.obs;
+  final RxInt sentMessageCount = 0.obs;
+  final RxList<String> dailyUniqueRecipients = <String>[].obs;
+  final RxMap<String, int> dailyMessageCounts = <String, int>{}.obs;
 
   bool _parseReceiveMessages(dynamic value) {
     if (value is bool) return value;
@@ -44,9 +56,11 @@ class ChatController extends GetxController {
     try {
       isLoading.value = true;
       final role = SharedPreferenceHelper.getInt(SharedPrefKeys.userRole);
+      final userId = SharedPreferenceHelper.getInt(SharedPrefKeys.userId) ?? 0;
       final uid = FirebaseAuth.instance.currentUser?.uid ?? "";
       currentUserId.value = uid;
       isEmployer.value = role == 2;
+      currentUserRoleId.value = role ?? 0;
 
       print("UIDIDID : $uid");
 
@@ -66,8 +80,201 @@ class ChatController extends GetxController {
         // ✅ Start listening to chats after user is loaded
         listenToChats();
       }
+
+      if (userId != 0) {
+        await currentUserSubscriptionController.refresh();
+      }
+
+      if (uid.isNotEmpty) {
+        await refreshSentMessageCount();
+      }
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  profile_model.Subscription? get currentSubscription =>
+      currentUserSubscriptionController.currentSubscription;
+
+  SubscriptionFeatureGuard get featureGuard => SubscriptionFeatureGuard(
+    subscription: currentSubscription,
+    userRole: currentUserRoleId.value,
+  );
+
+  Future<void> refreshSentMessageCount() async {
+    await _syncMessageQuotaState();
+  }
+
+  bool get hasReachedFreePlanMessageLimit =>
+      !featureGuard.canSendLimitedMessage(
+        sentMessageCount: sentMessageCount.value,
+      );
+
+  DocumentReference<Map<String, dynamic>> get _messageUsageRef =>
+      FirebaseFirestore.instance
+          .collection(_messageUsageCollection)
+          .doc(currentUserId.value);
+
+  DocumentReference<Map<String, dynamic>> get _dailyMessageUsageRef =>
+      _messageUsageRef.collection('daily').doc(_todayKey);
+
+  String get _todayKey {
+    final now = DateTime.now();
+    final month = now.month.toString().padLeft(2, '0');
+    final day = now.day.toString().padLeft(2, '0');
+    return '${now.year}-$month-$day';
+  }
+
+  Future<void> _refreshSubscriptionAndQuota() async {
+    final userId = SharedPreferenceHelper.getInt(SharedPrefKeys.userId) ?? 0;
+
+    if (userId != 0) {
+      await currentUserSubscriptionController.refresh();
+    }
+
+    await _syncMessageQuotaState();
+  }
+
+  Future<void> _syncMessageQuotaState() async {
+    if (currentUserId.value.isEmpty) return;
+
+    if (!featureGuard.hasLimitedMessaging) {
+      sentMessageCount.value = 0;
+      dailyUniqueRecipients.clear();
+      dailyMessageCounts.clear();
+      return;
+    }
+
+    try {
+      final quotaKey = featureGuard.messageQuotaKey;
+      final doc = await _dailyMessageUsageRef.get();
+      final data = doc.data();
+
+      if (data == null || data['quotaKey'] != quotaKey) {
+        await _dailyMessageUsageRef.set({
+          'quotaKey': quotaKey,
+          'date': _todayKey,
+          'messagesUsed': 0,
+          'uniqueRecipients': <String>[],
+          'messageCounts': <String, int>{},
+          'planName': currentSubscription?.planName ?? '',
+          'planId': currentSubscription?.planId ?? 0,
+          'subscriptionId': currentSubscription?.id ?? 0,
+          'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+
+        sentMessageCount.value = 0;
+        dailyUniqueRecipients.clear();
+        dailyMessageCounts.clear();
+        return;
+      }
+
+      sentMessageCount.value = (data['messagesUsed'] as num?)?.toInt() ?? 0;
+      dailyUniqueRecipients.assignAll(
+        (data['uniqueRecipients'] as List<dynamic>? ?? const [])
+            .map((e) => e.toString())
+            .toList(),
+      );
+      dailyMessageCounts.assignAll(
+        Map<String, dynamic>.from(
+          data['messageCounts'] ?? const {},
+        ).map((key, value) => MapEntry(key, (value as num).toInt())),
+      );
+    } catch (e) {
+      log('Failed to sync message quota: $e');
+    }
+  }
+
+  String? getMessageLimitErrorForReceiver(String receiverId) {
+    if (!featureGuard.hasLimitedMessaging) return null;
+
+    final currentCount = dailyMessageCounts[receiverId] ?? 0;
+    final isNewRecipient = !dailyUniqueRecipients.contains(receiverId);
+
+    if (isNewRecipient &&
+        dailyUniqueRecipients.length >=
+            SubscriptionFeatureGuard.limitedEmployerDailyRecipientLimit) {
+      return 'You can only message ${SubscriptionFeatureGuard.limitedEmployerDailyRecipientLimit} users per day. Come back tomorrow or upgrade.';
+    }
+
+    if (currentCount >=
+        SubscriptionFeatureGuard.limitedEmployerDailyMessagesPerRecipient) {
+      return 'You can send only ${SubscriptionFeatureGuard.limitedEmployerDailyMessagesPerRecipient} messages per user per day. Come back tomorrow or upgrade.';
+    }
+
+    return null;
+  }
+
+  bool hasReachedMessageLimitForReceiver(String receiverId) =>
+      getMessageLimitErrorForReceiver(receiverId) != null;
+
+  Future<void> _incrementMessageQuotaUsage(String receiverId) async {
+    if (currentUserId.value.isEmpty ||
+        !featureGuard.hasLimitedMessaging) {
+      return;
+    }
+
+    final quotaKey = featureGuard.messageQuotaKey;
+
+    try {
+      final updatedUsage = await FirebaseFirestore.instance.runTransaction<
+        Map<String, dynamic>
+      >((transaction) async {
+        final snapshot = await transaction.get(_dailyMessageUsageRef);
+        final data = snapshot.data();
+        final storedQuotaKey = data?['quotaKey'] as String?;
+        final currentCount = (data?['messagesUsed'] as num?)?.toInt() ?? 0;
+        final uniqueRecipients =
+            storedQuotaKey == quotaKey
+                ? (data?['uniqueRecipients'] as List<dynamic>? ?? const [])
+                    .map((e) => e.toString())
+                    .toList()
+                : <String>[];
+        final messageCounts =
+            storedQuotaKey == quotaKey
+                ? Map<String, dynamic>.from(data?['messageCounts'] ?? const {})
+                : <String, dynamic>{};
+
+        if (!uniqueRecipients.contains(receiverId)) {
+          uniqueRecipients.add(receiverId);
+        }
+
+        final receiverCount = (messageCounts[receiverId] as num?)?.toInt() ?? 0;
+        messageCounts[receiverId] = receiverCount + 1;
+        final nextCount = currentCount + 1;
+
+        transaction.set(_dailyMessageUsageRef, {
+          'quotaKey': quotaKey,
+          'date': _todayKey,
+          'messagesUsed': nextCount,
+          'uniqueRecipients': uniqueRecipients,
+          'messageCounts': messageCounts,
+          'planName': currentSubscription?.planName ?? '',
+          'planId': currentSubscription?.planId ?? 0,
+          'subscriptionId': currentSubscription?.id ?? 0,
+          'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+
+        return {
+          'messagesUsed': nextCount,
+          'uniqueRecipients': uniqueRecipients,
+          'messageCounts': messageCounts,
+        };
+      });
+
+      sentMessageCount.value = (updatedUsage['messagesUsed'] as int?) ?? 0;
+      dailyUniqueRecipients.assignAll(
+        (updatedUsage['uniqueRecipients'] as List<dynamic>? ?? const [])
+            .map((e) => e.toString())
+            .toList(),
+      );
+      dailyMessageCounts.assignAll(
+        Map<String, dynamic>.from(
+          updatedUsage['messageCounts'] ?? const {},
+        ).map((key, value) => MapEntry(key, (value as num).toInt())),
+      );
+    } catch (e) {
+      log('Failed to increment message quota: $e');
     }
   }
 
@@ -81,20 +288,19 @@ class ChatController extends GetxController {
         .orderBy('updatedAt', descending: true)
         .snapshots()
         .listen((snapshot) {
-      chats.value = snapshot.docs;
+          chats.value = snapshot.docs;
 
-      print("📩 LISTEN TO CHATS: Total Chats = ${snapshot.docs.length}");
+          print("📩 LISTEN TO CHATS: Total Chats = ${snapshot.docs.length}");
 
-      for (var doc in snapshot.docs) {
-        print("🟦 Chat ID: ${doc.id}");
-        print("👥 Participants: ${doc['participants']}");
-        print("💬 Last Message: ${doc['lastMessage']}");
-        print("⏰ Updated At: ${doc['updatedAt']}");
-        print("──────────────────────────");
-      }
-    });
+          for (var doc in snapshot.docs) {
+            print("🟦 Chat ID: ${doc.id}");
+            print("👥 Participants: ${doc['participants']}");
+            print("💬 Last Message: ${doc['lastMessage']}");
+            print("⏰ Updated At: ${doc['updatedAt']}");
+            print("──────────────────────────");
+          }
+        });
   }
-
 
   /// Helper: generate consistent chat ID for any user pair
   // String generateChatId(String uid1, String uid2, String chatType) {
@@ -112,7 +318,6 @@ class ChatController extends GetxController {
     final ids = [uid1, uid2]..sort();
     return ids.join('-');
   }
-
 
   /// Stream all chats for this user
   Stream<QuerySnapshot>? getChatsStream() {
@@ -215,10 +420,8 @@ class ChatController extends GetxController {
   }
 
   Future<Map<String, dynamic>> otherUserLiveData(String uid) async {
-    final doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .get();
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
     if (!doc.exists) {
       return {
@@ -240,12 +443,14 @@ class ChatController extends GetxController {
   }
 
   Future<Map<String, dynamic>> currentUserLiveData(String userId) async {
-    final doc = await FirebaseFirestore.instance.collection("users").doc(userId).get();
+    final doc =
+        await FirebaseFirestore.instance.collection("users").doc(userId).get();
     return doc.data() ?? {};
   }
 
   Future<bool> otherUserCanReceiveMessages(String uid) async {
-    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
     if (!doc.exists) return true;
 
     final data = doc.data() ?? {};
@@ -253,10 +458,6 @@ class ChatController extends GetxController {
       data['receiveMessages'] ?? data['receive_messages'],
     );
   }
-
-
-
-
 
   // Future<String> startChat(
   //   Map<String, dynamic> otherUser, {
@@ -373,7 +574,6 @@ class ChatController extends GetxController {
   //     'messageCounts': messageCounts,
   //   }, SetOptions(merge: true));
   // }
-
 
   /// Send a message (create chat if missing) (LIMIT ONE)
   // Future<void> sendMessage(
@@ -492,8 +692,21 @@ class ChatController extends GetxController {
   ) async {
     if (text.trim().isEmpty) return;
 
-    log("CHAT TYPE: $chatType");
+    await _refreshSubscriptionAndQuota();
 
+    if (!currentUserSubscriptionController.hasLoaded.value) {
+      Utilities.showSnackBar(
+        title: "Please wait",
+        message: "Checking subscription access.",
+        isSuccess: false,
+      );
+      return;
+    }
+
+    log("CHAT TYPE: $chatType");
+    log('planName: ${currentSubscription?.planName}');
+    log('isFreePlan: ${featureGuard.isFreePlan}');
+    log('isEmployer: ${featureGuard.isEmployer}');
     final receiverId =
         otherUserData?['uid']?.toString() ??
         chatId.split('-').firstWhere((id) => id != currentUserId.value);
@@ -503,6 +716,16 @@ class ChatController extends GetxController {
       Utilities.showSnackBar(
         title: "Messaging Disabled",
         message: "This user is not accepting messages right now.",
+        isSuccess: false,
+      );
+      return;
+    }
+
+    final limitError = getMessageLimitErrorForReceiver(receiverId);
+    if (limitError != null) {
+      Utilities.showSnackBar(
+        title: "Message Limit Reached",
+        message: limitError,
         isSuccess: false,
       );
       return;
@@ -531,7 +754,9 @@ class ChatController extends GetxController {
       }
     }
     if (!chatDoc.exists && otherUserData == null) {
-      log("sendMessage skipped: chat not found and otherUserData missing ($chatId)");
+      log(
+        "sendMessage skipped: chat not found and otherUserData missing ($chatId)",
+      );
       return;
     }
 
@@ -549,6 +774,8 @@ class ChatController extends GetxController {
       'readBy': [currentUserId.value],
       'updatedAt': FieldValue.serverTimestamp(),
     });
+
+    await _incrementMessageQuotaUsage(receiverId);
   }
 
   /// Mark chat as read by current user
@@ -584,4 +811,3 @@ class ChatController extends GetxController {
     });
   }
 }
-

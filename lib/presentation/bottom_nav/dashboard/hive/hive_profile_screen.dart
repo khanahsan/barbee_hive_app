@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/services/profile_view_prompt_service.dart';
+import 'package:barbee_hive_app/infrastructure/services/subscription_feature_guard.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_profile_image.dart';
@@ -13,16 +15,35 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import '../../../../data/model/dashboard_response.dart';
+import '../../../../data/model/dashboard_response.dart' show User;
 import '../../../../infrastructure/constants/app_colors.dart';
 import '../../../../infrastructure/constants/app_images.dart';
 import '../../../../infrastructure/widgets/custom_appbar.dart';
 import '../../../../infrastructure/widgets/custom_pdf_view.dart';
 
-class HiveProfileScreen extends GetView<HiveProfileController> {
+class HiveProfileScreen extends StatefulWidget {
   const HiveProfileScreen({super.key, required this.currentUser});
 
   final User currentUser;
+
+  @override
+  State<HiveProfileScreen> createState() => _HiveProfileScreenState();
+}
+
+class _HiveProfileScreenState extends State<HiveProfileScreen> {
+  final HiveProfileController controller = Get.find<HiveProfileController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await controller.currentUserSubscriptionController.refresh();
+      if (controller.shouldShowProfileVisitAds) {
+        AdsHelper().trackProfileView();
+      }
+      await ProfileViewPromptService.recordVisitAndMaybePrompt();
+    });
+  }
 
   bool _parseReceiveMessages(dynamic value) {
     if (value is bool) return value;
@@ -35,7 +56,8 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
   }
 
   Future<bool> _canReceiveMessages(String uid) async {
-    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
     if (!doc.exists) return true;
 
     final data = doc.data() ?? {};
@@ -47,16 +69,11 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
   @override
   Widget build(BuildContext context) {
     final userData = {
-      ...currentUser.toJson(),
-      'distance': currentUser.distance,
-      'age': currentUser.age,
+      ...widget.currentUser.toJson(),
+      'distance': widget.currentUser.distance,
+      'age': widget.currentUser.age,
     };
     log("CURRENT USER: $userData");
-
-    /// Replacing initState()
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      AdsHelper().trackProfileView();
-    });
 
     return Scaffold(
       backgroundColor: AppColors.color000000,
@@ -68,169 +85,184 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
         showHexagon: false,
         leadingIconPath: AppAssets.backIcon,
       ),
+      body: Obx(() {
+        final viewedProfile = controller.viewedUserProfile.value;
+        final employee = viewedProfile?.employee;
+        final coverPhoto =
+            viewedProfile?.coverPhoto ?? widget.currentUser.coverPhoto;
+        final profileImage =
+            viewedProfile?.profileImage ?? widget.currentUser.profileImage;
+        final displayName =
+            employee?.name ?? widget.currentUser.employee?.name ?? "";
+        final displayUid = viewedProfile?.uid ?? widget.currentUser.uid;
 
-      body: Stack(
-        children: [
-          /// USER IMAGE
-          Positioned(
-            top: 102.h,
-            left: 0,
-            right: 0,
-            child: SizedBox(
-              height: 300.h,
-              width: double.infinity,
-              child: _buildCoverPhoto(currentUser.coverPhoto),
+        return Stack(
+          children: [
+            /// USER IMAGE
+            Positioned(
+              top: 102.h,
+              left: 0,
+              right: 0,
+              child: SizedBox(
+                height: 300.h,
+                width: double.infinity,
+                child: _buildCoverPhoto(coverPhoto),
+              ),
             ),
-          ),
 
-          /// USER DETAILS
-          Positioned(
-            top: 360.h,
-            // slightly less than image height for overlap
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  padding: EdgeInsets.only(top: 3.h),
-                  decoration: BoxDecoration(
-                    color: AppColors.colorFF8600,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0.r),
-                      topRight: Radius.circular(20.0.r),
-                    ),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.only(
-                      left: 15.w,
-                      right: 15.w,
-                      top: 65.h,
-                      bottom: 5.h,
-                    ),
-                    width: double.infinity,
+            /// USER DETAILS
+            Positioned(
+              top: 360.h,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(top: 3.h),
                     decoration: BoxDecoration(
-                      color: AppColors.black,
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(18.0),
-                        topLeft: Radius.circular(18.0),
+                      color: AppColors.colorFF8600,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20.0.r),
+                        topRight: Radius.circular(20.0.r),
                       ),
                     ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          /// USER NAME
-                          CustomText(
-                            title: currentUser.employee?.name ?? "",
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.colorFFFFFF,
-                          ),
-
-                          /// USER DISTANCE
-                          if (currentUser.distance != null)
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        left: 15.w,
+                        right: 15.w,
+                        top: 65.h,
+                        bottom: 5.h,
+                      ),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: AppColors.black,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(18.0),
+                          topLeft: Radius.circular(18.0),
+                        ),
+                      ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
                             CustomText(
-                              title: "${currentUser.distance} mi away",
-                              fontSize: 12,
+                              title: displayName,
+                              fontSize: 22,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.colorFF8600,
+                              color: AppColors.colorFFFFFF,
                             ),
-                          SizedBox(height: 25.h),
-                          Column(
-                            spacing: 1.5.h,
-                            children: [
-                              /// USER EXPERIENCE
-                              _infoRow(
-                                "Skills",
-                                currentUser.employee?.skills
-                                        .map((skill) => skill.name)
-                                        .join(', ') ??
-                                    '',
+                            if (widget.currentUser.distance != null)
+                              CustomText(
+                                title: "${widget.currentUser.distance} mi away",
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.colorFF8600,
                               ),
+                            SizedBox(height: 25.h),
+                            Column(
+                              spacing: 1.5.h,
+                              children: [
+                                _infoRow(
+                                  "Skills",
+                                  employee?.skills
+                                          .map((skill) => skill.name)
+                                          .join(', ') ??
+                                      widget.currentUser.employee?.skills
+                                          .map((skill) => skill.name)
+                                          .join(', ') ??
+                                      '',
+                                ),
+                                _infoRow(
+                                  "Gender",
+                                  employee?.gender ??
+                                      widget.currentUser.employee?.gender ??
+                                      "",
+                                ),
+                                _infoRow(
+                                  "Eye Color",
+                                  employee?.eyeColor?.name ??
+                                      widget
+                                          .currentUser
+                                          .employee
+                                          ?.eyeColor
+                                          ?.name ??
+                                      "",
+                                ),
+                                _infoRow(
+                                  "Hair Color",
+                                  employee?.hairColor?.name ??
+                                      widget
+                                          .currentUser
+                                          .employee
+                                          ?.hairColor
+                                          ?.name ??
+                                      "",
+                                ),
+                                _resumeRow(
+                                  employee?.resumePath ??
+                                      widget.currentUser.employee?.resumePath,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 20.h),
+                            if (!controller.isSameUser(widget.currentUser.id))
+                              CustomBtn(
+                                btnTitle: "Send Message",
+                                buttonWidth: double.infinity,
+                                btnBackgroundColor: AppColors.colorFF8600,
+                                btnTxtColor: AppColors.colorFFFFFF,
+                                buttonHeight: 55.h,
+                                fontSize: 16,
+                                onPressed: () async {
+                                  final receiverUid = displayUid.trim();
+                                  if (receiverUid.isEmpty) return;
 
-                              /// USER GENDER
-                              _infoRow(
-                                "Gender",
-                                currentUser.employee?.gender ?? "",
-                              ),
+                                  final canReceiveMessages =
+                                      await _canReceiveMessages(receiverUid);
+                                  if (!canReceiveMessages) {
+                                    Utilities.showSnackBar(
+                                      title: "Messaging Disabled",
+                                      message:
+                                          "This user is not accepting messages right now.",
+                                      isSuccess: false,
+                                    );
+                                    return;
+                                  }
 
-                              /// USER EYE COLOR
-                              _infoRow(
-                                "Eye Color",
-                                currentUser.employee?.eyeColor?.name ?? "",
-                              ),
-
-                              /// USER HAIR COLOR
-                              _infoRow(
-                                "Hair Color",
-                                currentUser.employee?.hairColor?.name ?? "",
-                              ),
-
-                              /// USER RESUME
-                              _resumeRow(currentUser),
-                            ],
-                          ),
-                          SizedBox(height: 20.h),
-
-                          /// CHAT OPTION (SHOW IF THE USER IS DIFFERENT)
-                          if (!controller.isSameUser(currentUser.id))
-                            CustomBtn(
-                              btnTitle: "Send Message",
-                              buttonWidth: double.infinity,
-                              btnBackgroundColor: AppColors.colorFF8600,
-                              btnTxtColor: AppColors.colorFFFFFF,
-                              buttonHeight: 55.h,
-                              fontSize: 16,
-                              onPressed: () async {
-                                final receiverUid = currentUser.uid.trim();
-                                if (receiverUid.isEmpty) return;
-
-                                final canReceiveMessages =
-                                    await _canReceiveMessages(receiverUid);
-                                if (!canReceiveMessages) {
-                                  Utilities.showSnackBar(
-                                    title: "Messaging Disabled",
-                                    message:
-                                        "This user is not accepting messages right now.",
-                                    isSuccess: false,
+                                  Get.toNamed(
+                                    Routes.chatScreen,
+                                    arguments: {'otherUserID': receiverUid},
                                   );
-                                  return;
-                                }
-
-                                Get.toNamed(
-                                  Routes.chatScreen,
-                                  arguments: {'otherUserID': receiverUid},
-                                );
-                              },
-                            ),
-                        ],
+                                },
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-
-                Positioned(
-                  right: 0,
-                  left: 0,
-                  top: -80.h,
-                  child: Center(
-                    child: CustomProfileImage(
-                      width: 130,
-                      height: 140,
-                      imagePath: currentUser.profileImage ?? '',
-                      text: currentUser.employee?.name ?? "",
-                      isEditMode: false,
-                      wholeAvatarClickable: false,
+                  Positioned(
+                    right: 0,
+                    left: 0,
+                    top: -80.h,
+                    child: Center(
+                      child: CustomProfileImage(
+                        width: 130,
+                        height: 140,
+                        imagePath: profileImage ?? '',
+                        text: displayName,
+                        isEditMode: false,
+                        wholeAvatarClickable: false,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 
@@ -281,8 +313,8 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
     );
   }
 
-  Widget _resumeRow(User currentUser) {
-    final resumePath = currentUser.employee?.resumePath;
+  Widget _resumeRow(String? resumePath) {
+    final isLocked = !controller.canAccessHiveResumeForCurrentRole;
 
     return Row(
       spacing: 1.5.w,
@@ -297,8 +329,38 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
         Expanded(
           child: GestureDetector(
             onTap: () {
+              if (isLocked) {
+                Utilities.showSnackBar(
+                  title: 'Locked',
+                  message:
+                      'Resume/Certification is available for upgraded employer plans only.',
+                  isSuccess: false,
+                );
+                return;
+              }
+
               if (resumePath != null && resumePath.isNotEmpty) {
-                Get.to(() => CustomPdfView(pdfUrl: resumePath));
+                switch (controller.resumeAdMode) {
+                  case ResumeAdMode.interstitial:
+                    AdsHelper().showInterstitialAd(
+                      onDismissed: () {
+                        Get.to(() => CustomPdfView(pdfUrl: resumePath));
+                      },
+                      onFailedToShow: () {
+                        Get.to(() => CustomPdfView(pdfUrl: resumePath));
+                      },
+                    );
+                    break;
+                  case ResumeAdMode.banner:
+                    Get.to(
+                      () =>
+                          CustomPdfView(pdfUrl: resumePath, showBannerAd: true),
+                    );
+                    break;
+                  case ResumeAdMode.none:
+                    Get.to(() => CustomPdfView(pdfUrl: resumePath));
+                    break;
+                }
               } else {
                 Utilities.showSnackBar(
                   title: 'Error',
@@ -307,7 +369,11 @@ class HiveProfileScreen extends GetView<HiveProfileController> {
                 );
               }
             },
-            child: _infoTile("Click View", AppColors.color8690FF, true),
+            child: _infoTile(
+              isLocked ? "Locked" : "Click View",
+              isLocked ? AppColors.expiredBannerColor : AppColors.color8690FF,
+              true,
+            ),
           ),
         ),
       ],

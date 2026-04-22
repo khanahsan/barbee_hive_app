@@ -254,8 +254,10 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
   Widget build(BuildContext context) {
     final gradient = planGradients[index % planGradients.length];
     final primaryColor = gradient.first;
-
+    debugPrint("AAA == ${controller.activePlanId.value} BBB == ${plan.id}");
     final bool isPurchased = controller.activePlanId.value == plan.id;
+    debugPrint('isPurchased: $isPurchased');
+    debugPrint('plan: ${plan.name}');
 
     return Container(
       padding: const EdgeInsets.all(1),

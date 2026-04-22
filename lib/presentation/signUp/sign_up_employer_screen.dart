@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/presentation/signUp/component/agree_terms_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -265,6 +266,20 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                           onChanged: (value) {
                                             controller.updateState(value);
                                           },
+                                          onBeforeOpen: () {
+                                            if (controller
+                                                .selectedCountry
+                                                .value
+                                                .isEmpty) {
+                                              Utilities.showSnackBar(
+                                                title: 'Error',
+                                                message: 'Select country first',
+                                                isSuccess: false,
+                                              );
+                                              return false;
+                                            }
+                                            return true;
+                                          },
                                           enableSearch: true,
                                           searchHint: 'Search state',
                                           validator:
@@ -417,11 +432,23 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                     btnTxtColor: Colors.white,
                                     buttonWidth: double.infinity,
                                     onPressed: () {
-                                      log('Create Account button pressed', name: 'SignUpEmployerScreen');
-                                      debugPrint('Create Account button pressed');
-                                      final isValid = controller.formKey.currentState!.validate();
-                                      log('Employer signup form validation result: $isValid', name: 'SignUpEmployerScreen');
-                                      debugPrint('Employer signup form validation result: $isValid');
+                                      log(
+                                        'Create Account button pressed',
+                                        name: 'SignUpEmployerScreen',
+                                      );
+                                      debugPrint(
+                                        'Create Account button pressed',
+                                      );
+                                      final isValid =
+                                          controller.formKey.currentState!
+                                              .validate();
+                                      log(
+                                        'Employer signup form validation result: $isValid',
+                                        name: 'SignUpEmployerScreen',
+                                      );
+                                      debugPrint(
+                                        'Employer signup form validation result: $isValid',
+                                      );
                                       if (isValid) {
                                         controller.registerEmployer();
                                       }
@@ -533,6 +560,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
     required RxString selectedValue,
     required List<DropdownMenuItem<String>> items,
     required Function(String?) onChanged,
+    bool Function()? onBeforeOpen,
     bool enableSearch = false,
     String? searchHint,
     String? Function(String?)? validator,
@@ -544,6 +572,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
       iconPath: iconPath,
       selectedValue: selectedValue,
       onChanged: onChanged,
+      onBeforeOpen: onBeforeOpen,
       validator: validator,
       items: items,
       enableSearch: enableSearch,

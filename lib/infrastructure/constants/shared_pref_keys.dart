@@ -13,6 +13,5 @@ class SharedPrefKeys {
   static const String userProfileImage = 'user_profile_image';
   static const String activatedSubscriptionId = 'activated_subscription_id';
   static const String isRememberMe = 'is_remember_me';
-
-
+  static const String profileViewCount = 'profile_view_count';
 }

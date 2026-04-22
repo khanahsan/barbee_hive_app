@@ -16,6 +16,7 @@ import 'package:barbee_hive_app/presentation/notifications/controllers/notificat
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
 import 'package:get/get.dart';
 
+import '../../../infrastructure/services/current_user_subscription_controller.dart';
 import '../../../presentation/auth/controllers/auth.controller.dart';
 import '../../../presentation/bottom_nav/dashboard/controller/b2b_controller.dart';
 import '../../../presentation/bottom_nav/dashboard/controller/hive_profile_controller.dart';
@@ -33,6 +34,10 @@ class InitialBindings implements Bindings {
     // TODO: implement dependencies
 
     // Get.lazyPut<HomeController>(() => HomeController());
+    Get.put<CurrentUserSubscriptionController>(
+      CurrentUserSubscriptionController(),
+      permanent: true,
+    );
     Get.lazyPut<DashboardController>(() => DashboardController());
     Get.lazyPut<B2BController>(() => B2BController());
     Get.lazyPut<HiveProfileController>(() => HiveProfileController());
@@ -88,4 +93,3 @@ class InitialBindings implements Bindings {
     );
   }
 }
-

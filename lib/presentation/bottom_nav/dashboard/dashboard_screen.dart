@@ -1,5 +1,8 @@
 import 'dart:developer';
 
+import 'package:barbee_hive_app/data/api/profile/profile_api.dart';
+import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dropdown.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
@@ -26,412 +29,424 @@ class DashboardScreen extends GetView<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     controller.getUnreadCount();
-      //   },
-      // ),
-      key: _scaffoldKey,
-      endDrawer: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.7,
-        child: Drawer(
-          backgroundColor: AppColors.black,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-              AppBar(
-                backgroundColor: AppColors.colorFF8600,
-                title: const Text("Filters"),
-                titleTextStyle: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.colorFFFFFF,
-                ),
-                automaticallyImplyLeading: false,
-                actions: [
-                  IconButton(
-                    icon: const Icon(Icons.close, color: AppColors.colorFFFFFF),
-                    onPressed: () => Get.back(),
+    return Obx(
+      () => Scaffold(
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: () {
+        //     controller.getUnreadCount();
+        //   },
+        // ),
+        key: _scaffoldKey,
+        endDrawer: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.7,
+          child: Drawer(
+            backgroundColor: AppColors.black,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  AppBar(
+                    backgroundColor: AppColors.colorFF8600,
+                    title: const Text("Filters"),
+                    titleTextStyle: Theme.of(
+                      context,
+                    ).textTheme.titleMedium?.copyWith(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.colorFFFFFF,
+                    ),
+                    automaticallyImplyLeading: false,
+                    actions: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          color: AppColors.colorFFFFFF,
+                        ),
+                        onPressed: () => Get.back(),
+                      ),
+                    ],
                   ),
+                  SizedBox(height: 30.h),
+
+                  Obx(
+                    () => _buildDropdown(
+                      context,
+                      value: controller.selectedJob.value,
+                      hintText: "Job Type",
+                      items: controller.jobList,
+                      onChanged: (val) => controller.selectedJob.value = val,
+                    ).paddingSymmetric(horizontal: 15.w),
+                  ),
+
+                  SizedBox(height: 25.h),
+                  Obx(
+                    () => _buildDropdown(
+                      context,
+                      value: controller.selectedPosition.value,
+                      hintText: "Experience Level",
+                      items: controller.positionList,
+                      onChanged:
+                          (val) => controller.selectedPosition.value = val,
+                    ).paddingSymmetric(horizontal: 15.w),
+                  ),
+
+                  SizedBox(height: 25.h),
+                  Obx(
+                    () => _buildDropdown(
+                      context,
+                      value: controller.selectedSkill.value,
+                      hintText: "Position",
+                      items: controller.skillList,
+                      onChanged: (val) => controller.selectedSkill.value = val,
+                    ).paddingSymmetric(horizontal: 15.w),
+                  ),
+
+                  SizedBox(height: 25.h),
+                  Obx(
+                    () => _buildDropdown(
+                      context,
+                      value: controller.selectedMinAge.value,
+                      hintText: "Min Age",
+                      items: controller.minAgeList,
+                      onChanged: (val) => controller.selectedMinAge.value = val,
+                    ).paddingSymmetric(horizontal: 15.w),
+                  ),
+
+                  SizedBox(height: 25.h),
+                  Obx(
+                    () => _buildDropdown(
+                      context,
+                      value: controller.selectedMaxAge.value,
+                      hintText: "Max Age",
+                      items: controller.maxAgeList,
+                      onChanged: (val) => controller.selectedMaxAge.value = val,
+                    ).paddingSymmetric(horizontal: 15.w),
+                  ),
+
+                  SizedBox(height: 25.h),
+                  Obx(
+                    () => _buildDropdown(
+                      context,
+                      value: controller.selectedGender.value,
+                      hintText: "Gender",
+                      items: controller.genderList,
+                      onChanged: (val) => controller.selectedGender.value = val,
+                    ).paddingSymmetric(horizontal: 15.w),
+                  ),
+
+                  SizedBox(height: 25.h),
+                  Obx(
+                    () => _buildDropdown(
+                      context,
+                      value: controller.selectedHeight.value,
+                      hintText: "Height",
+                      items: controller.heightList,
+                      onChanged: (val) => controller.selectedHeight.value = val,
+                    ).paddingSymmetric(horizontal: 15.w),
+                  ),
+
+                  SizedBox(height: 25.h),
+                  Obx(
+                    () => _buildDropdown(
+                      context,
+                      value: controller.selectedEyeColor.value,
+                      hintText: "Eye Color",
+                      items: controller.eyeColorList,
+                      onChanged:
+                          (val) => controller.selectedEyeColor.value = val,
+                    ).paddingSymmetric(horizontal: 15.w),
+                  ),
+
+                  SizedBox(height: 25.h),
+                  Obx(
+                    () => _buildDropdown(
+                      context,
+                      value: controller.selectedHairColor.value,
+                      hintText: "Hair Color",
+                      items: controller.hairColorList,
+                      onChanged:
+                          (val) => controller.selectedHairColor.value = val,
+                    ).paddingSymmetric(horizontal: 15.w),
+                  ),
+
+                  SizedBox(height: 25.h),
+                  CustomBtn(
+                    btnTitle: "Apply Filters",
+                    onPressed: controller.applyFilters,
+                    buttonWidth: double.infinity,
+                    buttonHeight: 60.h,
+                    btnBackgroundColor: AppColors.colorFF8600,
+                    borderRadius: 10.r,
+                  ).paddingSymmetric(horizontal: 15.w),
+
+                  SizedBox(height: 15.h),
+                  CustomBtn(
+                    btnTitle: "Reset Filters",
+                    onPressed: controller.resetFilters,
+                    buttonWidth: double.infinity,
+                    buttonHeight: 60.h,
+                    btnBackgroundColor: AppColors.colorA3A3A3,
+                    borderRadius: 10.r,
+                  ).paddingSymmetric(horizontal: 15.w),
+
+                  SizedBox(height: 30.h),
                 ],
               ),
-              SizedBox(height: 30.h),
-
-              Obx(
-                () => _buildDropdown(
-                  context,
-                  value: controller.selectedJob.value,
-                  hintText: "Job Type",
-                  items: controller.jobList,
-                  onChanged: (val) => controller.selectedJob.value = val,
-                ).paddingSymmetric(horizontal: 15.w),
-              ),
-
-              SizedBox(height: 25.h),
-              Obx(
-                () => _buildDropdown(
-                  context,
-                  value: controller.selectedPosition.value,
-                  hintText: "Experience Level",
-                  items: controller.positionList,
-                  onChanged: (val) => controller.selectedPosition.value = val,
-                ).paddingSymmetric(horizontal: 15.w),
-              ),
-
-              SizedBox(height: 25.h),
-              Obx(
-                () => _buildDropdown(
-                  context,
-                  value: controller.selectedSkill.value,
-                  hintText: "Position",
-                  items: controller.skillList,
-                  onChanged: (val) => controller.selectedSkill.value = val,
-                ).paddingSymmetric(horizontal: 15.w),
-              ),
-
-              SizedBox(height: 25.h),
-              Obx(
-                () => _buildDropdown(
-                  context,
-                  value: controller.selectedMinAge.value,
-                  hintText: "Min Age",
-                  items: controller.minAgeList,
-                  onChanged: (val) => controller.selectedMinAge.value = val,
-                ).paddingSymmetric(horizontal: 15.w),
-              ),
-
-              SizedBox(height: 25.h),
-              Obx(
-                () => _buildDropdown(
-                  context,
-                  value: controller.selectedMaxAge.value,
-                  hintText: "Max Age",
-                  items: controller.maxAgeList,
-                  onChanged: (val) => controller.selectedMaxAge.value = val,
-                ).paddingSymmetric(horizontal: 15.w),
-              ),
-
-              SizedBox(height: 25.h),
-              Obx(
-                () => _buildDropdown(
-                  context,
-                  value: controller.selectedGender.value,
-                  hintText: "Gender",
-                  items: controller.genderList,
-                  onChanged: (val) => controller.selectedGender.value = val,
-                ).paddingSymmetric(horizontal: 15.w),
-              ),
-
-              SizedBox(height: 25.h),
-              Obx(
-                () => _buildDropdown(
-                  context,
-                  value: controller.selectedHeight.value,
-                  hintText: "Height",
-                  items: controller.heightList,
-                  onChanged: (val) => controller.selectedHeight.value = val,
-                ).paddingSymmetric(horizontal: 15.w),
-              ),
-
-              SizedBox(height: 25.h),
-              Obx(
-                () => _buildDropdown(
-                  context,
-                  value: controller.selectedEyeColor.value,
-                  hintText: "Eye Color",
-                  items: controller.eyeColorList,
-                  onChanged: (val) => controller.selectedEyeColor.value = val,
-                ).paddingSymmetric(horizontal: 15.w),
-              ),
-
-              SizedBox(height: 25.h),
-              Obx(
-                () => _buildDropdown(
-                  context,
-                  value: controller.selectedHairColor.value,
-                  hintText: "Hair Color",
-                  items: controller.hairColorList,
-                  onChanged: (val) => controller.selectedHairColor.value = val,
-                ).paddingSymmetric(horizontal: 15.w),
-              ),
-
-              SizedBox(height: 25.h),
-              CustomBtn(
-                btnTitle: "Apply Filters",
-                onPressed: controller.applyFilters,
-                buttonWidth: double.infinity,
-                buttonHeight: 60.h,
-                btnBackgroundColor: AppColors.colorFF8600,
-                borderRadius: 10.r,
-              ).paddingSymmetric(horizontal: 15.w),
-
-              SizedBox(height: 15.h),
-              CustomBtn(
-                btnTitle: "Reset Filters",
-                onPressed: controller.resetFilters,
-                buttonWidth: double.infinity,
-                buttonHeight: 60.h,
-                btnBackgroundColor: AppColors.colorA3A3A3,
-                borderRadius: 10.r,
-              ).paddingSymmetric(horizontal: 15.w),
-
-              SizedBox(height: 30.h),
-              ],
             ),
           ),
         ),
-      ),
-      appBar: customAppbar(
-        showHexagon: true,
-        hexagonTapFunction: () {
-          Get.toNamed(Routes.PROFILE_SCREEN);
-        },
-        profileImagePath: controller.userProfileImage.value,
-        // profileName: controller.userName.value,
-        context: context,
-        leadingTapFunction: () {
-          if (onMenuPressed != null) onMenuPressed!();
-        },
-        showActions: true,
-        actions: [
-          GestureDetector(
-            onTap: () async {
-              await Get.toNamed(Routes.notificationsScreen);
-              controller.count.value = 0;
-            },
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                SvgPicture.asset(AppAssets.bellIcon, height: 24.h, width: 24.w),
+        appBar: customAppbar(
+          showHexagon: true,
+          hexagonTapFunction: () {
+            Get.toNamed(Routes.PROFILE_SCREEN);
+          },
+          profileImagePath: controller.userProfileImage.value,
+          // profileName: controller.userName.value,
+          context: context,
+          leadingTapFunction: () {
+            if (onMenuPressed != null) onMenuPressed!();
+          },
+          showActions: true,
+          actions: [
+            GestureDetector(
+              onTap: () async {
+                await Get.toNamed(Routes.notificationsScreen);
+                controller.count.value = 0;
+              },
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  SvgPicture.asset(
+                    AppAssets.bellIcon,
+                    height: 24.h,
+                    width: 24.w,
+                  ),
 
-                // Badge
-                controller.count.value > 0
-                    ? Positioned(
-                      right: -2,
-                      top: -2,
-                      child: Container(
-                        constraints: BoxConstraints(
-                          minHeight: 16.r,
-                          minWidth: 16.r,
-                        ),
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Obx(
-                          () => Text(
-                            controller.count.value.toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 9.sp,
-                              height: 1, // 👈 IMPORTANT
-                              fontWeight: FontWeight.w600,
+                  // Badge
+                  controller.count.value > 0
+                      ? Positioned(
+                        right: -2,
+                        top: -2,
+                        child: Container(
+                          constraints: BoxConstraints(
+                            minHeight: 16.r,
+                            minWidth: 16.r,
+                          ),
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Obx(
+                            () => Text(
+                              controller.count.value.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 9.sp,
+                                height: 1, // 👈 IMPORTANT
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    )
-                    : SizedBox.shrink(),
-              ],
-            ),
-          ),
-          SizedBox(width: 15.w),
-
-          GestureDetector(
-            onTap: () {
-              _scaffoldKey.currentState?.openEndDrawer();
-            },
-            child: SvgPicture.asset(
-              AppAssets.filterIcon,
-              height: 24.h,
-              width: 24.w,
-            ),
-          ),
-        ],
-        titleWidget: RichText(
-          text: TextSpan(
-            style: TextStyle(fontSize: 12, color: AppColors.colorFFFFFF),
-            children: [
-              TextSpan(
-                text: 'Bar',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontSize: 32.sp,
-                  color: AppColors.colorFFFFFF,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              TextSpan(
-                text: 'Bee',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontSize: 32.sp,
-                  color: AppColors.colorFF8600,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              TextSpan(text: " "),
-
-              TextSpan(
-                text: 'INC.',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontSize: 16.sp,
-                  color: AppColors.colorFFFFFF,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-        title: '',
-      ),
-      backgroundColor: AppColors.black,
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-          child: const DashboardBannerAdWidget(),
-        ),
-      ),
-      body: Obx(() {
-        if (controller.errorMessage.value.isNotEmpty) {
-          return Center(
-            child: Column(
-              spacing: 10.h,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomText(
-                  title: controller.errorMessage.value,
-                  fontSize: 16,
-                  color: AppColors.expiredBannerColor,
-                ),
-                CustomBtn(
-                  btnTitle: 'Retry',
-                  onPressed: () => controller.fetchDashboardUsers(),
-                  buttonHeight: 50,
-                  btnBackgroundColor: AppColors.colorFF8600,
-                  btnTxtColor: AppColors.colorFFFFFF,
-                ),
-              ],
-            ),
-          );
-        } else {
-          return RefreshIndicator(
-            onRefresh: () async {
-              await controller.getUserLocationAndFetchDashboard();
-              await controller.fetchUserProfile();
-            },
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(), // <- Important
-
-              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 25.h),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 25.h,
-                children: [
-                  // if(controller.userID.value == 3)
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     Clipboard.setData(
-                  //       ClipboardData(text: controller.fcmToken.value),
-                  //     );
-                  //
-                  //     Get.snackbar(
-                  //       'Copied',
-                  //       'FCM token copied to clipboard',
-                  //       snackPosition: SnackPosition.BOTTOM,
-                  //       backgroundColor: Colors.black87,
-                  //       colorText: Colors.white,
-                  //       margin: const EdgeInsets.all(12),
-                  //       duration: const Duration(seconds: 2),
-                  //     );
-                  //   },
-                  //   child: Container(
-                  //     padding: EdgeInsets.all(12.w),
-                  //     decoration: BoxDecoration(
-                  //       borderRadius: BorderRadius.circular(8.r),
-                  //       border: Border.all(color: AppColors.colorFF8600),
-                  //     ),
-                  //     child: Row(
-                  //       crossAxisAlignment: CrossAxisAlignment.start,
-                  //       children: [
-                  //         Expanded(
-                  //           child: CustomText(
-                  //             title: controller.fcmToken.value,
-                  //             fontSize: 14,
-                  //             color: AppColors.colorFFFFFF,
-                  //           ),
-                  //         ),
-                  //         SizedBox(width: 10.w),
-                  //         Icon(
-                  //           Icons.copy,
-                  //           color: AppColors.colorFF8600,
-                  //           size: 20.sp,
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  //
-                  // if(controller.userID.value == 3)
-                  //   GestureDetector(
-                  //   onTap: () {
-                  //     Clipboard.setData(
-                  //       ClipboardData(text: controller.testToken.value),
-                  //     );
-                  //
-                  //     Get.snackbar(
-                  //       'Copied',
-                  //       'Test token copied to clipboard',
-                  //       snackPosition: SnackPosition.BOTTOM,
-                  //       backgroundColor: Colors.black87,
-                  //       colorText: Colors.white,
-                  //       margin: const EdgeInsets.all(12),
-                  //       duration: const Duration(seconds: 2),
-                  //     );
-                  //   },
-                  //   child: Container(
-                  //     padding: EdgeInsets.all(12.w),
-                  //     decoration: BoxDecoration(
-                  //       borderRadius: BorderRadius.circular(8.r),
-                  //       border: Border.all(color: AppColors.colorFF8600),
-                  //     ),
-                  //     child: Row(
-                  //       crossAxisAlignment: CrossAxisAlignment.start,
-                  //       children: [
-                  //         Expanded(
-                  //           child: CustomText(
-                  //             title: controller.testToken.value,
-                  //             fontSize: 14,
-                  //             color: AppColors.colorFFFFFF,
-                  //           ),
-                  //         ),
-                  //         SizedBox(width: 10.w),
-                  //         Icon(
-                  //           Icons.copy,
-                  //           color: AppColors.colorFF8600,
-                  //           size: 20.sp,
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-
-                  /// B2B SECTION
-                  b2bSection(context),
-
-                  /// HIVE SECTION
-                  hiveSection(context),
-                  SizedBox(height: 50),
+                      )
+                      : SizedBox.shrink(),
                 ],
               ),
             ),
-          );
-        }
-      }),
-    ));
+            SizedBox(width: 15.w),
+
+            GestureDetector(
+              onTap: () {
+                _scaffoldKey.currentState?.openEndDrawer();
+              },
+              child: SvgPicture.asset(
+                AppAssets.filterIcon,
+                height: 24.h,
+                width: 24.w,
+              ),
+            ),
+          ],
+          titleWidget: RichText(
+            text: TextSpan(
+              style: TextStyle(fontSize: 12, color: AppColors.colorFFFFFF),
+              children: [
+                TextSpan(
+                  text: 'Bar',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontSize: 32.sp,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextSpan(
+                  text: 'Bee',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontSize: 32.sp,
+                    color: AppColors.colorFF8600,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextSpan(text: " "),
+
+                TextSpan(
+                  text: 'INC.',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontSize: 16.sp,
+                    color: AppColors.colorFFFFFF,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          title: '',
+        ),
+        backgroundColor: AppColors.black,
+        bottomNavigationBar: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+            child: const DashboardBannerAdWidget(),
+          ),
+        ),
+        body: Obx(() {
+          if (controller.errorMessage.value.isNotEmpty) {
+            return Center(
+              child: Column(
+                spacing: 10.h,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomText(
+                    title: controller.errorMessage.value,
+                    fontSize: 16,
+                    color: AppColors.expiredBannerColor,
+                  ),
+                  CustomBtn(
+                    btnTitle: 'Retry',
+                    onPressed: () => controller.fetchDashboardUsers(),
+                    buttonHeight: 50,
+                    btnBackgroundColor: AppColors.colorFF8600,
+                    btnTxtColor: AppColors.colorFFFFFF,
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return RefreshIndicator(
+              onRefresh: () async {
+                await controller.getUserLocationAndFetchDashboard();
+                await controller.fetchUserProfile();
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(), // <- Important
+
+                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 25.h),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 25.h,
+                  children: [
+                    // if(controller.userID.value == 3)
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     Clipboard.setData(
+                    //       ClipboardData(text: controller.fcmToken.value),
+                    //     );
+                    //
+                    //     Get.snackbar(
+                    //       'Copied',
+                    //       'FCM token copied to clipboard',
+                    //       snackPosition: SnackPosition.BOTTOM,
+                    //       backgroundColor: Colors.black87,
+                    //       colorText: Colors.white,
+                    //       margin: const EdgeInsets.all(12),
+                    //       duration: const Duration(seconds: 2),
+                    //     );
+                    //   },
+                    //   child: Container(
+                    //     padding: EdgeInsets.all(12.w),
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(8.r),
+                    //       border: Border.all(color: AppColors.colorFF8600),
+                    //     ),
+                    //     child: Row(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Expanded(
+                    //           child: CustomText(
+                    //             title: controller.fcmToken.value,
+                    //             fontSize: 14,
+                    //             color: AppColors.colorFFFFFF,
+                    //           ),
+                    //         ),
+                    //         SizedBox(width: 10.w),
+                    //         Icon(
+                    //           Icons.copy,
+                    //           color: AppColors.colorFF8600,
+                    //           size: 20.sp,
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    //
+                    // if(controller.userID.value == 3)
+                    //   GestureDetector(
+                    //   onTap: () {
+                    //     Clipboard.setData(
+                    //       ClipboardData(text: controller.testToken.value),
+                    //     );
+                    //
+                    //     Get.snackbar(
+                    //       'Copied',
+                    //       'Test token copied to clipboard',
+                    //       snackPosition: SnackPosition.BOTTOM,
+                    //       backgroundColor: Colors.black87,
+                    //       colorText: Colors.white,
+                    //       margin: const EdgeInsets.all(12),
+                    //       duration: const Duration(seconds: 2),
+                    //     );
+                    //   },
+                    //   child: Container(
+                    //     padding: EdgeInsets.all(12.w),
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(8.r),
+                    //       border: Border.all(color: AppColors.colorFF8600),
+                    //     ),
+                    //     child: Row(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Expanded(
+                    //           child: CustomText(
+                    //             title: controller.testToken.value,
+                    //             fontSize: 14,
+                    //             color: AppColors.colorFFFFFF,
+                    //           ),
+                    //         ),
+                    //         SizedBox(width: 10.w),
+                    //         Icon(
+                    //           Icons.copy,
+                    //           color: AppColors.colorFF8600,
+                    //           size: 20.sp,
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+
+                    /// B2B SECTION
+                    b2bSection(context),
+
+                    /// HIVE SECTION
+                    hiveSection(context),
+                    SizedBox(height: 50),
+                  ],
+                ),
+              ),
+            );
+          }
+        }),
+      ),
+    );
   }
 
   final RxDouble hOfW = 0.0.obs;
@@ -493,11 +508,40 @@ class DashboardScreen extends GetView<DashboardController> {
                     LayoutId(
                       id: index,
                       child: GestureDetector(
-                        onTap:
-                            () => Get.toNamed(
+                        onTap: () async {
+                          debugPrint('userIndex: ${users[index].id}');
+                          try {
+                            final response = await ProfileApi.getUserProfile(
+                              users[index].id,
+                            );
+
+                            if (!response.status) {
+                              Utilities.showSnackBar(
+                                title: 'Profile View Limit',
+                                message: response.message,
+                                isSuccess: false,
+                              );
+                              return;
+                            }
+
+                            Get.toNamed(
                               Routes.hiveProfileScreen,
-                              arguments: {'currentUser': users[index]},
-                            ),
+                              arguments: {
+                                'currentUser': users[index],
+                                'viewedUserId': users[index].id,
+                              },
+                            );
+                          } catch (e) {
+                            Utilities.showSnackBar(
+                              title: 'Error',
+                              message: e.toString().replaceFirst(
+                                'Exception: ',
+                                '',
+                              ),
+                              isSuccess: false,
+                            );
+                          }
+                        },
                         child: SingleChildScrollView(
                           child: HexagonAvatar(
                             imagePath:
@@ -720,11 +764,39 @@ class DashboardScreen extends GetView<DashboardController> {
                           final user = entry.value;
 
                           return GestureDetector(
-                            onTap:
-                                () => Get.toNamed(
+                            onTap: () async {
+                              try {
+                                final response = await ProfileApi.getUserProfile(
+                                  user.id,
+                                );
+
+                                if (!response.status) {
+                                  Utilities.showSnackBar(
+                                    title: 'Profile View Limit',
+                                    message: response.message,
+                                    isSuccess: false,
+                                  );
+                                  return;
+                                }
+
+                                Get.toNamed(
                                   Routes.b2bScreen,
-                                  arguments: {'currentUser': user},
-                                ),
+                                  arguments: {
+                                    'currentUser': user,
+                                    'viewedUserId': user.id,
+                                  },
+                                );
+                              } catch (e) {
+                                Utilities.showSnackBar(
+                                  title: 'Error',
+                                  message: e.toString().replaceFirst(
+                                    'Exception: ',
+                                    '',
+                                  ),
+                                  isSuccess: false,
+                                );
+                              }
+                            },
                             child: HexagonAvatar(
                               imagePath: user.profileImage ?? "",
                               width: 90.w,
@@ -776,35 +848,53 @@ class DashboardBannerAdWidget extends StatefulWidget {
   const DashboardBannerAdWidget({super.key});
 
   @override
-  State<DashboardBannerAdWidget> createState() => _DashboardBannerAdWidgetState();
+  State<DashboardBannerAdWidget> createState() =>
+      _DashboardBannerAdWidgetState();
 }
 
 class _DashboardBannerAdWidgetState extends State<DashboardBannerAdWidget> {
-  final DashboardController controller = Get.find<DashboardController>();
-  AdWidget? _cachedAdWidget;
-  BannerAd? _cachedAd;
+  BannerAd? _bannerAd;
+  bool _isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    AdsHelper().loadBannerAd(
+      onAdLoaded: (ad) {
+        if (!mounted) return;
+        setState(() {
+          _bannerAd = ad;
+          _isLoaded = true;
+        });
+      },
+      onAdFailed: () {
+        if (!mounted) return;
+        setState(() {
+          _isLoaded = false;
+        });
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      if (!controller.isBannerLoaded.value || controller.bannerAd == null) {
-        return AppShimmer(height: 80.h, width: double.infinity);
-      }
+    if (!_isLoaded || _bannerAd == null) {
+      return AppShimmer(height: 80.h, width: double.infinity);
+    }
 
-      // Only create a new AdWidget if the ad object has changed
-      if (_cachedAd != controller.bannerAd) {
-        _cachedAd = controller.bannerAd;
-        _cachedAdWidget = AdWidget(ad: controller.bannerAd!);
-      }
-
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: SizedBox(
-          width: controller.bannerAd!.size.width.toDouble(),
-          height: controller.bannerAd!.size.height.toDouble(),
-            child: AdWidget(ad: controller.bannerAd!),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: SizedBox(
+        width: _bannerAd!.size.width.toDouble(),
+        height: _bannerAd!.size.height.toDouble(),
+        child: AdWidget(ad: _bannerAd!),
       ),
-      );
-    });
+    );
   }
 }

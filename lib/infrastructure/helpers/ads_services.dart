@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdsHelper {
@@ -60,12 +61,38 @@ class AdsHelper {
     );
   }
 
-  void showInterstitialAd() {
-    if (_interstitialAd != null) {
-      _interstitialAd!.show();
-      _interstitialAd = null; // prevent reuse
-      loadInterstitialAd(); // preload next
+  void showInterstitialAd({
+    VoidCallback? onDismissed,
+    VoidCallback? onFailedToShow,
+  }) {
+    if (_interstitialAd == null) {
+      onFailedToShow?.call();
+      loadInterstitialAd();
+      return;
     }
+
+    final ad = _interstitialAd!;
+    ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        if (identical(_interstitialAd, ad)) {
+          _interstitialAd = null;
+        }
+        loadInterstitialAd();
+        onDismissed?.call();
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        ad.dispose();
+        if (identical(_interstitialAd, ad)) {
+          _interstitialAd = null;
+        }
+        loadInterstitialAd();
+        onFailedToShow?.call();
+      },
+    );
+
+    _interstitialAd = null;
+    ad.show();
   }
 
   /// ✅ Profile view tracking

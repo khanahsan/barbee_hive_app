@@ -1,5 +1,6 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
@@ -331,6 +332,20 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                           // new RxString
                                           onChanged: (value) {
                                             controller.updateState(value);
+                                          },
+                                          onBeforeOpen: () {
+                                            if (controller
+                                                .selectedCountry
+                                                .value
+                                                .isEmpty) {
+                                              Utilities.showSnackBar(
+                                                title: 'Error',
+                                                message: 'Select country first',
+                                                isSuccess: false,
+                                              );
+                                              return false;
+                                            }
+                                            return true;
                                           },
                                           enableSearch: true,
                                           searchHint: 'Search state',
@@ -789,6 +804,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
     required RxString selectedValue,
     required List<DropdownMenuItem<String>> items,
     required Function(String?) onChanged,
+    bool Function()? onBeforeOpen,
     bool enableSearch = false,
     String? searchHint,
     String? Function(String?)? validator,
@@ -800,6 +816,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
       iconPath: iconPath,
       selectedValue: selectedValue,
       onChanged: onChanged,
+      onBeforeOpen: onBeforeOpen,
       validator: validator,
       items: items,
       enableSearch: enableSearch,

@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../../../presentation/bottom_nav/pricing_plans/model/apply_subscription_model.dart';
 import '../../../presentation/bottom_nav/pricing_plans/model/pricing_plans_model.dart';
 import '../../../presentation/bottom_nav/pricing_plans/model/store_in_app_purchase_response.dart';
@@ -69,7 +71,7 @@ class SubscriptionApi {
       else
         'purchase_token': platformReceipt,
     };
-
+    debugPrint('requestData $requestData');
     final data = await ApiService.post(
       ApiEndPoints.storeInAppPurchase,
       requestData,

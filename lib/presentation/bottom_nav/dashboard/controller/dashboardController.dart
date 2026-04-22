@@ -10,7 +10,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../../../../data/api/notifications/notifications_api.dart';
 import '../../../../infrastructure/constants/shared_pref_keys.dart';
@@ -33,9 +32,6 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
 
   RxDouble currentLatitude = 0.0.obs;
   RxDouble currentLongitude = 0.0.obs;
-
-  var isBannerLoaded = false.obs;
-  BannerAd? bannerAd;
 
   // Dropdown lists
   final RxList<DropdownMenuItem<String>> jobList = <DropdownMenuItem<String>>[].obs;
@@ -68,7 +64,6 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
     // fetchDashboardUsers();
     getUnreadCount();
     getUserLocationAndFetchDashboard();
-    loadBannerAd();
     AdsHelper().loadInterstitialAd();
     fetchDropdownData();
     // loadUserData();
@@ -133,21 +128,6 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
   //   userID.value =
   //       SharedPreferenceHelper.getInt(SharedPrefKeys.userId) ?? 0;
   // }
-
-  void loadBannerAd() {
-    AdsHelper().loadBannerAd(
-      onAdLoaded: (ad) {
-        bannerAd = ad;
-        isBannerLoaded.value = true;
-
-        log('✅ Banner ad loaded successfully.');
-      },
-      onAdFailed: () {
-        isBannerLoaded.value = false;
-        log('❌ Failed to load banner ad.');
-      },
-    );
-  }
 
   Future<void> getUserLocationAndFetchDashboard() async {
     isLoading.value = true;
@@ -274,6 +254,7 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
   }
 
   void trackProfileView() {
+    debugPrint('trackProfileView');
     AdsHelper().trackProfileView();
   }
 
@@ -555,7 +536,6 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
   @override
   void onClose() {
     WidgetsBinding.instance.removeObserver(this);
-    bannerAd?.dispose();
     super.onClose();
   }
 }

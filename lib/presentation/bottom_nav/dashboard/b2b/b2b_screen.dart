@@ -1,29 +1,47 @@
 import 'dart:developer';
 
-import 'package:barbee_hive_app/data/model/dashboard_response.dart';
+import 'package:barbee_hive_app/data/model/dashboard_response.dart' show User;
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/navigation/routes.dart';
+import 'package:barbee_hive_app/infrastructure/services/profile_view_prompt_service.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/b2b/b2b_fading_carousel.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/b2b_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../../../infrastructure/constants/app_colors.dart';
+import '../../../../infrastructure/helpers/ads_services.dart';
 
-class B2BScreen extends GetView<B2BController> {
+class B2BScreen extends StatefulWidget {
   const B2BScreen({super.key, required this.currentUser});
 
   final User currentUser;
 
-  // final ChatController chatController = Get.find();
+  @override
+  State<B2BScreen> createState() => _B2BScreenState();
+}
+
+class _B2BScreenState extends State<B2BScreen> {
+  final B2BController controller = Get.find<B2BController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await controller.currentUserSubscriptionController.refresh();
+      if (controller.shouldShowProfileVisitAds) {
+        AdsHelper().trackProfileView();
+      }
+      await ProfileViewPromptService.recordVisitAndMaybePrompt();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    log("CURRENT CHECK USER: ${currentUser.profileImage}");
+    log("CURRENT CHECK USER: ${widget.currentUser.profileImage}");
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: customAppbar(
@@ -45,12 +63,11 @@ class B2BScreen extends GetView<B2BController> {
               height: 300.h,
               width: double.infinity,
               child: Image.network(
-                currentUser.profileImage ?? AppAssets.nullProfile,
+                widget.currentUser.profileImage ?? AppAssets.nullProfile,
                 fit: BoxFit.cover,
               ),
             ),
           ),
-
 
           // Positioned(
           //   top: 102.h,
@@ -59,15 +76,15 @@ class B2BScreen extends GetView<B2BController> {
           //   child:CustomFadingCarousel(
           //       imagePaths: [currentUser.profileImage ?? AppAssets.nullProfile]),
           // ),
-
-
           Positioned(
             top: 360.h,
             bottom: 0,
             left: 0,
             right: 0,
             child: Container(
-              padding: EdgeInsets.only(top: 3.h), // top padding for orange strip
+              padding: EdgeInsets.only(
+                top: 3.h,
+              ), // top padding for orange strip
               decoration: BoxDecoration(
                 color: AppColors.colorFF8600,
                 borderRadius: BorderRadius.only(
@@ -90,20 +107,20 @@ class B2BScreen extends GetView<B2BController> {
                   children: [
                     /// EMPLOYER NAME
                     CustomText(
-                      title: currentUser.employer?.businessName ?? "",
+                      title: widget.currentUser.employer?.businessName ?? "",
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
                       color: AppColors.colorFFFFFF,
                     ),
 
                     /// DISTANCE
-                    if(currentUser.distance != null)
-                    CustomText(
-                      title: "${currentUser.distance} mi away",
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.colorFF8600,
-                    ),
+                    if (widget.currentUser.distance != null)
+                      CustomText(
+                        title: "${widget.currentUser.distance} mi away",
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.colorFF8600,
+                      ),
                     SizedBox(height: 40.h),
 
                     /// Skills
@@ -113,7 +130,7 @@ class B2BScreen extends GetView<B2BController> {
 
                     /// SEND MESSAGE OPTION
                     if (controller.canSendMessage &&
-                        !controller.isSameUser(currentUser.id))
+                        !controller.isSameUser(widget.currentUser.id))
                       CustomBtn(
                         btnTitle: "Send Message",
                         buttonWidth: double.infinity,
@@ -124,7 +141,7 @@ class B2BScreen extends GetView<B2BController> {
                         onPressed: () {
                           Get.toNamed(
                             Routes.chatScreen,
-                            arguments: {"otherUserID": currentUser.uid},
+                            arguments: {"otherUserID": widget.currentUser.uid},
                           );
                         },
                       ),
@@ -132,10 +149,9 @@ class B2BScreen extends GetView<B2BController> {
                 ),
               ),
             ),
-          )
+          ),
 
-
-     /*     Positioned(
+          /*     Positioned(
             top: 360.h,
             bottom: 0,
             left: 0,
@@ -248,7 +264,7 @@ class B2BScreen extends GetView<B2BController> {
   // }
 
   Widget _seekingRow() {
-    final skills = currentUser.employer?.skills ?? [];
+    final skills = widget.currentUser.employer?.skills ?? [];
 
     return Column(
       mainAxisSize: MainAxisSize.min,

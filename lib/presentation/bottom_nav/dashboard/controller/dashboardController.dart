@@ -3,13 +3,11 @@ import 'dart:developer';
 import 'package:barbee_hive_app/data/api/auth_provider.dart';
 import 'package:barbee_hive_app/data/api/profile/profile_api.dart';
 import 'package:barbee_hive_app/data/model/dashboard_response.dart';
-import 'package:barbee_hive_app/data/model/dropdown_response.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 
 import '../../../../data/api/notifications/notifications_api.dart';
 import '../../../../infrastructure/constants/shared_pref_keys.dart';
@@ -34,15 +32,24 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
   RxDouble currentLongitude = 0.0.obs;
 
   // Dropdown lists
-  final RxList<DropdownMenuItem<String>> jobList = <DropdownMenuItem<String>>[].obs;
-  final RxList<DropdownMenuItem<String>> positionList = <DropdownMenuItem<String>>[].obs;
-  final RxList<DropdownMenuItem<String>> minAgeList = <DropdownMenuItem<String>>[].obs;
-  final RxList<DropdownMenuItem<String>> maxAgeList = <DropdownMenuItem<String>>[].obs;
-  final RxList<DropdownMenuItem<String>> genderList = <DropdownMenuItem<String>>[].obs;
-  final RxList<DropdownMenuItem<String>> heightList = <DropdownMenuItem<String>>[].obs;
-  final RxList<DropdownMenuItem<String>> eyeColorList = <DropdownMenuItem<String>>[].obs;
-  final RxList<DropdownMenuItem<String>> hairColorList = <DropdownMenuItem<String>>[].obs;
-  final RxList<DropdownMenuItem<String>> skillList = <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> jobList =
+      <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> positionList =
+      <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> minAgeList =
+      <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> maxAgeList =
+      <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> genderList =
+      <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> heightList =
+      <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> eyeColorList =
+      <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> hairColorList =
+      <DropdownMenuItem<String>>[].obs;
+  final RxList<DropdownMenuItem<String>> skillList =
+      <DropdownMenuItem<String>>[].obs;
 
   // Selected values
   final Rx<String?> selectedJob = Rx<String?>(null);
@@ -55,19 +62,29 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
   final Rx<String?> selectedHairColor = Rx<String?>(null);
   final Rx<String?> selectedSkill = Rx<String?>(null);
 
-
+  // This controller can outlive the authenticated UI during route changes and logout.
+  // Guarding on persisted session state prevents nearby-user/profile/unread APIs from
+  // firing after the user has already signed out.
+  bool get _hasActiveSession {
+    final token = SharedPreferenceHelper.getString(SharedPrefKeys.authToken);
+    final userId = SharedPreferenceHelper.getInt(SharedPrefKeys.userId) ?? 0;
+    return token != null && token.isNotEmpty && userId > 0;
+  }
 
   @override
   void onInit() {
     super.onInit();
     WidgetsBinding.instance.addObserver(this);
-    // fetchDashboardUsers();
-    getUnreadCount();
-    getUserLocationAndFetchDashboard();
+
+    if (_hasActiveSession) {
+      getUnreadCount();
+      getUserLocationAndFetchDashboard();
+      fetchUserProfile();
+    }
+
     AdsHelper().loadInterstitialAd();
     fetchDropdownData();
     // loadUserData();
-    fetchUserProfile();
   }
 
   @override
@@ -82,6 +99,8 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<void> _refreshLocationIfAvailable() async {
+    if (!_hasActiveSession) return;
+
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) return;
 
@@ -93,12 +112,13 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
   }
 
   getUnreadCount() async {
-    count.value =  await NotificationsApi.getUnreadCount();
+    if (!_hasActiveSession) return;
+    count.value = await NotificationsApi.getUnreadCount();
   }
 
-
-
   Future<void> fetchUserProfile() async {
+    if (!_hasActiveSession) return;
+
     try {
       final userId = SharedPreferenceHelper.getInt(SharedPrefKeys.userId) ?? 0;
       if (userId == 0) return;
@@ -107,9 +127,10 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
       userProfileImage.value = profile.data.profileImage ?? '';
 
       log("USER PROFILE PATH: ${userProfileImage.value}");
-      userName.value = profile.data.role == 2
-          ? profile.data.employer?.businessName ?? ''
-          : profile.data.employee?.name ?? '';
+      userName.value =
+          profile.data.role == 2
+              ? profile.data.employer?.businessName ?? ''
+              : profile.data.employee?.name ?? '';
     } catch (e) {
       log('Error fetching user profile: $e');
     }
@@ -130,6 +151,8 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
   // }
 
   Future<void> getUserLocationAndFetchDashboard() async {
+    if (!_hasActiveSession) return;
+
     isLoading.value = true;
 
     try {
@@ -203,6 +226,11 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<void> fetchDashboardUsers() async {
+    if (!_hasActiveSession) {
+      isLoading.value = false;
+      return;
+    }
+
     isLoading.value = true;
     errorMessage.value = '';
 
@@ -210,7 +238,7 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
       employers.clear();
       print('Fetching dashboard users');
 
-      log("LATITUDE: ${currentLatitude.value.toString()}");
+      log("LATITUDEe: ${currentLatitude.value.toString()}");
       log("LONGITUDE: ${currentLongitude.value.toString()}");
 
       final response = await AuthProvider.getDashboardUsers(
@@ -266,91 +294,103 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
       if (response.status) {
         // Convert job types to dropdown items
         jobList.assignAll(
-          response.data.jobTypes.map(
-            (item) => DropdownMenuItem<String>(
-              value: item.id.toString(),
-              child: Text(item.name),
-            ),
-          ).toList(),
+          response.data.jobTypes
+              .map(
+                (item) => DropdownMenuItem<String>(
+                  value: item.id.toString(),
+                  child: Text(item.name),
+                ),
+              )
+              .toList(),
         );
 
         // Convert experience levels to dropdown items (for positions)
         positionList.assignAll(
-          response.data.experienceLevels.map(
-            (item) => DropdownMenuItem<String>(
-              value: item.id.toString(),
-              child: Text(item.name),
-            ),
-          ).toList(),
+          response.data.experienceLevels
+              .map(
+                (item) => DropdownMenuItem<String>(
+                  value: item.id.toString(),
+                  child: Text(item.name),
+                ),
+              )
+              .toList(),
         );
 
         // Convert skills to dropdown items
         skillList.assignAll(
-          response.data.skills.map(
-            (item) => DropdownMenuItem<String>(
-              value: item.id.toString(),
-              child: Text(item.name),
-            ),
-          ).toList(),
+          response.data.skills
+              .map(
+                (item) => DropdownMenuItem<String>(
+                  value: item.id.toString(),
+                  child: Text(item.name),
+                ),
+              )
+              .toList(),
         );
 
         // Generate age lists (18-65)
         final ageList = List.generate(48, (index) => (18 + index).toString());
         minAgeList.assignAll(
-          ageList.map(
-            (age) => DropdownMenuItem<String>(
-              value: age,
-              child: Text(age),
-            ),
-          ).toList(),
+          ageList
+              .map(
+                (age) => DropdownMenuItem<String>(value: age, child: Text(age)),
+              )
+              .toList(),
         );
         maxAgeList.assignAll(
-          ageList.map(
-            (age) => DropdownMenuItem<String>(
-              value: age,
-              child: Text(age),
-            ),
-          ).toList(),
+          ageList
+              .map(
+                (age) => DropdownMenuItem<String>(value: age, child: Text(age)),
+              )
+              .toList(),
         );
 
         // Convert genders to dropdown items
         genderList.assignAll(
-          response.data.genders.map(
-            (item) => DropdownMenuItem<String>(
-              value: item.id.toString(),
-              child: Text(item.name),
-            ),
-          ).toList(),
+          response.data.genders
+              .map(
+                (item) => DropdownMenuItem<String>(
+                  value: item.id.toString(),
+                  child: Text(item.name),
+                ),
+              )
+              .toList(),
         );
 
         // Convert heights to dropdown items
         heightList.assignAll(
-          response.data.heights.map(
-            (item) => DropdownMenuItem<String>(
-              value: item.id.toString(),
-              child: Text(item.name),
-            ),
-          ).toList(),
+          response.data.heights
+              .map(
+                (item) => DropdownMenuItem<String>(
+                  value: item.id.toString(),
+                  child: Text(item.name),
+                ),
+              )
+              .toList(),
         );
 
         // Convert eye colors to dropdown items
         eyeColorList.assignAll(
-          response.data.eyeColors.map(
-            (item) => DropdownMenuItem<String>(
-              value: item.id.toString(),
-              child: Text(item.name),
-            ),
-          ).toList(),
+          response.data.eyeColors
+              .map(
+                (item) => DropdownMenuItem<String>(
+                  value: item.id.toString(),
+                  child: Text(item.name),
+                ),
+              )
+              .toList(),
         );
 
         // Convert hair colors to dropdown items
         hairColorList.assignAll(
-          response.data.hairColors.map(
-            (item) => DropdownMenuItem<String>(
-              value: item.id.toString(),
-              child: Text(item.name),
-            ),
-          ).toList(),
+          response.data.hairColors
+              .map(
+                (item) => DropdownMenuItem<String>(
+                  value: item.id.toString(),
+                  child: Text(item.name),
+                ),
+              )
+              .toList(),
         );
 
         log('Dropdown data fetched successfully');
@@ -385,94 +425,113 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
     log('Selected Skill: ${selectedSkill.value}');
 
     // Filter employees based on selected criteria
-    List<User> filteredEmployees = allEmployees.where((user) {
-      if (user.employee == null) return false;
+    List<User> filteredEmployees =
+        allEmployees.where((user) {
+          if (user.employee == null) return false;
 
-      final employee = user.employee!;
+          final employee = user.employee!;
 
-      // Filter by gender
-      if (selectedGender.value != null && selectedGender.value!.isNotEmpty) {
-        if (employee.gender.toLowerCase() != selectedGender.value!.toLowerCase()) {
-          return false;
-        }
-      }
-
-      // Filter by height
-      if (selectedHeight.value != null && selectedHeight.value!.isNotEmpty) {
-        final selectedHeightId = int.tryParse(selectedHeight.value!);
-        if (selectedHeightId != null && employee.height != selectedHeightId) {
-          return false;
-        }
-      }
-
-      // Filter by eye color
-      if (selectedEyeColor.value != null && selectedEyeColor.value!.isNotEmpty) {
-        final selectedEyeColorId = int.tryParse(selectedEyeColor.value!);
-        if (selectedEyeColorId != null) {
-          if (employee.eyeColor == null || employee.eyeColor!.id != selectedEyeColorId) {
-            return false;
-          }
-        }
-      }
-
-      // Filter by hair color
-      if (selectedHairColor.value != null && selectedHairColor.value!.isNotEmpty) {
-        final selectedHairColorId = int.tryParse(selectedHairColor.value!);
-        if (selectedHairColorId != null) {
-          if (employee.hairColor == null || employee.hairColor!.id != selectedHairColorId) {
-            return false;
-          }
-        }
-      }
-
-      // Filter by experience level (position)
-      if (selectedPosition.value != null && selectedPosition.value!.isNotEmpty) {
-        if (employee.experienceYears == null ||
-            employee.experienceYears!.toLowerCase() != selectedPosition.value!.toLowerCase()) {
-          return false;
-        }
-      }
-
-      // Filter by skill
-      if (selectedSkill.value != null && selectedSkill.value!.isNotEmpty) {
-        final selectedSkillId = int.tryParse(selectedSkill.value!);
-        if (selectedSkillId != null) {
-          final hasSkill = employee.skills.any((skill) => skill.id == selectedSkillId);
-          if (!hasSkill) {
-            return false;
-          }
-        }
-      }
-
-      // Filter by age (calculate from DOB)
-      if ((selectedMinAge.value != null && selectedMinAge.value!.isNotEmpty) ||
-          (selectedMaxAge.value != null && selectedMaxAge.value!.isNotEmpty)) {
-        final age = _calculateAge(employee.dob);
-        if (age != null) {
-          if (selectedMinAge.value != null && selectedMinAge.value!.isNotEmpty) {
-            final minAge = int.tryParse(selectedMinAge.value!);
-            if (minAge != null && age < minAge) {
+          // Filter by gender
+          if (selectedGender.value != null &&
+              selectedGender.value!.isNotEmpty) {
+            if (employee.gender.toLowerCase() !=
+                selectedGender.value!.toLowerCase()) {
               return false;
             }
           }
-          if (selectedMaxAge.value != null && selectedMaxAge.value!.isNotEmpty) {
-            final maxAge = int.tryParse(selectedMaxAge.value!);
-            if (maxAge != null && age > maxAge) {
+
+          // Filter by height
+          if (selectedHeight.value != null &&
+              selectedHeight.value!.isNotEmpty) {
+            final selectedHeightId = int.tryParse(selectedHeight.value!);
+            if (selectedHeightId != null &&
+                employee.height != selectedHeightId) {
               return false;
             }
           }
-        }
-      }
 
-      return true;
-    }).toList();
+          // Filter by eye color
+          if (selectedEyeColor.value != null &&
+              selectedEyeColor.value!.isNotEmpty) {
+            final selectedEyeColorId = int.tryParse(selectedEyeColor.value!);
+            if (selectedEyeColorId != null) {
+              if (employee.eyeColor == null ||
+                  employee.eyeColor!.id != selectedEyeColorId) {
+                return false;
+              }
+            }
+          }
+
+          // Filter by hair color
+          if (selectedHairColor.value != null &&
+              selectedHairColor.value!.isNotEmpty) {
+            final selectedHairColorId = int.tryParse(selectedHairColor.value!);
+            if (selectedHairColorId != null) {
+              if (employee.hairColor == null ||
+                  employee.hairColor!.id != selectedHairColorId) {
+                return false;
+              }
+            }
+          }
+
+          // Filter by experience level (position)
+          if (selectedPosition.value != null &&
+              selectedPosition.value!.isNotEmpty) {
+            if (employee.experienceYears == null ||
+                employee.experienceYears!.toLowerCase() !=
+                    selectedPosition.value!.toLowerCase()) {
+              return false;
+            }
+          }
+
+          // Filter by skill
+          if (selectedSkill.value != null && selectedSkill.value!.isNotEmpty) {
+            final selectedSkillId = int.tryParse(selectedSkill.value!);
+            if (selectedSkillId != null) {
+              final hasSkill = employee.skills.any(
+                (skill) => skill.id == selectedSkillId,
+              );
+              if (!hasSkill) {
+                return false;
+              }
+            }
+          }
+
+          // Filter by age (calculate from DOB)
+          if ((selectedMinAge.value != null &&
+                  selectedMinAge.value!.isNotEmpty) ||
+              (selectedMaxAge.value != null &&
+                  selectedMaxAge.value!.isNotEmpty)) {
+            final age = _calculateAge(employee.dob);
+            if (age != null) {
+              if (selectedMinAge.value != null &&
+                  selectedMinAge.value!.isNotEmpty) {
+                final minAge = int.tryParse(selectedMinAge.value!);
+                if (minAge != null && age < minAge) {
+                  return false;
+                }
+              }
+              if (selectedMaxAge.value != null &&
+                  selectedMaxAge.value!.isNotEmpty) {
+                final maxAge = int.tryParse(selectedMaxAge.value!);
+                if (maxAge != null && age > maxAge) {
+                  return false;
+                }
+              }
+            }
+          }
+
+          return true;
+        }).toList();
 
     // Update the displayed employee list
     employees.assignAll(filteredEmployees);
 
     Get.back(); // Close the drawer
 
-    log('Filtered Employees: ${employees.length} out of ${allEmployees.length}');
+    log(
+      'Filtered Employees: ${employees.length} out of ${allEmployees.length}',
+    );
 
     Utilities.showSnackBar(
       title: "Filters Applied",
@@ -528,13 +587,16 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
 
     Utilities.showSnackBar(
       title: "Filters Removed",
-      message: "Showing ${employees.length} employees and ${employers.length} employers",
+      message:
+          "Showing ${employees.length} employees and ${employers.length} employers",
       isSuccess: true,
     );
   }
 
   @override
   void onClose() {
+    // Remove the lifecycle observer so resume events cannot keep triggering
+    // location-based dashboard refreshes after logout/navigation teardown.
     WidgetsBinding.instance.removeObserver(this);
     super.onClose();
   }

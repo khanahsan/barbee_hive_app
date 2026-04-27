@@ -8,7 +8,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
-import '../auth/controllers/auth.controller.dart';
 import 'controller/setting_controller.dart';
 
 class SettingsScreen extends GetView<SettingController> {
@@ -56,7 +55,7 @@ class SettingsScreen extends GetView<SettingController> {
                 buttonText: "Sign Out",
                 textColor: AppColors.colorFFFFFF,
                 onTap: () {
-                  Get.find<AuthController>().logout(context);
+                  controller.logout();
                 },
               ),
             ],
@@ -110,7 +109,6 @@ class SettingsScreen extends GetView<SettingController> {
           //     controller.updateSettings();
           //   },
           // ),
-
           _buildSwitchTile(
             tileText: "Location",
             currentValue: controller.location.value,

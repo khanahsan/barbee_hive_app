@@ -33,10 +33,7 @@ class ApiService {
   }
 
   static Map<String, String> _headers({bool includeAuth = true}) {
-    final headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    };
+    final headers = {'Content-Type': 'application/json', 'Accept': 'application/json'};
 
     if (_token == null) {
       _token = SharedPreferenceHelper.getString(SharedPrefKeys.authToken);
@@ -51,12 +48,10 @@ class ApiService {
   static Future<bool> isInternetAvailable() async {
     WidgetsFlutterBinding.ensureInitialized();
     try {
-      final List<ConnectivityResult> connectivityResult =
-          await Connectivity().checkConnectivity();
+      final List<ConnectivityResult> connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult.contains(ConnectivityResult.none)) {
         Utilities.showToast(
-          toastMsg:
-              'No internet connection. Please check your WiFi or mobile data.',
+          toastMsg: 'No internet connection. Please check your WiFi or mobile data.',
           isSuccess: false,
         );
         return false;
@@ -69,15 +64,13 @@ class ApiService {
         return true;
       }
       Utilities.showToast(
-        toastMsg:
-            'Internet connection is not working. Please check your connection or try again later.',
+        toastMsg: 'Internet connection is not working. Please check your connection or try again later.',
         isSuccess: false,
       );
       return false;
     } catch (e) {
       Utilities.showToast(
-        toastMsg:
-            'Internet connection is not working. Please check your connection or try again later.',
+        toastMsg: 'Internet connection is not working. Please check your connection or try again later.',
         isSuccess: false,
       );
       LogUtil.logError('isInternetAvailable: $e');
@@ -92,12 +85,8 @@ class ApiService {
       }
       final uri = Uri.parse('${ApiEndPoints.baseUrl}$endpoint');
       print('GET Request URL: $uri');
-      final response = await _safeRequest(
-        'GET',
-        uri,
-        headers: _headers(includeAuth: auth),
-      );
-      return _handleResponse(response);
+      final response = await _safeRequest('GET', uri, headers: _headers(includeAuth: auth));
+      return _handleResponse(response, endpoint);
     } catch (e) {
       print('GET Error: $e');
       LogUtil.logError('GET $endpoint: $e');
@@ -106,11 +95,7 @@ class ApiService {
     }
   }
 
-  static Future<dynamic> post(
-    String endpoint,
-    Map<String, dynamic> data, {
-    bool auth = true,
-  }) async {
+  static Future<dynamic> post(String endpoint, Map<String, dynamic> data, {bool auth = true}) async {
     try {
       if (!(await isInternetAvailable())) {
         throw Exception('No internet connection');
@@ -118,13 +103,8 @@ class ApiService {
 
       final uri = Uri.parse('${ApiEndPoints.baseUrl}$endpoint');
       print('POST Request URL: $uri');
-      final response = await _safeRequest(
-        'POST',
-        uri,
-        headers: _headers(includeAuth: auth),
-        body: jsonEncode(data),
-      );
-      return _handleResponse(response);
+      final response = await _safeRequest('POST', uri, headers: _headers(includeAuth: auth), body: jsonEncode(data));
+      return _handleResponse(response, endpoint);
     } catch (e) {
       print('POST Error: $e');
       LogUtil.logError('POST $endpoint: $e');
@@ -133,11 +113,7 @@ class ApiService {
     }
   }
 
-  static Future<dynamic> put(
-    String endpoint, {
-    var data,
-    bool auth = true,
-  }) async {
+  static Future<dynamic> put(String endpoint, {var data, bool auth = true}) async {
     try {
       if (!(await isInternetAvailable())) {
         throw Exception('No internet connection');
@@ -153,7 +129,7 @@ class ApiService {
         body: data != null ? jsonEncode(data) : null,
       );
 
-      return _handleResponse(response);
+      return _handleResponse(response, endpoint);
     } catch (e) {
       print('PUT Error: $e');
       LogUtil.logError('PUT $endpoint: $e');
@@ -226,16 +202,14 @@ class ApiService {
 
       if (files != null) {
         for (var entry in files.entries) {
-          request.files.add(
-            await http.MultipartFile.fromPath(entry.key, entry.value.path),
-          );
+          request.files.add(await http.MultipartFile.fromPath(entry.key, entry.value.path));
         }
       }
 
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      return _handleResponse(response);
+      return _handleResponse(response, endpoint);
     } catch (e) {
       print('Multipart POST Error: $e');
       LogUtil.logError('Multipart POST $endpoint: $e');
@@ -256,15 +230,12 @@ class ApiService {
       var redirects = 0;
 
       while (redirects < maxRedirects) {
-        final request = http.Request(method, currentUri)
-          ..headers.addAll(headers);
+        final request = http.Request(method, currentUri)..headers.addAll(headers);
         if (body != null) request.body = body;
         final streamedResponse = await client.send(request);
         final response = await http.Response.fromStream(streamedResponse);
 
-        if (response.statusCode >= 300 &&
-            response.statusCode < 400 &&
-            response.headers['location'] != null) {
+        if (response.statusCode >= 300 && response.statusCode < 400 && response.headers['location'] != null) {
           currentUri = Uri.parse(response.headers['location']!);
           redirects++;
           continue;
@@ -277,7 +248,7 @@ class ApiService {
     }
   }
 
-  static dynamic _handleResponse(http.Response response) {
+  static dynamic _handleResponse(http.Response response, String endpoint) {
     final statusCode = response.statusCode;
     final String rawBody = response.body;
 
@@ -295,6 +266,7 @@ class ApiService {
       return body;
     } else if (statusCode == 401) {
       // Handle 401 Unauthorized response
+      print('session timeout, url hit $endpoint');
       ForceLogoutDialog.show(); // Show the force logout dialog
       throw Exception(body?['message'] ?? 'Unauthorized request');
     } else if (statusCode == 403) {
@@ -303,10 +275,7 @@ class ApiService {
       throw Exception(body?['message'] ?? 'Resource not found');
     } else if (statusCode == 422) {
       final errors = body?['errors'] ?? {};
-      final firstError =
-          errors.isNotEmpty
-              ? errors.values.first[0]
-              : body?['message'] ?? 'Validation failed';
+      final firstError = errors.isNotEmpty ? errors.values.first[0] : body?['message'] ?? 'Validation failed';
       throw Exception(firstError);
     } else if (statusCode == 500) {
       throw Exception(body?['message'] ?? 'Internal server error');

@@ -60,6 +60,7 @@ class CustomJobFilterDialog extends StatelessWidget {
                 Align(
                   alignment: Alignment.topRight,
                   child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
                     onTap: onCloseTap,
                     child: const Icon(
                       Icons.close,
@@ -164,12 +165,10 @@ class CustomJobFilterDialog extends StatelessWidget {
       hint: hint,
       iconPath: '',
       selectedValue: selectedValue,
-      items: items
-          .map((val) => DropdownMenuItem(
-        value: val,
-        child: Text(val),
-      ))
-          .toList(),
+      items:
+          items
+              .map((val) => DropdownMenuItem(value: val, child: Text(val)))
+              .toList(),
       onChanged: (v) => selectedValue.value = v ?? '',
       backgroundColor: AppColors.color000000,
       borderRadius: 10,
@@ -179,4 +178,3 @@ class CustomJobFilterDialog extends StatelessWidget {
     );
   }
 }
-

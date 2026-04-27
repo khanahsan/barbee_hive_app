@@ -258,11 +258,15 @@ class EmployerCard extends StatelessWidget {
                 const Expanded(
                   child: Text(
                     'Select Duration',
-                    style: TextStyle(color: AppColors.colorFFFFFF, fontSize: 20),
+                    style: TextStyle(
+                      color: AppColors.colorFFFFFF,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
 
                 GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: () => Navigator.of(context).pop(),
                   child: Icon(
                     Icons.close,
@@ -380,8 +384,10 @@ class EmployerCard extends StatelessWidget {
                           } catch (e) {
                             Utilities.showSnackBar(
                               title: 'Error',
-                              message:
-                                  e.toString().replaceFirst('Exception: ', ''),
+                              message: e.toString().replaceFirst(
+                                'Exception: ',
+                                '',
+                              ),
                               isSuccess: false,
                             );
                           } finally {

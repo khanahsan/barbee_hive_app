@@ -226,6 +226,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
         ),
         Expanded(
           child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
             onTap: () {
               if (value.isNotEmpty) {
                 Get.to(() => CustomPdfView(pdfUrl: value));

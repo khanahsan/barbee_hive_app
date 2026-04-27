@@ -102,6 +102,7 @@ class JobScreen extends GetView<JobController> {
                   fit: BoxFit.scaleDown,
                 ),
                 suffixIcon: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: () async {
                     print("12333");
                     // Fetch all dropdown data before opening

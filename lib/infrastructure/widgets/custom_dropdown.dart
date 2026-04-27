@@ -73,7 +73,7 @@ class CustomDropdown extends StatelessWidget {
         Widget buildContent() {
           if (enableSearch) {
             return GestureDetector(
-              behavior: HitTestBehavior.opaque,
+              behavior: HitTestBehavior.translucent,
               onTap: () {
                 final canOpen = onBeforeOpen?.call() ?? true;
                 if (canOpen) {

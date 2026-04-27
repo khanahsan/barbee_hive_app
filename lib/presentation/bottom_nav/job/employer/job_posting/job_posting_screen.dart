@@ -438,6 +438,7 @@ class JobPostingScreen extends GetView<JobPostingController> {
                         ),
                         readOnly: true,
                         suffixIcon: GestureDetector(
+                          behavior: HitTestBehavior.translucent,
                           onTap: () => controller.pickImage(context),
                           child: Container(
                             margin: EdgeInsets.symmetric(

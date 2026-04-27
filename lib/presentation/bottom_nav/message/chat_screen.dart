@@ -425,6 +425,7 @@ class ChatScreen extends StatelessWidget {
                               right: 1.w,
                               child: Obx(
                                 () => GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
                                   onTap: () {
                                     final limitReached = chatController
                                         .hasReachedMessageLimitForReceiver(

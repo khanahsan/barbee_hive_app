@@ -27,6 +27,7 @@ class _EmployeeCard2State extends State<EmployeeCard2>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: () {
         if (isExpanded) toggleExpanded();
       },

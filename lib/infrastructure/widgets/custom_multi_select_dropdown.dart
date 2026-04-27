@@ -61,9 +61,13 @@ class CustomMultiSelectDropdown extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () => _showMultiSelectDialog(context, state),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 16,
+                ),
                 decoration: BoxDecoration(
                   color: backgroundColor ?? AppColors.textFieldBackground,
                   borderRadius: BorderRadius.circular(borderRadius ?? 10),
@@ -77,15 +81,19 @@ class CustomMultiSelectDropdown extends StatelessWidget {
                   children: [
                     iconWidget,
                     Expanded(
-                      child: Obx(() => Text(
-                        selectedValues.isEmpty ? hint : selectedValues.join(', '),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: fontSize ?? 16.sp,
-                          color: textColor ?? AppColors.colorA3A3A3,
+                      child: Obx(
+                        () => Text(
+                          selectedValues.isEmpty
+                              ? hint
+                              : selectedValues.join(', '),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: fontSize ?? 16.sp,
+                            color: textColor ?? AppColors.colorA3A3A3,
+                          ),
                         ),
-                      )),
+                      ),
                     ),
                     const Icon(Icons.arrow_drop_down, color: Colors.grey),
                   ],
@@ -106,9 +114,9 @@ class CustomMultiSelectDropdown extends StatelessWidget {
   }
 
   void _showMultiSelectDialog(
-      BuildContext context,
-      FormFieldState<List<String>> state,
-      ) async {
+    BuildContext context,
+    FormFieldState<List<String>> state,
+  ) async {
     List<String> tempSelected = List.from(selectedValues);
 
     await showDialog(
@@ -123,36 +131,37 @@ class CustomMultiSelectDropdown extends StatelessWidget {
               title: Text(hint, style: TextStyle(color: dialogTextColor)),
               content: SingleChildScrollView(
                 child: Column(
-                  children: items.map((item) {
-                    bool isChecked = tempSelected.contains(item);
-                    return CheckboxListTile(
-                      title: Text(
-                        item,
-                        style: TextStyle(color: dialogTextColor),
-                      ),
-                      value: isChecked,
-                      activeColor: AppColors.colorFF8600,
-                      onChanged: (val) {
-                        setStateSB(() {
-                          if (val == true) {
-                            tempSelected.add(item);
-                          } else {
-                            tempSelected.remove(item);
-                          }
-                        });
-                      },
-                    );
-                  }).toList(),
+                  children:
+                      items.map((item) {
+                        bool isChecked = tempSelected.contains(item);
+                        return CheckboxListTile(
+                          title: Text(
+                            item,
+                            style: TextStyle(color: dialogTextColor),
+                          ),
+                          value: isChecked,
+                          activeColor: AppColors.colorFF8600,
+                          onChanged: (val) {
+                            setStateSB(() {
+                              if (val == true) {
+                                tempSelected.add(item);
+                              } else {
+                                tempSelected.remove(item);
+                              }
+                            });
+                          },
+                        );
+                      }).toList(),
                 ),
               ),
 
               actions: [
                 TextButton(
                   onPressed: () {
-              if (Navigator.of(context, rootNavigator: true).canPop()) {
-                Navigator.of(context, rootNavigator: true).pop();
-              }
-            },
+                    if (Navigator.of(context, rootNavigator: true).canPop()) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
+                  },
                   child: Text(
                     "Cancel",
                     style: TextStyle(color: dialogTextColor),
@@ -173,10 +182,7 @@ class CustomMultiSelectDropdown extends StatelessWidget {
                       Navigator.of(context, rootNavigator: true).pop();
                     }
                   },
-                  child: Text(
-                    "OK",
-                    style: TextStyle(color: dialogTextColor),
-                  ),
+                  child: Text("OK", style: TextStyle(color: dialogTextColor)),
                 ),
               ],
             );

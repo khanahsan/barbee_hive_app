@@ -34,6 +34,7 @@ class AgreeTermsTile extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           GestureDetector(
+            behavior: HitTestBehavior.translucent,
             onTap: onTap,
             child: Container(
               width: 23.w,
@@ -72,8 +73,9 @@ class AgreeTermsTile extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                       decoration: TextDecoration.underline,
                     ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = onTermsTap ?? _openTerms,
+                    recognizer:
+                        TapGestureRecognizer()
+                          ..onTap = onTermsTap ?? _openTerms,
                   ),
                 ],
               ),
@@ -89,10 +91,7 @@ class AgreeTermsTile extends StatelessWidget {
       '${ApiEndPoints.basePoint}${AppStrings.termsConditions}',
     );
 
-    final launched = await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    );
+    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
 
     if (!launched) {
       Utilities.showSnackBar(
@@ -102,5 +101,4 @@ class AgreeTermsTile extends StatelessWidget {
       );
     }
   }
-
 }

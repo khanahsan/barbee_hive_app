@@ -33,6 +33,7 @@ class _EmployeeCardState extends State<EmployeeCard>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: () {
         if (isExpanded) toggleExpanded();
       },
@@ -62,13 +63,16 @@ class _EmployeeCardState extends State<EmployeeCard>
 
                   SizedBox(width: 8.w),
 
-                  Expanded(   // 👈 THIS FIXES THE OVERFLOW
+                  Expanded(
+                    // 👈 THIS FIXES THE OVERFLOW
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Job Posted By",
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleSmall?.copyWith(
                             fontSize: 15.sp,
                             fontWeight: FontWeight.w500,
                             color: AppColors.colorFF8600,
@@ -77,7 +81,9 @@ class _EmployeeCardState extends State<EmployeeCard>
 
                         Text(
                           widget.job.employer.businessName,
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleSmall?.copyWith(
                             fontSize: 20.sp,
                             fontWeight: FontWeight.w500,
                             color: AppColors.colorFFFFFF,
@@ -96,11 +102,13 @@ class _EmployeeCardState extends State<EmployeeCard>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 8.w,
                 children: [
-                  *//*HexagonAvatar(
+                  */
+              /*HexagonAvatar(
                     imagePath: AppAssets.profileImage,
                     width: 70.w,
                     height: 80.h,
-                  ),*//*
+                  ),*/
+              /*
                   HexagonAvatar(
                     imagePath: widget.job.employer.profileImage ?? '',
                     // Pass empty string if null
@@ -170,13 +178,15 @@ class _EmployeeCardState extends State<EmployeeCard>
               ),
               infoRow(
                 iconPath: AppAssets.containerIcon,
-                rowTitle: "\$${widget.job.salaryRange.min}-\$${widget.job.salaryRange.max} per month",
+                rowTitle:
+                    "\$${widget.job.salaryRange.min}-\$${widget.job.salaryRange.max} per month",
                 // "\$${widget.job.salaryRange.min}-${widget.job.salaryRange.max} per month",
               ),
 
               infoRow(
                 iconPath: AppAssets.locationIcon,
-                rowTitle: '${widget.job.country?.name}, ${widget.job.state?.name}, ${widget.job.city}',
+                rowTitle:
+                    '${widget.job.country?.name}, ${widget.job.state?.name}, ${widget.job.city}',
               ),
 
               infoRow(
@@ -209,31 +219,32 @@ class _EmployeeCardState extends State<EmployeeCard>
                 ),
               CustomBtn(
                 buttonHeight: 60.h,
-                btnTitle: widget.job.isApplied == 1
-                    ? "Applied"
-                    : (isExpanded ? "Apply Now" : "View Detail"),
+                btnTitle:
+                    widget.job.isApplied == 1
+                        ? "Applied"
+                        : (isExpanded ? "Apply Now" : "View Detail"),
                 buttonWidth: double.infinity,
                 btnBackgroundColor: AppColors.color101010,
                 borderColor: AppColors.colorFF8600,
                 borderWidth: 1.0,
                 btnTxtColor: AppColors.colorFFFFFF,
-                onPressed: widget.job.isApplied == 1
-                    ? () {} // keep disabled-like behavior while preventing tap
-                    : () {
-                  if (isExpanded) {
-                    Get.toNamed(
-                      Routes.APPLY_VIEW,
-                      arguments: {
-                        'jobId': widget.job.id,
-                        'profileImage': widget.job.image,
-                      },
-                    );
-                  } else {
-                    toggleExpanded();
-                  }
-                },
+                onPressed:
+                    widget.job.isApplied == 1
+                        ? () {} // keep disabled-like behavior while preventing tap
+                        : () {
+                          if (isExpanded) {
+                            Get.toNamed(
+                              Routes.APPLY_VIEW,
+                              arguments: {
+                                'jobId': widget.job.id,
+                                'profileImage': widget.job.image,
+                              },
+                            );
+                          } else {
+                            toggleExpanded();
+                          }
+                        },
               ),
-
             ],
           ),
         ),

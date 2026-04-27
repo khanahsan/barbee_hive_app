@@ -33,6 +33,7 @@ class MyApplicationsScreen extends GetView<MyApplicationsController> {
           showHexagon: true,
           actions: [
             GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () async {
                 await Get.toNamed(Routes.notificationsScreen);
               },
@@ -70,6 +71,7 @@ class MyApplicationsScreen extends GetView<MyApplicationsController> {
                 fit: BoxFit.scaleDown,
               ),
               suffixIcon: GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () {
                   showDialog(
                     context: context,
@@ -93,19 +95,28 @@ class MyApplicationsScreen extends GetView<MyApplicationsController> {
                         selectedJobType: controller.selectedJobType,
 
                         /// Callbacks
-                        onCloseTap: (){
-                          if (Navigator.of(context, rootNavigator: true).canPop()) {
+                        onCloseTap: () {
+                          if (Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).canPop()) {
                             Navigator.of(context, rootNavigator: true).pop();
                           }
                         },
-                        onDone: (){
-                          if (Navigator.of(context, rootNavigator: true).canPop()) {
+                        onDone: () {
+                          if (Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).canPop()) {
                             Navigator.of(context, rootNavigator: true).pop();
                           }
                           controller.applyFilters();
                         },
-                        onClear:(){
-                          if (Navigator.of(context, rootNavigator: true).canPop()) {
+                        onClear: () {
+                          if (Navigator.of(
+                            context,
+                            rootNavigator: true,
+                          ).canPop()) {
                             Navigator.of(context, rootNavigator: true).pop();
                           }
                           controller.clearFilters();

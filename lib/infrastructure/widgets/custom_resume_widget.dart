@@ -34,6 +34,7 @@ class _CustomResumeWidgetState extends State<CustomResumeWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: _pickFile,
       child: DottedBorder(
         options: RoundedRectDottedBorderOptions(
@@ -55,9 +56,9 @@ class _CustomResumeWidgetState extends State<CustomResumeWidget> {
             valueListenable: fileName,
             builder: (_, value, __) {
               final displayText =
-              (value == null || value.isEmpty)
-                  ? "Upload Resume/Certification"
-                  : value;
+                  (value == null || value.isEmpty)
+                      ? "Upload Resume/Certification"
+                      : value;
 
               return CustomText(
                 title: displayText,

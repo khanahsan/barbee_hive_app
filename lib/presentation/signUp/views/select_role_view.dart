@@ -150,6 +150,7 @@ class SelectRoleView extends StatelessWidget {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: GestureDetector(
+                              behavior: HitTestBehavior.translucent,
                               onTap: Get.back,
                               child: SvgPicture.asset(
                                 AppAssets.backIcon,
@@ -163,7 +164,9 @@ class SelectRoleView extends StatelessWidget {
                           // Center Title
                           Text(
                             'Create account',
-                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleSmall?.copyWith(
                               color: AppColors.colorFFFFFF,
                               fontSize: 25.sp,
                               fontWeight: FontWeight.w600,

@@ -131,6 +131,7 @@ class MessageScreen extends GetView<ChatController> {
     VoidCallback? onTap,
   }) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),

@@ -73,6 +73,8 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                         Align(
                                           alignment: Alignment.centerLeft,
                                           child: GestureDetector(
+                                            behavior:
+                                                HitTestBehavior.translucent,
                                             onTap: Get.back,
                                             child: SvgPicture.asset(
                                               AppAssets.backIcon,
@@ -442,6 +444,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                   /// DOB FIELD
                                   Obx(
                                     () => GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
                                       onTap: controller.pickDate,
                                       child: AbsorbPointer(
                                         child: _buildTextField(

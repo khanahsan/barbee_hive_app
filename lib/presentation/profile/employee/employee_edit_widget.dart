@@ -202,6 +202,7 @@ class EmployeeEditWidget extends GetView<ProfileController> {
 
               /// DOB FIELD
               GestureDetector(
+                behavior: HitTestBehavior.translucent,
                 onTap: () => controller.pickDate(),
                 child: AbsorbPointer(
                   child: _buildCustomTextField(

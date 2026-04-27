@@ -7,7 +7,6 @@ import '../constants/app_colors.dart';
 import '../constants/app_images.dart';
 import 'hexagon_clipper.dart';
 
-
 PreferredSizeWidget customAppbar({
   required BuildContext context,
   required VoidCallback leadingTapFunction,
@@ -19,7 +18,7 @@ PreferredSizeWidget customAppbar({
   List<Widget>? actions,
   bool? showHexagon = true,
   VoidCallback? hexagonTapFunction,
-  Widget? titleWidget,  // Accept custom widget for the title
+  Widget? titleWidget, // Accept custom widget for the title
 }) {
   return PreferredSize(
     preferredSize: Size.fromHeight(90.h),
@@ -38,6 +37,7 @@ PreferredSizeWidget customAppbar({
         spacing: 10.w,
         children: [
           GestureDetector(
+            behavior: HitTestBehavior.translucent,
             onTap: leadingTapFunction,
             child: _buildSvgPicture(
               iconPath: leadingIconPath ?? AppAssets.menuIcon,
@@ -47,6 +47,7 @@ PreferredSizeWidget customAppbar({
           ),
           if (showHexagon == true)
             GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: hexagonTapFunction?.call,
               child: HexagonAvatar(
                 imagePath: profileImagePath ?? '',
@@ -58,14 +59,16 @@ PreferredSizeWidget customAppbar({
         ],
       ).paddingSymmetric(horizontal: 15.w),
       leadingWidth: 115.w,
-      title: titleWidget ?? Text(
-        title,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-          color: AppColors.colorFFFFFF,
-          fontSize: 25.sp,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      title:
+          titleWidget ??
+          Text(
+            title,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              color: AppColors.colorFFFFFF,
+              fontSize: 25.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
       centerTitle: true,
       actionsPadding: EdgeInsets.symmetric(horizontal: 15.w),
       actions: actions,
@@ -102,6 +105,7 @@ PreferredSizeWidget customAppbar({
         spacing: 10.w,
         children: [
           GestureDetector(
+            behavior: HitTestBehavior.translucent,
             onTap: leadingTapFunction,
             child: _buildSvgPicture(
               iconPath: leadingIconPath ?? AppAssets.menuIcon,
@@ -111,6 +115,7 @@ PreferredSizeWidget customAppbar({
           ),
           if (showHexagon == true)
             GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: hexagonTapFunction?.call,
               child: HexagonAvatar(
                 imagePath: profileImagePath ?? '',

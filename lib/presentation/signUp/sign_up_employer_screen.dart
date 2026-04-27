@@ -74,6 +74,8 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                         Align(
                                           alignment: Alignment.centerLeft,
                                           child: GestureDetector(
+                                            behavior:
+                                                HitTestBehavior.translucent,
                                             onTap: Get.back,
                                             child: SvgPicture.asset(
                                               AppAssets.backIcon,
@@ -159,6 +161,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                       obscure:
                                           !controller.isPasswordVisible.value,
                                       suffix: GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
                                         onTap:
                                             controller.togglePasswordVisibility,
                                         child: Icon(
@@ -187,6 +190,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                               .isConfirmPasswordVisible
                                               .value,
                                       suffix: GestureDetector(
+                                        behavior: HitTestBehavior.translucent,
                                         onTap:
                                             controller
                                                 .toggleConfirmPasswordVisibility,

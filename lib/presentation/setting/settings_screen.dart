@@ -258,6 +258,7 @@ class SettingsScreen extends GetView<SettingController> {
     Color? textColor,
   }) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: onTap,
       child: Text(
         buttonText,

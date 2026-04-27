@@ -47,10 +47,7 @@ class SettingController extends GetxController {
       '${ApiEndPoints.basePoint}${AppStrings.communityGuidelines}',
     );
 
-    final launched = await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    );
+    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
 
     if (!launched) {
       Utilities.showSnackBar(
@@ -61,16 +58,12 @@ class SettingController extends GetxController {
     }
   }
 
-
   Future<void> openTerms() async {
     final uri = Uri.parse(
       '${ApiEndPoints.basePoint}${AppStrings.termsConditions}',
     );
 
-    final launched = await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication,
-    );
+    final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
 
     if (!launched) {
       Utilities.showSnackBar(
@@ -118,10 +111,11 @@ class SettingController extends GetxController {
     if (uid == null || uid.isEmpty) return;
 
     try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('chats')
-          .where('userIds', arrayContains: uid)
-          .get();
+      final querySnapshot =
+          await FirebaseFirestore.instance
+              .collection('chats')
+              .where('userIds', arrayContains: uid)
+              .get();
 
       final batch = FirebaseFirestore.instance.batch();
       for (final doc in querySnapshot.docs) {
@@ -267,7 +261,6 @@ class SettingController extends GetxController {
       //       isSuccess: false,
       //     );
       //   }
-
     } catch (e) {
       Utilities.showSnackBar(
         title: "Error",
@@ -279,7 +272,7 @@ class SettingController extends GetxController {
     }
   }
 
-/*  Future<void> deleteAccount() async {
+  /*  Future<void> deleteAccount() async {
     final password = passwordController.text.trim();
     if (password.isEmpty) {
       Utilities.showSnackBar(
@@ -395,6 +388,7 @@ class SettingController extends GetxController {
                 Align(
                   alignment: Alignment.topRight,
                   child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
                     onTap: () {
                       ctrl.passwordController.clear();
                       final ctx = Get.overlayContext;

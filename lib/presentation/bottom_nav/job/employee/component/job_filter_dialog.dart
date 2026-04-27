@@ -56,6 +56,7 @@ class JobFilterDialog extends GetView<JobController> {
                               fontWeight: FontWeight.w500,
                             ),
                             GestureDetector(
+                              behavior: HitTestBehavior.translucent,
                               onTap: () => Get.back<void>(),
                               child: const Icon(
                                 Icons.close,
@@ -223,7 +224,12 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import '../../../../../infrastructure/widgets/custom_btn.dart';
 
 class JobFilterDialog extends GetView<JobController> {
-  const JobFilterDialog({super.key, required this.onCloseTap, required this.onClear, required this.onDone});
+  const JobFilterDialog({
+    super.key,
+    required this.onCloseTap,
+    required this.onClear,
+    required this.onDone,
+  });
 
   final VoidCallback onDone;
   final VoidCallback onClear;
@@ -249,116 +255,126 @@ class JobFilterDialog extends GetView<JobController> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(15.r),
                 ),
-                child: controller.skills.isEmpty ||
-                    controller.experienceLevels.isEmpty ||
-                    controller.salaryTypes.isEmpty ||
-                    controller.jobTypes.isEmpty
-                    ? SizedBox(
-                  height: 150,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.colorFF8600,
-                    ),
-                  ),
-                )
-                    : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    /// Header with centered title & close icon
-                    Align(
-                      alignment: AlignmentGeometry.topRight,
-                      child: GestureDetector(
-                        onTap: onCloseTap,
-                        child: const Icon(
-                          Icons.close,
-                          color: AppColors.colorFF8600,
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: CustomText(
-                        title: "Search Filter",
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.color000000,
-                      ),
-                    ),
-                    SizedBox(height: 20.h),
-
-                    // Job Role Dropdown
-                    _buildDropdown(
-                      hint: "Job Role",
-                      iconPath: 'assets/icons/job_icon.svg',
-                      selectedValue: controller.selectedJobRole,
-                      items: controller.skills,
-                      onChanged: (val) =>
-                      controller.selectedJobRole.value = val ?? '',
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Experience Dropdown
-                    _buildDropdown(
-                      hint: "Experience",
-                      iconPath: 'assets/icons/experience_icon.svg',
-                      selectedValue: controller.selectedExperience,
-                      items: controller.experienceLevels,
-                      onChanged: (val) =>
-                      controller.selectedExperience.value = val ?? '',
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Salary Dropdown
-                    _buildDropdown(
-                      hint: "Salary",
-                      iconPath: 'assets/icons/salary_icon.svg',
-                      selectedValue: controller.selectedSalary,
-                      items: controller.salaryTypes,
-                      onChanged: (val) =>
-                      controller.selectedSalary.value = val ?? '',
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Job Type Dropdown
-                    _buildDropdown(
-                      hint: "Job Type",
-                      iconPath: 'assets/icons/job_icon.svg',
-                      selectedValue: controller.selectedJobType,
-                      items: controller.jobTypes,
-                      onChanged: (val) =>
-                      controller.selectedJobType.value = val ?? '',
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Buttons
-                    Row(
-                      spacing: 10.w,
-                      children: [
-                        Expanded(
-                          child: CustomBtn(
-                            borderRadius: 30,
-                            buttonHeight: 52.h,
-                            btnTitle: "Done",
-                            btnBackgroundColor: AppColors.colorFF8600,
-                            btnTxtColor: Colors.white,
-                            onPressed: onDone,
+                child:
+                    controller.skills.isEmpty ||
+                            controller.experienceLevels.isEmpty ||
+                            controller.salaryTypes.isEmpty ||
+                            controller.jobTypes.isEmpty
+                        ? SizedBox(
+                          height: 150,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.colorFF8600,
+                            ),
                           ),
+                        )
+                        : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            /// Header with centered title & close icon
+                            Align(
+                              alignment: AlignmentGeometry.topRight,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                onTap: onCloseTap,
+                                child: const Icon(
+                                  Icons.close,
+                                  color: AppColors.colorFF8600,
+                                ),
+                              ),
+                            ),
+                            Center(
+                              child: CustomText(
+                                title: "Search Filter",
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.color000000,
+                              ),
+                            ),
+                            SizedBox(height: 20.h),
+
+                            // Job Role Dropdown
+                            _buildDropdown(
+                              hint: "Job Role",
+                              iconPath: 'assets/icons/job_icon.svg',
+                              selectedValue: controller.selectedJobRole,
+                              items: controller.skills,
+                              onChanged:
+                                  (val) =>
+                                      controller.selectedJobRole.value =
+                                          val ?? '',
+                            ),
+                            const SizedBox(height: 10),
+
+                            // Experience Dropdown
+                            _buildDropdown(
+                              hint: "Experience",
+                              iconPath: 'assets/icons/experience_icon.svg',
+                              selectedValue: controller.selectedExperience,
+                              items: controller.experienceLevels,
+                              onChanged:
+                                  (val) =>
+                                      controller.selectedExperience.value =
+                                          val ?? '',
+                            ),
+                            const SizedBox(height: 10),
+
+                            // Salary Dropdown
+                            _buildDropdown(
+                              hint: "Salary",
+                              iconPath: 'assets/icons/salary_icon.svg',
+                              selectedValue: controller.selectedSalary,
+                              items: controller.salaryTypes,
+                              onChanged:
+                                  (val) =>
+                                      controller.selectedSalary.value =
+                                          val ?? '',
+                            ),
+                            const SizedBox(height: 10),
+
+                            // Job Type Dropdown
+                            _buildDropdown(
+                              hint: "Job Type",
+                              iconPath: 'assets/icons/job_icon.svg',
+                              selectedValue: controller.selectedJobType,
+                              items: controller.jobTypes,
+                              onChanged:
+                                  (val) =>
+                                      controller.selectedJobType.value =
+                                          val ?? '',
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Buttons
+                            Row(
+                              spacing: 10.w,
+                              children: [
+                                Expanded(
+                                  child: CustomBtn(
+                                    borderRadius: 30,
+                                    buttonHeight: 52.h,
+                                    btnTitle: "Done",
+                                    btnBackgroundColor: AppColors.colorFF8600,
+                                    btnTxtColor: Colors.white,
+                                    onPressed: onDone,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: CustomBtn(
+                                    borderRadius: 30,
+                                    buttonHeight: 52.h,
+                                    btnTitle: "Clear Filter",
+                                    btnBackgroundColor: Colors.white,
+                                    btnTxtColor: AppColors.colorFF8600,
+                                    borderColor: AppColors.colorFF8600,
+                                    borderWidth: 1.5,
+                                    onPressed: onClear,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          child: CustomBtn(
-                            borderRadius: 30,
-                            buttonHeight: 52.h,
-                            btnTitle: "Clear Filter",
-                            btnBackgroundColor: Colors.white,
-                            btnTxtColor: AppColors.colorFF8600,
-                            borderColor: AppColors.colorFF8600,
-                            borderWidth: 1.5,
-                            onPressed: onClear,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
               ),
             ),
           ),
@@ -388,5 +404,3 @@ class JobFilterDialog extends GetView<JobController> {
     );
   }
 }
-
-

@@ -141,6 +141,7 @@ class CustomDrawer extends GetView<CustomDrawerController> {
               child: SlideTransition(
                 position: controller.offsetAnimation,
                 child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: controller.toggleDrawer,
                   child: Align(
                     alignment: Alignment.centerRight,

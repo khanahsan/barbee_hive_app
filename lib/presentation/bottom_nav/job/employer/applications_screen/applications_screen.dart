@@ -19,13 +19,11 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
 
   const ApplicationsScreen({required this.jobId, super.key});
 
-
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchApplications(jobId);
     });
-
 
     void showFilterDialog(BuildContext context) {
       showDialog(
@@ -55,6 +53,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                     Align(
                       alignment: Alignment.topRight,
                       child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
                         onTap: () => Navigator.of(context).pop(),
                         child: Icon(
                           Icons.close,
@@ -184,9 +183,10 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                 filled: true,
                 hintText: "Search by Filters",
                 controller: controller.searchController,
-                onChanged: (value) =>
-                    controller.filterApplicationsByText(value),
+                onChanged:
+                    (value) => controller.filterApplicationsByText(value),
                 suffixIcon: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: () => showFilterDialog(context),
                   child: SvgPicture.asset(
                     AppAssets.searchFilterIcon,
@@ -232,8 +232,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                 )
               else
                 ListView.separated(
-                  separatorBuilder: (context, index) =>
-                      SizedBox(height: 15.h),
+                  separatorBuilder: (context, index) => SizedBox(height: 15.h),
                   itemCount: controller.filteredApplications.length,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -274,8 +273,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
             mainAxisSize: MainAxisSize.min,
             children: [
               CustomProfileImage(
-                imagePath:
-                    application.applicant.profileImage ?? '',
+                imagePath: application.applicant.profileImage ?? '',
                 width: 100.w,
                 height: 110.h,
                 borderColor: AppColors.colorFF8600,
@@ -386,16 +384,19 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                   SizedBox(
                     width: 150.w,
                     child: CustomText(
-                      title: application.applicant.skills != null && application.applicant.skills!.isNotEmpty
-                          ? application.applicant.skills!.map((skill) => skill.name).join(', ')
-                          : 'N/A',
+                      title:
+                          application.applicant.skills != null &&
+                                  application.applicant.skills!.isNotEmpty
+                              ? application.applicant.skills!
+                                  .map((skill) => skill.name)
+                                  .join(', ')
+                              : 'N/A',
                       fontSize: 14,
                       color: AppColors.colorFFFFFF,
                       fontWeight: FontWeight.w800,
                       textOverflow: TextOverflow.ellipsis,
                     ),
                   ),
-
 
                   CustomText(
                     title: '${application.yearsOfExperience} Years',
@@ -434,10 +435,11 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                   borderWidth: 1.0,
                   fontSize: 15.sp,
                   buttonHeight: 55.h,
-                  onPressed: () => Get.toNamed(
-                    Routes.applicantProfile,
-                    arguments: {'applicationData': application},
-                  ),
+                  onPressed:
+                      () => Get.toNamed(
+                        Routes.applicantProfile,
+                        arguments: {'applicationData': application},
+                      ),
 
                   // onTap:
                   //     () => Get.toNamed(

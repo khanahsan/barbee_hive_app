@@ -160,6 +160,7 @@ class SignInView extends GetView<SignInController> {
                                 fit: BoxFit.scaleDown,
                               ),
                               suffixIcon: GestureDetector(
+                                behavior: HitTestBehavior.translucent,
                                 onTap: controller.togglePasswordVisibility,
                                 child: Icon(
                                   controller.isObscured.value
@@ -204,6 +205,7 @@ class SignInView extends GetView<SignInController> {
                                 ),
                               ),
                               GestureDetector(
+                                behavior: HitTestBehavior.translucent,
                                 onTap: () {
                                   Get.toNamed(Routes.FORGOT_PASSWORD);
                                 },

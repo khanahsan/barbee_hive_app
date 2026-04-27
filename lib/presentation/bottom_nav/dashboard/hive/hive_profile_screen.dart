@@ -328,6 +328,7 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
         ),
         Expanded(
           child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
             onTap: () {
               if (isLocked) {
                 Utilities.showSnackBar(

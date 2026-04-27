@@ -73,14 +73,20 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                             hint: 'Select Job Role',
                             iconPath: AppAssets.personIcon,
                             selectedValue: controller.selectedSkill,
-                            items: controller.skills
-                                .map((e) => DropdownMenuItem(
-                              value: e.name,
-                              child: Text(e.name,
-                                  style:
-                                  const TextStyle(color: Colors.white)),
-                            ))
-                                .toList(),
+                            items:
+                                controller.skills
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e.name,
+                                        child: Text(
+                                          e.name,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
                             onChanged: controller.updateSkill,
                           ),
 
@@ -89,14 +95,20 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                             hint: 'Select Experience Level',
                             iconPath: AppAssets.experienceLevel,
                             selectedValue: controller.selectedExperienceLevel,
-                            items: controller.experienceLevels
-                                .map((e) => DropdownMenuItem(
-                              value: e.name,
-                              child: Text(e.name,
-                                  style:
-                                  const TextStyle(color: Colors.white)),
-                            ))
-                                .toList(),
+                            items:
+                                controller.experienceLevels
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e.name,
+                                        child: Text(
+                                          e.name,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
                             onChanged: controller.updateExperienceLevel,
                           ),
 
@@ -109,11 +121,15 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                                   hintText: 'Min Salary',
                                   controller: controller.minSalaryController,
                                   keyboardType: TextInputType.number,
-                                  prefixIcon: SvgPicture.asset(AppAssets.salary,
-                                      fit: BoxFit.scaleDown),
-                                  validator: (v) =>
-                                      FormValidators.validateSalary(
-                                          v, "Min Salary"),
+                                  prefixIcon: SvgPicture.asset(
+                                    AppAssets.salary,
+                                    fit: BoxFit.scaleDown,
+                                  ),
+                                  validator:
+                                      (v) => FormValidators.validateSalary(
+                                        v,
+                                        "Min Salary",
+                                      ),
                                 ),
                               ),
                               Expanded(
@@ -121,12 +137,16 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                                   hintText: 'Max Salary',
                                   controller: controller.maxSalaryController,
                                   keyboardType: TextInputType.number,
-                                  prefixIcon: SvgPicture.asset(AppAssets.salary,
-                                      fit: BoxFit.scaleDown),
-                                  validator: (v) =>
-                                      FormValidators.validateSalary(v,
-                                          "Max Salary",
-                                          isMinField: false),
+                                  prefixIcon: SvgPicture.asset(
+                                    AppAssets.salary,
+                                    fit: BoxFit.scaleDown,
+                                  ),
+                                  validator:
+                                      (v) => FormValidators.validateSalary(
+                                        v,
+                                        "Max Salary",
+                                        isMinField: false,
+                                      ),
                                 ),
                               ),
                             ],
@@ -134,26 +154,29 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
 
                           /// Salary Type
                           _dropdownField(
-                            validator: (value) =>
-                                FormValidators.validateRequired(
-                                    value, "Salary Type"),
+                            validator:
+                                (value) => FormValidators.validateRequired(
+                                  value,
+                                  "Salary Type",
+                                ),
                             hint: 'Select Salary Type',
                             iconPath: AppAssets.salaryLogo,
                             selectedValue: controller.selectedSalaryType,
                             onChanged: controller.updateSalaryType,
-                            items: controller.salaryTypes
-                                .map(
-                                  (exp) =>
-                                  DropdownMenuItem(
-                                    value: exp.name,
-                                    child: Text(
-                                      exp.name,
-                                      style: const TextStyle(
-                                          color: Colors.white),
-                                    ),
-                                  ),
-                            )
-                                .toList(),
+                            items:
+                                controller.salaryTypes
+                                    .map(
+                                      (exp) => DropdownMenuItem(
+                                        value: exp.name,
+                                        child: Text(
+                                          exp.name,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
                           ),
 
                           // Country
@@ -161,14 +184,20 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                             hint: 'Select Country',
                             iconPath: AppAssets.countryIcon,
                             selectedValue: controller.selectedCountry,
-                            items: controller.countries
-                                .map((e) => DropdownMenuItem(
-                              value: e.name,
-                              child: Text(e.name,
-                                  style:
-                                  const TextStyle(color: Colors.white)),
-                            ))
-                                .toList(),
+                            items:
+                                controller.countries
+                                    .map(
+                                      (e) => DropdownMenuItem(
+                                        value: e.name,
+                                        child: Text(
+                                          e.name,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
                             onChanged: controller.updateCountry,
                           ),
 
@@ -180,14 +209,20 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                                   hint: 'Select State',
                                   iconPath: AppAssets.stateIcon,
                                   selectedValue: controller.selectedState,
-                                  items: controller.states
-                                      .map((e) => DropdownMenuItem(
-                                    value: e.name,
-                                    child: Text(e.name,
-                                        style: const TextStyle(
-                                            color: Colors.white)),
-                                  ))
-                                      .toList(),
+                                  items:
+                                      controller.states
+                                          .map(
+                                            (e) => DropdownMenuItem(
+                                              value: e.name,
+                                              child: Text(
+                                                e.name,
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
                                   onChanged: controller.updateState,
                                 ),
                               ),
@@ -237,26 +272,37 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                           _textField(
                             hintText: 'Recruiter',
                             controller: controller.recruiterController,
-                            prefixIcon: SvgPicture.asset(AppAssets.personTwoIcon,
-                                fit: BoxFit.scaleDown),
-                            validator: (v) =>
-                                FormValidators.validateRequired(v, "Recruiter"),
+                            prefixIcon: SvgPicture.asset(
+                              AppAssets.personTwoIcon,
+                              fit: BoxFit.scaleDown,
+                            ),
+                            validator:
+                                (v) => FormValidators.validateRequired(
+                                  v,
+                                  "Recruiter",
+                                ),
                           ),
 
                           _textField(
                             hintText: controller.selectedImageName,
                             controller: TextEditingController(),
                             prefixIcon: SvgPicture.asset(
-                                AppAssets.imagePlusIcon,
-                                fit: BoxFit.scaleDown),
+                              AppAssets.imagePlusIcon,
+                              fit: BoxFit.scaleDown,
+                            ),
                             readOnly: true,
                             suffixIcon: GestureDetector(
+                              behavior: HitTestBehavior.translucent,
                               onTap: () => controller.pickImage(context),
                               child: Container(
                                 margin: EdgeInsets.symmetric(
-                                    vertical: 15.h, horizontal: 10.w),
+                                  vertical: 15.h,
+                                  horizontal: 10.w,
+                                ),
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 5.w, vertical: 5.h),
+                                  horizontal: 5.w,
+                                  vertical: 5.h,
+                                ),
                                 decoration: BoxDecoration(
                                   color: AppColors.grey,
                                   borderRadius: BorderRadius.circular(5.r),
@@ -264,8 +310,9 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                                 child: const Text(
                                   "Upload Image",
                                   style: TextStyle(
-                                      color: AppColors.colorFFFFFF,
-                                      fontSize: 12),
+                                    color: AppColors.colorFFFFFF,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
                             ),
@@ -274,27 +321,27 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                           _dropdownField(
                             validator:
                                 (value) => FormValidators.validateRequired(
-                              value,
-                              "Job Type",
-                            ),
+                                  value,
+                                  "Job Type",
+                                ),
                             hint: 'Job Type',
                             iconPath: AppAssets.cardIcon,
                             selectedValue: controller.selectedJobType,
                             onChanged: controller.updateJobType,
                             items:
-                            controller.jobTypes
-                                .map(
-                                  (job) => DropdownMenuItem(
-                                value: job.name,
-                                child: Text(
-                                  job.name,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            )
-                                .toList(),
+                                controller.jobTypes
+                                    .map(
+                                      (job) => DropdownMenuItem(
+                                        value: job.name,
+                                        child: Text(
+                                          job.name,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
                           ),
 
                           // Job Description
@@ -302,14 +349,17 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
                             hintText: 'Job Description',
                             controller: controller.jobDesController,
                             maxLines: 4,
-                            validator: (v) => FormValidators.validateRequired(
-                                v, "Job Description"),
+                            validator:
+                                (v) => FormValidators.validateRequired(
+                                  v,
+                                  "Job Description",
+                                ),
                           ),
                           SizedBox(height: 10.h),
 
                           // Submit Button
                           Obx(
-                                () => CustomBtn(
+                            () => CustomBtn(
                               btnTitle: 'Submit Now',
                               buttonHeight: 50.h,
                               btnBackgroundColor: AppColors.colorFF8600,
@@ -381,4 +431,3 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
     );
   }
 }
-

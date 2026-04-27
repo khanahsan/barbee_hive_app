@@ -208,6 +208,7 @@ class DashboardScreen extends GetView<DashboardController> {
           showActions: true,
           actions: [
             GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () async {
                 await Get.toNamed(Routes.notificationsScreen);
                 controller.count.value = 0;
@@ -257,6 +258,7 @@ class DashboardScreen extends GetView<DashboardController> {
             SizedBox(width: 15.w),
 
             GestureDetector(
+              behavior: HitTestBehavior.translucent,
               onTap: () {
                 _scaffoldKey.currentState?.openEndDrawer();
               },
@@ -508,6 +510,7 @@ class DashboardScreen extends GetView<DashboardController> {
                     LayoutId(
                       id: index,
                       child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
                         onTap: () async {
                           debugPrint('userIndex: ${users[index].id}');
                           try {
@@ -764,11 +767,11 @@ class DashboardScreen extends GetView<DashboardController> {
                           final user = entry.value;
 
                           return GestureDetector(
+                            behavior: HitTestBehavior.translucent,
                             onTap: () async {
                               try {
-                                final response = await ProfileApi.getUserProfile(
-                                  user.id,
-                                );
+                                final response =
+                                    await ProfileApi.getUserProfile(user.id);
 
                                 if (!response.status) {
                                   Utilities.showSnackBar(

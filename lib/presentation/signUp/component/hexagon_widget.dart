@@ -61,6 +61,7 @@ class HexagonAvatar extends StatelessWidget {
     final double resolvedHeight = height ?? resolvedWidth * 0.866;
 
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: onTap,
       child: ClipPath(
         clipper: HexagonClipper(),
@@ -137,7 +138,6 @@ class HexagonAvatar extends StatelessWidget {
   }
 }
 
-
 /*class HexagonProfilePhotoTile extends StatelessWidget {
   final File? selectedImage;
   final String? imageUrl;
@@ -159,6 +159,7 @@ class HexagonAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.translucent,
       onTap: onTap,
       child: Stack(
         alignment: Alignment.center,

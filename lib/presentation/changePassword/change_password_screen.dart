@@ -37,7 +37,8 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 /// CURRENT PASSWORD FIELD
-                  Obx(() => AppTextField(
+                Obx(
+                  () => AppTextField(
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 16.w,
                       vertical: 20.h,
@@ -55,6 +56,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                       fit: BoxFit.scaleDown,
                     ),
                     suffixIcon: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: controller.oldPasswordToggle,
                       child: Icon(
                         controller.isPasswordObscured.value
@@ -67,9 +69,10 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                     controller: controller.currentPassController,
                   ),
                 ),
-            
+
                 /// NEW PASSWORD FIELD
-                  Obx(() => AppTextField(
+                Obx(
+                  () => AppTextField(
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 16.w,
                       vertical: 20.h,
@@ -87,6 +90,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                       fit: BoxFit.scaleDown,
                     ),
                     suffixIcon: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: controller.newPasswordToggle,
                       child: Icon(
                         controller.isNewPasswordObscured.value
@@ -99,9 +103,10 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                     controller: controller.newPassController,
                   ),
                 ),
-            
+
                 /// CONFIRM PASSWORD FIELD
-                Obx(() => AppTextField(
+                Obx(
+                  () => AppTextField(
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 16.w,
                       vertical: 20.h,
@@ -114,15 +119,16 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                     filled: true,
                     fillColor: AppColors.color101010,
                     enabledBorderColor: Colors.transparent,
-                  isObscuredText: controller.isConfirmPasswordObscured.value,
+                    isObscuredText: controller.isConfirmPasswordObscured.value,
                     hintText: AppStrings.confirmPassword,
-                  focusNode: controller.confirmPassFocusNode,
+                    focusNode: controller.confirmPassFocusNode,
                     textInputAction: TextInputAction.done,
                     prefixIcon: SvgPicture.asset(
                       AppAssets.lockIcon,
                       fit: BoxFit.scaleDown,
                     ),
                     suffixIcon: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTap: controller.confirmPasswordToggle,
                       child: Icon(
                         controller.isConfirmPasswordObscured.value
@@ -135,7 +141,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                     controller: controller.confirmPassController,
                   ),
                 ),
-            
+
                 /// CHANGE PASS OPTION
                 Obx(
                   () => CustomBtn(
@@ -144,9 +150,7 @@ class ChangePasswordScreen extends GetView<ChangePasswordController> {
                     btnBackgroundColor: AppColors.colorFF8600,
                     btnTxtColor: AppColors.colorFFFFFF,
                     onPressed: () {
-
                       controller.changePassword();
-
                     },
                     isLoading: controller.isLoading.value,
                   ),

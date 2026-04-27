@@ -138,6 +138,7 @@ class CustomProfileImage extends StatelessWidget {
       bottom: height.h * 0.08,
       right: width.w * 0.65,
       child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: () => _showImagePickerOptions(context),
         child: ClipPath(
           clipper: HexagonClipper(),
@@ -292,6 +293,7 @@ class CustomProfileImage extends StatelessWidget {
     // Registration: whole avatar clickable
     if (wholeAvatarClickable) {
       return GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: () => _showImagePickerOptions(context),
         child: content,
       );

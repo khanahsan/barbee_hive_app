@@ -1,11 +1,13 @@
 class ApiEndPoints {
   /// Staging
-  static const String baseUrl = 'https://barbeehive.staging.pegasync.com/api/';
+  //static const String baseUrl = 'https://barbeehive.staging.pegasync.com/api/';
+  static const String baseUrl = 'https://barbeehive.sandbox.pegasync.com/api/';
 
   /// Live
   // static const String baseUrl = 'https://barbeehive.com/api/';
 
-  static const String basePoint = 'https://barbeehive.staging.pegasync.com/';
+  //static const String basePoint = 'https://barbeehive.staging.pegasync.com/';
+  static const String basePoint = 'https://barbeehive.sandbox.pegasync.com/';
 
   /// AUTH
   static const String login = 'login';
@@ -62,4 +64,8 @@ class ApiEndPoints {
   static const String unreadCount = 'notifications/unread-count';
   static const String getAllNotifications = 'notifications';
   static const String markAllAsRead = 'notifications/mark-all-read';
+
+  ///Boost
+  static const String activateBoost = 'boost/activate';
+  static const String finalizeBoost = 'boost/finalize';
 }

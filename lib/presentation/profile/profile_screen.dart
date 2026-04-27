@@ -10,7 +10,6 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 
 import '../../infrastructure/constants/app_colors.dart';
 import '../../infrastructure/constants/app_images.dart';
-import '../../infrastructure/navigation/routes.dart';
 import '../../infrastructure/widgets/custom_appbar.dart';
 import '../../infrastructure/widgets/custom_btn.dart';
 import 'employee/employee_edit_widget.dart';
@@ -306,15 +305,193 @@ class ProfileScreen extends GetView<ProfileController> {
                                       ],
 
                                           if (!controller.isEditing.value)
-                                            CustomBtn(
-                                              buttonHeight: 58.h,
-                                              btnTitle: 'Edit Profile',
-                                              btnBackgroundColor:
-                                                  AppColors.colorFF8600,
-                                              btnTxtColor: Colors.white,
-                                              onPressed: () {
-                                                controller.toggleEditing();
-                                              },
+                                            Column(
+                                              children: [
+                                                CustomBtn(
+                                                  buttonHeight: 58.h,
+                                                  btnTitle: 'Edit Profile',
+                                                  btnBackgroundColor:
+                                                      AppColors.colorFF8600,
+                                                  btnTxtColor: Colors.white,
+                                                  onPressed: () {
+                                                    controller.toggleEditing();
+                                                  },
+                                                ),
+                                                SizedBox(height: 14.h),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          14.r,
+                                                        ),
+                                                    gradient: LinearGradient(
+                                                      colors: [
+                                                        const Color(0xFF2E1A05),
+                                                        AppColors.color000000,
+                                                      ],
+                                                      begin:
+                                                          Alignment.topLeft,
+                                                      end:
+                                                          Alignment.bottomRight,
+                                                    ),
+                                                    border: Border.all(
+                                                      color:
+                                                          AppColors.colorFF8600,
+                                                      width: 1.2,
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: AppColors
+                                                            .colorFF8600
+                                                            .withOpacity(0.18),
+                                                        blurRadius: 18.r,
+                                                        offset: Offset(
+                                                          0,
+                                                          8.h,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: Material(
+                                                    color: Colors.transparent,
+                                                    child: Obx(
+                                                      () => InkWell(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              14.r,
+                                                            ),
+                                                        onTap:
+                                                            controller
+                                                                    .isBoostLoading
+                                                                    .value
+                                                                ? null
+                                                                : controller
+                                                                    .activateBoost,
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal:
+                                                                    18.w,
+                                                                vertical: 16.h,
+                                                              ),
+                                                          child: Row(
+                                                            children: [
+                                                              Container(
+                                                                width: 44.w,
+                                                                height: 44.h,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                      color: AppColors
+                                                                          .colorFF8600
+                                                                          .withOpacity(
+                                                                            0.14,
+                                                                          ),
+                                                                      shape: BoxShape
+                                                                          .circle,
+                                                                    ),
+                                                                child:
+                                                                    controller
+                                                                            .isBoostLoading
+                                                                            .value
+                                                                        ? Padding(
+                                                                          padding: EdgeInsets.all(
+                                                                            11.r,
+                                                                          ),
+                                                                          child: CircularProgressIndicator(
+                                                                            strokeWidth:
+                                                                                2.3,
+                                                                            valueColor: AlwaysStoppedAnimation(
+                                                                              AppColors.colorFF8600,
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                        : Icon(
+                                                                          Icons
+                                                                              .rocket_launch_rounded,
+                                                                          color:
+                                                                              AppColors.colorFF8600,
+                                                                          size:
+                                                                              22.sp,
+                                                                        ),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 14.w,
+                                                              ),
+                                                              Expanded(
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    CustomText(
+                                                                      title:
+                                                                          'Boost your profile',
+                                                                      color: AppColors
+                                                                          .colorFFFFFF,
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w700,
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          4.h,
+                                                                    ),
+                                                                    CustomText(
+                                                                      title:
+                                                                          controller.isBoostLoading.value
+                                                                              ? 'Processing boost activation...'
+                                                                              : 'Promote your profile for more visibility',
+                                                                      color: AppColors
+                                                                          .colorB1B1B1,
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              Container(
+                                                                padding:
+                                                                    EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          10.w,
+                                                                      vertical:
+                                                                          6.h,
+                                                                    ),
+                                                                decoration: BoxDecoration(
+                                                                  color:
+                                                                      AppColors
+                                                                          .colorFF8600,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        50.r,
+                                                                      ),
+                                                                ),
+                                                                child: CustomText(
+                                                                  title:
+                                                                      controller.isBoostLoading.value
+                                                                          ? 'Wait'
+                                                                          : 'Boost',
+                                                                  color: AppColors
+                                                                      .colorFFFFFF,
+                                                                  fontSize: 11,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           SizedBox(height: 20.h),
 

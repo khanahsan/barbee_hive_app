@@ -3,22 +3,24 @@ import 'dart:io';
 
 import 'package:barbee_hive_app/data/model/country_response.dart';
 import 'package:barbee_hive_app/data/model/city_response.dart';
+import 'package:barbee_hive_app/data/model/boost_response.dart';
 import 'package:barbee_hive_app/data/model/experience_level_response.dart';
 import 'package:barbee_hive_app/data/model/gender_response.dart';
 import 'package:barbee_hive_app/data/model/height_response.dart';
+import 'package:barbee_hive_app/infrastructure/services/stripe_service.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/customDrawer/controller/custom_drawer_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
-import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../data/api/auth_provider.dart';
+import '../../../data/api/boost/boost_api.dart';
 import '../../../data/api/profile/profile_api.dart';
 import '../../../data/model/color_response.dart' as colorModel;
 import '../../../data/model/state_response.dart';
@@ -34,6 +36,7 @@ class ProfileController extends GetxController {
   RxBool isDropdownLoading = false.obs;
   RxBool isUpdating = false.obs;
   RxBool isCitiesLoading = false.obs;
+  RxBool isBoostLoading = false.obs;
   RxInt currentUserId = 0.obs;
   RxInt currentUserRole = 0.obs;
   RxString userProfileImage = ''.obs;
@@ -517,6 +520,133 @@ class ProfileController extends GetxController {
   // ---------------- UI Helpers ----------------
   void showError(String title, String message) {
     Utilities.showSnackBar(title: title, message: message, isSuccess: false);
+  }
+
+  Future<bool> _processBoostPaymentIfRequired(BoostData? data) async {
+    if (data == null || data.paymentRequired != true) return true;
+
+    final clientSecret = data.clientSecret;
+
+    if (clientSecret == null || clientSecret.isEmpty) {
+      Utilities.showSnackBar(
+        title: "Payment Error",
+        message: "Payment details are missing. Please try again.",
+        isSuccess: false,
+      );
+      return false;
+    }
+
+    try {
+      if (Platform.isIOS) {
+        await StripeService.instance.initPaymentSheetIOS(
+          clientSecret: clientSecret,
+          merchantDisplayName: 'Barbee Hive',
+        );
+      } else {
+        await StripeService.instance.initPaymentSheetAndroid(
+          clientSecret: clientSecret,
+          merchantDisplayName: 'Barbee Hive',
+        );
+      }
+
+      final paymentSuccess =
+          await StripeService.instance.presentPaymentSheet();
+
+      if (!paymentSuccess) {
+        Utilities.showSnackBar(
+          title: "Payment",
+          message: "Payment was cancelled",
+          isSuccess: false,
+        );
+      }
+
+      return paymentSuccess;
+    } catch (e) {
+      Utilities.showSnackBar(
+        title: "Payment Error",
+        message: e.toString(),
+        isSuccess: false,
+      );
+      return false;
+    }
+  }
+
+  Future<void> activateBoost() async {
+    if (isBoostLoading.value) return;
+
+    try {
+      isBoostLoading.value = true;
+
+      final response = await BoostApi.activateBoost();
+
+      if (!response.status) {
+        throw Exception(response.message);
+      }
+
+      final paymentOk = await _processBoostPaymentIfRequired(response.data);
+      if (!paymentOk) return;
+
+      var successMessage = response.data?.infoMessage ?? response.message;
+
+      if (response.data?.paymentRequired == true) {
+        final paymentIntentId = response.data?.paymentIntentId;
+
+        if (paymentIntentId == null || paymentIntentId.isEmpty) {
+          Utilities.showSnackBar(
+            title: "Payment Error",
+            message: "Missing payment confirmation details.",
+            isSuccess: false,
+          );
+          return;
+        }
+
+        final finalizeResponse = await BoostApi.finalizeBoost(
+          paymentIntentId: paymentIntentId,
+        );
+
+        if (!finalizeResponse.status) {
+          Utilities.showSnackBar(
+            title: "Error",
+            message: finalizeResponse.message,
+            isSuccess: false,
+          );
+          return;
+        }
+
+        successMessage =
+            finalizeResponse.data?.infoMessage ?? finalizeResponse.message;
+      }
+
+      await fetchUserProfile(currentUserId.value);
+
+      if (Get.context == null) {
+        Utilities.showSnackBar(
+          title: "Success",
+          message: successMessage,
+          isSuccess: true,
+        );
+        return;
+      }
+
+      await Get.dialog(
+        CustomDialog(
+          title: "Congratulations",
+          subTitle: successMessage,
+          onDone: () {
+            Get.back();
+          },
+        ),
+        barrierDismissible: false,
+      );
+    } catch (e) {
+      Utilities.showSnackBar(
+        title: "Boost Error",
+        message: e.toString().replaceFirst("Exception: ", ""),
+        isSuccess: false,
+      );
+    } finally {
+      isBoostLoading.value = false;
+    }
   }
 
   // ---------------- Update Profile ----------------

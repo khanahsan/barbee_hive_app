@@ -72,7 +72,7 @@ class ChangePasswordController extends GetxController {
         final user = FirebaseAuth.instance.currentUser;
 
 
-
+        debugPrint('user.email!: ${user!.email}');
         if (user != null) {
           final cred = EmailAuthProvider.credential(
             email: user.email!,
@@ -87,9 +87,10 @@ class ChangePasswordController extends GetxController {
             // 3) Now Firebase allows changing password
             await user.updatePassword(newPassController.text.trim());
           } catch (e) {
+            debugPrint('error: $e');
             Utilities.showSnackBar(
               title: "Firebase Error",
-              message: "Invalid current password for Firebase.",
+              message: "$e Invalid current password for Firebase.",
               isSuccess: false,
             );
             return;

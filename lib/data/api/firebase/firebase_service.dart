@@ -42,7 +42,8 @@ class FirebaseService {
 
   // Detect staging from the configured API base URL so Firestore user metadata
   // can follow the same environment without introducing a separate flag.
-  static bool get isStagingEnvironment => ApiEndPoints.baseUrl.contains('.staging.');
+  //static bool get isStagingEnvironment => ApiEndPoints.baseUrl.contains('.staging.');
+  static bool get isStagingEnvironment => ApiEndPoints.baseUrl.contains('.sandbox.');
 
   // Only email/password flows should write a staging-marked email to Firestore.
   static String firestoreEmailForEmailPasswordFlow(String email) {
@@ -68,14 +69,16 @@ class FirebaseService {
     final localPart = email.substring(0, atIndex);
     final domain = email.substring(atIndex + 1);
 
-    if (localPart.endsWith('.staging')) {
+    if (localPart.endsWith('.sandbox')) {
+   // if (localPart.endsWith('.staging')) {
       print(
         '### FirebaseService.firestoreEmailForEmailPasswordFlow returning original email because it already contains the staging suffix',
       );
       return email;
     }
 
-    final transformedEmail = '$localPart.staging@$domain';
+   // final transformedEmail = '$localPart.staging@$domain';
+    final transformedEmail = '$localPart.sandbox@$domain';
     print('### FirebaseService.firestoreEmailForEmailPasswordFlow transformed email: $transformedEmail');
 
     return transformedEmail;

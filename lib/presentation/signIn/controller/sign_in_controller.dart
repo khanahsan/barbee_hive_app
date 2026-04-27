@@ -81,6 +81,8 @@ class SignInController extends GetxController {
         debugPrint("⚠️ Failed to get FCM token: $e");
         // Continue without FCM token if it fails
       }
+      debugPrint('Email login: ${FirebaseService.firestoreEmailForEmailPasswordFlow(email)}');
+
       final response = await AuthApi.login(
         ///emai check wrt to running environment
         FirebaseService.firestoreEmailForEmailPasswordFlow(email),
@@ -100,6 +102,7 @@ class SignInController extends GetxController {
         email: FirebaseService.firestoreEmailForEmailPasswordFlow(email),
         password: password,
       );
+      debugPrint('Email Firebase: ${FirebaseService.firestoreEmailForEmailPasswordFlow(email)}');
       final uid = firebaseCredential.user?.uid;
       if (uid != null && uid.isNotEmpty) {
         await FirebaseService.upsertUserInFirestore(

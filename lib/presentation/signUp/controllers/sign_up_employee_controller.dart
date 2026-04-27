@@ -382,10 +382,12 @@ class SignUpEmployeeController extends GetxController {
 
     try {
       // 2️⃣ Create Firebase Auth User
+      debugPrint('emailController.text.trim(): ${emailController.text.trim()}');
       final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: FirebaseService.firestoreEmailForEmailPasswordFlow(emailController.text.trim()),
         password: passwordController.text.trim(),
       );
+      debugPrint('email: ${FirebaseService.firestoreEmailForEmailPasswordFlow(emailController.text.trim())}');
       final uid = userCredential.user!.uid;
 
       // 3️⃣ Register with Backend API

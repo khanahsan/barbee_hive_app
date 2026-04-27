@@ -201,334 +201,382 @@ class ProfileScreen extends GetView<ProfileController> {
                                 ),
                               ),
                               child: LayoutBuilder(
-                                builder: (context, constraints) => SingleChildScrollView(
-                                  physics: const AlwaysScrollableScrollPhysics(),
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      minHeight: constraints.maxHeight,
-                                    ),
-                                    child: Form(
-                                      key: controller.formKey,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                      Obx(() => CustomText(
-                                          title: controller.userName.value,
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w600,
-                                          color: AppColors.colorFFFFFF,
+                                builder:
+                                    (
+                                      context,
+                                      constraints,
+                                    ) => SingleChildScrollView(
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          minHeight: constraints.maxHeight,
                                         ),
-                                      ),
-                                      Obx(() {
-                                        if (controller.isEditing.value) {
-                                          return SizedBox.shrink();
-                                        }
-
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            // CustomText(
-                                            //   title: "Skills",
-                                            //   fontSize: 16,
-                                            //   fontWeight: FontWeight.w600,
-                                            //   color: AppColors.colorFF8600,
-                                            // ),
-                                            SizedBox(height: 10.h),
-                                            if (controller
-                                                .selectedSkills.isNotEmpty)
-                                              Wrap(
-                                                spacing: 8.w,
-                                                runSpacing: 8.h,
-                                                children:
-                                                    controller.selectedSkills
-                                                        .map(
-                                                          (skill) => Chip(
-                                                            label: Text(
-                                                              skill,
-                                                              style: TextStyle(
-                                                                color:
-                                                                    AppColors
-                                                                        .colorFFFFFF,
-                                                                fontSize: 12.sp,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                              ),
-                                                            ),
-                                                            backgroundColor:
-                                                                AppColors
-                                                                    .color262626,
-                                                            side: BorderSide(
-                                                              color: AppColors
-                                                                  .colorFF8600,
-                                                            ),
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                        20.r,
-                                                                      ),
-                                                            ),
-                                                            materialTapTargetSize:
-                                                                MaterialTapTargetSize
-                                                                    .shrinkWrap,
-                                                            visualDensity:
-                                                                VisualDensity
-                                                                    .compact,
-                                                          ),
-                                                        )
-                                                        .toList(),
-                                              )
-                                            else
-                                              CustomText(
-                                                title: "No skills selected",
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                                color: AppColors.colorFFFFFF,
-                                              ),
-                                          ],
-                                        );
-                                      }),
-                                      SizedBox(height: 40.h),
-                                      if (controller.isEditing.value) ...[
-                                        /// SHOW EMPLOYER EDIT PROFILE
-                                        if (controller.currentUserRole.value == 2)
-                                          EmployerEditWidget(),
-
-                                        /// SHOW EMPLOYEE EDIT PROFILE
-                                        if (controller.currentUserRole.value == 3)
-                                          EmployeeEditWidget(),
-
-                                        SizedBox(height: 5.h),
-                                      ],
-
-                                          if (!controller.isEditing.value)
-                                            Column(
-                                              children: [
-                                                CustomBtn(
-                                                  buttonHeight: 58.h,
-                                                  btnTitle: 'Edit Profile',
-                                                  btnBackgroundColor:
-                                                      AppColors.colorFF8600,
-                                                  btnTxtColor: Colors.white,
-                                                  onPressed: () {
-                                                    controller.toggleEditing();
-                                                  },
+                                        child: Form(
+                                          key: controller.formKey,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Obx(
+                                                () => CustomText(
+                                                  title:
+                                                      controller.userName.value,
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: AppColors.colorFFFFFF,
                                                 ),
-                                                SizedBox(height: 14.h),
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          14.r,
-                                                        ),
-                                                    gradient: LinearGradient(
-                                                      colors: [
-                                                        const Color(0xFF2E1A05),
-                                                        AppColors.color000000,
-                                                      ],
-                                                      begin:
-                                                          Alignment.topLeft,
-                                                      end:
-                                                          Alignment.bottomRight,
-                                                    ),
-                                                    border: Border.all(
-                                                      color:
-                                                          AppColors.colorFF8600,
-                                                      width: 1.2,
-                                                    ),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: AppColors
-                                                            .colorFF8600
-                                                            .withOpacity(0.18),
-                                                        blurRadius: 18.r,
-                                                        offset: Offset(
-                                                          0,
-                                                          8.h,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: Material(
-                                                    color: Colors.transparent,
-                                                    child: Obx(
-                                                      () => InkWell(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              14.r,
-                                                            ),
-                                                        onTap:
+                                              ),
+                                              Obx(() {
+                                                if (controller
+                                                    .isEditing
+                                                    .value) {
+                                                  return SizedBox.shrink();
+                                                }
+
+                                                return Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    // CustomText(
+                                                    //   title: "Skills",
+                                                    //   fontSize: 16,
+                                                    //   fontWeight: FontWeight.w600,
+                                                    //   color: AppColors.colorFF8600,
+                                                    // ),
+                                                    SizedBox(height: 10.h),
+                                                    if (controller
+                                                        .selectedSkills
+                                                        .isNotEmpty)
+                                                      Wrap(
+                                                        spacing: 8.w,
+                                                        runSpacing: 8.h,
+                                                        children:
                                                             controller
-                                                                    .isBoostLoading
-                                                                    .value
-                                                                ? null
-                                                                : controller
-                                                                    .activateBoost,
-                                                        child: Padding(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal:
-                                                                    18.w,
-                                                                vertical: 16.h,
-                                                              ),
-                                                          child: Row(
-                                                            children: [
-                                                              Container(
-                                                                width: 44.w,
-                                                                height: 44.h,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                      color: AppColors
-                                                                          .colorFF8600
-                                                                          .withOpacity(
-                                                                            0.14,
-                                                                          ),
-                                                                      shape: BoxShape
-                                                                          .circle,
+                                                                .selectedSkills
+                                                                .map(
+                                                                  (
+                                                                    skill,
+                                                                  ) => Chip(
+                                                                    label: Text(
+                                                                      skill,
+                                                                      style: TextStyle(
+                                                                        color:
+                                                                            AppColors.colorFFFFFF,
+                                                                        fontSize:
+                                                                            12.sp,
+                                                                        fontWeight:
+                                                                            FontWeight.w600,
+                                                                      ),
                                                                     ),
-                                                                child:
-                                                                    controller
-                                                                            .isBoostLoading
-                                                                            .value
-                                                                        ? Padding(
-                                                                          padding: EdgeInsets.all(
-                                                                            11.r,
+                                                                    backgroundColor:
+                                                                        AppColors
+                                                                            .color262626,
+                                                                    side: BorderSide(
+                                                                      color:
+                                                                          AppColors
+                                                                              .colorFF8600,
+                                                                    ),
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                            20.r,
                                                                           ),
-                                                                          child: CircularProgressIndicator(
-                                                                            strokeWidth:
-                                                                                2.3,
-                                                                            valueColor: AlwaysStoppedAnimation(
-                                                                              AppColors.colorFF8600,
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                        : Icon(
-                                                                          Icons
-                                                                              .rocket_launch_rounded,
-                                                                          color:
-                                                                              AppColors.colorFF8600,
-                                                                          size:
-                                                                              22.sp,
-                                                                        ),
+                                                                    ),
+                                                                    materialTapTargetSize:
+                                                                        MaterialTapTargetSize
+                                                                            .shrinkWrap,
+                                                                    visualDensity:
+                                                                        VisualDensity
+                                                                            .compact,
+                                                                  ),
+                                                                )
+                                                                .toList(),
+                                                      )
+                                                    else
+                                                      CustomText(
+                                                        title:
+                                                            "No skills selected",
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            AppColors
+                                                                .colorFFFFFF,
+                                                      ),
+                                                  ],
+                                                );
+                                              }),
+                                              SizedBox(height: 40.h),
+                                              if (controller
+                                                  .isEditing
+                                                  .value) ...[
+                                                /// SHOW EMPLOYER EDIT PROFILE
+                                                if (controller
+                                                        .currentUserRole
+                                                        .value ==
+                                                    2)
+                                                  EmployerEditWidget(),
+
+                                                /// SHOW EMPLOYEE EDIT PROFILE
+                                                if (controller
+                                                        .currentUserRole
+                                                        .value ==
+                                                    3)
+                                                  EmployeeEditWidget(),
+
+                                                SizedBox(height: 5.h),
+                                              ],
+
+                                              if (!controller.isEditing.value)
+                                                Column(
+                                                  children: [
+                                                    CustomBtn(
+                                                      buttonHeight: 58.h,
+                                                      btnTitle: 'Edit Profile',
+                                                      btnBackgroundColor:
+                                                          AppColors.colorFF8600,
+                                                      btnTxtColor: Colors.white,
+                                                      onPressed: () {
+                                                        controller
+                                                            .toggleEditing();
+                                                      },
+                                                    ),
+                                                    if (controller
+                                                            .currentUserRole
+                                                            .value ==
+                                                        3) ...[
+                                                      SizedBox(height: 14.h),
+                                                      Container(
+                                                        decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                14.r,
                                                               ),
-                                                              SizedBox(
-                                                                width: 14.w,
+                                                          gradient: LinearGradient(
+                                                            colors: [
+                                                              const Color(
+                                                                0xFF2E1A05,
                                                               ),
-                                                              Expanded(
-                                                                child: Column(
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
+                                                              AppColors
+                                                                  .color000000,
+                                                            ],
+                                                            begin:
+                                                                Alignment
+                                                                    .topLeft,
+                                                            end:
+                                                                Alignment
+                                                                    .bottomRight,
+                                                          ),
+                                                          border: Border.all(
+                                                            color:
+                                                                AppColors
+                                                                    .colorFF8600,
+                                                            width: 1.2,
+                                                          ),
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: AppColors
+                                                                  .colorFF8600
+                                                                  .withOpacity(
+                                                                    0.18,
+                                                                  ),
+                                                              blurRadius: 18.r,
+                                                              offset: Offset(
+                                                                0,
+                                                                8.h,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        child: Material(
+                                                          color:
+                                                              Colors
+                                                                  .transparent,
+                                                          child: Obx(() {
+                                                            final isLoading =
+                                                                controller
+                                                                    .isBoostLoading
+                                                                    .value;
+                                                            final hasActiveBoost =
+                                                                controller
+                                                                    .hasActiveBoost;
+
+                                                            return InkWell(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    14.r,
+                                                                  ),
+                                                              onTap:
+                                                                  isLoading
+                                                                      ? null
+                                                                      : controller
+                                                                          .activateBoost,
+                                                              child: Padding(
+                                                                padding:
+                                                                    EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          18.w,
+                                                                      vertical:
+                                                                          16.h,
+                                                                    ),
+                                                                child: Row(
                                                                   children: [
-                                                                    CustomText(
-                                                                      title:
-                                                                          'Boost your profile',
-                                                                      color: AppColors
-                                                                          .colorFFFFFF,
-                                                                      fontSize:
-                                                                          16,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w700,
+                                                                    Container(
+                                                                      width:
+                                                                          44.w,
+                                                                      height:
+                                                                          44.h,
+                                                                      decoration: BoxDecoration(
+                                                                        color: AppColors
+                                                                            .colorFF8600
+                                                                            .withOpacity(
+                                                                              0.14,
+                                                                            ),
+                                                                        shape:
+                                                                            BoxShape.circle,
+                                                                      ),
+                                                                      child:
+                                                                          isLoading
+                                                                              ? Padding(
+                                                                                padding: EdgeInsets.all(
+                                                                                  11.r,
+                                                                                ),
+                                                                                child: CircularProgressIndicator(
+                                                                                  strokeWidth:
+                                                                                      2.3,
+                                                                                  valueColor: AlwaysStoppedAnimation(
+                                                                                    AppColors.colorFF8600,
+                                                                                  ),
+                                                                                ),
+                                                                              )
+                                                                              : Icon(
+                                                                                hasActiveBoost
+                                                                                    ? Icons.timer_rounded
+                                                                                    : Icons.rocket_launch_rounded,
+                                                                                color:
+                                                                                    AppColors.colorFF8600,
+                                                                                size:
+                                                                                    22.sp,
+                                                                              ),
                                                                     ),
                                                                     SizedBox(
-                                                                      height:
-                                                                          4.h,
+                                                                      width:
+                                                                          14.w,
                                                                     ),
-                                                                    CustomText(
-                                                                      title:
-                                                                          controller.isBoostLoading.value
-                                                                              ? 'Processing boost activation...'
-                                                                              : 'Promote your profile for more visibility',
-                                                                      color: AppColors
-                                                                          .colorB1B1B1,
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w500,
+                                                                    Expanded(
+                                                                      child: Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          CustomText(
+                                                                            title:
+                                                                                hasActiveBoost
+                                                                                    ? 'You already got boost'
+                                                                                    : 'Boost your profile',
+                                                                            color:
+                                                                                AppColors.colorFFFFFF,
+                                                                            fontSize:
+                                                                                16,
+                                                                            fontWeight:
+                                                                                FontWeight.w700,
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height:
+                                                                                4.h,
+                                                                          ),
+                                                                          CustomText(
+                                                                            title:
+                                                                                isLoading
+                                                                                    ? 'Processing boost activation...'
+                                                                                    : hasActiveBoost
+                                                                                    ? 'Time left: ${controller.boostRemainingText}'
+                                                                                    : 'Promote your profile for more visibility',
+                                                                            color:
+                                                                                AppColors.colorB1B1B1,
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontWeight:
+                                                                                FontWeight.w500,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    Container(
+                                                                      padding: EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            10.w,
+                                                                        vertical:
+                                                                            6.h,
+                                                                      ),
+                                                                      decoration: BoxDecoration(
+                                                                        color:
+                                                                            AppColors.colorFF8600,
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                              50.r,
+                                                                            ),
+                                                                      ),
+                                                                      child: CustomText(
+                                                                        title:
+                                                                            isLoading
+                                                                                ? 'Wait'
+                                                                                : hasActiveBoost
+                                                                                ? 'Active'
+                                                                                : 'Boost',
+                                                                        color:
+                                                                            AppColors.colorFFFFFF,
+                                                                        fontSize:
+                                                                            11,
+                                                                        fontWeight:
+                                                                            FontWeight.w700,
+                                                                      ),
                                                                     ),
                                                                   ],
                                                                 ),
                                                               ),
-                                                              Container(
-                                                                padding:
-                                                                    EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          10.w,
-                                                                      vertical:
-                                                                          6.h,
-                                                                    ),
-                                                                decoration: BoxDecoration(
-                                                                  color:
-                                                                      AppColors
-                                                                          .colorFF8600,
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        50.r,
-                                                                      ),
-                                                                ),
-                                                                child: CustomText(
-                                                                  title:
-                                                                      controller.isBoostLoading.value
-                                                                          ? 'Wait'
-                                                                          : 'Boost',
-                                                                  color: AppColors
-                                                                      .colorFFFFFF,
-                                                                  fontSize: 11,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
+                                                            );
+                                                          }),
                                                         ),
                                                       ),
-                                                    ),
-                                                  ),
+                                                    ],
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
-                                          SizedBox(height: 20.h),
+                                              SizedBox(height: 20.h),
 
-                                      // Obx(
-                                      //   () => CustomBtn(
-                                      //     buttonHeight: 58.h,
-                                      //     btnTitle:
-                                      //         controller.isEditing.value == true
-                                      //             ? "Submit Now"
-                                      //             : 'Edit Profile',
-                                      //     btnBackgroundColor:
-                                      //         AppColors.colorFF8600,
-                                      //     btnTxtColor: Colors.white,
-                                      //     // width: double.infinity,
-                                      //     onPressed: () {
-                                      //       log(
-                                      //         "BUTTON PRESSED ${!controller.isEditing.value}",
-                                      //       );
-                                      //
-                                      //       if (!controller.isEditing.value) {
-                                      //         controller.toggleEditing();
-                                      //         return;
-                                      //       }
-                                      //
-                                      //       if (controller.formKey.currentState!
-                                      //           .validate()) {
-                                      //         log("Calling updateUserProfile()");
-                                      //         controller.updateUserProfile();
-                                      //       }
-                                      //     },
-                                      //   ),
-                                      // ),
-                                        ],
+                                              // Obx(
+                                              //   () => CustomBtn(
+                                              //     buttonHeight: 58.h,
+                                              //     btnTitle:
+                                              //         controller.isEditing.value == true
+                                              //             ? "Submit Now"
+                                              //             : 'Edit Profile',
+                                              //     btnBackgroundColor:
+                                              //         AppColors.colorFF8600,
+                                              //     btnTxtColor: Colors.white,
+                                              //     // width: double.infinity,
+                                              //     onPressed: () {
+                                              //       log(
+                                              //         "BUTTON PRESSED ${!controller.isEditing.value}",
+                                              //       );
+                                              //
+                                              //       if (!controller.isEditing.value) {
+                                              //         controller.toggleEditing();
+                                              //         return;
+                                              //       }
+                                              //
+                                              //       if (controller.formKey.currentState!
+                                              //           .validate()) {
+                                              //         log("Calling updateUserProfile()");
+                                              //         controller.updateUserProfile();
+                                              //       }
+                                              //     },
+                                              //   ),
+                                              // ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
                               ),
                             ),
                           ),
@@ -567,8 +615,8 @@ class ProfileScreen extends GetView<ProfileController> {
                         ],
                       ),
                     ),
-                    ],
-                  ).paddingOnly(top: 25.h),
+                  ],
+                ).paddingOnly(top: 25.h),
       ),
     );
   }

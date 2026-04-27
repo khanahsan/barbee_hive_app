@@ -42,6 +42,7 @@ class ForgetPasswordController extends GetxController {
       final status = response['status'] as bool; // Status is a boolean
       final message = response['message'] as String;
       print('Forgot Password Response: status=$status, message=$message');
+      print('Forgot Password Response: ${email}');
       fPasswordIsLoading.value = false;
       if (status) {
         print('Status is true, showing dialog');

@@ -46,9 +46,7 @@ class InitialBindings implements Bindings {
       fenix: true,
     );
     Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
-    // Keep SignInController alive across route changes to avoid disposed TextEditingController usage.
-    // Get.put<SignInController>(SignInController(), permanent: true);
-    Get.lazyPut<SignInController>(() => SignInController());
+    Get.put<SignInController>(SignInController(), permanent: true);
     Get.lazyPut<ChangePasswordController>(() => ChangePasswordController());
     Get.lazyPut<SignUpEmployeeController>(() => SignUpEmployeeController());
     Get.lazyPut<SplashController>(() => SplashController());

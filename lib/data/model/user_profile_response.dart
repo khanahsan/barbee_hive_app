@@ -138,6 +138,7 @@ class Employee {
   final bool isAvailable;
   final List<Skill> skills;
   final String? resumePath;
+  final EmployeeBoost? boost;
 
   Employee({
     required this.name,
@@ -155,6 +156,7 @@ class Employee {
     required this.isAvailable,
     required this.skills,
     this.resumePath,
+    this.boost,
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) {
@@ -187,6 +189,42 @@ class Employee {
               ? List<Skill>.from(json['skills'].map((x) => Skill.fromJson(x)))
               : [],
       resumePath: json['resume_path'],
+      boost:
+          json['boost'] is Map<String, dynamic>
+              ? EmployeeBoost.fromJson(json['boost'] as Map<String, dynamic>)
+              : null,
+    );
+  }
+}
+
+class EmployeeBoost {
+  final int id;
+  final int userId;
+  final int employeeId;
+  final DateTime? activatedAt;
+  final DateTime? expiresAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  EmployeeBoost({
+    required this.id,
+    required this.userId,
+    required this.employeeId,
+    this.activatedAt,
+    this.expiresAt,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory EmployeeBoost.fromJson(Map<String, dynamic> json) {
+    return EmployeeBoost(
+      id: json['id'] ?? 0,
+      userId: json['user_id'] ?? 0,
+      employeeId: json['employee_id'] ?? 0,
+      activatedAt: DateTime.tryParse(json['activated_at']?.toString() ?? ''),
+      expiresAt: DateTime.tryParse(json['expires_at']?.toString() ?? ''),
+      createdAt: DateTime.tryParse(json['created_at']?.toString() ?? ''),
+      updatedAt: DateTime.tryParse(json['updated_at']?.toString() ?? ''),
     );
   }
 }
@@ -226,9 +264,9 @@ class Employer {
       address: json['address'] ?? '',
       businessTaxNumber: json['business_tax'] ?? '',
       skills:
-      json['skills'] != null
-          ? List<Skill>.from(json['skills'].map((x) => Skill.fromJson(x)))
-          : [],
+          json['skills'] != null
+              ? List<Skill>.from(json['skills'].map((x) => Skill.fromJson(x)))
+              : [],
     );
   }
 }

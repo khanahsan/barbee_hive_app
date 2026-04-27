@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
@@ -37,6 +38,7 @@ class ProfileController extends GetxController {
   RxBool isUpdating = false.obs;
   RxBool isCitiesLoading = false.obs;
   RxBool isBoostLoading = false.obs;
+  Rx<Duration> boostRemaining = Duration.zero.obs;
   RxInt currentUserId = 0.obs;
   RxInt currentUserRole = 0.obs;
   RxString userProfileImage = ''.obs;
@@ -115,6 +117,7 @@ class ProfileController extends GetxController {
   RxInt currentSkillId = 0.obs;
 
   RxList<String> selectedSkills = <String>[].obs;
+  Timer? _boostCountdownTimer;
 
   RxString currentCountryName = "".obs;
   RxInt currentCountryId = 0.obs;
@@ -174,6 +177,7 @@ class ProfileController extends GetxController {
 
   @override
   void onClose() {
+    _boostCountdownTimer?.cancel();
     // Dispose controllers
     nameController.dispose();
     emailController.dispose();
@@ -196,18 +200,13 @@ class ProfileController extends GetxController {
 
   void _recomputeLoading() {
     isLoading.value =
-        isProfileLoading.value ||
-        isDropdownLoading.value ||
-        isUpdating.value;
+        isProfileLoading.value || isDropdownLoading.value || isUpdating.value;
   }
 
   // ---------------- Initialization ----------------
   Future<void> initController() async {
     getUserRole();
-    await Future.wait([
-      getUserIdAndFetchProfile(),
-      fetchProfileDropdowns(),
-    ]);
+    await Future.wait([getUserIdAndFetchProfile(), fetchProfileDropdowns()]);
   }
 
   Future<void> getUserIdAndFetchProfile() async {
@@ -237,11 +236,12 @@ class ProfileController extends GetxController {
       _recomputeLoading();
       final profile = await ProfileApi.getUserProfile(userId);
       userProfile.value = profile;
+      _syncBoostCountdown();
 
-      userName.value = isEmployer
-          ? userProfile.value?.data.employer?.businessName ?? ''
-          : userProfile.value?.data.employee?.name ?? '';
-
+      userName.value =
+          isEmployer
+              ? userProfile.value?.data.employer?.businessName ?? ''
+              : userProfile.value?.data.employee?.name ?? '';
 
       populateData();
     } catch (e) {
@@ -365,8 +365,6 @@ class ProfileController extends GetxController {
   bool get isEmployer => currentUserRole.value == 2;
 
   RxString userName = ''.obs;
-
-
 
   // String get currentUserSkill =>
   //     isEmployer
@@ -522,6 +520,57 @@ class ProfileController extends GetxController {
     Utilities.showSnackBar(title: title, message: message, isSuccess: false);
   }
 
+  bool get hasActiveBoost => boostRemaining.value > Duration.zero;
+
+  String get boostRemainingText {
+    final remaining = boostRemaining.value;
+    final hours = remaining.inHours;
+    final minutes = remaining.inMinutes.remainder(60);
+    final seconds = remaining.inSeconds.remainder(60);
+
+    if (hours > 0) {
+      return '${hours.toString().padLeft(2, '0')}h '
+          '${minutes.toString().padLeft(2, '0')}m '
+          '${seconds.toString().padLeft(2, '0')}s';
+    }
+
+    return '${minutes.toString().padLeft(2, '0')}m '
+        '${seconds.toString().padLeft(2, '0')}s';
+  }
+
+  void _syncBoostCountdown() {
+    _boostCountdownTimer?.cancel();
+    _updateBoostRemaining();
+
+    if (!hasActiveBoost) return;
+
+    _boostCountdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _updateBoostRemaining();
+      if (!hasActiveBoost) {
+        _boostCountdownTimer?.cancel();
+      }
+    });
+  }
+
+  void _updateBoostRemaining() {
+    final boost = userProfile.value?.data.employee?.boost;
+    final expiresAt = boost?.expiresAt;
+    final threeHourExpiry = boost?.activatedAt?.add(const Duration(hours: 3));
+    final effectiveExpiresAt =
+        threeHourExpiry != null &&
+                (expiresAt == null || expiresAt.isAfter(threeHourExpiry))
+            ? threeHourExpiry
+            : expiresAt;
+
+    if (effectiveExpiresAt == null) {
+      boostRemaining.value = Duration.zero;
+      return;
+    }
+
+    final remaining = effectiveExpiresAt.difference(DateTime.now());
+    boostRemaining.value = remaining.isNegative ? Duration.zero : remaining;
+  }
+
   Future<bool> _processBoostPaymentIfRequired(BoostData? data) async {
     if (data == null || data.paymentRequired != true) return true;
 
@@ -549,8 +598,7 @@ class ProfileController extends GetxController {
         );
       }
 
-      final paymentSuccess =
-          await StripeService.instance.presentPaymentSheet();
+      final paymentSuccess = await StripeService.instance.presentPaymentSheet();
 
       if (!paymentSuccess) {
         Utilities.showSnackBar(
@@ -573,6 +621,15 @@ class ProfileController extends GetxController {
 
   Future<void> activateBoost() async {
     if (isBoostLoading.value) return;
+
+    if (hasActiveBoost) {
+      Utilities.showSnackBar(
+        title: "Boost Active",
+        message: "You already have an active boost. $boostRemainingText left.",
+        isSuccess: true,
+      );
+      return;
+    }
 
     try {
       isBoostLoading.value = true;
@@ -749,7 +806,6 @@ class ProfileController extends GetxController {
         Get.find<DashboardController>().fetchUserProfile(),
         Get.find<DashboardController>().getUserLocationAndFetchDashboard(),
         Get.find<JobController>().loadUserProfile(),
-
       ]);
 
       // ========== 5️⃣ SUCCESS UI ==========
@@ -760,8 +816,6 @@ class ProfileController extends GetxController {
         message: response.message,
         isSuccess: true,
       );
-
-
     } catch (e) {
       debugPrint("Error updating profile: $e");
       showError("Error", "Something went wrong");

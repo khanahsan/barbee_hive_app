@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../data/api/authentication/auth_api.dart';
-import '../../../infrastructure/constants/app_colors.dart';
 
 class ChangePasswordController extends GetxController {
   final TextEditingController currentPassController = TextEditingController();
@@ -54,69 +51,72 @@ class ChangePasswordController extends GetxController {
 
 
   Future<void> changePassword() async {
-
     if (!formKey.currentState!.validate()) return;
     removeFocus();
 
     isLoading.value = true;
 
     try {
-      // 1) Update password in your backend API
-      final result = await AuthApi.changePassword(
-        currentPass: currentPassController.text.trim(),
-        newPass: newPassController.text.trim(),
-        confirmPass: confirmPassController.text.trim(),
-      );
+      final currentPassword = currentPassController.text.trim();
+      final newPassword = newPassController.text.trim();
+      final confirmPassword = confirmPassController.text.trim();
 
-      if (result['status'] == true) {
-        final user = FirebaseAuth.instance.currentUser;
-
-
-        debugPrint('user.email!: ${user!.email}');
-        if (user != null) {
-          final cred = EmailAuthProvider.credential(
-            email: user.email!,
-            password: currentPassController.text.trim(), // user's current password
-            // password: '1122334455', // user's current password
-          );
-
-          try {
-            // 2) Re-authenticate first
-            await user.reauthenticateWithCredential(cred);
-
-            // 3) Now Firebase allows changing password
-            await user.updatePassword(newPassController.text.trim());
-          } catch (e) {
-            debugPrint('error: $e');
-            Utilities.showSnackBar(
-              title: "Firebase Error",
-              message: "$e Invalid current password for Firebase.",
-              isSuccess: false,
-            );
-            return;
-          }
-        }
-
-
-        currentPassController.clear();
-        newPassController.clear();
-        confirmPassController.clear();
-
-         Get.back<void>();
-
-
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null || user.email == null || user.email!.isEmpty) {
         Utilities.showSnackBar(
-          title: "Success",
-          message: result['message'],
-          isSuccess: true,
-        );
-      } else {
-        Utilities.showSnackBar(
-          title: "Failed",
-          message: result['message'],
+          title: "Firebase Error",
+          message: "No Firebase user session found.",
           isSuccess: false,
         );
+        return;
       }
+
+      debugPrint('user.email!: ${user.email}');
+
+      final credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+
+      try {
+        await user.reauthenticateWithCredential(credential);
+        await user.updatePassword(newPassword);
+      } catch (e) {
+        debugPrint('error: $e');
+        Utilities.showSnackBar(
+          title: "Firebase Error",
+          message: "$e Invalid current password for Firebase.",
+          isSuccess: false,
+        );
+        return;
+      }
+
+      final result = await AuthApi.changePassword(
+        currentPass: currentPassword,
+        newPass: newPassword,
+        confirmPass: confirmPassword,
+      );
+
+      if (result['status'] != true) {
+        Utilities.showSnackBar(
+          title: "Backend Error",
+          message: result['message'] ?? 'Password change failed.',
+          isSuccess: false,
+        );
+        return;
+      }
+
+      currentPassController.clear();
+      newPassController.clear();
+      confirmPassController.clear();
+
+      Get.back<void>();
+
+      Utilities.showSnackBar(
+        title: "Success",
+        message: result['message'],
+        isSuccess: true,
+      );
     } catch (e) {
       Utilities.showSnackBar(
         title: "Error",

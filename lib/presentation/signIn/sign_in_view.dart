@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
-import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
@@ -59,7 +58,6 @@ class SignInView extends GetView<SignInController> {
               //   fontWeight: FontWeight.w700,
               //   color: AppColors.colorFF8600,
               // ).paddingSymmetric(horizontal: 20.w),
-
 
               /// SUB LABEL
               // CustomText(
@@ -294,14 +292,15 @@ class SignInView extends GetView<SignInController> {
                             // Continue with Apple button
                             Obx(
                               () => CustomBtn(
-                                isLoading: controller.isAppleSignInLoading.value,
+                                isLoading:
+                                    controller.isAppleSignInLoading.value,
                                 buttonHeight: 55.h,
                                 btnTitle: "Continue With Apple",
                                 btnBackgroundColor: AppColors.color000000,
                                 borderColor: AppColors.colorFFFFFF,
                                 btnTxtColor: AppColors.colorFFFFFF,
                                 iconPath: AppAssets.appleLogo,
-                                onPressed: controller.signInWithApple
+                                onPressed: controller.signInWithApple,
                               ),
                             ),
                           ],

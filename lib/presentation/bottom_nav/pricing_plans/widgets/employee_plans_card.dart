@@ -1,6 +1,4 @@
 /*
-import 'dart:developer';
-
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_button.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
@@ -162,7 +160,7 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
                 buttonTextSize: 16.sp,
                 buttonTextWeight: FontWeight.w600,
                 buttonColor: AppColors.colorFF8600,
-              ),*//*
+              ),*/ /*
 
           ],
         ),
@@ -218,9 +216,6 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
 }
 */
 
-
-import 'dart:developer';
-
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller/pricing_plans_controller.dart';
@@ -236,11 +231,7 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
   final SubscriptionPlan plan;
   final int index;
 
-  const EmployeePlansCard({
-    super.key,
-    required this.plan,
-    required this.index,
-  });
+  const EmployeePlansCard({super.key, required this.plan, required this.index});
 
   static const List<List<Color>> planGradients = [
     [AppColors.colorFF8600, AppColors.black],
@@ -294,11 +285,12 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
 
                 /// PLAN DURATION
                 CustomText(
-                  title: plan.durationDays == 0
-                      ? "For Free Users"
-                      : plan.durationDays == 30
-                      ? "Per Month"
-                      : "For ${plan.durationDisplay}",
+                  title:
+                      plan.durationDays == 0
+                          ? "For Free Users"
+                          : plan.durationDays == 30
+                          ? "Per Month"
+                          : "For ${plan.durationDisplay}",
                   fontSize: 16,
                   color: AppColors.colorFFFFFF,
                   fontWeight: FontWeight.w400,
@@ -317,27 +309,25 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
             SizedBox(height: 20.h),
 
             /// FREE PLAN FEATURES → BULLETS
-            if (plan.price == 0) ...[
+            /*if (plan.price == 0) ...[
               ...plan.features.map((text) => _buildBulletPoint(text, AppColors.colorFF8600 )),
               SizedBox(height: 20.h),
-            ],
+            ],*/
 
             /// PAID PLAN DESCRIPTION → COMMA BASED LOGIC
-            if (plan.price != 0) ...[
-              CustomText(
-                title: 'Description',
-                fontSize: 16,
-                color: primaryColor,
-                fontWeight: FontWeight.w500,
-              ),
-              SizedBox(height: 5.h),
+            //if (plan.price != 0) ...[
+            CustomText(
+              title: 'Description',
+              fontSize: 16,
+              color: primaryColor,
+              fontWeight: FontWeight.w500,
+            ),
+            SizedBox(height: 5.h),
 
-              ..._buildDescriptionByComma(
-                plan.features.isNotEmpty ? plan.features.first.toString() : '',
-              ),
+            ..._buildDescriptionByComma(plan.features.join(',')),
 
-              SizedBox(height: 10.h),
-            ],
+            SizedBox(height: 10.h),
+            // ],
 
             /// CTA BUTTON
             if (plan.price != 0) ...[
@@ -380,11 +370,7 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
       spacing: 8.w,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(
-          Icons.check,
-          color: color,
-          size: 23.sp,
-        ),
+        Icon(Icons.check, color: color, size: 23.sp),
         Expanded(
           child: CustomText(
             title: text,
@@ -399,11 +385,12 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
 
   /// PAID PLAN DESCRIPTION HANDLER (COMMA BASED)
   List<Widget> _buildDescriptionByComma(String description) {
-    final items = description
-        .split(',')
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
-        .toList();
+    final items =
+        description
+            .split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList();
 
     // Single item → normal text
     if (items.length <= 1) {
@@ -418,6 +405,8 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
     }
 
     // Multiple items → bullets
-    return items.map((item) => _buildBulletPoint(item, AppColors.colorB1B1B1)).toList();
+    return items
+        .map((item) => _buildBulletPoint(item, AppColors.colorB1B1B1))
+        .toList();
   }
 }

@@ -1,3 +1,5 @@
+import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
+import 'package:barbee_hive_app/infrastructure/services/subscription_feature_guard.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
@@ -85,10 +87,10 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                     .join(', ')
                 : 'N/A';
 
-        final expLevel = profile.experienceLevel.name ?? 'N/A';
-        final yearsExp = '${profile.yearsOfExperience ?? 'N/A'} Years';
-        final expectedSalary = '\$${profile.expectedSalary ?? 'N/A'}';
-        final jobType = profile.jobType.name ?? 'N/A';
+        final expLevel = profile.experienceLevel.name;
+        final yearsExp = '${profile.yearsOfExperience} Years';
+        final expectedSalary = '\$${profile.expectedSalary}';
+        final jobType = profile.jobType.name;
         final resume = profile.applicant.resumeUrl ?? '';
 
         return Stack(
@@ -214,6 +216,8 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
   }
 
   Widget _resumeRow(String value) {
+    final isLocked = !controller.canAccessApplicantResumeForCurrentRole;
+
     return Row(
       spacing: 1.5.w,
       children: [
@@ -228,8 +232,37 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
+              if (isLocked) {
+                Utilities.showSnackBar(
+                  title: 'Locked',
+                  message:
+                      'Resume/Certification is available for upgraded employer plans only.',
+                  isSuccess: false,
+                );
+                return;
+              }
+
               if (value.isNotEmpty) {
-                Get.to(() => CustomPdfView(pdfUrl: value));
+                switch (controller.resumeAdMode) {
+                  case ResumeAdMode.interstitial:
+                    AdsHelper().showInterstitialAd(
+                      onDismissed: () {
+                        Get.to(() => CustomPdfView(pdfUrl: value));
+                      },
+                      onFailedToShow: () {
+                        Get.to(() => CustomPdfView(pdfUrl: value));
+                      },
+                    );
+                    break;
+                  case ResumeAdMode.banner:
+                    Get.to(
+                      () => CustomPdfView(pdfUrl: value, showBannerAd: true),
+                    );
+                    break;
+                  case ResumeAdMode.none:
+                    Get.to(() => CustomPdfView(pdfUrl: value));
+                    break;
+                }
               } else {
                 Utilities.showSnackBar(
                   title: 'Error',
@@ -238,7 +271,11 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                 );
               }
             },
-            child: _infoTile("Click View", AppColors.color8690FF, true),
+            child: _infoTile(
+              isLocked ? "Locked" : "Click View",
+              isLocked ? AppColors.expiredBannerColor : AppColors.color8690FF,
+              true,
+            ),
           ),
         ),
       ],

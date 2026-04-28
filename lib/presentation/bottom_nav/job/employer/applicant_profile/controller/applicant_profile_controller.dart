@@ -1,19 +1,22 @@
-import 'package:barbee_hive_app/data/api/api_service.dart';
-import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
-import 'package:barbee_hive_app/data/model/applicant_profile_response.dart';
-import 'package:barbee_hive_app/infrastructure/utils/log_util.dart';
-import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
+import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
+import 'package:barbee_hive_app/infrastructure/helpers/shared_preference_helper.dart';
+import 'package:barbee_hive_app/infrastructure/services/current_user_subscription_controller.dart';
+import 'package:barbee_hive_app/infrastructure/services/subscription_feature_guard.dart';
 import 'package:get/get.dart';
 
 import '../../../../../../data/model/job_application_response.dart';
 
 class ApplicantProfileController extends GetxController {
+  final CurrentUserSubscriptionController currentUserSubscriptionController =
+      Get.find<CurrentUserSubscriptionController>();
+
   // final profile = Rxn<ApplicantProfileData>();
 
   final profile = Rxn<JobApplyData>();
 
   final isLoading = false.obs;
   final errorMessage = ''.obs;
+  final userRole = 0.obs;
 
   // @override
   // void onInit() {
@@ -26,15 +29,28 @@ class ApplicantProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    userRole.value =
+        SharedPreferenceHelper.getInt(SharedPrefKeys.userRole) ?? 0;
+    currentUserSubscriptionController.refresh();
+
     final data = Get.arguments?['applicationData'];
 
     if (data != null && data is JobApplyData) {
       profile.value = data; // Use passed data directly
-    } else {
-      final userId = Get.arguments?['userId'] ?? 38;
-      // fetchProfile(userId);
     }
   }
+
+  SubscriptionFeatureGuard get featureGuard => SubscriptionFeatureGuard(
+    subscription: currentUserSubscriptionController.currentSubscription,
+    userRole: userRole.value,
+  );
+
+  bool get canAccessApplicantResumeForCurrentRole =>
+      userRole.value == 2
+          ? featureGuard.canEmployerUsePremiumFeatures
+          : featureGuard.canEmployeeUsePremiumFeatures;
+
+  ResumeAdMode get resumeAdMode => featureGuard.resumeAdMode;
 
   // Future fetchProfile(int userId) async {
   //   isLoading.value = true;

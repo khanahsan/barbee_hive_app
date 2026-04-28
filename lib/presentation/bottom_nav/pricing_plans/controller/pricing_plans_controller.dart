@@ -242,6 +242,8 @@ class PricingPlansController extends GetxController {
       }
 
       if (purchaseStatus == PurchaseStatus.error) {
+        _clearPendingPurchase();
+        isApplying.value = false;
         Utilities.showSnackBar(
           title: 'Error',
           message: 'An error occurred during the purchase. Please try again.',
@@ -250,6 +252,8 @@ class PricingPlansController extends GetxController {
       }
 
       if (purchaseStatus == PurchaseStatus.canceled) {
+        _clearPendingPurchase();
+        isApplying.value = false;
         Utilities.showSnackBar(
           title: 'Purchase Canceled',
           message: 'The purchase was canceled.',
@@ -379,6 +383,7 @@ class PricingPlansController extends GetxController {
     try {
       if (plan.price == 0) {
         // await finalizeSubscription(planId: plan.id);
+        isApplying.value = false;
         return;
       }
 
@@ -389,6 +394,7 @@ class PricingPlansController extends GetxController {
           message: 'In-app purchases are not available on this device.',
           isSuccess: false,
         );
+        isApplying.value = false;
         return;
       }
 
@@ -399,6 +405,7 @@ class PricingPlansController extends GetxController {
           message: 'Missing product id for this plan.',
           isSuccess: false,
         );
+        isApplying.value = false;
         return;
       }
 
@@ -418,6 +425,7 @@ class PricingPlansController extends GetxController {
           message: 'Product not found in store.',
           isSuccess: false,
         );
+        isApplying.value = false;
         return;
       }
 
@@ -434,7 +442,6 @@ class PricingPlansController extends GetxController {
         message: e.toString(),
         isSuccess: false,
       );
-    } finally {
       isApplying.value = false;
     }
   }
@@ -469,7 +476,7 @@ class PricingPlansController extends GetxController {
         await fetchSubscriptionPlans();
         await currentUserSubscriptionController.refresh();
 
-        Get.close(1);
+        _closePlanDetailsSheetIfOpen();
 
         Utilities.showSnackBar(
           title: 'Success',
@@ -518,7 +525,9 @@ class PricingPlansController extends GetxController {
         await fetchSubscriptionPlans();
         await currentUserSubscriptionController.refresh();
 
-        Get.close(1);
+        _clearPendingPurchase();
+        _closePlanDetailsSheetIfOpen();
+        isApplying.value = false;
 
         Utilities.showSnackBar(
           title: 'Success',
@@ -533,6 +542,7 @@ class PricingPlansController extends GetxController {
         );
       }
     } catch (e) {
+      isApplying.value = false;
       Utilities.showSnackBar(
         title: 'Error',
         message: 'Failed to store in-app purchase: $e',
@@ -653,5 +663,20 @@ class PricingPlansController extends GetxController {
 
     return (resolvedLocalDataMap['productId'] ?? purchaseDetails.productID)
         .toString();
+  }
+
+  void _closePlanDetailsSheetIfOpen() {
+    if (Get.isBottomSheetOpen ?? false) {
+      Get.back<void>();
+    }
+  }
+
+  void _clearPendingPurchase() {
+    _pendingPlanId = null;
+    _pendingProductId = null;
+    _processedPurchaseKeys.clear();
+    _isRestoredProcessed = false;
+    _purchasesSubscription?.cancel();
+    _purchasesSubscription = null;
   }
 }

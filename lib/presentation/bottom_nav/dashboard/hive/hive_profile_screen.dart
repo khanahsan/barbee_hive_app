@@ -200,10 +200,11 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
                                           ?.name ??
                                       "",
                                 ),
-                                _resumeRow(
-                                  employee?.resumePath ??
-                                      widget.currentUser.employee?.resumePath,
-                                ),
+                                if (controller.userRole.value == 2)
+                                  _resumeRow(
+                                    employee?.resumePath ??
+                                        widget.currentUser.employee?.resumePath,
+                                  ),
                               ],
                             ),
                             SizedBox(height: 20.h),

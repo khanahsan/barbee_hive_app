@@ -227,6 +227,7 @@ class HexagonAvatar extends StatelessWidget {
     this.name,
     this.totalMl,
     this.textStyle,
+    this.isBoosted = false,
   });
 
   final double? height;
@@ -237,6 +238,7 @@ class HexagonAvatar extends StatelessWidget {
   final String? name;
   final String? totalMl;
   final TextStyle? textStyle;
+  final bool isBoosted;
 
   bool _isNetworkImage(String path) {
     return path.isNotEmpty &&
@@ -259,6 +261,15 @@ class HexagonAvatar extends StatelessWidget {
         imagePath.isEmpty ||
         (!_isNetworkImage(imagePath) && !_isValidAssetImage(imagePath));
 
+    final Gradient? borderGradient =
+        isBoosted
+            ? const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF8A3FFC), Color(0xFFFF4D4D)],
+            )
+            : null;
+
     return Stack(
       children: [
         ClipPath(
@@ -267,11 +278,17 @@ class HexagonAvatar extends StatelessWidget {
             padding: const EdgeInsets.all(1),
             width: resolvedWidth,
             height: resolvedHeight,
-            color: borderColor ?? AppColors.colorFF8600,
+            decoration: BoxDecoration(
+              color:
+                  borderGradient == null
+                      ? borderColor ?? AppColors.colorFF8600
+                      : null,
+              gradient: borderGradient,
+            ),
             child: ClipPath(
               clipper: HexagonClipper(),
               child: Container(
-                padding: const EdgeInsets.all(3.5),
+                padding: EdgeInsets.all(isBoosted ? 4.5 : 3.5),
                 width: resolvedWidth,
                 height: resolvedHeight,
                 color: AppColors.black,
@@ -302,6 +319,59 @@ class HexagonAvatar extends StatelessWidget {
                               )
                         else
                           _buildInitial(context),
+                        /*if (isBoosted)
+                          Positioned.fill(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    AppColors.color000000.withValues(
+                                      alpha: 0.62,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),*/
+                      /*  if (isBoosted && name != null && name!.isNotEmpty)
+                          Positioned(
+                            left: 6.w,
+                            right: 6.w,
+                            bottom: 12.h,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  name!.toUpperCase(),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: AppColors.colorFFFFFF,
+                                    fontSize: 15.sp,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1,
+                                  ),
+                                ),
+                                if (totalMl != null && totalMl!.isNotEmpty)
+                                  Text(
+                                    totalMl!,
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: AppColors.colorFF8600,
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.05,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),*/
                         /*if (name != null && totalMl != null)
                           Positioned(
                             bottom: 15.h,
@@ -384,20 +454,17 @@ class HexagonAvatar extends StatelessWidget {
     return Container(
       color: AppColors.colorFF8600,
       alignment: Alignment.center,
-      child: name != null && name!.isNotEmpty
-          ? Text(
-              name![0].toUpperCase(),
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.colorFFFFFF,
-              ),
-            )
-          : Icon(
-              Icons.person,
-              color: AppColors.colorFFFFFF,
-              size: 24.sp,
-            ),
+      child:
+          name != null && name!.isNotEmpty
+              ? Text(
+                name![0].toUpperCase(),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.colorFFFFFF,
+                ),
+              )
+              : Icon(Icons.person, color: AppColors.colorFFFFFF, size: 24.sp),
     );
   }
 }

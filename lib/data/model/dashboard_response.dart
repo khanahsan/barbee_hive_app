@@ -1,5 +1,3 @@
-
-
 class DashboardResponse {
   final bool status;
   final String message;
@@ -11,13 +9,17 @@ class DashboardResponse {
     required this.data,
   });
 
-  factory DashboardResponse.fromJson(Map<String, dynamic> json) => DashboardResponse(
-    status: json['status'] ?? false,
-    message: json['message'] ?? '',
-    data: json['data'] is Map
-        ? DashboardData.fromJson(Map<String, dynamic>.from(json['data']))
-        : DashboardData(employees: [], employers: []),
-  );
+  factory DashboardResponse.fromJson(Map<String, dynamic> json) =>
+      DashboardResponse(
+        status: json['status'] ?? false,
+        message: json['message'] ?? '',
+        data:
+            json['data'] is Map
+                ? DashboardData.fromJson(
+                  Map<String, dynamic>.from(json['data']),
+                )
+                : DashboardData(employees: [], employers: []),
+      );
 
   Map<String, dynamic> toJson() => {
     'status': status,
@@ -33,16 +35,18 @@ class DashboardData {
   DashboardData({required this.employees, required this.employers});
 
   factory DashboardData.fromJson(Map<String, dynamic> json) => DashboardData(
-    employees: json['employees'] is List
-        ? (json['employees'] as List)
-        .map((e) => User.fromJson(Map<String, dynamic>.from(e as Map)))
-        .toList()
-        : [],
-    employers: json['employers'] is List
-        ? (json['employers'] as List)
-        .map((e) => User.fromJson(Map<String, dynamic>.from(e as Map)))
-        .toList()
-        : [],
+    employees:
+        json['employees'] is List
+            ? (json['employees'] as List)
+                .map((e) => User.fromJson(Map<String, dynamic>.from(e as Map)))
+                .toList()
+            : [],
+    employers:
+        json['employers'] is List
+            ? (json['employers'] as List)
+                .map((e) => User.fromJson(Map<String, dynamic>.from(e as Map)))
+                .toList()
+            : [],
   );
 
   Map<String, dynamic> toJson() => {
@@ -97,17 +101,22 @@ class User {
     isActive: json['is_active'] ?? false,
     profileImage: json['profile_image'],
     coverPhoto: json['cover_photo'],
-    subscription: json['subscription'] is Map
-        ? Subscription.fromJson(Map<String, dynamic>.from(json['subscription']))
-        : null,
+    subscription:
+        json['subscription'] is Map
+            ? Subscription.fromJson(
+              Map<String, dynamic>.from(json['subscription']),
+            )
+            : null,
     createdAt: json['created_at'] ?? '',
     updatedAt: json['updated_at'] ?? '',
-    employee: json['employee'] is Map
-        ? Employee.fromJson(Map<String, dynamic>.from(json['employee']))
-        : null,
-    employer: json['employer'] is Map
-        ? Employer.fromJson(Map<String, dynamic>.from(json['employer']))
-        : null,
+    employee:
+        json['employee'] is Map
+            ? Employee.fromJson(Map<String, dynamic>.from(json['employee']))
+            : null,
+    employer:
+        json['employer'] is Map
+            ? Employer.fromJson(Map<String, dynamic>.from(json['employer']))
+            : null,
     distance: json['distance']?.toString() ?? null,
     age: json['age'] is int ? json['age'] : null,
   );
@@ -144,6 +153,7 @@ class Employee {
   final String? resumePath;
   final bool isAvailable;
   final List<Skill> skills;
+  final EmployeeBoost? boost;
 
   Employee({
     required this.name,
@@ -160,25 +170,46 @@ class Employee {
     this.resumePath,
     required this.isAvailable,
     required this.skills,
+    this.boost,
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) => Employee(
     name: json['name'] ?? '',
     initials: json['initials'] ?? '',
-    experienceYears: json['experience_years'] is String ? json['experience_years'] : null,
-    country: json['country'] is Map ? Country.fromJson(Map<String, dynamic>.from(json['country'])) : null,
-    state: json['state'] is Map ? State.fromJson(Map<String, dynamic>.from(json['state'])) : null,
+    experienceYears:
+        json['experience_years'] is String ? json['experience_years'] : null,
+    country:
+        json['country'] is Map
+            ? Country.fromJson(Map<String, dynamic>.from(json['country']))
+            : null,
+    state:
+        json['state'] is Map
+            ? State.fromJson(Map<String, dynamic>.from(json['state']))
+            : null,
     city: json['city'] is String ? json['city'] : null,
     dob: json['dob'] ?? '',
     gender: json['gender'] ?? '',
     height: json['height'] ?? 0,
-    eyeColor: json['eye_color'] is Map ? EyeColor.fromJson(Map<String, dynamic>.from(json['eye_color'])) : null,
-    hairColor: json['hair_color'] is Map ? HairColor.fromJson(Map<String, dynamic>.from(json['hair_color'])) : null,
+    eyeColor:
+        json['eye_color'] is Map
+            ? EyeColor.fromJson(Map<String, dynamic>.from(json['eye_color']))
+            : null,
+    hairColor:
+        json['hair_color'] is Map
+            ? HairColor.fromJson(Map<String, dynamic>.from(json['hair_color']))
+            : null,
     resumePath: json['resume_path'] is String ? json['resume_path'] : null,
     isAvailable: json['is_available'] ?? false,
-    skills: json['skills'] is List
-        ? (json['skills'] as List).map((e) => Skill.fromJson(Map<String, dynamic>.from(e as Map))).toList()
-        : [],
+    skills:
+        json['skills'] is List
+            ? (json['skills'] as List)
+                .map((e) => Skill.fromJson(Map<String, dynamic>.from(e as Map)))
+                .toList()
+            : [],
+    boost:
+        json['boost'] is Map
+            ? EmployeeBoost.fromJson(Map<String, dynamic>.from(json['boost']))
+            : null,
   );
 
   Map<String, dynamic> toJson() => {
@@ -196,7 +227,60 @@ class Employee {
     'resume_path': resumePath,
     'is_available': isAvailable,
     'skills': skills.map((s) => s.toJson()).toList(),
+    'boost': boost?.toJson(),
   };
+
+  bool get hasActiveBoost => boost?.isActive ?? false;
+}
+
+class EmployeeBoost {
+  final int id;
+  final int userId;
+  final int employeeId;
+  final String status;
+  final DateTime? activatedAt;
+  final DateTime? expiresAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  EmployeeBoost({
+    required this.id,
+    required this.userId,
+    required this.employeeId,
+    required this.status,
+    this.activatedAt,
+    this.expiresAt,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory EmployeeBoost.fromJson(Map<String, dynamic> json) => EmployeeBoost(
+    id: json['id'] ?? 0,
+    userId: json['user_id'] ?? 0,
+    employeeId: json['employee_id'] ?? 0,
+    status: json['status']?.toString() ?? '',
+    activatedAt: DateTime.tryParse(json['activated_at']?.toString() ?? ''),
+    expiresAt: DateTime.tryParse(json['expires_at']?.toString() ?? ''),
+    createdAt: DateTime.tryParse(json['created_at']?.toString() ?? ''),
+    updatedAt: DateTime.tryParse(json['updated_at']?.toString() ?? ''),
+  );
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'user_id': userId,
+    'employee_id': employeeId,
+    'status': status,
+    'activated_at': activatedAt?.toIso8601String(),
+    'expires_at': expiresAt?.toIso8601String(),
+    'created_at': createdAt?.toIso8601String(),
+    'updated_at': updatedAt?.toIso8601String(),
+  };
+
+  bool get isActive {
+    if (status.isNotEmpty && status.toLowerCase() != 'active') return false;
+    if (expiresAt == null) return true;
+    return expiresAt!.isAfter(DateTime.now());
+  }
 }
 
 class Employer {
@@ -219,12 +303,21 @@ class Employer {
   factory Employer.fromJson(Map<String, dynamic> json) => Employer(
     businessName: json['business_name'] ?? '',
     initials: json['initials'] ?? null,
-    country: json['country'] is Map ? Country.fromJson(Map<String, dynamic>.from(json['country'])) : null,
-    state: json['state'] is Map ? State.fromJson(Map<String, dynamic>.from(json['state'])) : null,
+    country:
+        json['country'] is Map
+            ? Country.fromJson(Map<String, dynamic>.from(json['country']))
+            : null,
+    state:
+        json['state'] is Map
+            ? State.fromJson(Map<String, dynamic>.from(json['state']))
+            : null,
     city: json['city'] is String ? json['city'] : null,
-    skills: json['skills'] is List
-        ? (json['skills'] as List).map((e) => Skill.fromJson(Map<String, dynamic>.from(e as Map))).toList()
-        : [],
+    skills:
+        json['skills'] is List
+            ? (json['skills'] as List)
+                .map((e) => Skill.fromJson(Map<String, dynamic>.from(e as Map)))
+                .toList()
+            : [],
   );
 
   Map<String, dynamic> toJson() => {
@@ -250,11 +343,7 @@ class Country {
     code: json['code'] is String ? json['code'] : null,
   );
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'code': code,
-  };
+  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'code': code};
 }
 
 class State {
@@ -267,7 +356,12 @@ class State {
 
   factory State.fromJson(Map<String, dynamic> json) => State(
     id: json['id'] ?? 0,
-    countryId: json['country_id'] is int ? json['country_id'] : (json['country_id'] is String ? int.tryParse(json['country_id']) : null),
+    countryId:
+        json['country_id'] is int
+            ? json['country_id']
+            : (json['country_id'] is String
+                ? int.tryParse(json['country_id'])
+                : null),
     name: json['name'] ?? '',
     code: json['code'] is String ? json['code'] : null,
   );
@@ -286,10 +380,8 @@ class EyeColor {
 
   EyeColor({required this.id, required this.name});
 
-  factory EyeColor.fromJson(Map<String, dynamic> json) => EyeColor(
-    id: json['id'] ?? 0,
-    name: json['name'] ?? '',
-  );
+  factory EyeColor.fromJson(Map<String, dynamic> json) =>
+      EyeColor(id: json['id'] ?? 0, name: json['name'] ?? '');
 
   Map<String, dynamic> toJson() => {'id': id, 'name': name};
 }
@@ -300,10 +392,8 @@ class HairColor {
 
   HairColor({required this.id, required this.name});
 
-  factory HairColor.fromJson(Map<String, dynamic> json) => HairColor(
-    id: json['id'] ?? 0,
-    name: json['name'] ?? '',
-  );
+  factory HairColor.fromJson(Map<String, dynamic> json) =>
+      HairColor(id: json['id'] ?? 0, name: json['name'] ?? '');
 
   Map<String, dynamic> toJson() => {'id': id, 'name': name};
 }
@@ -314,10 +404,8 @@ class Skill {
 
   Skill({required this.id, required this.name});
 
-  factory Skill.fromJson(Map<String, dynamic> json) => Skill(
-    id: json['id'] ?? 0,
-    name: json['name'] ?? '',
-  );
+  factory Skill.fromJson(Map<String, dynamic> json) =>
+      Skill(id: json['id'] ?? 0, name: json['name'] ?? '');
 
   Map<String, dynamic> toJson() => {'id': id, 'name': name};
 }
@@ -386,7 +474,6 @@ class Subscription {
     'is_expired': isExpired,
   };
 }
-
 
 /*class Subscription {
   final int id;

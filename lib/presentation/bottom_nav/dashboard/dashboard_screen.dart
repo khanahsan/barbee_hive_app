@@ -459,7 +459,6 @@ class DashboardScreen extends GetView<DashboardController> {
       final double itemWidth = 95.w;
       final double itemHeight = 105.h;
       final List<int> pattern = _getPattern(users.length, itemHeight);
-      final maxHeight = MediaQuery.of(context).size.height * 0.6;
 
       if (controller.isLoading.value) {
         return AppShimmer(height: 450.h, width: double.infinity);
@@ -565,8 +564,9 @@ class DashboardScreen extends GetView<DashboardController> {
                                     ? (users[index].employee?.name ??
                                         users[index].email.split('@').first)
                                     : 'Unknown Employee',
-                            totalMl:
-                                users[index].employee?.experienceYears ?? 'N/A',
+                            totalMl: _formatHiveDistance(users[index].distance),
+                            isBoosted:
+                                users[index].employee?.hasActiveBoost ?? false,
                           ),
                         ),
                       ),
@@ -578,6 +578,15 @@ class DashboardScreen extends GetView<DashboardController> {
         ),
       );
     });
+  }
+
+  String _formatHiveDistance(String? distance) {
+    final value = distance?.trim();
+    if (value == null || value.isEmpty || value.toLowerCase() == 'null') {
+      return '';
+    }
+
+    return '$value MI';
   }
 
   List<int> _getPattern(int userCount, itemHeight) {

@@ -551,12 +551,12 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                           selectedValue:
                                               controller.selectedEyeColor,
                                           onChanged: controller.updateEyeColor,
-                                          validator:
+                                         /* validator:
                                               (v) =>
                                                   FormValidators.validateRequired(
                                                     v,
                                                     'Eye Color',
-                                                  ),
+                                                  ),*/
                                           items:
                                               controller.eyeColors
                                                   .map(

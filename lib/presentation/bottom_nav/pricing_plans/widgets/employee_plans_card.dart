@@ -324,7 +324,7 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
             ),
             SizedBox(height: 5.h),
 
-            ..._buildDescriptionByComma(plan.features.join(',')),
+            ..._buildDescriptionByComma(plan.features.join(','), primaryColor),
 
             SizedBox(height: 10.h),
             // ],
@@ -375,6 +375,7 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
           child: CustomText(
             title: text,
             fontSize: 16,
+           // color: AppColors.colorFFFFFF,
             color: AppColors.colorFFFFFF,
             fontWeight: FontWeight.w400,
           ),
@@ -384,7 +385,7 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
   }
 
   /// PAID PLAN DESCRIPTION HANDLER (COMMA BASED)
-  List<Widget> _buildDescriptionByComma(String description) {
+  List<Widget> _buildDescriptionByComma(String description, Color color) {
     final items =
         description
             .split(',')
@@ -406,7 +407,7 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
 
     // Multiple items → bullets
     return items
-        .map((item) => _buildBulletPoint(item, AppColors.colorB1B1B1))
+        .map((item) => _buildBulletPoint(item, color))
         .toList();
   }
 }

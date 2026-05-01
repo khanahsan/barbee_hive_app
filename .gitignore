@@ -44,6 +44,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /android/key.properties
+/android/release.keystore
 /android/app/upload-keystore.jks
 
 # Environment files (do not commit sensitive keys)

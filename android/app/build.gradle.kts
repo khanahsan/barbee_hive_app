@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
@@ -8,10 +10,28 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+val keystorePropertiesFile = rootProject.file("key.properties")
+val keystoreProperties = Properties()
+val hasKeystoreProperties = keystorePropertiesFile.exists()
+if (hasKeystoreProperties) {
+    keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
+}
+
 android {
     namespace = "com.barbee.hive.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+
+    signingConfigs {
+        if (hasKeystoreProperties) {
+            create("release") {
+                keyAlias = keystoreProperties["keyAlias"] as String
+                keyPassword = keystoreProperties["keyPassword"] as String
+                storeFile = file(keystoreProperties["storeFile"] as String)
+                storePassword = keystoreProperties["storePassword"] as String
+            }
+        }
+    }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -33,12 +53,13 @@ android {
 
     buildTypes {
         getByName("release") {
-            // Disable code shrinking for testing; re-enable later for production
-            isMinifyEnabled = false
-            isShrinkResources = false
-
-            // Use debug signing config temporarily
-            signingConfig = signingConfigs.getByName("debug")
+            // Release builds must use the upload keystore, not the debug key.
+            check(hasKeystoreProperties) {
+                "Missing android/key.properties. Create it from android/key.properties.example before building release."
+            }
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isShrinkResources = true
 
             // ProGuard rules (optional but recommended)
             proguardFiles(

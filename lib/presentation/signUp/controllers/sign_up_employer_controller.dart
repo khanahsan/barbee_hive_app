@@ -190,8 +190,7 @@ class SignUpEmployerController extends GetxController {
       );
       return _registerWithAppleCredential();
     }
-    // 1️⃣ Validate profile image and terms
-    // if (!_validateImage() || !_validateTerms()) return;
+    // 1️⃣ Validate terms. Profile image is optional.
     if (!_validateTerms()) return;
 
     // 2️⃣ Validate selected skills
@@ -208,6 +207,20 @@ class SignUpEmployerController extends GetxController {
       return Utilities.showSnackBar(
         title: 'Error',
         message: 'Please select both country and state',
+        isSuccess: false,
+      );
+    }
+    if (selectedCity.value.isEmpty) {
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select a city',
+        isSuccess: false,
+      );
+    }
+    if (addressController.text.trim().isEmpty) {
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please enter address',
         isSuccess: false,
       );
     }
@@ -319,18 +332,6 @@ class SignUpEmployerController extends GetxController {
   }
 
   // ---------------------- VALIDATION HELPERS ---------------------- //
-  bool _validateImage() {
-    if (selectedImage.value == null) {
-      Utilities.showSnackBar(
-        title: 'Error',
-        message: 'Please upload a profile image',
-        isSuccess: false,
-      );
-      return false;
-    }
-    return true;
-  }
-
   bool _validateTerms() {
     if (!isChecked.value) {
       Utilities.showSnackBar(
@@ -526,8 +527,8 @@ class SignUpEmployerController extends GetxController {
       return;
     }
 
-    // Retain existing validations
-    if (!_validateImage() || !_validateTerms()) return;
+    // Retain existing validations; profile image is optional.
+    if (!_validateTerms()) return;
     if (selectedSkills.isEmpty) {
       return Utilities.showSnackBar(
         title: 'Error',
@@ -539,6 +540,20 @@ class SignUpEmployerController extends GetxController {
       return Utilities.showSnackBar(
         title: 'Error',
         message: 'Please select both country and state',
+        isSuccess: false,
+      );
+    }
+    if (selectedCity.value.isEmpty) {
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select a city',
+        isSuccess: false,
+      );
+    }
+    if (addressController.text.trim().isEmpty) {
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please enter address',
         isSuccess: false,
       );
     }
@@ -604,6 +619,7 @@ class SignUpEmployerController extends GetxController {
         passwordConfirmation: confirmPasswordController.text,
         role: 2,
         // Employer role
+        address: addressController.text.trim(),
         country: countryId.toString(),
         state: stateId.toString(),
         city: selectedCity.value,
@@ -640,9 +656,19 @@ class SignUpEmployerController extends GetxController {
         isSuccess: false,
       );
     } catch (e) {
+      final message = e.toString().replaceFirst('Exception: ', '');
+      if (message.toLowerCase().contains('already registered')) {
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: message,
+          isSuccess: false,
+        );
+        Get.offAllNamed(Routes.SIGN_IN_VIEW);
+        return;
+      }
       Utilities.showSnackBar(
         title: 'Error',
-        message: e.toString().replaceFirst('Exception: ', ''),
+        message: message,
         isSuccess: false,
       );
     } finally {
@@ -719,8 +745,8 @@ class SignUpEmployerController extends GetxController {
       return;
     }
 
-    // Retain existing validations
-    if (!_validateImage() || !_validateTerms()) return;
+    // Retain existing validations; profile image is optional.
+    if (!_validateTerms()) return;
     if (selectedSkills.isEmpty) {
       return Utilities.showSnackBar(
         title: 'Error',
@@ -732,6 +758,20 @@ class SignUpEmployerController extends GetxController {
       return Utilities.showSnackBar(
         title: 'Error',
         message: 'Please select both country and state',
+        isSuccess: false,
+      );
+    }
+    if (selectedCity.value.isEmpty) {
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select a city',
+        isSuccess: false,
+      );
+    }
+    if (addressController.text.trim().isEmpty) {
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please enter address',
         isSuccess: false,
       );
     }
@@ -799,6 +839,7 @@ class SignUpEmployerController extends GetxController {
         passwordConfirmation: confirmPasswordController.text,
         role: 2,
         // Employer role
+        address: addressController.text.trim(),
         country: countryId.toString(),
         state: stateId.toString(),
         city: selectedCity.value,

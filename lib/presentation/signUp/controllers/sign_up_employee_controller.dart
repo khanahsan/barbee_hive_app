@@ -792,7 +792,7 @@ class SignUpEmployeeController extends GetxController {
       return _showError('Google sign-in token missing. Please try again.');
     }
 
-    // Keep existing form validations for resume/image/terms/skills
+    // Keep existing form validations for resume/terms/skills.
     if (!isChecked.value) {
       return _showError('Please agree to the Terms of Service');
     }
@@ -933,7 +933,13 @@ class SignUpEmployeeController extends GetxController {
     } on FirebaseAuthException catch (e) {
       return _showError('${e.code}: ${e.message}');
     } catch (e) {
-      return _showError(e.toString().replaceFirst('Exception: ', ''));
+      final message = e.toString().replaceFirst('Exception: ', '');
+      if (message.toLowerCase().contains('already registered')) {
+        _showError(message);
+        Get.offAllNamed(Routes.SIGN_IN_VIEW);
+        return;
+      }
+      return _showError(message);
     } finally {
       isLoading.value = false;
     }
@@ -957,9 +963,6 @@ class SignUpEmployeeController extends GetxController {
     }
     if (!await _ensureResumeWithinLimit()) {
       return;
-    }
-    if (selectedImage.value == null && profileImageUrl.value.isEmpty) {
-      return _showError('Please upload a profile image');
     }
 
     // Fallback password to satisfy API if user didn't type one
@@ -998,7 +1001,7 @@ class SignUpEmployeeController extends GetxController {
 
       // Map selections (reuse the same validation logic)
       late List<Skill> userSkills;
-      late EyeColor eyeColor;
+      EyeColor? eyeColor;
       late HairColor hairColor;
       late Gender userGender;
       late Height userHeight;
@@ -1014,10 +1017,12 @@ class SignUpEmployeeController extends GetxController {
           throw Exception('Please select valid skills');
         }
 
-        eyeColor = eyeColors.firstWhere(
-          (color) => color.name == selectedEyeColor.value,
-          orElse: () => throw Exception('Please select an eye color'),
-        );
+        if (selectedEyeColor.value.isNotEmpty) {
+          eyeColor = eyeColors.firstWhere(
+            (color) => color.name == selectedEyeColor.value,
+            orElse: () => throw Exception('Please select a valid eye color'),
+          );
+        }
         hairColor = hairColors.firstWhere(
           (color) => color.name == selectedHairColor.value,
           orElse: () => throw Exception('Please select a hair color'),
@@ -1062,7 +1067,7 @@ class SignUpEmployeeController extends GetxController {
         experienceYears: selectedExperienceLevel.value,
         dob: selectedDate.value,
         gender: userGender.id,
-        eyeColorId: eyeColor.id,
+        eyeColorId: eyeColor?.id,
         hairColorId: hairColor.id,
         height: userHeight.id,
         resume: selectedResume.value,

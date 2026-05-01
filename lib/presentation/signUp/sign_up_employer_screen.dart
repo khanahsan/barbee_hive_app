@@ -131,87 +131,139 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                     },
                                   ),
 
-                                  /// Business Name Field
-                                  _buildTextField(
-                                    hint: 'Business Name',
-                                    controller: controller.nameController,
-                                    icon: AppAssets.personIcon,
-                                    validator:
-                                        (value) =>
-                                            FormValidators.validateName(value),
-                                  ),
+                                  Obx(() {
+                                    if (controller.isAppleSignup) {
+                                      return Column(
+                                        spacing: 15,
+                                        children: [
+                                          _buildTextField(
+                                            hint: 'Business Name',
+                                            controller:
+                                                controller.nameController,
+                                            icon: AppAssets.personIcon,
+                                            validator:
+                                                (value) =>
+                                                    FormValidators.validateName(
+                                                      value,
+                                                    ),
+                                          ),
+                                          _buildTextField(
+                                            keyboardType:
+                                                TextInputType.emailAddress,
+                                            hint: 'Email Address',
+                                            controller:
+                                                controller.emailController,
+                                            icon: AppAssets.emailIcon,
+                                            readOnly: true,
+                                          ),
+                                        ],
+                                      );
+                                    }
 
-                                  /// Email Address Field
-                                  _buildTextField(
-                                    keyboardType: TextInputType.emailAddress,
-                                    hint: 'Email Address',
-                                    controller: controller.emailController,
-                                    icon: AppAssets.emailIcon,
-                                    validator:
-                                        (value) =>
-                                            FormValidators.validateEmail(value),
-                                  ),
-
-                                  /// Password Field
-                                  Obx(
-                                    () => _buildTextField(
-                                      hint: 'Password',
-                                      controller: controller.passwordController,
-                                      icon: AppAssets.lockIcon,
-                                      obscure:
-                                          !controller.isPasswordVisible.value,
-                                      suffix: GestureDetector(
-                                        behavior: HitTestBehavior.translucent,
-                                        onTap:
-                                            controller.togglePasswordVisibility,
-                                        child: Icon(
-                                          controller.isPasswordVisible.value
-                                              ? Icons.visibility_outlined
-                                              : Icons.visibility_off_outlined,
+                                    return Column(
+                                      spacing: 15,
+                                      children: [
+                                        /// Business Name Field
+                                        _buildTextField(
+                                          hint: 'Business Name',
+                                          controller: controller.nameController,
+                                          icon: AppAssets.personIcon,
+                                          validator:
+                                              (value) =>
+                                                  FormValidators.validateName(
+                                                    value,
+                                                  ),
                                         ),
-                                      ),
-                                      validator:
-                                          (value) =>
-                                              FormValidators.validatePassword(
-                                                value,
-                                              ),
-                                    ),
-                                  ),
 
-                                  /// Confirm Password Field
-                                  Obx(
-                                    () => _buildTextField(
-                                      hint: 'Confirm Password',
-                                      controller:
-                                          controller.confirmPasswordController,
-                                      icon: AppAssets.lockIcon,
-                                      obscure:
-                                          !controller
-                                              .isConfirmPasswordVisible
-                                              .value,
-                                      suffix: GestureDetector(
-                                        behavior: HitTestBehavior.translucent,
-                                        onTap:
-                                            controller
-                                                .toggleConfirmPasswordVisibility,
-                                        child: Icon(
-                                          controller
-                                                  .isConfirmPasswordVisible
-                                                  .value
-                                              ? Icons.visibility_outlined
-                                              : Icons.visibility_off_outlined,
+                                        /// Email Address Field
+                                        _buildTextField(
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                          hint: 'Email Address',
+                                          controller:
+                                              controller.emailController,
+                                          icon: AppAssets.emailIcon,
+                                          validator:
+                                              (value) =>
+                                                  FormValidators.validateEmail(
+                                                    value,
+                                                  ),
                                         ),
-                                      ),
-                                      validator:
-                                          (value) =>
-                                              FormValidators.validateConfirmPassword(
-                                                value,
+
+                                        /// Password Field
+                                        Obx(
+                                          () => _buildTextField(
+                                            hint: 'Password',
+                                            controller:
+                                                controller.passwordController,
+                                            icon: AppAssets.lockIcon,
+                                            obscure:
+                                                !controller
+                                                    .isPasswordVisible
+                                                    .value,
+                                            suffix: GestureDetector(
+                                              behavior:
+                                                  HitTestBehavior.translucent,
+                                              onTap:
+                                                  controller
+                                                      .togglePasswordVisibility,
+                                              child: Icon(
                                                 controller
-                                                    .passwordController
-                                                    .text,
+                                                        .isPasswordVisible
+                                                        .value
+                                                    ? Icons.visibility_outlined
+                                                    : Icons
+                                                        .visibility_off_outlined,
                                               ),
-                                    ),
-                                  ),
+                                            ),
+                                            validator:
+                                                (value) =>
+                                                    FormValidators.validatePassword(
+                                                      value,
+                                                    ),
+                                          ),
+                                        ),
+
+                                        /// Confirm Password Field
+                                        Obx(
+                                          () => _buildTextField(
+                                            hint: 'Confirm Password',
+                                            controller:
+                                                controller
+                                                    .confirmPasswordController,
+                                            icon: AppAssets.lockIcon,
+                                            obscure:
+                                                !controller
+                                                    .isConfirmPasswordVisible
+                                                    .value,
+                                            suffix: GestureDetector(
+                                              behavior:
+                                                  HitTestBehavior.translucent,
+                                              onTap:
+                                                  controller
+                                                      .toggleConfirmPasswordVisibility,
+                                              child: Icon(
+                                                controller
+                                                        .isConfirmPasswordVisible
+                                                        .value
+                                                    ? Icons.visibility_outlined
+                                                    : Icons
+                                                        .visibility_off_outlined,
+                                              ),
+                                            ),
+                                            validator:
+                                                (value) =>
+                                                    FormValidators.validateConfirmPassword(
+                                                      value,
+                                                      controller
+                                                          .passwordController
+                                                          .text,
+                                                    ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }),
 
                                   /// Country Field
                                   CustomDropdown(
@@ -453,6 +505,9 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                       debugPrint(
                                         'Employer signup form validation result: $isValid',
                                       );
+                                      debugPrint(
+                                        ' controller.emailController: ${controller.emailController.text}',
+                                      );
                                       if (isValid) {
                                         controller.registerEmployer();
                                       }
@@ -539,6 +594,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
     Widget? suffix,
     String? Function(String?)? validator,
     TextInputType? keyboardType,
+    bool readOnly = false,
   }) {
     return AppTextField(
       fontColor: AppColors.colorFFFFFF,
@@ -546,6 +602,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
       validator: validator,
       hintText: hint,
       controller: controller,
+      readOnly: readOnly,
       isObscuredText: obscure,
       fillColor: AppColors.textFieldBackground,
       enabledBorderColor: Colors.transparent,

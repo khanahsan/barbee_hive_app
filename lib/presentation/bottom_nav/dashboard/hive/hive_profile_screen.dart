@@ -188,7 +188,7 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
                                           .employee
                                           ?.eyeColor
                                           ?.name ??
-                                      "",
+                                      "N/A",
                                 ),
                                 _infoRow(
                                   "Hair Color",
@@ -198,7 +198,7 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
                                           .employee
                                           ?.hairColor
                                           ?.name ??
-                                      "",
+                                      "N/A",
                                 ),
                                 if (controller.userRole.value == 2)
                                   _resumeRow(

@@ -78,6 +78,7 @@ class SelectRoleView extends StatelessWidget {
           'email': appleResult.email ?? '',
           'appleIdentityToken': appleResult.identityToken,
           'appleAuthorizationCode': appleResult.authorizationCode,
+          'appleRawNonce': appleResult.rawNonce,
         };
 
         if (selectedRole.value == 'employee') {

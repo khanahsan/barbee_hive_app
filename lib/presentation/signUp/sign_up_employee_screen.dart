@@ -143,52 +143,83 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                   ),
                                   SizedBox(height: 20.h),
 
-                                  /// NAME
-                                  _buildTextField(
-                                    'Name',
-                                    controller.nameController,
-                                    prefixIconPath: AppAssets.personIcon,
-                                    validator: FormValidators.validateName,
-                                  ),
-                                  SizedBox(height: 15.h),
+                                  Obx(() {
+                                    if (controller.isAppleSignup) {
+                                      return Column(
+                                        children: [
+                                          _buildTextField(
+                                            'Name',
+                                            controller.nameController,
+                                            prefixIconPath:
+                                                AppAssets.personIcon,
+                                            readOnly: true,
+                                          ),
+                                          SizedBox(height: 15.h),
+                                          _buildTextField(
+                                            'Email Address',
+                                            controller.emailController,
+                                            prefixIconPath: AppAssets.emailIcon,
+                                            readOnly: true,
+                                          ),
+                                          SizedBox(height: 15.h),
+                                        ],
+                                      );
+                                    }
 
-                                  /// EMAIL
-                                  _buildTextField(
-                                    'Email Address',
-                                    controller.emailController,
-                                    prefixIconPath: AppAssets.emailIcon,
-                                    validator: FormValidators.validateEmail,
-                                  ),
-                                  SizedBox(height: 15.h),
+                                    return Column(
+                                      children: [
+                                        /// NAME
+                                        _buildTextField(
+                                          'Name',
+                                          controller.nameController,
+                                          prefixIconPath: AppAssets.personIcon,
+                                          validator:
+                                              FormValidators.validateName,
+                                        ),
+                                        SizedBox(height: 15.h),
 
-                                  /// PASSWORD
-                                  _buildTextField(
-                                    'Password',
-                                    controller.passwordController,
-                                    prefixIconPath: AppAssets.lockIcon,
-                                    isPassword: true,
-                                    isPasswordField: true,
-                                    validator: FormValidators.validatePassword,
-                                  ),
-                                  SizedBox(height: 15.h),
+                                        /// EMAIL
+                                        _buildTextField(
+                                          'Email Address',
+                                          controller.emailController,
+                                          prefixIconPath: AppAssets.emailIcon,
+                                          validator:
+                                              FormValidators.validateEmail,
+                                        ),
+                                        SizedBox(height: 15.h),
 
-                                  /// CONFIRM PASSWORD
-                                  _buildTextField(
-                                    'Confirm Password',
-                                    controller.confirmPasswordController,
-                                    prefixIconPath: AppAssets.lockIcon,
-                                    isPassword: true,
-                                    isConfirmPasswordField: true,
-                                    validator:
-                                        (value) =>
-                                            FormValidators.validateConfirmPassword(
-                                              value,
-                                              controller
-                                                  .passwordController
-                                                  .text,
-                                            ),
-                                  ),
-                                  SizedBox(height: 15.h),
+                                        /// PASSWORD
+                                        _buildTextField(
+                                          'Password',
+                                          controller.passwordController,
+                                          prefixIconPath: AppAssets.lockIcon,
+                                          isPassword: true,
+                                          isPasswordField: true,
+                                          validator:
+                                              FormValidators.validatePassword,
+                                        ),
+                                        SizedBox(height: 15.h),
+
+                                        /// CONFIRM PASSWORD
+                                        _buildTextField(
+                                          'Confirm Password',
+                                          controller.confirmPasswordController,
+                                          prefixIconPath: AppAssets.lockIcon,
+                                          isPassword: true,
+                                          isConfirmPasswordField: true,
+                                          validator:
+                                              (value) =>
+                                                  FormValidators.validateConfirmPassword(
+                                                    value,
+                                                    controller
+                                                        .passwordController
+                                                        .text,
+                                                  ),
+                                        ),
+                                        SizedBox(height: 15.h),
+                                      ],
+                                    );
+                                  }),
 
                                   /// EXPERIENCE
                                   CustomMultiSelectDropdown(
@@ -551,7 +582,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                           selectedValue:
                                               controller.selectedEyeColor,
                                           onChanged: controller.updateEyeColor,
-                                         /* validator:
+                                          /* validator:
                                               (v) =>
                                                   FormValidators.validateRequired(
                                                     v,
@@ -638,6 +669,12 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                     btnTxtColor: Colors.white,
                                     buttonWidth: double.infinity,
                                     onPressed: () {
+                                      debugPrint(
+                                        ' controller.emailController: ${controller.emailController.text}',
+                                      );
+                                      debugPrint(
+                                        ' controller.emailController: ${controller.nameController.text}',
+                                      );
                                       if (controller.formKey.currentState!
                                           .validate()) {
                                         controller.registerEmployee();

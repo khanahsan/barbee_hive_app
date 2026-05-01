@@ -17,16 +17,27 @@ class GoogleSignInResult {
   final String? accessToken;
   final String? idToken;
 
-  GoogleSignInResult({required this.userCredential, this.accessToken, this.idToken});
+  GoogleSignInResult({
+    required this.userCredential,
+    this.accessToken,
+    this.idToken,
+  });
 }
 
 class AppleSignInResult {
   final String identityToken;
   final String authorizationCode;
+  final String rawNonce;
   final String? email;
   final String? fullName;
 
-  AppleSignInResult({required this.identityToken, required this.authorizationCode, this.email, this.fullName});
+  AppleSignInResult({
+    required this.identityToken,
+    required this.authorizationCode,
+    required this.rawNonce,
+    this.email,
+    this.fullName,
+  });
 }
 
 // Lightweight model when we only need Google tokens, not Firebase sign-in
@@ -43,7 +54,8 @@ class FirebaseService {
   // Detect staging from the configured API base URL so Firestore user metadata
   // can follow the same environment without introducing a separate flag.
   //static bool get isStagingEnvironment => ApiEndPoints.baseUrl.contains('.staging.');
-  static bool get isStagingEnvironment => ApiEndPoints.baseUrl.contains('.sandbox.');
+  static bool get isStagingEnvironment =>
+      ApiEndPoints.baseUrl.contains('.sandbox.');
 
   // Only email/password flows should write a staging-marked email to Firestore.
   static String firestoreEmailForEmailPasswordFlow(String email) {
@@ -70,30 +82,55 @@ class FirebaseService {
     final domain = email.substring(atIndex + 1);
 
     if (localPart.endsWith('.sandbox')) {
-   // if (localPart.endsWith('.staging')) {
+      // if (localPart.endsWith('.staging')) {
       print(
         '### FirebaseService.firestoreEmailForEmailPasswordFlow returning original email because it already contains the staging suffix',
       );
       return email;
     }
 
-   // final transformedEmail = '$localPart.staging@$domain';
+    // final transformedEmail = '$localPart.staging@$domain';
     final transformedEmail = '$localPart.sandbox@$domain';
-    print('### FirebaseService.firestoreEmailForEmailPasswordFlow transformed email: $transformedEmail');
+    print(
+      '### FirebaseService.firestoreEmailForEmailPasswordFlow transformed email: $transformedEmail',
+    );
 
     return transformedEmail;
   }
 
   static String _generateNonce([int length = 32]) {
-    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    const charset =
+        '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
     final rand = Random.secure();
-    return List.generate(length, (_) => charset[rand.nextInt(charset.length)]).join();
+    return List.generate(
+      length,
+      (_) => charset[rand.nextInt(charset.length)],
+    ).join();
   }
 
   static String _sha256ofString(String input) {
     final bytes = utf8.encode(input);
     final digest = sha256.convert(bytes);
     return digest.toString();
+  }
+
+  static String? emailFromAppleIdentityToken(String identityToken) {
+    try {
+      final parts = identityToken.split('.');
+      if (parts.length < 2) return null;
+
+      final payload = jsonDecode(
+        utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
+      );
+      final email = payload['email'];
+      if (email is String && email.trim().isNotEmpty) {
+        return email.trim();
+      }
+    } catch (_) {
+      return null;
+    }
+
+    return null;
   }
 
   /// Apple Sign-In (TOKEN ONLY – no Firebase user)
@@ -136,28 +173,50 @@ class FirebaseService {
       final nonce = _sha256ofString(rawNonce);
 
       final credential = await SignInWithApple.getAppleIDCredential(
-        scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
         nonce: nonce,
       );
 
-      if (credential.identityToken == null || credential.authorizationCode.isEmpty) {
+      if (credential.identityToken == null ||
+          credential.authorizationCode.isEmpty) {
         debugPrint("❌ Apple Sign-In cancelled or invalid");
-        Utilities.showSnackBar(title: 'Error', message: 'Apple Sign-In was canceled', isSuccess: false);
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: 'Apple Sign-In was canceled',
+          isSuccess: false,
+        );
         return null;
       }
 
       return AppleSignInResult(
         identityToken: credential.identityToken!,
         authorizationCode: credential.authorizationCode,
-        email: credential.email,
-        fullName: '${credential.givenName ?? ''} ${credential.familyName ?? ''}'.trim(),
+        rawNonce: rawNonce,
+        email:
+            credential.email ??
+            emailFromAppleIdentityToken(credential.identityToken!),
+        fullName:
+            '${credential.givenName ?? ''} ${credential.familyName ?? ''}'
+                .trim(),
       );
     } catch (e) {
       debugPrint("❌ Apple Sign-In error: $e");
-      if (e is SignInWithAppleAuthorizationException && e.code == AuthorizationErrorCode.canceled) {
-        Utilities.showSnackBar(title: 'Error', message: 'Apple Sign-In was canceled', isSuccess: false);
+      if (e is SignInWithAppleAuthorizationException &&
+          e.code == AuthorizationErrorCode.canceled) {
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: 'Apple Sign-In was canceled',
+          isSuccess: false,
+        );
       } else {
-        Utilities.showSnackBar(title: 'Error', message: 'Apple Sign-In failed. Please try again."', isSuccess: false);
+        Utilities.showSnackBar(
+          title: 'Error',
+          message: 'Apple Sign-In failed. Please try again."',
+          isSuccess: false,
+        );
       }
       rethrow;
     }
@@ -167,7 +226,9 @@ class FirebaseService {
   /// Returns basic profile info for pre-filling forms.
   static Future<GoogleSignInAccount?> pickGoogleAccount() async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+      );
 
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
@@ -184,7 +245,9 @@ class FirebaseService {
   /// Sign in with Google just to fetch tokens (no Firebase Auth user creation).
   static Future<GoogleAuthTokens?> signInWithGoogleTokensOnly() async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+      );
 
       final GoogleSignInAccount? account = await googleSignIn.signIn();
       if (account == null) {
@@ -210,13 +273,14 @@ class FirebaseService {
   }) async {
     debugPrint('Syncing Firebase user: $email');
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-      debugPrint("✅ Firebase user already exists");
-    } catch (_) {
-      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      debugPrint("✅ Firebase user already exists");
+    } catch (_) {
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
 
       final uid = userCredential.user!.uid;
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
@@ -244,7 +308,8 @@ class FirebaseService {
     String? profileImage,
   }) async {
     try {
-      final userDoc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final userDoc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
       if (!userDoc.exists) {
         await FirebaseFirestore.instance.collection('users').doc(uid).set({
@@ -257,7 +322,9 @@ class FirebaseService {
           'createdAt': FieldValue.serverTimestamp(),
           'authProvider': 'google',
         });
-        debugPrint("✅ Google user created in Firestore after backend verification");
+        debugPrint(
+          "✅ Google user created in Firestore after backend verification",
+        );
       } else {
         // Update existing document with latest data
         await FirebaseFirestore.instance.collection('users').doc(uid).update({
@@ -287,10 +354,14 @@ class FirebaseService {
       'uid': uid,
       'apiUserId': apiUserId,
       'name': name,
-      'email': useEnvironmentEmail ? firestoreEmailForEmailPasswordFlow(email) : email,
+      'email':
+          useEnvironmentEmail
+              ? firestoreEmailForEmailPasswordFlow(email)
+              : email,
       'role': role,
       'profileImage': profileImage ?? '',
-      if (authProvider != null && authProvider.isNotEmpty) 'authProvider': authProvider,
+      if (authProvider != null && authProvider.isNotEmpty)
+        'authProvider': authProvider,
       'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
   }
@@ -298,7 +369,9 @@ class FirebaseService {
   static Future<GoogleSignInResult?> signInWithGoogle() async {
     try {
       // Configure GoogleSignIn with proper scopes for both iOS and Android
-      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email', 'profile']);
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        scopes: ['email', 'profile'],
+      );
 
       // Trigger the authentication flow
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
@@ -310,7 +383,8 @@ class FirebaseService {
       }
 
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       // Print the access token
       debugPrint("🔑 Google Access Token: ${googleAuth.accessToken}");
@@ -323,10 +397,14 @@ class FirebaseService {
       );
 
       // Sign in to Firebase with the Google credential
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
 
       debugPrint("✅ Google Sign-In successful: ${userCredential.user?.email}");
-      debugPrint("⚠️ Firestore document will be created only after backend verification");
+      debugPrint(
+        "⚠️ Firestore document will be created only after backend verification",
+      );
 
       // Return result with access token
       return GoogleSignInResult(

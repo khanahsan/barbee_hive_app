@@ -53,6 +53,10 @@ class SignUpEmployerController extends GetxController {
   final RxString googleIdToken = ''.obs;
   final RxString appleIdentityToken = ''.obs;
   final RxString appleAuthorizationCode = ''.obs;
+  final RxString appleRawNonce = ''.obs;
+  bool get isAppleSignup =>
+      appleIdentityToken.value.isNotEmpty &&
+      appleAuthorizationCode.value.isNotEmpty;
   final RxBool isGoogleSignInLoading = false.obs;
   final RxBool isAppleSignInLoading = false.obs;
   final selectedImage = Rx<File?>(null);
@@ -98,7 +102,10 @@ class SignUpEmployerController extends GetxController {
     cityController.text = '';
     cities.clear();
 
-    final state = states.firstWhere((s) => s.name == value, orElse: () => StateModel(id: 0, name: ''));
+    final state = states.firstWhere(
+      (s) => s.name == value,
+      orElse: () => StateModel(id: 0, name: ''),
+    );
     if (state.id != 0) {
       fetchCities(stateId: state.id);
     }
@@ -116,7 +123,11 @@ class SignUpEmployerController extends GetxController {
       final picked = await ImagePicker().pickImage(source: source);
       if (picked != null) selectedImage.value = File(picked.path);
     } catch (e) {
-      Utilities.showSnackBar(title: 'Error', message: 'Failed to pick image: $e', isSuccess: false);
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Failed to pick image: $e',
+        isSuccess: false,
+      );
     }
   }
 
@@ -167,11 +178,16 @@ class SignUpEmployerController extends GetxController {
     print('### SignUpEmployerController.registerEmployer invoked');
 
     if (googleAccessToken.value.isNotEmpty && googleIdToken.value.isNotEmpty) {
-      print('### SignUpEmployerController.registerEmployer using Google credential signup path');
+      print(
+        '### SignUpEmployerController.registerEmployer using Google credential signup path',
+      );
       return _registerWithGoogleCredential();
     }
-    if (appleIdentityToken.value.isNotEmpty && appleAuthorizationCode.value.isNotEmpty) {
-      print('### SignUpEmployerController.registerEmployer using Apple credential signup path');
+    if (appleIdentityToken.value.isNotEmpty &&
+        appleAuthorizationCode.value.isNotEmpty) {
+      print(
+        '### SignUpEmployerController.registerEmployer using Apple credential signup path',
+      );
       return _registerWithAppleCredential();
     }
     // 1️⃣ Validate profile image and terms
@@ -180,32 +196,50 @@ class SignUpEmployerController extends GetxController {
 
     // 2️⃣ Validate selected skills
     if (selectedSkills.isEmpty) {
-      return Utilities.showSnackBar(title: 'Error', message: 'Please select at least one skill', isSuccess: false);
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select at least one skill',
+        isSuccess: false,
+      );
     }
 
     // 3️⃣ Validate country and state selection
     if (selectedCountry.value.isEmpty || selectedState.value.isEmpty) {
-      return Utilities.showSnackBar(title: 'Error', message: 'Please select both country and state', isSuccess: false);
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select both country and state',
+        isSuccess: false,
+      );
     }
 
     // 4️⃣ Map selected skills to Skill objects
-    final userSkills = skills.where((skill) => selectedSkills.contains(skill.name)).toList();
+    final userSkills =
+        skills.where((skill) => selectedSkills.contains(skill.name)).toList();
 
     if (userSkills.isEmpty) {
-      return Utilities.showSnackBar(title: 'Error', message: 'Please select valid skills', isSuccess: false);
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select valid skills',
+        isSuccess: false,
+      );
     }
 
-    final firestoreEmail = FirebaseService.firestoreEmailForEmailPasswordFlow(emailController.text.trim());
-    print('### SignUpEmployerController.registerEmployer email/password signup will use email: $firestoreEmail');
+    final firestoreEmail = FirebaseService.firestoreEmailForEmailPasswordFlow(
+      emailController.text.trim(),
+    );
+    print(
+      '### SignUpEmployerController.registerEmployer email/password signup will use email: $firestoreEmail',
+    );
 
     isLoading.value = true;
 
     try {
       // 5️⃣ Create Firebase User
-      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: firestoreEmail,
-        password: passwordController.text.trim(),
-      );
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+            email: firestoreEmail,
+            password: passwordController.text.trim(),
+          );
 
       final uid = userCredential.user!.uid;
 
@@ -213,7 +247,8 @@ class SignUpEmployerController extends GetxController {
       final countryId =
           countries
               .firstWhere(
-                (c) => c.name.toLowerCase() == selectedCountry.value.toLowerCase(),
+                (c) =>
+                    c.name.toLowerCase() == selectedCountry.value.toLowerCase(),
                 orElse: () => throw Exception('Please select a valid country'),
               )
               .id;
@@ -221,7 +256,8 @@ class SignUpEmployerController extends GetxController {
       final stateId =
           states
               .firstWhere(
-                (s) => s.name.toLowerCase() == selectedState.value.toLowerCase(),
+                (s) =>
+                    s.name.toLowerCase() == selectedState.value.toLowerCase(),
                 orElse: () => throw Exception('Please select a valid state'),
               )
               .id;
@@ -261,14 +297,22 @@ class SignUpEmployerController extends GetxController {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      Utilities.showSnackBar(title: 'Success', message: apiResponse.message, isSuccess: true);
+      Utilities.showSnackBar(
+        title: 'Success',
+        message: apiResponse.message,
+        isSuccess: true,
+      );
 
       Get.offAllNamed(Routes.SIGN_IN_VIEW);
     } on FirebaseAuthException catch (e) {
       _handleFirebaseErrors(e);
     } catch (e) {
       log("EXCEPTION: ${e.toString()}");
-      Utilities.showSnackBar(title: 'Error', message: e.toString().replaceFirst('Exception: ', ''), isSuccess: false);
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: e.toString().replaceFirst('Exception: ', ''),
+        isSuccess: false,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -277,7 +321,11 @@ class SignUpEmployerController extends GetxController {
   // ---------------------- VALIDATION HELPERS ---------------------- //
   bool _validateImage() {
     if (selectedImage.value == null) {
-      Utilities.showSnackBar(title: 'Error', message: 'Please upload a profile image', isSuccess: false);
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please upload a profile image',
+        isSuccess: false,
+      );
       return false;
     }
     return true;
@@ -285,7 +333,11 @@ class SignUpEmployerController extends GetxController {
 
   bool _validateTerms() {
     if (!isChecked.value) {
-      Utilities.showSnackBar(title: 'Error', message: 'You must agree to the terms & conditions', isSuccess: false);
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'You must agree to the terms & conditions',
+        isSuccess: false,
+      );
       return false;
     }
     return true;
@@ -317,7 +369,11 @@ class SignUpEmployerController extends GetxController {
       final tokenResult = await FirebaseService.signInWithGoogleTokensOnly();
 
       if (tokenResult == null) {
-        Utilities.showSnackBar(title: "Cancelled", message: "Google Sign-In was cancelled", isSuccess: false);
+        Utilities.showSnackBar(
+          title: "Cancelled",
+          message: "Google Sign-In was cancelled",
+          isSuccess: false,
+        );
         return;
       }
 
@@ -325,7 +381,11 @@ class SignUpEmployerController extends GetxController {
       final idToken = tokenResult.authentication.idToken;
 
       if (accessToken == null || accessToken.isEmpty) {
-        Utilities.showSnackBar(title: "Error", message: "Unable to retrieve Google access token", isSuccess: false);
+        Utilities.showSnackBar(
+          title: "Error",
+          message: "Unable to retrieve Google access token",
+          isSuccess: false,
+        );
         return;
       }
 
@@ -360,13 +420,18 @@ class SignUpEmployerController extends GetxController {
 
         Utilities.showSnackBar(
           title: "Complete Your Profile",
-          message: "Please fill in the remaining details to complete registration",
+          message:
+              "Please fill in the remaining details to complete registration",
           isSuccess: true,
         );
       }
     } catch (e) {
       final errorMessage = e.toString().replaceFirst('Exception: ', '');
-      Utilities.showSnackBar(title: "Google Sign-Up Failed", message: errorMessage, isSuccess: false);
+      Utilities.showSnackBar(
+        title: "Google Sign-Up Failed",
+        message: errorMessage,
+        isSuccess: false,
+      );
     } finally {
       isGoogleSignInLoading.value = false;
     }
@@ -380,14 +445,22 @@ class SignUpEmployerController extends GetxController {
       final appleResult = await FirebaseService.signInWithAppleTokensOnly();
 
       if (appleResult == null) {
-        Utilities.showSnackBar(title: "Cancelled", message: "Apple Sign-In was cancelled", isSuccess: false);
+        Utilities.showSnackBar(
+          title: "Cancelled",
+          message: "Apple Sign-In was cancelled",
+          isSuccess: false,
+        );
         return;
       }
 
       final identityToken = appleResult.identityToken;
 
       if (identityToken.isEmpty) {
-        Utilities.showSnackBar(title: "Error", message: "Unable to retrieve Apple identity token", isSuccess: false);
+        Utilities.showSnackBar(
+          title: "Error",
+          message: "Unable to retrieve Apple identity token",
+          isSuccess: false,
+        );
         return;
       }
 
@@ -422,16 +495,22 @@ class SignUpEmployerController extends GetxController {
         }
         appleIdentityToken.value = identityToken;
         appleAuthorizationCode.value = appleResult.authorizationCode;
+        appleRawNonce.value = appleResult.rawNonce;
 
         Utilities.showSnackBar(
           title: "Complete Your Profile",
-          message: "Please fill in the remaining details to complete registration",
+          message:
+              "Please fill in the remaining details to complete registration",
           isSuccess: true,
         );
       }
     } catch (e) {
       final errorMessage = e.toString().replaceFirst('Exception: ', '');
-      Utilities.showSnackBar(title: "Apple Sign-Up Failed", message: errorMessage, isSuccess: false);
+      Utilities.showSnackBar(
+        title: "Apple Sign-Up Failed",
+        message: errorMessage,
+        isSuccess: false,
+      );
     } finally {
       isAppleSignInLoading.value = false;
     }
@@ -450,10 +529,18 @@ class SignUpEmployerController extends GetxController {
     // Retain existing validations
     if (!_validateImage() || !_validateTerms()) return;
     if (selectedSkills.isEmpty) {
-      return Utilities.showSnackBar(title: 'Error', message: 'Please select at least one skill', isSuccess: false);
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select at least one skill',
+        isSuccess: false,
+      );
     }
     if (selectedCountry.value.isEmpty || selectedState.value.isEmpty) {
-      return Utilities.showSnackBar(title: 'Error', message: 'Please select both country and state', isSuccess: false);
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select both country and state',
+        isSuccess: false,
+      );
     }
 
     // Fallback password if user left it blank
@@ -464,10 +551,15 @@ class SignUpEmployerController extends GetxController {
     }
 
     // Map selected skills to Skill objects
-    final userSkills = skills.where((skill) => selectedSkills.contains(skill.name)).toList();
+    final userSkills =
+        skills.where((skill) => selectedSkills.contains(skill.name)).toList();
 
     if (userSkills.isEmpty) {
-      return Utilities.showSnackBar(title: 'Error', message: 'Please select valid skills', isSuccess: false);
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select valid skills',
+        isSuccess: false,
+      );
     }
 
     isLoading.value = true;
@@ -476,7 +568,9 @@ class SignUpEmployerController extends GetxController {
         accessToken: googleAccessToken.value,
         idToken: googleIdToken.value,
       );
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
       final uid = userCredential.user?.uid;
       final email = userCredential.user?.email ?? emailController.text.trim();
 
@@ -487,7 +581,8 @@ class SignUpEmployerController extends GetxController {
       final countryId =
           countries
               .firstWhere(
-                (c) => c.name.toLowerCase() == selectedCountry.value.toLowerCase(),
+                (c) =>
+                    c.name.toLowerCase() == selectedCountry.value.toLowerCase(),
                 orElse: () => throw Exception('Please select a valid country'),
               )
               .id;
@@ -495,7 +590,8 @@ class SignUpEmployerController extends GetxController {
       final stateId =
           states
               .firstWhere(
-                (s) => s.name.toLowerCase() == selectedState.value.toLowerCase(),
+                (s) =>
+                    s.name.toLowerCase() == selectedState.value.toLowerCase(),
                 orElse: () => throw Exception('Please select a valid state'),
               )
               .id;
@@ -530,13 +626,25 @@ class SignUpEmployerController extends GetxController {
         'authProvider': 'google',
       });
 
-      Utilities.showSnackBar(title: 'Success', message: apiResponse.message, isSuccess: true);
+      Utilities.showSnackBar(
+        title: 'Success',
+        message: apiResponse.message,
+        isSuccess: true,
+      );
 
       Get.offAllNamed(Routes.SIGN_IN_VIEW);
     } on FirebaseAuthException catch (e) {
-      Utilities.showSnackBar(title: 'Error', message: '${e.code}: ${e.message}', isSuccess: false);
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: '${e.code}: ${e.message}',
+        isSuccess: false,
+      );
     } catch (e) {
-      Utilities.showSnackBar(title: 'Error', message: e.toString().replaceFirst('Exception: ', ''), isSuccess: false);
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: e.toString().replaceFirst('Exception: ', ''),
+        isSuccess: false,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -569,26 +677,43 @@ class SignUpEmployerController extends GetxController {
     final args = Get.arguments;
     if (args is! Map) return;
 
-    final name = args['name'] as String?;
     final email = args['email'] as String?;
     final identityToken = args['appleIdentityToken'] as String?;
     final authorizationCode = args['appleAuthorizationCode'] as String?;
+    final rawNonce = args['appleRawNonce'] as String?;
+    final resolvedEmail =
+        (email != null && email.isNotEmpty)
+            ? email
+            : identityToken != null
+            ? FirebaseService.emailFromAppleIdentityToken(identityToken) ?? ''
+            : '';
 
-    if (name != null && name.isNotEmpty) nameController.text = name;
-    if (email != null && email.isNotEmpty) emailController.text = email;
+    if (resolvedEmail.isNotEmpty) emailController.text = resolvedEmail;
     if (identityToken != null && identityToken.isNotEmpty) {
       appleIdentityToken.value = identityToken;
     }
     if (authorizationCode != null && authorizationCode.isNotEmpty) {
       appleAuthorizationCode.value = authorizationCode;
     }
+    if (rawNonce != null && rawNonce.isNotEmpty) {
+      appleRawNonce.value = rawNonce;
+    }
   }
 
   Future<void> _registerWithAppleCredential() async {
-    if (appleIdentityToken.value.isEmpty || appleAuthorizationCode.value.isEmpty) {
+    if (appleIdentityToken.value.isEmpty ||
+        appleAuthorizationCode.value.isEmpty) {
       Utilities.showSnackBar(
         title: 'Error',
         message: 'Apple sign-in token missing. Please try again.',
+        isSuccess: false,
+      );
+      return;
+    }
+    if (appleRawNonce.value.isEmpty) {
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Apple sign-in expired. Please try again.',
         isSuccess: false,
       );
       return;
@@ -597,10 +722,18 @@ class SignUpEmployerController extends GetxController {
     // Retain existing validations
     if (!_validateImage() || !_validateTerms()) return;
     if (selectedSkills.isEmpty) {
-      return Utilities.showSnackBar(title: 'Error', message: 'Please select at least one skill', isSuccess: false);
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select at least one skill',
+        isSuccess: false,
+      );
     }
     if (selectedCountry.value.isEmpty || selectedState.value.isEmpty) {
-      return Utilities.showSnackBar(title: 'Error', message: 'Please select both country and state', isSuccess: false);
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select both country and state',
+        isSuccess: false,
+      );
     }
 
     // Fallback password if user left it blank
@@ -611,20 +744,30 @@ class SignUpEmployerController extends GetxController {
     }
 
     // Map selected skills to Skill objects
-    final userSkills = skills.where((skill) => selectedSkills.contains(skill.name)).toList();
+    final userSkills =
+        skills.where((skill) => selectedSkills.contains(skill.name)).toList();
 
     if (userSkills.isEmpty) {
-      return Utilities.showSnackBar(title: 'Error', message: 'Please select valid skills', isSuccess: false);
+      return Utilities.showSnackBar(
+        title: 'Error',
+        message: 'Please select valid skills',
+        isSuccess: false,
+      );
     }
 
     isLoading.value = true;
     try {
-      final credential = OAuthProvider(
-        'apple.com',
-      ).credential(idToken: appleIdentityToken.value, accessToken: appleAuthorizationCode.value);
-      final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final credential = OAuthProvider('apple.com').credential(
+        idToken: appleIdentityToken.value,
+        accessToken: appleAuthorizationCode.value,
+        rawNonce: appleRawNonce.value,
+      );
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
       final uid = userCredential.user?.uid;
       final email = userCredential.user?.email ?? emailController.text.trim();
+      final businessName = nameController.text.trim();
 
       if (uid == null || email.isEmpty) {
         throw Exception('Unable to complete Apple signup. Please try again.');
@@ -633,7 +776,8 @@ class SignUpEmployerController extends GetxController {
       final countryId =
           countries
               .firstWhere(
-                (c) => c.name.toLowerCase() == selectedCountry.value.toLowerCase(),
+                (c) =>
+                    c.name.toLowerCase() == selectedCountry.value.toLowerCase(),
                 orElse: () => throw Exception('Please select a valid country'),
               )
               .id;
@@ -641,14 +785,15 @@ class SignUpEmployerController extends GetxController {
       final stateId =
           states
               .firstWhere(
-                (s) => s.name.toLowerCase() == selectedState.value.toLowerCase(),
+                (s) =>
+                    s.name.toLowerCase() == selectedState.value.toLowerCase(),
                 orElse: () => throw Exception('Please select a valid state'),
               )
               .id;
 
       final apiResponse = await AuthApi.register(
         uid: uid,
-        name: nameController.text.trim(),
+        name: businessName,
         email: email,
         password: passwordController.text,
         passwordConfirmation: confirmPasswordController.text,
@@ -668,7 +813,7 @@ class SignUpEmployerController extends GetxController {
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
         'uid': uid,
         'apiUserId': apiResponse.data.user.id ?? '',
-        'name': nameController.text.trim(),
+        'name': businessName,
         'email': email,
         'role': 'employer',
         'profileImage': apiResponse.data.user.profileImage ?? '',
@@ -676,13 +821,25 @@ class SignUpEmployerController extends GetxController {
         'authProvider': 'apple',
       });
 
-      Utilities.showSnackBar(title: 'Success', message: apiResponse.message, isSuccess: true);
+      Utilities.showSnackBar(
+        title: 'Success',
+        message: apiResponse.message,
+        isSuccess: true,
+      );
 
       Get.offAllNamed(Routes.SIGN_IN_VIEW);
     } on FirebaseAuthException catch (e) {
-      Utilities.showSnackBar(title: 'Error', message: '${e.code}: ${e.message}', isSuccess: false);
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: '${e.code}: ${e.message}',
+        isSuccess: false,
+      );
     } catch (e) {
-      Utilities.showSnackBar(title: 'Error', message: e.toString().replaceFirst('Exception: ', ''), isSuccess: false);
+      Utilities.showSnackBar(
+        title: 'Error',
+        message: e.toString().replaceFirst('Exception: ', ''),
+        isSuccess: false,
+      );
     } finally {
       isLoading.value = false;
     }

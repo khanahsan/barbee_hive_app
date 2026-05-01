@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_profile_image.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/profile/controllers/profile_controller.dart';
@@ -70,9 +71,7 @@ class ProfileScreen extends GetView<ProfileController> {
                     btnBackgroundColor: AppColors.colorFF8600,
                     btnTxtColor: Colors.white,
                     onPressed: () {
-                      if (controller.formKey.currentState!.validate()) {
-                        controller.updateUserProfile();
-                      }
+                      _submitProfileUpdate();
                     },
                   ),
                 )
@@ -471,7 +470,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                                                           CustomText(
                                                                             title:
                                                                                 hasActiveBoost
-                                                                                    ? 'You already got boost'
+                                                                                    ? 'Boost Activated'
                                                                                     : 'Boost your profile',
                                                                             color:
                                                                                 AppColors.colorFFFFFF,
@@ -619,5 +618,20 @@ class ProfileScreen extends GetView<ProfileController> {
                 ).paddingOnly(top: 25.h),
       ),
     );
+  }
+
+  void _submitProfileUpdate() {
+    final isValid = controller.formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      Utilities.showSnackBar(
+        title: 'Missing Information',
+        message: 'Please complete the required profile fields.',
+        isSuccess: false,
+      );
+      return;
+    }
+
+    controller.updateUserProfile();
   }
 }

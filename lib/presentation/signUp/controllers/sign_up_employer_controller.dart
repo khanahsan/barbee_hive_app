@@ -455,6 +455,11 @@ class SignUpEmployerController extends GetxController {
       }
 
       final identityToken = appleResult.identityToken;
+      final authorizationCode = appleResult.authorizationCode;
+      final rawNonce = appleResult.rawNonce;
+      debugPrint("🔑 Apple Identity Token: $identityToken");
+      debugPrint("🔑 Apple Authorization Code: $authorizationCode");
+      debugPrint("🔑 Apple Raw Nonce: $rawNonce");
 
       if (identityToken.isEmpty) {
         Utilities.showSnackBar(
@@ -475,7 +480,12 @@ class SignUpEmployerController extends GetxController {
 
       // Try to sign in with backend first
       try {
-        final response = await AuthApi.googleLogin(identityToken, fcmToken);
+        final response = await AuthApi.appleLogin(
+          identityToken: identityToken,
+          authorizationCode: authorizationCode,
+          rawNonce: rawNonce,
+          fcmToken: fcmToken,
+        );
 
         // User already registered, redirect to sign in
         Utilities.showSnackBar(

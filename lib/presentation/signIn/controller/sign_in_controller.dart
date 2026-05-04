@@ -289,7 +289,11 @@ class SignInController extends GetxController {
       }
 
       final identityToken = appleResult.identityToken;
+      final authorizationCode = appleResult.authorizationCode;
+      final rawNonce = appleResult.rawNonce;
       debugPrint("🔑 Apple Identity Token: $identityToken");
+      debugPrint("🔑 Apple Authorization Code: $authorizationCode");
+      debugPrint("🔑 Apple Raw Nonce: $rawNonce");
 
       // Step 2: Validate identity token
       if (identityToken.isEmpty) {
@@ -313,7 +317,12 @@ class SignInController extends GetxController {
 
       // Step 4: Call backend Apple login API (using same endpoint as Google)
       try {
-        final response = await AuthApi.googleLogin(identityToken, fcmToken);
+        final response = await AuthApi.appleLogin(
+          identityToken: identityToken,
+          authorizationCode: authorizationCode,
+          rawNonce: rawNonce,
+          fcmToken: fcmToken,
+        );
 
         // Step 5: Save user data locally
         SharedPreferenceHelper.saveInfo(

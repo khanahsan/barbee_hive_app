@@ -27,6 +27,23 @@ class AuthApi {
     return LoginResponse.fromJson(data);
   }
 
+  /// APPLE LOGIN API
+  static Future<LoginResponse> appleLogin({
+    required String identityToken,
+    required String authorizationCode,
+    required String rawNonce,
+    required String fcmToken,
+  }) async {
+    final data = await ApiService.post(ApiEndPoints.appleLogin, {
+      'id_token': identityToken,
+      'authorization_code': authorizationCode,
+      'raw_nonce': rawNonce,
+      'fcm_token': fcmToken,
+      'device_type': Platform.isIOS ? 'ios' : 'android',
+    });
+    return LoginResponse.fromJson(data);
+  }
+
   /// LOGOUT API
   static Future<void> logout() async =>
       ApiService.post(ApiEndPoints.logout, {}, auth: true);

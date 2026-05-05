@@ -840,6 +840,7 @@ class SignUpEmployerController extends GetxController {
                 orElse: () => throw Exception('Please select a valid state'),
               )
               .id;
+      debugPrint('email: $email');
 
       final apiResponse = await AuthApi.register(
         uid: uid,

@@ -635,6 +635,7 @@ class SignUpEmployerController extends GetxController {
         city: selectedCity.value,
         skillIds: userSkills.map((s) => s.id).toList(),
         profileImage: selectedImage.value,
+        provider: 'google',
       );
 
       if (!apiResponse.status) throw Exception(apiResponse.message);
@@ -856,6 +857,7 @@ class SignUpEmployerController extends GetxController {
         city: selectedCity.value,
         skillIds: userSkills.map((s) => s.id).toList(),
         profileImage: selectedImage.value,
+        provider: 'apple',
       );
 
       if (!apiResponse.status) throw Exception(apiResponse.message);

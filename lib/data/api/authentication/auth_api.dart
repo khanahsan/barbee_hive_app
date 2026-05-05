@@ -20,6 +20,7 @@ class AuthApi {
   /// GOOGLE LOGIN API
   static Future<LoginResponse> googleLogin(String accessToken, String fcmToken) async {
     final data = await ApiService.post(ApiEndPoints.googleLogin, {
+      'provider': 'google',
       'access_token': accessToken,
       'fcm_token': fcmToken,
       'device_type': Platform.isIOS ? 'ios' : 'android',
@@ -35,6 +36,7 @@ class AuthApi {
     required String fcmToken,
   }) async {
     final data = await ApiService.post(ApiEndPoints.appleLogin, {
+      'provider': 'apple',
       'id_token': identityToken,
       'authorization_code': authorizationCode,
       'raw_nonce': rawNonce,
@@ -142,6 +144,7 @@ class AuthApi {
     // int? skillId,
     List<int>? skillIds,
     File? profileImage,
+    String? provider,
   }) async {
     final fields = <String, String>{
       'uid': uid,
@@ -154,6 +157,8 @@ class AuthApi {
       'state_id': state,
       'city': city,
     };
+
+    if (provider != null && provider.isNotEmpty) fields['provider'] = provider;
 
     // Add nullable fields only if they are not null
     if (address != null && address.isNotEmpty) fields['address'] = address;

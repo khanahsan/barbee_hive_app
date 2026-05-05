@@ -67,6 +67,14 @@ android {
                 "proguard-rules.pro"
             )
         }
+        getByName("debug") {
+            // Sign debug builds with the upload keystore too, so Google Sign-In
+            // works without registering a separate debug SHA-1 in Firebase.
+            // Falls back to the default debug key if key.properties is missing.
+            if (hasKeystoreProperties) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
     }
 }
 

@@ -917,6 +917,7 @@ class SignUpEmployeeController extends GetxController {
         resume: selectedResume.value,
         skillIds: userSkills.map((s) => s.id).toList(),
         profileImage: selectedImage.value,
+        provider: 'google',
       );
 
       if (!response.status) throw Exception(response.message);
@@ -1083,6 +1084,7 @@ class SignUpEmployeeController extends GetxController {
         resume: selectedResume.value,
         skillIds: userSkills.map((s) => s.id).toList(),
         profileImage: selectedImage.value,
+        provider: 'apple',
       );
 
       if (!response.status) throw Exception(response.message);

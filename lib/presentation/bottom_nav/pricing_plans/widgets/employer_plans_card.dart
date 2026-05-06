@@ -1,6 +1,10 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:barbee_hive_app/data/api/endpoint_constants.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
+import 'package:barbee_hive_app/infrastructure/constants/app_strings.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller/pricing_plans_controller.dart';
@@ -9,6 +13,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/widgets/pl
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EmployerPlansCard extends GetView<PricingPlansController> {
   final SubscriptionPlan plan;
@@ -157,6 +162,65 @@ class EmployerPlansCard extends GetView<PricingPlansController> {
                   fontWeight: FontWeight.w600,
                   btnBackgroundColor: AppColors.colorFF8600,
                 ),
+
+              /// Privacy Policy and EULA URL (FOR IOS Only)
+              if (Platform.isIOS) ...[
+                SizedBox(height: 20.h),
+                Row(
+                  spacing: 20.w,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        final privacyUrl =
+                            '${ApiEndPoints.basePoint}${AppStrings.privacyPolicy}';
+                        final uri = Uri.parse(privacyUrl);
+                        final launched = await launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        );
+                        if (!launched) {
+                          Utilities.showSnackBar(
+                            title: 'Error',
+                            message: 'Could not launch $privacyUrl',
+                            isSuccess: false,
+                          );
+                        }
+                      },
+                      child: const CustomText(
+                        title: 'Privacy Policy',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.colorFFFFFF,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        final eulaUrl =
+                            '${ApiEndPoints.basePoint}${AppStrings.termsConditions}';
+                        final uri = Uri.parse(eulaUrl);
+                        final launched = await launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        );
+                        if (!launched) {
+                          Utilities.showSnackBar(
+                            title: 'Error',
+                            message: 'Could not launch $eulaUrl',
+                            isSuccess: false,
+                          );
+                        }
+                      },
+                      child: const CustomText(
+                        title: 'Terms of Use (EULA)',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.colorFFFFFF,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
 
               /* if (isPurchased)
               CustomButton(

@@ -4,16 +4,16 @@ class ApiEndPoints {
   //static const String basePoint = 'https://barbeehive.staging.pegasync.com/';
 
   /// Sandbox
-  // static const String baseUrl = 'https://barbeehive.sandbox.pegasync.com/api/';
-  // static const String basePoint = 'https://barbeehive.sandbox.pegasync.com/';
+  static const String baseUrl = 'https://barbeehive.sandbox.pegasync.com/api/';
+  static const String basePoint = 'https://barbeehive.sandbox.pegasync.com/';
 
   /// Live
   // static const String baseUrl = 'https://barbeehive.com/api/';
   //static const String basePoint = 'https://barbeehive.com/';
 
   /// Local
-  static const String baseUrl = 'http://192.168.10.60:8000/api/';
-  static const String basePoint = 'http://192.168.10.60:8000/';
+  // static const String baseUrl = 'http://192.168.10.60:8000/api/';
+  // static const String basePoint = 'http://192.168.10.60:8000/';
 
   /// AUTH
   static const String login = 'login';

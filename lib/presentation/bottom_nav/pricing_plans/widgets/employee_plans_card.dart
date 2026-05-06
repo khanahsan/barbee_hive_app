@@ -216,7 +216,10 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
 }
 */
 
+import 'dart:io';
+
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/controller/pricing_plans_controller.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/model/pricing_plans_model.dart';
@@ -224,6 +227,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/pricing_plans/widgets/pl
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../infrastructure/widgets/custom_btn.dart';
 
@@ -357,6 +361,59 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
                   fontWeight: FontWeight.w600,
                   btnBackgroundColor: AppColors.colorFF8600,
                 ),
+
+              /// Privacy Policy and EULA URL (FOR IOS Only)
+              if (Platform.isIOS) ...[
+                SizedBox(height: 20.h),
+                Row(
+                  spacing: 20.w,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        const String privacyUrl =
+                            'https://barbeehive.com/privacy-policy';
+                        if (await canLaunch(privacyUrl)) {
+                          await launch(privacyUrl);
+                        } else {
+                          throw 'Could not launch $privacyUrl';
+                        }
+                      },
+                      child: const CustomText(
+                        title: 'Privacy Policy',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.colorFFFFFF,
+                      ),
+                    ),
+
+                    GestureDetector(
+                      onTap: () async {
+                        final eulaUrl =
+                            'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
+                        final uri = Uri.parse(eulaUrl);
+                        final launched = await launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        );
+                        if (!launched) {
+                          Utilities.showSnackBar(
+                            title: 'Error',
+                            message: 'Could not launch $eulaUrl',
+                            isSuccess: false,
+                          );
+                        }
+                      },
+                      child: const CustomText(
+                        title: 'Terms of Use (EULA)',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.colorFFFFFF,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ],
           ],
         ),
@@ -375,7 +432,7 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
           child: CustomText(
             title: text,
             fontSize: 16,
-           // color: AppColors.colorFFFFFF,
+            // color: AppColors.colorFFFFFF,
             color: AppColors.colorFFFFFF,
             fontWeight: FontWeight.w400,
           ),
@@ -406,8 +463,6 @@ class EmployeePlansCard extends GetView<PricingPlansController> {
     }
 
     // Multiple items → bullets
-    return items
-        .map((item) => _buildBulletPoint(item, color))
-        .toList();
+    return items.map((item) => _buildBulletPoint(item, color)).toList();
   }
 }

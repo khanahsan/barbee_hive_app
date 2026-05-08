@@ -300,36 +300,36 @@ class EmployeeEditWidget extends GetView<ProfileController> {
                 spacing: 20.w,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: CustomDropdown(
-                      textColor: AppColors.colorFFFFFF,
-                      dropdownColor: AppColors.colorFF8600,
-                      validator:
-                          (value) => FormValidators.validateRequired(
-                            value,
-                            "Eye Color",
-                          ),
-                      hint: "Eye Color",
-                      iconPath: AppAssets.personIcon,
-                      selectedValue: controller.currentEyeColorName,
-                      items:
-                          controller.eyeColors
-                              .map(
-                                (e) => DropdownMenuItem<String>(
-                                  value: e.name,
-                                  child: Text(e.name),
-                                ),
-                              )
-                              .toList(),
-                      onChanged: (val) {
-                        controller.currentEyeColorName.value = val ?? '';
-                        final selected = controller.eyeColors.firstWhereOrNull(
-                          (e) => e.name == val,
-                        );
-                        controller.currentEyeColorId.value = selected?.id ?? 0;
-                      },
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: CustomDropdown(
+                  //     textColor: AppColors.colorFFFFFF,
+                  //     dropdownColor: AppColors.colorFF8600,
+                  //     validator:
+                  //         (value) => FormValidators.validateRequired(
+                  //           value,
+                  //           "Eye Color",
+                  //         ),
+                  //     hint: "Eye Color",
+                  //     iconPath: AppAssets.personIcon,
+                  //     selectedValue: controller.currentEyeColorName,
+                  //     items:
+                  //         controller.eyeColors
+                  //             .map(
+                  //               (e) => DropdownMenuItem<String>(
+                  //                 value: e.name,
+                  //                 child: Text(e.name),
+                  //               ),
+                  //             )
+                  //             .toList(),
+                  //     onChanged: (val) {
+                  //       controller.currentEyeColorName.value = val ?? '';
+                  //       final selected = controller.eyeColors.firstWhereOrNull(
+                  //         (e) => e.name == val,
+                  //       );
+                  //       controller.currentEyeColorId.value = selected?.id ?? 0;
+                  //     },
+                  //   ),
+                  // ),
                   Expanded(
                     child: CustomDropdown(
                       textColor: AppColors.colorFFFFFF,

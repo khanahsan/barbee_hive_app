@@ -420,10 +420,10 @@ class SignUpEmployeeController extends GetxController {
       if (userSkills.isEmpty) throw Exception('Please select valid skills');
 
       // ✅ Map selected eye color
-      eyeColor = eyeColors.firstWhere(
-        (color) => color.name == selectedEyeColor.value,
-        orElse: () => throw Exception('Please select an eye color'),
-      );
+      // eyeColor = eyeColors.firstWhere(
+      //   (color) => color.name == selectedEyeColor.value,
+      //   orElse: () => throw Exception('Please select an eye color'),
+      // );
 
       // ✅ Map selected hair color
       hairColor = hairColors.firstWhere(
@@ -498,7 +498,7 @@ class SignUpEmployeeController extends GetxController {
         experienceYears: selectedExperienceLevel.value,
         dob: selectedDate.value,
         gender: userGender.id,
-        eyeColorId: eyeColor.id,
+        // eyeColorId: eyeColor.id,
         hairColorId: hairColor.id,
         height: userHeight.id,
         resume: selectedResume.value,
@@ -863,10 +863,10 @@ class SignUpEmployeeController extends GetxController {
           throw Exception('Please select valid skills');
         }
 
-        eyeColor = eyeColors.firstWhere(
-          (color) => color.name == selectedEyeColor.value,
-          orElse: () => throw Exception('Please select an eye color'),
-        );
+        // eyeColor = eyeColors.firstWhere(
+        //   (color) => color.name == selectedEyeColor.value,
+        //   orElse: () => throw Exception('Please select an eye color'),
+        // );
         hairColor = hairColors.firstWhere(
           (color) => color.name == selectedHairColor.value,
           orElse: () => throw Exception('Please select a hair color'),
@@ -911,7 +911,7 @@ class SignUpEmployeeController extends GetxController {
         experienceYears: selectedExperienceLevel.value,
         dob: selectedDate.value,
         gender: userGender.id,
-        eyeColorId: eyeColor.id,
+        // eyeColorId: eyeColor.id,
         hairColorId: hairColor.id,
         height: userHeight.id,
         resume: selectedResume.value,
@@ -1028,12 +1028,12 @@ class SignUpEmployeeController extends GetxController {
           throw Exception('Please select valid skills');
         }
 
-        if (selectedEyeColor.value.isNotEmpty) {
-          eyeColor = eyeColors.firstWhere(
-            (color) => color.name == selectedEyeColor.value,
-            orElse: () => throw Exception('Please select a valid eye color'),
-          );
-        }
+        // if (selectedEyeColor.value.isNotEmpty) {
+        //   eyeColor = eyeColors.firstWhere(
+        //     (color) => color.name == selectedEyeColor.value,
+        //     orElse: () => throw Exception('Please select a valid eye color'),
+        //   );
+        // }
         hairColor = hairColors.firstWhere(
           (color) => color.name == selectedHairColor.value,
           orElse: () => throw Exception('Please select a hair color'),

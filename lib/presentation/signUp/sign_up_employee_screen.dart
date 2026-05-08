@@ -575,36 +575,36 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                         CrossAxisAlignment.start,
                                     spacing: 10.w,
                                     children: [
-                                      Expanded(
-                                        child: _buildDropdown(
-                                          hint: 'Select Eye Color',
-                                          iconPath: AppAssets.userLogo,
-                                          selectedValue:
-                                              controller.selectedEyeColor,
-                                          onChanged: controller.updateEyeColor,
-                                          /* validator:
-                                              (v) =>
-                                                  FormValidators.validateRequired(
-                                                    v,
-                                                    'Eye Color',
-                                                  ),*/
-                                          items:
-                                              controller.eyeColors
-                                                  .map(
-                                                    (e) => DropdownMenuItem(
-                                                      value: e.name,
-                                                      child: CustomText(
-                                                        title: e.name,
-                                                        color:
-                                                            AppColors
-                                                                .colorFFFFFF,
-                                                        fontSize: 16,
-                                                      ),
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                        ),
-                                      ),
+                                      // Expanded(
+                                      //   child: _buildDropdown(
+                                      //     hint: 'Select Eye Color',
+                                      //     iconPath: AppAssets.userLogo,
+                                      //     selectedValue:
+                                      //         controller.selectedEyeColor,
+                                      //     onChanged: controller.updateEyeColor,
+                                      //     /* validator:
+                                      //         (v) =>
+                                      //             FormValidators.validateRequired(
+                                      //               v,
+                                      //               'Eye Color',
+                                      //             ),*/
+                                      //     items:
+                                      //         controller.eyeColors
+                                      //             .map(
+                                      //               (e) => DropdownMenuItem(
+                                      //                 value: e.name,
+                                      //                 child: CustomText(
+                                      //                   title: e.name,
+                                      //                   color:
+                                      //                       AppColors
+                                      //                           .colorFFFFFF,
+                                      //                   fontSize: 16,
+                                      //                 ),
+                                      //               ),
+                                      //             )
+                                      //             .toList(),
+                                      //   ),
+                                      // ),
                                       Expanded(
                                         child: _buildDropdown(
                                           hint: 'Select Hair Color',

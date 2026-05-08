@@ -144,17 +144,17 @@ class DashboardScreen extends GetView<DashboardController> {
                     ).paddingSymmetric(horizontal: 15.w),
                   ),
 
-                  SizedBox(height: 25.h),
-                  Obx(
-                    () => _buildDropdown(
-                      context,
-                      value: controller.selectedEyeColor.value,
-                      hintText: "Eye Color",
-                      items: controller.eyeColorList,
-                      onChanged:
-                          (val) => controller.selectedEyeColor.value = val,
-                    ).paddingSymmetric(horizontal: 15.w),
-                  ),
+                  // SizedBox(height: 25.h),
+                  // Obx(
+                  //   () => _buildDropdown(
+                  //     context,
+                  //     value: controller.selectedEyeColor.value,
+                  //     hintText: "Eye Color",
+                  //     items: controller.eyeColorList,
+                  //     onChanged:
+                  //         (val) => controller.selectedEyeColor.value = val,
+                  //   ).paddingSymmetric(horizontal: 15.w),
+                  // ),
 
                   SizedBox(height: 25.h),
                   Obx(

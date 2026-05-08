@@ -399,7 +399,7 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
         log('Skills: ${skillList.length}');
         log('Genders: ${genderList.length}');
         log('Heights: ${heightList.length}');
-        log('Eye Colors: ${eyeColorList.length}');
+        log('FEye Colors: ${eyeColorList.length}');
         log('Hair Colors: ${hairColorList.length}');
       }
     } catch (e) {

@@ -180,16 +180,16 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
                                       widget.currentUser.employee?.gender ??
                                       "",
                                 ),
-                                _infoRow(
-                                  "Eye Color",
-                                  employee?.eyeColor?.name ??
-                                      widget
-                                          .currentUser
-                                          .employee
-                                          ?.eyeColor
-                                          ?.name ??
-                                      "N/A",
-                                ),
+                                // _infoRow(
+                                //   "Eye Color",
+                                //   employee?.eyeColor?.name ??
+                                //       widget
+                                //           .currentUser
+                                //           .employee
+                                //           ?.eyeColor
+                                //           ?.name ??
+                                //       "N/A",
+                                // ),
                                 _infoRow(
                                   "Hair Color",
                                   employee?.hairColor?.name ??

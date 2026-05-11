@@ -22,18 +22,15 @@ class StripeService {
           paymentIntentClientSecret: clientSecret,
 
           // Optional but usually passed by backend
-          customerId: customerId,
-          customerEphemeralKeySecret: ephemeralKey,
-
+          // customerId: customerId,
+          // customerEphemeralKeySecret: ephemeralKey,
           merchantDisplayName: merchantDisplayName,
 
           /// REQUIRED FOR IOS
           // merchantCountryCode: 'US',
 
           /// REQUIRED FOR IOS APPLE PAY SUPPORT
-          applePay: const PaymentSheetApplePay(
-            merchantCountryCode: 'US',
-          ),
+          applePay: const PaymentSheetApplePay(merchantCountryCode: 'US'),
 
           style: ThemeMode.dark,
         ),
@@ -46,14 +43,13 @@ class StripeService {
     }
   }
 
-   Future<void> initPaymentSheetAndroid({
+  Future<void> initPaymentSheetAndroid({
     required String clientSecret,
     String? customerId,
     String? ephemeralKey,
     String merchantDisplayName = 'Barbee Hive',
   }) async {
     try {
-
       log("CLIENT SECRET: $clientSecret");
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
@@ -80,19 +76,11 @@ class StripeService {
       return true;
     } on StripeException catch (e) {
       log('CURRENT ERROR: ${e.error.localizedMessage}');
-      Utilities.showSnackBar(
-        title: 'Error',
-        message: '${e.error.localizedMessage}',
-        isSuccess: false,
-      );
+      Utilities.showSnackBar(title: 'Error', message: '${e.error.localizedMessage}', isSuccess: false);
       return false;
     } catch (e) {
       log('Stripe unknown error: $e');
-      Utilities.showSnackBar(
-        title: 'Error',
-        message: e.toString(),
-        isSuccess: false,
-      );
+      Utilities.showSnackBar(title: 'Error', message: e.toString(), isSuccess: false);
       return false;
     }
   }

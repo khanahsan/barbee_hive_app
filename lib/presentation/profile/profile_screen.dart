@@ -32,12 +32,7 @@ class ProfileScreen extends GetView<ProfileController> {
             Get.back();
           },
           title: '',
-          titleWidget: SvgPicture.asset(
-            AppAssets.appIconTwo,
-            width: 50.w,
-            height: 50.h,
-            fit: BoxFit.cover,
-          ),
+          titleWidget: SvgPicture.asset(AppAssets.appIconTwo, width: 50.w, height: 50.h, fit: BoxFit.cover),
           // title: controller.isEditing.value ? "Edit Profile" : "Profile",
           showActions: false,
           leadingIconPath: AppAssets.backIcon,
@@ -60,11 +55,7 @@ class ProfileScreen extends GetView<ProfileController> {
         () =>
             controller.isEditing.value && controller.isLoading.value == false
                 ? Padding(
-                  padding: EdgeInsets.only(
-                    left: 15.w,
-                    right: 15.w,
-                    bottom: 20.h,
-                  ),
+                  padding: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 20.h),
                   child: CustomBtn(
                     buttonHeight: 58.h,
                     btnTitle: "Submit Now",
@@ -131,11 +122,7 @@ class ProfileScreen extends GetView<ProfileController> {
                               }
 
                               // 3) No image available -> grey background
-                              return Container(
-                                height: 200.h,
-                                width: double.infinity,
-                                color: Colors.grey.shade800,
-                              );
+                              return Container(height: 200.h, width: double.infinity, color: Colors.grey.shade800);
                             }),
 
                             // Add/Change Cover Photo button (only when editing)
@@ -147,14 +134,10 @@ class ProfileScreen extends GetView<ProfileController> {
                                   buttonWidth: 165.w,
                                   buttonHeight: 45.h,
                                   fontSize: 16.sp,
-                                  btnBackgroundColor: AppColors.color000000
-                                      .withOpacity(0.5),
+                                  btnBackgroundColor: AppColors.color000000.withOpacity(0.5),
                                   btnTitle:
                                       controller.coverImageFile.value != null ||
-                                              controller
-                                                  .userCoverImage
-                                                  .value
-                                                  .isNotEmpty
+                                              controller.userCoverImage.value.isNotEmpty
                                           ? "Change Cover Photo"
                                           : "Add Cover Photo",
                                   onPressed: () => controller.pickCoverPhoto(),
@@ -186,11 +169,7 @@ class ProfileScreen extends GetView<ProfileController> {
                               ),
                             ),
                             child: Container(
-                              padding: EdgeInsets.only(
-                                left: 15.w,
-                                right: 15.w,
-                                top: 70.h,
-                              ),
+                              padding: EdgeInsets.only(left: 15.w, right: 15.w, top: 70.h),
                               width: double.infinity,
                               decoration: BoxDecoration(
                                 color: AppColors.black,
@@ -201,16 +180,10 @@ class ProfileScreen extends GetView<ProfileController> {
                               ),
                               child: LayoutBuilder(
                                 builder:
-                                    (
-                                      context,
-                                      constraints,
-                                    ) => SingleChildScrollView(
-                                      physics:
-                                          const AlwaysScrollableScrollPhysics(),
+                                    (context, constraints) => SingleChildScrollView(
+                                      physics: const AlwaysScrollableScrollPhysics(),
                                       child: ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                          minHeight: constraints.maxHeight,
-                                        ),
+                                        constraints: BoxConstraints(minHeight: constraints.maxHeight),
                                         child: Form(
                                           key: controller.formKey,
                                           child: Column(
@@ -218,23 +191,19 @@ class ProfileScreen extends GetView<ProfileController> {
                                             children: [
                                               Obx(
                                                 () => CustomText(
-                                                  title:
-                                                      controller.userName.value,
+                                                  title: controller.userName.value,
                                                   fontSize: 24,
                                                   fontWeight: FontWeight.w600,
                                                   color: AppColors.colorFFFFFF,
                                                 ),
                                               ),
                                               Obx(() {
-                                                if (controller
-                                                    .isEditing
-                                                    .value) {
+                                                if (controller.isEditing.value) {
                                                   return SizedBox.shrink();
                                                 }
 
                                                 return Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     // CustomText(
                                                     //   title: "Skills",
@@ -243,85 +212,51 @@ class ProfileScreen extends GetView<ProfileController> {
                                                     //   color: AppColors.colorFF8600,
                                                     // ),
                                                     SizedBox(height: 10.h),
-                                                    if (controller
-                                                        .selectedSkills
-                                                        .isNotEmpty)
+                                                    if (controller.selectedSkills.isNotEmpty)
                                                       Wrap(
                                                         spacing: 8.w,
                                                         runSpacing: 8.h,
                                                         children:
-                                                            controller
-                                                                .selectedSkills
+                                                            controller.selectedSkills
                                                                 .map(
-                                                                  (
-                                                                    skill,
-                                                                  ) => Chip(
+                                                                  (skill) => Chip(
                                                                     label: Text(
                                                                       skill,
                                                                       style: TextStyle(
-                                                                        color:
-                                                                            AppColors.colorFFFFFF,
-                                                                        fontSize:
-                                                                            12.sp,
-                                                                        fontWeight:
-                                                                            FontWeight.w600,
+                                                                        color: AppColors.colorFFFFFF,
+                                                                        fontSize: 12.sp,
+                                                                        fontWeight: FontWeight.w600,
                                                                       ),
                                                                     ),
-                                                                    backgroundColor:
-                                                                        AppColors
-                                                                            .color262626,
-                                                                    side: BorderSide(
-                                                                      color:
-                                                                          AppColors
-                                                                              .colorFF8600,
-                                                                    ),
+                                                                    backgroundColor: AppColors.color262626,
+                                                                    side: BorderSide(color: AppColors.colorFF8600),
                                                                     shape: RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                            20.r,
-                                                                          ),
+                                                                      borderRadius: BorderRadius.circular(20.r),
                                                                     ),
                                                                     materialTapTargetSize:
-                                                                        MaterialTapTargetSize
-                                                                            .shrinkWrap,
-                                                                    visualDensity:
-                                                                        VisualDensity
-                                                                            .compact,
+                                                                        MaterialTapTargetSize.shrinkWrap,
+                                                                    visualDensity: VisualDensity.compact,
                                                                   ),
                                                                 )
                                                                 .toList(),
                                                       )
                                                     else
                                                       CustomText(
-                                                        title:
-                                                            "No skills selected",
+                                                        title: "No skills selected",
                                                         fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color:
-                                                            AppColors
-                                                                .colorFFFFFF,
+                                                        fontWeight: FontWeight.w600,
+                                                        color: AppColors.colorFFFFFF,
                                                       ),
                                                   ],
                                                 );
                                               }),
                                               SizedBox(height: 40.h),
-                                              if (controller
-                                                  .isEditing
-                                                  .value) ...[
+                                              if (controller.isEditing.value) ...[
                                                 /// SHOW EMPLOYER EDIT PROFILE
-                                                if (controller
-                                                        .currentUserRole
-                                                        .value ==
-                                                    2)
-                                                  EmployerEditWidget(),
+                                                if (controller.currentUserRole.value == 2) EmployerEditWidget(),
 
                                                 /// SHOW EMPLOYEE EDIT PROFILE
-                                                if (controller
-                                                        .currentUserRole
-                                                        .value ==
-                                                    3)
-                                                  EmployeeEditWidget(),
+                                                if (controller.currentUserRole.value == 3) EmployeeEditWidget(),
 
                                                 SizedBox(height: 5.h),
                                               ],
@@ -332,117 +267,60 @@ class ProfileScreen extends GetView<ProfileController> {
                                                     CustomBtn(
                                                       buttonHeight: 58.h,
                                                       btnTitle: 'Edit Profile',
-                                                      btnBackgroundColor:
-                                                          AppColors.colorFF8600,
+                                                      btnBackgroundColor: AppColors.colorFF8600,
                                                       btnTxtColor: Colors.white,
                                                       onPressed: () {
-                                                        controller
-                                                            .toggleEditing();
+                                                        controller.toggleEditing();
                                                       },
                                                     ),
-                                                    if (controller
-                                                            .currentUserRole
-                                                            .value ==
-                                                        3) ...[
+                                                    if (controller.currentUserRole.value == 3) ...[
                                                       SizedBox(height: 14.h),
                                                       Container(
                                                         decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                14.r,
-                                                              ),
+                                                          borderRadius: BorderRadius.circular(14.r),
                                                           gradient: LinearGradient(
-                                                            colors: [
-                                                              const Color(
-                                                                0xFF2E1A05,
-                                                              ),
-                                                              AppColors
-                                                                  .color000000,
-                                                            ],
-                                                            begin:
-                                                                Alignment
-                                                                    .topLeft,
-                                                            end:
-                                                                Alignment
-                                                                    .bottomRight,
+                                                            colors: [const Color(0xFF2E1A05), AppColors.color000000],
+                                                            begin: Alignment.topLeft,
+                                                            end: Alignment.bottomRight,
                                                           ),
-                                                          border: Border.all(
-                                                            color:
-                                                                AppColors
-                                                                    .colorFF8600,
-                                                            width: 1.2,
-                                                          ),
+                                                          border: Border.all(color: AppColors.colorFF8600, width: 1.2),
                                                           boxShadow: [
                                                             BoxShadow(
-                                                              color: AppColors
-                                                                  .colorFF8600
-                                                                  .withOpacity(
-                                                                    0.18,
-                                                                  ),
+                                                              color: AppColors.colorFF8600.withOpacity(0.18),
                                                               blurRadius: 18.r,
-                                                              offset: Offset(
-                                                                0,
-                                                                8.h,
-                                                              ),
+                                                              offset: Offset(0, 8.h),
                                                             ),
                                                           ],
                                                         ),
                                                         child: Material(
-                                                          color:
-                                                              Colors
-                                                                  .transparent,
+                                                          color: Colors.transparent,
                                                           child: Obx(() {
-                                                            final isLoading =
-                                                                controller
-                                                                    .isBoostLoading
-                                                                    .value;
-                                                            final hasActiveBoost =
-                                                                controller
-                                                                    .hasActiveBoost;
+                                                            final isLoading = controller.isBoostLoading.value;
+                                                            final hasActiveBoost = controller.hasActiveBoost;
 
                                                             return InkWell(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    14.r,
-                                                                  ),
-                                                              onTap:
-                                                                  isLoading
-                                                                      ? null
-                                                                      : controller
-                                                                          .activateBoost,
+                                                              borderRadius: BorderRadius.circular(14.r),
+                                                              onTap: isLoading ? null : controller.activateBoost,
                                                               child: Padding(
-                                                                padding:
-                                                                    EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          18.w,
-                                                                      vertical:
-                                                                          16.h,
-                                                                    ),
+                                                                padding: EdgeInsets.symmetric(
+                                                                  horizontal: 18.w,
+                                                                  vertical: 16.h,
+                                                                ),
                                                                 child: Row(
                                                                   children: [
                                                                     Container(
-                                                                      width:
-                                                                          44.w,
-                                                                      height:
-                                                                          44.h,
+                                                                      width: 44.w,
+                                                                      height: 44.h,
                                                                       decoration: BoxDecoration(
-                                                                        color: AppColors
-                                                                            .colorFF8600
-                                                                            .withOpacity(
-                                                                              0.14,
-                                                                            ),
-                                                                        shape:
-                                                                            BoxShape.circle,
+                                                                        color: AppColors.colorFF8600.withOpacity(0.14),
+                                                                        shape: BoxShape.circle,
                                                                       ),
                                                                       child:
                                                                           isLoading
                                                                               ? Padding(
-                                                                                padding: EdgeInsets.all(
-                                                                                  11.r,
-                                                                                ),
+                                                                                padding: EdgeInsets.all(11.r),
                                                                                 child: CircularProgressIndicator(
-                                                                                  strokeWidth:
-                                                                                      2.3,
+                                                                                  strokeWidth: 2.3,
                                                                                   valueColor: AlwaysStoppedAnimation(
                                                                                     AppColors.colorFF8600,
                                                                                   ),
@@ -452,37 +330,25 @@ class ProfileScreen extends GetView<ProfileController> {
                                                                                 hasActiveBoost
                                                                                     ? Icons.timer_rounded
                                                                                     : Icons.rocket_launch_rounded,
-                                                                                color:
-                                                                                    AppColors.colorFF8600,
-                                                                                size:
-                                                                                    22.sp,
+                                                                                color: AppColors.colorFF8600,
+                                                                                size: 22.sp,
                                                                               ),
                                                                     ),
-                                                                    SizedBox(
-                                                                      width:
-                                                                          14.w,
-                                                                    ),
+                                                                    SizedBox(width: 14.w),
                                                                     Expanded(
                                                                       child: Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.start,
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                                         children: [
                                                                           CustomText(
                                                                             title:
                                                                                 hasActiveBoost
                                                                                     ? 'Boost Activated'
                                                                                     : 'Boost your profile',
-                                                                            color:
-                                                                                AppColors.colorFFFFFF,
-                                                                            fontSize:
-                                                                                16,
-                                                                            fontWeight:
-                                                                                FontWeight.w700,
+                                                                            color: AppColors.colorFFFFFF,
+                                                                            fontSize: 16,
+                                                                            fontWeight: FontWeight.w700,
                                                                           ),
-                                                                          SizedBox(
-                                                                            height:
-                                                                                4.h,
-                                                                          ),
+                                                                          SizedBox(height: 4.h),
                                                                           CustomText(
                                                                             title:
                                                                                 isLoading
@@ -490,30 +356,21 @@ class ProfileScreen extends GetView<ProfileController> {
                                                                                     : hasActiveBoost
                                                                                     ? 'Time left: ${controller.boostRemainingText}'
                                                                                     : 'Promote your profile for more visibility',
-                                                                            color:
-                                                                                AppColors.colorB1B1B1,
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontWeight:
-                                                                                FontWeight.w500,
+                                                                            color: AppColors.colorB1B1B1,
+                                                                            fontSize: 12,
+                                                                            fontWeight: FontWeight.w500,
                                                                           ),
                                                                         ],
                                                                       ),
                                                                     ),
                                                                     Container(
                                                                       padding: EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            10.w,
-                                                                        vertical:
-                                                                            6.h,
+                                                                        horizontal: 10.w,
+                                                                        vertical: 6.h,
                                                                       ),
                                                                       decoration: BoxDecoration(
-                                                                        color:
-                                                                            AppColors.colorFF8600,
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                              50.r,
-                                                                            ),
+                                                                        color: AppColors.colorFF8600,
+                                                                        borderRadius: BorderRadius.circular(50.r),
                                                                       ),
                                                                       child: CustomText(
                                                                         title:
@@ -522,12 +379,9 @@ class ProfileScreen extends GetView<ProfileController> {
                                                                                 : hasActiveBoost
                                                                                 ? 'Active'
                                                                                 : 'Boost',
-                                                                        color:
-                                                                            AppColors.colorFFFFFF,
-                                                                        fontSize:
-                                                                            11,
-                                                                        fontWeight:
-                                                                            FontWeight.w700,
+                                                                        color: AppColors.colorFFFFFF,
+                                                                        fontSize: 11,
+                                                                        fontWeight: FontWeight.w700,
                                                                       ),
                                                                     ),
                                                                   ],
@@ -593,8 +447,7 @@ class ProfileScreen extends GetView<ProfileController> {
                                   wholeAvatarClickable: false,
                                   onImagePicked: (File? file) {
                                     if (file != null) {
-                                      controller.userProfileImage.value =
-                                          file.path;
+                                      controller.userProfileImage.value = file.path;
                                     }
                                   },
                                 ),

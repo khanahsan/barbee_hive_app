@@ -9,40 +9,36 @@ class StripeService {
 
   static final StripeService instance = StripeService._privateConstructor();
 
-  /// Initialize Stripe Payment Sheet (iOS).
-  ///
-  /// Apple Pay is intentionally NOT passed unless [enableApplePay] is true.
-  /// Passing `applePay` requires the Apple Pay capability in the Xcode
-  /// entitlements file AND a verified Apple Pay certificate uploaded to the
-  /// Stripe Dashboard for the configured merchantIdentifier. When either is
-  /// missing, the sheet initialises silently but never presents — which is
-  /// what we were hitting on iOS.
+  /// Initialize Stripe Payment Sheet
   Future<void> initPaymentSheetIOS({
     required String clientSecret,
     String? customerId,
     String? ephemeralKey,
     String merchantDisplayName = 'Barbee Hive',
-    bool enableApplePay = false,
   }) async {
     try {
-      log("CLIENT SECRET (iOS): $clientSecret");
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
-          customerId: customerId,
-          customerEphemeralKeySecret: ephemeralKey,
+
+          // Optional but usually passed by backend
+          // customerId: customerId,
+          // customerEphemeralKeySecret: ephemeralKey,
           merchantDisplayName: merchantDisplayName,
-          allowsDelayedPaymentMethods: true,
-          applePay: enableApplePay
-              ? const PaymentSheetApplePay(merchantCountryCode: 'US')
-              : null,
+
+          /// REQUIRED FOR IOS
+          // merchantCountryCode: 'US',
+
+          /// REQUIRED FOR IOS APPLE PAY SUPPORT
+          applePay: const PaymentSheetApplePay(merchantCountryCode: 'US'),
+
           style: ThemeMode.dark,
         ),
       );
 
-      log('✅ Stripe PaymentSheet initialized (iOS)');
+      log('✅ Stripe PaymentSheet initialized');
     } catch (e) {
-      log('Stripe initPaymentSheet error (iOS): $e');
+      log('Stripe initPaymentSheet error: $e');
       rethrow;
     }
   }
@@ -54,7 +50,7 @@ class StripeService {
     String merchantDisplayName = 'Barbee Hive',
   }) async {
     try {
-      log("CLIENT SECRET (Android): $clientSecret");
+      log("CLIENT SECRET: $clientSecret");
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: clientSecret,
@@ -65,9 +61,9 @@ class StripeService {
           style: ThemeMode.light,
         ),
       );
-      log('✅ Stripe PaymentSheet initialized (Android)');
+      log('✅ Stripe PaymentSheet initialized');
     } catch (e) {
-      log('Stripe initPaymentSheet error (Android): $e');
+      log('Stripe initPaymentSheet error: $e');
       rethrow;
     }
   }

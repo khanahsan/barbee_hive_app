@@ -21,6 +21,9 @@ import 'package:image_picker/image_picker.dart';
 import '../../../data/model/color_response.dart';
 
 class SignUpEmployerController extends GetxController {
+  static const int fixedCountryId = 1;
+  static const String fixedCountryName = 'United State of America';
+
   // ---------------------- TEXT CONTROLLERS ---------------------- //
   final nameController = TextEditingController();
   final businessTaxController = TextEditingController();
@@ -38,7 +41,7 @@ class SignUpEmployerController extends GetxController {
   final isCitiesLoading = false.obs;
   final errorMessage = ''.obs;
 
-  final RxString selectedCountry = ''.obs;
+  final RxString selectedCountry = fixedCountryName.obs;
   final RxString selectedState = ''.obs;
   final RxString selectedCity = ''.obs;
 
@@ -69,7 +72,6 @@ class SignUpEmployerController extends GetxController {
     _prefillFromGoogle();
     _prefillFromApple();
     fetchSkills();
-    fetchCountries();
     fetchStates();
   }
 
@@ -92,7 +94,7 @@ class SignUpEmployerController extends GetxController {
   void toggleConfirmPasswordVisibility() => isConfirmPasswordVisible.toggle();
 
   void updateCountry(String? value) {
-    if (value != null) selectedCountry.value = value;
+    selectedCountry.value = fixedCountryName;
   }
 
   void updateState(String? value) {
@@ -257,15 +259,6 @@ class SignUpEmployerController extends GetxController {
       final uid = userCredential.user!.uid;
 
       // 6️⃣ Get IDs for country and state
-      final countryId =
-          countries
-              .firstWhere(
-                (c) =>
-                    c.name.toLowerCase() == selectedCountry.value.toLowerCase(),
-                orElse: () => throw Exception('Please select a valid country'),
-              )
-              .id;
-
       final stateId =
           states
               .firstWhere(
@@ -288,7 +281,7 @@ class SignUpEmployerController extends GetxController {
         role: 2,
         address: addressController.text,
         // Employer role
-        country: countryId.toString(),
+        country: fixedCountryId.toString(),
         state: stateId.toString(),
         city: selectedCity.value,
         skillIds: userSkills.map((s) => s.id).toList(),
@@ -603,15 +596,6 @@ class SignUpEmployerController extends GetxController {
         throw Exception('Unable to complete Google signup. Please try again.');
       }
 
-      final countryId =
-          countries
-              .firstWhere(
-                (c) =>
-                    c.name.toLowerCase() == selectedCountry.value.toLowerCase(),
-                orElse: () => throw Exception('Please select a valid country'),
-              )
-              .id;
-
       final stateId =
           states
               .firstWhere(
@@ -630,7 +614,7 @@ class SignUpEmployerController extends GetxController {
         role: 2,
         // Employer role
         address: addressController.text.trim(),
-        country: countryId.toString(),
+        country: fixedCountryId.toString(),
         state: stateId.toString(),
         city: selectedCity.value,
         skillIds: userSkills.map((s) => s.id).toList(),
@@ -824,15 +808,6 @@ class SignUpEmployerController extends GetxController {
         throw Exception('Unable to complete Apple signup. Please try again.');
       }
 
-      final countryId =
-          countries
-              .firstWhere(
-                (c) =>
-                    c.name.toLowerCase() == selectedCountry.value.toLowerCase(),
-                orElse: () => throw Exception('Please select a valid country'),
-              )
-              .id;
-
       final stateId =
           states
               .firstWhere(
@@ -852,7 +827,7 @@ class SignUpEmployerController extends GetxController {
         role: 2,
         // Employer role
         address: addressController.text.trim(),
-        country: countryId.toString(),
+        country: fixedCountryId.toString(),
         state: stateId.toString(),
         city: selectedCity.value,
         skillIds: userSkills.map((s) => s.id).toList(),

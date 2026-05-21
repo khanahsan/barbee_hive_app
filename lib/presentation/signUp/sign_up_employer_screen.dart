@@ -266,34 +266,31 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                   }),
 
                                   /// Country Field
-                                  CustomDropdown(
-                                    textColor: AppColors.colorFFFFFF,
-                                    dropdownColor: AppColors.colorFF8600,
+                                  _buildDropdown(
                                     hint: 'Country',
                                     iconPath: AppAssets.countryIcon,
                                     selectedValue: controller.selectedCountry,
-                                    // new RxString
-                                    onChanged: (value) {
-                                      controller.updateCountry(value);
-                                    },
+                                    onChanged: controller.updateCountry,
+                                    readOnly: true,
                                     validator:
                                         (v) => FormValidators.validateRequired(
                                           v,
                                           'Country',
                                         ),
-                                    items:
-                                        controller.countries
-                                            .map(
-                                              (country) => DropdownMenuItem(
-                                                value: country.name,
-                                                child: CustomText(
-                                                  title: country.name,
-                                                  color: AppColors.colorFFFFFF,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            )
-                                            .toList(),
+                                    items: [
+                                      DropdownMenuItem(
+                                        value:
+                                            SignUpEmployerController
+                                                .fixedCountryName,
+                                        child: CustomText(
+                                          title:
+                                              SignUpEmployerController
+                                                  .fixedCountryName,
+                                          color: AppColors.colorFFFFFF,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   // _buildTextField(
                                   //   hint: 'Country',
@@ -625,6 +622,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
     bool enableSearch = false,
     String? searchHint,
     String? Function(String?)? validator,
+    bool readOnly = false,
   }) {
     return CustomDropdown(
       textColor: AppColors.colorFFFFFF,
@@ -638,6 +636,7 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
       items: items,
       enableSearch: enableSearch,
       searchHint: searchHint,
+      readOnly: readOnly,
     );
   }
 }

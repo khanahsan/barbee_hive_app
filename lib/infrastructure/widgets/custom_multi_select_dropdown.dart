@@ -77,6 +77,221 @@ class CustomMultiSelectDropdown extends StatelessWidget {
                   ),
                 ),
                 child: Row(
+                  children: [
+                    iconWidget,
+                    SizedBox(width: 18.w),
+
+                    Expanded(
+                      child: Obx(
+                            () => Text(
+                          selectedValues.isEmpty
+                              ? hint
+                              : selectedValues.join(', '),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: fontSize ?? 16.sp,
+                            color: textColor ?? AppColors.colorA3A3A3,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                  ],
+                ),
+              ),
+            ),
+
+            if (state.hasError)
+              CustomText(
+                title: state.errorText!,
+                color: AppColors.colorFF3B30,
+                fontSize: 13,
+              ).paddingSymmetric(horizontal: 16, vertical: 5),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showMultiSelectDialog(
+      BuildContext context,
+      FormFieldState<List<String>> state,
+      ) async {
+    List<String> tempSelected = List.from(selectedValues);
+
+    await showDialog(
+      context: context,
+      builder: (_) {
+        return StatefulBuilder(
+          builder: (context, setStateSB) {
+            final dialogBg =
+                dropdownColor ?? AppColors.textFieldBackground;
+            final dialogTextColor =
+                textColor ?? AppColors.colorFFFFFF;
+
+            return AlertDialog(
+              backgroundColor: dialogBg,
+              title: Text(
+                hint,
+                style: TextStyle(color: dialogTextColor),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: items.map((item) {
+                    bool isChecked = tempSelected.contains(item);
+
+                    return Theme(
+                      data: Theme.of(context).copyWith(
+                        checkboxTheme: CheckboxThemeData(
+                          side: MaterialStateBorderSide.resolveWith(
+                                (states) {
+                              if (states.contains(MaterialState.selected)) {
+                                return const BorderSide(
+                                  color: AppColors.colorFFFFFF,
+                                  width: 1.5,
+                                );
+                              }
+                              return const BorderSide(
+                                color: AppColors.color000000,
+                                width: 1.5,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      child: CheckboxListTile(
+                        title: Text(
+                          item,
+                          style: TextStyle(color: dialogTextColor),
+                        ),
+                        value: isChecked,
+                        activeColor: AppColors.colorFF8600,
+                        checkColor: Colors.white,
+                        onChanged: (val) {
+                          setStateSB(() {
+                            if (val == true) {
+                              tempSelected.add(item);
+                            } else {
+                              tempSelected.remove(item);
+                            }
+                          });
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    if (Navigator.of(context, rootNavigator: true)
+                        .canPop()) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: dialogTextColor),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    selectedValues.assignAll(tempSelected);
+                    state.didChange(selectedValues.toList());
+                    state.validate();
+
+                    if (Navigator.of(context, rootNavigator: true)
+                        .canPop()) {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
+                  },
+                  child: Text(
+                    "OK",
+                    style: TextStyle(color: dialogTextColor),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+/*class CustomMultiSelectDropdown extends StatelessWidget {
+  final String hint;
+  final String iconPath;
+  final RxList<String> selectedValues;
+  final List<String> items;
+  final double? fontSize;
+  final double? iconSize;
+  final double? borderRadius;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final Color? dropdownColor;
+  final String? Function(List<String>?)? validator;
+
+  const CustomMultiSelectDropdown({
+    super.key,
+    required this.hint,
+    required this.iconPath,
+    required this.selectedValues,
+    required this.items,
+    this.fontSize,
+    this.iconSize,
+    this.borderRadius,
+    this.backgroundColor,
+    this.textColor,
+    this.dropdownColor,
+    this.validator,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Widget iconWidget;
+
+    if (iconPath.toLowerCase().endsWith('.svg')) {
+      iconWidget = SvgPicture.asset(
+        iconPath,
+        color: AppColors.textFieldTextColor,
+        width: iconSize ?? 24.w,
+        height: iconSize ?? 24.h,
+      );
+    } else {
+      iconWidget = Image.asset(
+        iconPath,
+        color: AppColors.textFieldTextColor,
+        width: iconSize ?? 20.w,
+        height: iconSize ?? 20.h,
+      );
+    }
+
+    return FormField<List<String>>(
+      initialValue: selectedValues.toList(),
+      validator: validator,
+      builder: (FormFieldState<List<String>> state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () => _showMultiSelectDialog(context, state),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: backgroundColor ?? AppColors.textFieldBackground,
+                  borderRadius: BorderRadius.circular(borderRadius ?? 10),
+                  border: Border.all(
+                    color: state.hasError ? Colors.red : Colors.transparent,
+                    width: 1.2,
+                  ),
+                ),
+                child: Row(
                   spacing: 18.w,
                   children: [
                     iconWidget,
@@ -191,4 +406,4 @@ class CustomMultiSelectDropdown extends StatelessWidget {
       },
     );
   }
-}
+}*/

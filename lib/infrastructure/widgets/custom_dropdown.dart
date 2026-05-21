@@ -23,6 +23,7 @@ class CustomDropdown extends StatelessWidget {
   final Color? dropdownColor;
   final Color? borderColor;
   final String? Function(String?)? validator;
+  final bool readOnly;
 
   const CustomDropdown({
     super.key,
@@ -42,6 +43,7 @@ class CustomDropdown extends StatelessWidget {
     this.dropdownColor,
     this.borderColor,
     this.validator,
+    this.readOnly = false,
   });
 
   @override
@@ -75,6 +77,7 @@ class CustomDropdown extends StatelessWidget {
             return GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
+                if (readOnly) return;
                 final canOpen = onBeforeOpen?.call() ?? true;
                 if (canOpen) {
                   _showSearchDialog(context, state);
@@ -132,6 +135,7 @@ class CustomDropdown extends StatelessWidget {
                     ),
 
                     iconEnabledColor: Colors.white,
+                    iconDisabledColor: Colors.white,
                     // dropdown arrow white
                     value:
                         selectedValue.value.isEmpty
@@ -152,11 +156,14 @@ class CustomDropdown extends StatelessWidget {
                           );
                         }).toList(),
 
-                    onChanged: (value) {
-                      selectedValue.value = value ?? '';
-                      onChanged(value);
-                      state.didChange(value);
-                    },
+                    onChanged:
+                        readOnly
+                            ? null
+                            : (value) {
+                              selectedValue.value = value ?? '';
+                              onChanged(value);
+                              state.didChange(value);
+                            },
                     menuMaxHeight: 250.h,
                   ),
                 ),

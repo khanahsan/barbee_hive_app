@@ -301,28 +301,27 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                     hint: 'Country',
                                     iconPath: AppAssets.countryIcon,
                                     selectedValue: controller.selectedCountry,
-                                    // new RxString
-                                    onChanged: (value) {
-                                      controller.updateCountry(value);
-                                    },
+                                    onChanged: controller.updateCountry,
+                                    readOnly: true,
                                     validator:
                                         (v) => FormValidators.validateRequired(
                                           v,
                                           'Country',
                                         ),
-                                    items:
-                                        controller.countries
-                                            .map(
-                                              (country) => DropdownMenuItem(
-                                                value: country.name,
-                                                child: CustomText(
-                                                  title: country.name,
-                                                  color: AppColors.colorFFFFFF,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            )
-                                            .toList(),
+                                    items: [
+                                      DropdownMenuItem(
+                                        value:
+                                            SignUpEmployeeController
+                                                .fixedCountryName,
+                                        child: CustomText(
+                                          title:
+                                              SignUpEmployeeController
+                                                  .fixedCountryName,
+                                          color: AppColors.colorFFFFFF,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
                                   ),
 
                                   // _buildTextField(
@@ -847,6 +846,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
     bool Function()? onBeforeOpen,
     bool enableSearch = false,
     String? searchHint,
+    bool readOnly = false,
     String? Function(String?)? validator,
   }) {
     return CustomDropdown(
@@ -861,6 +861,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
       items: items,
       enableSearch: enableSearch,
       searchHint: searchHint,
+      readOnly: readOnly,
     );
   }
 }

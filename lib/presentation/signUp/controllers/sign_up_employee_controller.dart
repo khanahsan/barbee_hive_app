@@ -28,6 +28,8 @@ import '../../../infrastructure/navigation/routes.dart';
 
 class SignUpEmployeeController extends GetxController {
   static const int _maxResumeSizeKb = 5000;
+  static const int fixedCountryId = 1;
+  static const String fixedCountryName = 'United State of America';
 
   // ======== Text Controllers ========
   final TextEditingController nameController = TextEditingController();
@@ -44,7 +46,7 @@ class SignUpEmployeeController extends GetxController {
   final RxString selectedHeight = ''.obs;
   final RxString selectedEyeColor = ''.obs;
   final RxString selectedHairColor = ''.obs;
-  final RxString selectedCountry = ''.obs;
+  final RxString selectedCountry = fixedCountryName.obs;
   final RxString selectedState = ''.obs;
   final RxString selectedCity = ''.obs;
   final RxString selectedExperienceLevel = ''.obs;
@@ -139,7 +141,7 @@ class SignUpEmployeeController extends GetxController {
   }
 
   void updateCountry(String? value) {
-    if (value != null) selectedCountry.value = value;
+    selectedCountry.value = fixedCountryName;
   }
 
   void updateState(String? value) {
@@ -410,7 +412,6 @@ class SignUpEmployeeController extends GetxController {
     late HairColor hairColor;
     late Gender userGender;
     late Height userHeight;
-    late int countryId;
     late int stateId;
 
     try {
@@ -444,14 +445,6 @@ class SignUpEmployeeController extends GetxController {
       );
 
       // ✅ Map country name to ID
-      countryId =
-          countries
-              .firstWhere(
-                (c) => c.name == selectedCountry.value,
-                orElse: () => throw Exception('Please select a country'),
-              )
-              .id;
-
       // ✅ Map state name to ID
       stateId =
           states
@@ -491,7 +484,7 @@ class SignUpEmployeeController extends GetxController {
         password: passwordController.text.trim(),
         passwordConfirmation: confirmPasswordController.text.trim(),
         role: 3,
-        country: countryId.toString(),
+        country: fixedCountryId.toString(),
         state: stateId.toString(),
         city: selectedCity.value,
         address: addressController.text.trim(),
@@ -851,7 +844,6 @@ class SignUpEmployeeController extends GetxController {
       late HairColor hairColor;
       late Gender userGender;
       late Height userHeight;
-      late int countryId;
       late int stateId;
 
       try {
@@ -879,13 +871,6 @@ class SignUpEmployeeController extends GetxController {
           (height) => height.name == selectedHeight.value,
           orElse: () => throw Exception('Please select a height'),
         );
-        countryId =
-            countries
-                .firstWhere(
-                  (c) => c.name == selectedCountry.value,
-                  orElse: () => throw Exception('Please select a country'),
-                )
-                .id;
         stateId =
             states
                 .firstWhere(
@@ -904,7 +889,7 @@ class SignUpEmployeeController extends GetxController {
         password: passwordController.text.trim(),
         passwordConfirmation: confirmPasswordController.text.trim(),
         role: 3,
-        country: countryId.toString(),
+        country: fixedCountryId.toString(),
         state: stateId.toString(),
         city: selectedCity.value,
         address: addressController.text.trim(),
@@ -1016,7 +1001,6 @@ class SignUpEmployeeController extends GetxController {
       late HairColor hairColor;
       late Gender userGender;
       late Height userHeight;
-      late int countryId;
       late int stateId;
 
       try {
@@ -1046,13 +1030,6 @@ class SignUpEmployeeController extends GetxController {
           (height) => height.name == selectedHeight.value,
           orElse: () => throw Exception('Please select a height'),
         );
-        countryId =
-            countries
-                .firstWhere(
-                  (c) => c.name == selectedCountry.value,
-                  orElse: () => throw Exception('Please select a country'),
-                )
-                .id;
         stateId =
             states
                 .firstWhere(
@@ -1071,7 +1048,7 @@ class SignUpEmployeeController extends GetxController {
         password: passwordController.text.trim(),
         passwordConfirmation: confirmPasswordController.text.trim(),
         role: 3,
-        country: countryId.toString(),
+        country: fixedCountryId.toString(),
         state: stateId.toString(),
         city: selectedCity.value,
         address: addressController.text.trim(),

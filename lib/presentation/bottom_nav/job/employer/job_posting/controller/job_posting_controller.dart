@@ -690,8 +690,8 @@ class JobPostingController extends GetxController {
           barrierDismissible: false,
           builder:
               (_) => CustomDialog(
-                title: "Congratulations",
-                subTitle: "Your Job Application Has Been Submitted",
+                title: "Buzz!",
+                subTitle: "Your post is live",
                 onDone: () {
                   Navigator.of(context, rootNavigator: true).pop();
                   Get.back();

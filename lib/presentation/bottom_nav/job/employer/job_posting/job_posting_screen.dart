@@ -5,6 +5,8 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_app_shimmer.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
+import 'package:barbee_hive_app/data/model/duration_model.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/duration_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -246,28 +248,7 @@ class JobPostingScreen extends GetView<JobPostingController> {
                       SizedBox(height: 15.h),
 
                       /// Duration
-                      _dropdownField(
-                        validator:
-                            (value) => FormValidators.validateRequired(
-                              value,
-                              "Duration",
-                            ),
-                        hint: 'Select Duration',
-                        iconPath: AppAssets.cardIcon,
-                        selectedValue: controller.selectedDurationLabel,
-                        onChanged: controller.updateDuration,
-                        items:
-                            controller.durations.map((duration) {
-                              final label = controller.durationLabel(duration);
-                              return DropdownMenuItem(
-                                value: label,
-                                child: Text(
-                                  label,
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              );
-                            }).toList(),
-                      ),
+                      _durationField(context),
                       SizedBox(height: 15.h),
                       //
                       // _textField(
@@ -594,6 +575,106 @@ class JobPostingScreen extends GetView<JobPostingController> {
       borderRadius: borderRadius,
       backgroundColor: backgroundColor,
       validator: validator,
+    );
+  }
+
+  Widget _durationField(BuildContext context) {
+    return FormField<String>(
+      initialValue:
+          controller.selectedDurationLabel.value.isEmpty
+              ? null
+              : controller.selectedDurationLabel.value,
+      validator:
+          (value) => FormValidators.validateRequired(value, "Duration"),
+      builder: (state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Obx(
+              () => GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () async {
+                  if (controller.durations.isEmpty) {
+                    return;
+                  }
+
+                  final duration = await _pickDuration(context);
+                  if (duration == null) {
+                    return;
+                  }
+
+                  final label = controller.durationLabel(duration);
+                  controller.updateDuration(label);
+                  state.didChange(label);
+                },
+                child: Container(
+                  height: 56.h,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 0.2.h,
+                    horizontal: 20.w,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.textFieldBackground,
+                    borderRadius: BorderRadius.circular(10.r),
+                    border: Border.all(
+                      color: state.hasError ? Colors.red : Colors.black,
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Row(
+                    spacing: 20.w,
+                    children: [
+                      SvgPicture.asset(
+                        AppAssets.cardIcon,
+                        color: AppColors.textFieldTextColor,
+                        width: 24.w,
+                        height: 24.h,
+                      ),
+                      Expanded(
+                        child: Text(
+                          controller.selectedDurationLabel.value.isEmpty
+                              ? 'Select Duration'
+                              : controller.selectedDurationLabel.value,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppColors.colorFFFFFF,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      const Icon(Icons.arrow_drop_down, color: Colors.white),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (state.hasError)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
+                child: Text(
+                  state.errorText ?? '',
+                  style: const TextStyle(
+                    color: AppColors.colorFF3B30,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<DurationModel?> _pickDuration(BuildContext context) {
+    return Get.dialog<DurationModel>(
+      DurationDialog(
+        durations: controller.durations,
+        selectedDuration: controller.selectedDuration.value,
+        durationLabel: controller.durationLabel,
+      ),
+      barrierDismissible: false,
     );
   }
 }

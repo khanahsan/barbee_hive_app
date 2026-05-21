@@ -176,7 +176,7 @@ class EmployerCard extends StatelessWidget {
                     }
                   },
                   child: Text(
-                    "Extend Job in \$1.99",
+                    "Extend Job for \$1.99",
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w600,
@@ -213,7 +213,7 @@ class EmployerCard extends StatelessWidget {
                   btnTxtColor: AppColors.colorFFFFFF,
                 ),
               ),
-              SizedBox(width: 10.w), // spacing between buttons
+            /*  SizedBox(width: 10.w), // spacing between buttons
               Expanded(
                 child: CustomBtn(
                   onPressed: () {
@@ -227,7 +227,7 @@ class EmployerCard extends StatelessWidget {
                   fontSize: 15.sp,
                   btnTxtColor: AppColors.colorFFFFFF,
                 ),
-              ),
+              ),*/
             ],
           ),
         ],

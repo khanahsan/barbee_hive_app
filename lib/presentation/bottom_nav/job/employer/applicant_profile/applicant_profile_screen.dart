@@ -7,6 +7,7 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_pdf_view.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/resume_lock_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
@@ -96,7 +97,46 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
         return Stack(
           children: [
             /// Cover/Profile Image
+            /// Cover/Profile Image
             Positioned(
+              top: 102.h,
+              left: 0,
+              right: 0,
+              child: SizedBox(
+                height: 300.h,
+                width: double.infinity,
+                child:
+                (profile.applicant.profileImage != null &&
+                    profile.applicant.profileImage!.isNotEmpty)
+                    ? Image.network(
+                  profile.applicant.profileImage!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: AppColors.color111111,
+                      alignment: Alignment.center,
+                      child: CustomText(
+                        title: "No Image Found",
+                        color: AppColors.colorFFFFFF,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    );
+                  },
+                )
+                    : Container(
+                  color: AppColors.color111111,
+                  alignment: Alignment.center,
+                  child: CustomText(
+                    title: "No Image Found",
+                    color: AppColors.colorFFFFFF,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          /*  Positioned(
               top: 102.h,
               left: 0,
               right: 0,
@@ -114,7 +154,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
                   },
                 ),
               ),
-            ),
+            ),*/
 
             /// User Details Container
             Positioned(
@@ -233,12 +273,7 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
             behavior: HitTestBehavior.translucent,
             onTap: () {
               if (isLocked) {
-                Utilities.showSnackBar(
-                  title: 'Locked',
-                  message:
-                      'Resume/Certification is available for upgraded employer plans only.',
-                  isSuccess: false,
-                );
+                resumeLockDialog();
                 return;
               }
 
@@ -303,336 +338,3 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
     );
   }
 }
-
-/*class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
-  const ApplicantProfileScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: customAppbar(
-        context: context,
-        leadingTapFunction: Get.back,
-        title: "Profile",
-        showHexagon: false,
-        leadingIconPath: AppAssets.backIcon,
-      ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(color: AppColors.colorFF8600),
-          );
-        }
-
-        if (controller.errorMessage.isNotEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  controller.errorMessage.value,
-                  style: TextStyle(color: Colors.red, fontSize: 16.sp),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 10.h),
-                CustomButton(
-                  buttonText: 'Retry',
-                  // onTap:
-                  //     () => controller.fetchProfile(
-                  //       Get.arguments?['userId'] ?? 38,
-                  //     ),
-                  buttonWidth: 100.w,
-                  buttonColor: AppColors.colorFF8600,
-                  buttonHeight: 40.h,
-                  buttonTextSize: 16.sp,
-                ),
-              ],
-            ),
-          );
-        }
-
-        */ /*  final profile = controller.profile.value;
-        if (profile == null) {
-          return Center(
-            child: Text(
-              'No profile data',
-              style: TextStyle(color: AppColors.colorFFFFFF, fontSize: 16.sp),
-            ),
-          );
-        }
-
-        /// ---------------------------
-        /// Correct field mappings
-        /// ---------------------------
-        final name =
-            profile.employee?.name ??
-            profile.employer?.businessName ??
-            profile.email;
-
-        final location =
-            profile.employee != null
-                ? '${profile.employee!.country?.name ?? 'Unknown'}, ${profile.employee!.state?.name ?? 'Unknown'}, ${profile.employee!.city ?? 'Unknown'}'
-                : '${profile.employer?.country ?? 'Unknown'}, ${profile.employer?.state ?? 'Unknown'}, ${profile.employer?.city ?? 'Unknown'}';
-
-        final jobRole =
-            profile.employee?.gender ??
-            profile.employer?.skills?.map((s) => s.name).join(', ') ??
-            "N/A";
-
-        final expLevel = profile.employee?.experienceYears?.toString() ?? "N/A";
-        final yearsExp = profile.employee?.experienceYears?.toString() ?? "N/A";
-        final expectedSalary = profile.employee?.height?.toString() ?? "N/A";
-        final jobType = profile.employee?.eyeColor?.name ?? "N/A";*/ /*
-
-        final profile = controller.profile.value;
-        if (profile == null) {
-          return Center(
-            child: Text(
-              'No profile data',
-              style: TextStyle(color: AppColors.colorFFFFFF, fontSize: 16.sp),
-            ),
-          );
-        }
-
-        final name = profile.applicant.name ?? profile.applicant.email;
-        final location =
-            '${profile.applicant.country?.name ?? 'Unknown'}, ${profile.applicant.city ?? 'Unknown'}';
-        final jobRole = profile.applicant.skills?.name ?? 'N/A';
-        final jobType = profile.jobType.name;
-        final yearsExp = '${profile.yearsOfExperience} Years';
-        final expectedSalary = '\$${profile.expectedSalary}';
-        final expLevel = profile.experienceLevel.name;
-
-        return Stack(
-          children: [
-            // Cover Image / Carousel
-            // Cover / Profile Image
-            Positioned(
-              top: 100.h,
-              left: 0,
-              right: 0,
-              child: profile.applicant.profileImage != null &&
-                  profile.applicant.profileImage!.isNotEmpty
-                  ? Image.network(
-                profile.applicant.profileImage!,
-                height: 250.h,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Image.asset(
-                    AppAssets.profileImage,
-                    height: 250.h,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  );
-                },
-              )
-                  : Image.asset(
-                AppAssets.profileImage,
-                height: 250.h,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
-
-
-            // Profile Info Container
-            // Profile Info Container (fills from top of black container to bottom)
-            Positioned(
-              top: 320.h, // start just below the profile image
-              bottom: 0,   // fill to the bottom of screen
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: EdgeInsets.only(top: 3.h), // orange strip
-                decoration: BoxDecoration(
-                  color: AppColors.color000000,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.r),
-                    topRight: Radius.circular(20.r),
-                  ),
-                ),
-                child: SingleChildScrollView(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColors.black,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(18.r),
-                        topRight: Radius.circular(18.r),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Name & Location
-                        CustomText(
-                          title: name,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.colorFFFFFF,
-                        ),
-                        CustomText(
-                          title: location,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.colorFF8600,
-                        ),
-                        SizedBox(height: 25.h),
-
-                        // Info Rows
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _infoRow(context, 'Job Role', jobRole),
-                            _infoRow(context, 'Experience Level', expLevel),
-                            _infoRow(context, 'Years Of Experience', yearsExp),
-                            _infoRow(context, 'Expected Salary', expectedSalary),
-                            _infoRow(context, 'Job Type', jobType),
-                          ],
-                        ),
-
-                        SizedBox(height: 20.h),
-
-                        // Send Message Button
-                        CustomButton(
-                          buttonText: 'Send Message',
-                          buttonWidth: double.infinity,
-                          buttonColor: AppColors.colorFF8600,
-                          textColor: AppColors.colorFFFFFF,
-                          buttonHeight: 55.h,
-                          buttonTextSize: 16.sp,
-                          onTap: () {
-                            print('Send Message to: ${profile.id}');
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            */ /*       Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.only(top: 3.h),
-                  decoration: BoxDecoration(
-                    color: AppColors.colorFF8600,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.r),
-                      topRight: Radius.circular(20.r),
-                    ),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15.w,
-                      vertical: 15.h,
-                    ),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColors.black,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(18.r),
-                        topLeft: Radius.circular(18.r),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          title: name,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.colorFFFFFF,
-                        ),
-                        CustomText(
-                          title: location,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.colorFF8600,
-                        ),
-                        SizedBox(height: 25.h),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _infoRow(context, 'Job Role', jobRole),
-                            _infoRow(context, 'Experience Level', expLevel),
-                            _infoRow(context, 'Years Of Experience', yearsExp),
-                            _infoRow(
-                              context,
-                              'Expected Salary',
-                              expectedSalary,
-                            ),
-                            _infoRow(context, 'Job Type', jobType),
-                          ],
-                        ),
-                        SizedBox(height: 20.h),
-                        CustomButton(
-                          buttonText: 'Send Message',
-                          buttonWidth: double.infinity,
-                          buttonColor: AppColors.colorFF8600,
-                          textColor: AppColors.colorFFFFFF,
-                          buttonHeight: 55.h,
-                          buttonTextSize: 16.sp,
-                          onTap: () {
-                            print('Send Message to: ${profile.id}');
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),*/ /*
-          ],
-        );
-      }),
-    );
-  }
-
-  // Info Row Widget
-  Widget _infoRow(BuildContext context, String label, String value) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Expanded(
-          child: _infoTile(context, label, AppColors.colorFFFFFF, false),
-        ),
-        Expanded(child: _infoTile(context, value, AppColors.color5E5E5E, true)),
-      ],
-    );
-  }
-
-  Widget _infoTile(
-    BuildContext context,
-    String text,
-    Color color,
-    bool isLeftAligned,
-  ) {
-    return Container(
-      alignment: isLeftAligned ? Alignment.centerLeft : Alignment.centerRight,
-      padding: EdgeInsets.only(
-        left: isLeftAligned ? 35.w : 0,
-        right: isLeftAligned ? 0 : 35.w,
-      ),
-      height: 50.h,
-      color: AppColors.color111111,
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w600,
-          color: color,
-        ),
-      ),
-    );
-  }
-}*/

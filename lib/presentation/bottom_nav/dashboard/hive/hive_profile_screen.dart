@@ -8,6 +8,7 @@ import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_profile_image.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/resume_lock_dialog.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/hive_profile_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -332,12 +333,7 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
             behavior: HitTestBehavior.translucent,
             onTap: () {
               if (isLocked) {
-                Utilities.showSnackBar(
-                  title: 'Locked',
-                  message:
-                      'Resume/Certification is available for upgraded employer plans only.',
-                  isSuccess: false,
-                );
+                resumeLockDialog();
                 return;
               }
 

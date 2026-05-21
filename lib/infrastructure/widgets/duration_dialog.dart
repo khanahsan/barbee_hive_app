@@ -124,7 +124,7 @@ class DurationDialog extends StatelessWidget {
                     );
                   }).toList(),
 
-                  dropdownColor: AppColors.color5E5E5E,
+                  dropdownColor: AppColors.colorFF8600,
                 ),
 
                 SizedBox(height: 20.h),

@@ -271,24 +271,19 @@ class JobPostingScreen extends GetView<JobPostingController> {
                         hint: 'Country',
                         iconPath: AppAssets.countryIcon,
                         selectedValue: controller.selectedCountry,
+                        readOnly: true,
                         onChanged: (value) {
-                          print("value : $value");
                           controller.updateCountry(value);
                         },
-                        items:
-                            controller.countries
-                                .map(
-                                  (exp) => DropdownMenuItem(
-                                    value: exp.name,
-                                    child: Text(
-                                      exp.name,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
+                        items: const [
+                          DropdownMenuItem(
+                            value: JobPostingController.fixedCountryName,
+                            child: Text(
+                              JobPostingController.fixedCountryName,
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ],
                       ),
                       // _textField(
                       //   hintText: 'Country',
@@ -559,6 +554,7 @@ class JobPostingScreen extends GetView<JobPostingController> {
     Color? dropdownColor,
     String? searchHint,
     String? Function(String?)? validator,
+    bool readOnly = false,
   }) {
     return CustomDropdown(
       searchHint: searchHint,
@@ -575,6 +571,7 @@ class JobPostingScreen extends GetView<JobPostingController> {
       borderRadius: borderRadius,
       backgroundColor: backgroundColor,
       validator: validator,
+      readOnly: readOnly,
     );
   }
 

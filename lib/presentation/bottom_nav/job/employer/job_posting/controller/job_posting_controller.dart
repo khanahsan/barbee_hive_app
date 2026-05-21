@@ -283,6 +283,9 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../../../data/api/job/job_api.dart';
 
 class JobPostingController extends GetxController {
+  static const int fixedCountryId = 1;
+  static const String fixedCountryName = 'United State of America';
+
   /// TEXT CONTROLLERS
   final TextEditingController minSalaryController = TextEditingController();
   final TextEditingController maxSalaryController = TextEditingController();
@@ -301,7 +304,7 @@ class JobPostingController extends GetxController {
   final RxString selectedExperienceLevel = ''.obs;
   final RxString selectedJobType = ''.obs;
   final RxString selectedSalaryType = ''.obs;
-  final RxString selectedCountry = ''.obs;
+  final RxString selectedCountry = fixedCountryName.obs;
   final RxString selectedState = ''.obs;
   final RxString selectedCity = ''.obs;
   final RxString selectedDurationLabel = ''.obs;
@@ -399,7 +402,9 @@ class JobPostingController extends GetxController {
   void updateSalaryType(String? value) =>
       selectedSalaryType.value = value ?? '';
 
-  void updateCountry(String? value) => selectedCountry.value = value ?? '';
+  void updateCountry(String? value) {
+    selectedCountry.value = fixedCountryName;
+  }
 
   void updateState(String? value) {
     if (value == null) return;
@@ -619,11 +624,6 @@ class JobPostingController extends GetxController {
         orElse: () => throw Exception("Invalid Salary Type Selected"),
       );
 
-      final country = countries.firstWhere(
-        (j) => j.name == selectedCountry.value,
-        orElse: () => throw Exception("Invalid Country Selected"),
-      );
-
       final state = states.firstWhere(
         (j) => j.name == selectedState.value,
         orElse: () => throw Exception("Invalid State Selected"),
@@ -638,7 +638,7 @@ class JobPostingController extends GetxController {
         minSalary: minSalaryController.text,
         maxSalary: maxSalaryController.text,
         jobType: userJob.id,
-        country: country.id.toString(),
+        country: fixedCountryId.toString(),
         state: state.id.toString(),
         city: selectedCity.value,
         recruiterName: recruiterController.text,

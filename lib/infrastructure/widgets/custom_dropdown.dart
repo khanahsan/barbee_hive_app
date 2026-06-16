@@ -20,6 +20,7 @@ class CustomDropdown extends StatelessWidget {
   final double? borderRadius;
   final Color? backgroundColor;
   final Color? textColor;
+  final Color? hintColor;
   final Color? dropdownColor;
   final Color? borderColor;
   final String? Function(String?)? validator;
@@ -40,6 +41,7 @@ class CustomDropdown extends StatelessWidget {
     this.borderRadius,
     this.backgroundColor,
     this.textColor,
+    this.hintColor,
     this.dropdownColor,
     this.borderColor,
     this.validator,
@@ -93,7 +95,7 @@ class CustomDropdown extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: textColor ?? AppColors.colorFFFFFF,
+                        color: hintColor ?? AppColors.colorFFFFFF,
                         fontSize: fontSize ?? 16.sp,
                         fontWeight: FontWeight.w400,
                       ),
@@ -119,20 +121,33 @@ class CustomDropdown extends StatelessWidget {
                     style: TextStyle(
                       fontSize: fontSize ?? 16.sp,
                       overflow: TextOverflow.ellipsis,
-                      color: textColor ?? AppColors.colorA3A3A3,
-                      // selected text = white
+                      color: AppColors.colorFFFFFF,
                       fontWeight: FontWeight.w400,
                     ),
 
                     hint: Text(
-                      selectedValue.value.isEmpty ? hint : selectedValue.value,
+                      hint,
                       style: TextStyle(
-                        color: textColor ?? AppColors.colorA3A3A3,
-                        // hint text color = white
+                        color: hintColor ?? AppColors.colorFFFFFF,
                         fontSize: fontSize ?? 16.sp,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
+
+                    selectedItemBuilder: (_) => items.map((item) {
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          item.value ?? '',
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppColors.colorFFFFFF,
+                            fontSize: fontSize ?? 16.sp,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      );
+                    }).toList(),
 
                     iconEnabledColor: Colors.white,
                     iconDisabledColor: Colors.white,
@@ -146,12 +161,13 @@ class CustomDropdown extends StatelessWidget {
                         items.map((item) {
                           return DropdownMenuItem<String>(
                             value: item.value,
-                            child: DefaultTextStyle(
+                            child: Text(
+                              item.value ?? '',
                               style: TextStyle(
-                                color: AppColors.colorFFFFFF,
+                                color: textColor ?? AppColors.colorFF8600,
                                 fontSize: fontSize ?? 16.sp,
+                                fontWeight: FontWeight.w400,
                               ),
-                              child: item.child, // <-- Correct way
                             ),
                           );
                         }).toList(),
@@ -309,9 +325,9 @@ class CustomDropdown extends StatelessWidget {
                     Get.back(closeOverlays: true);
                   }
                 },
-                child: const Text(
+                child: Text(
                   'Close',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: AppColors.colorFF8600),
                 ),
               ),
             ],

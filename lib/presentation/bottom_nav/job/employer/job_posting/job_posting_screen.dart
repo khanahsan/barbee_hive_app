@@ -559,8 +559,8 @@ class JobPostingScreen extends GetView<JobPostingController> {
     return CustomDropdown(
       searchHint: searchHint,
       enableSearch: enableSearch ?? false,
-      textColor: textColor ?? AppColors.colorFFFFFF,
-      dropdownColor: dropdownColor ?? AppColors.colorFF8600,
+      textColor: textColor ?? AppColors.colorFF8600,
+      dropdownColor: dropdownColor ?? AppColors.colorFFFFFF,
       hint: hint,
       iconPath: iconPath,
       selectedValue: selectedValue,

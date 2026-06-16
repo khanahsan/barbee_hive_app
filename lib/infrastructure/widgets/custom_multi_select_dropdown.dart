@@ -15,6 +15,7 @@ class CustomMultiSelectDropdown extends StatelessWidget {
   final double? borderRadius;
   final Color? backgroundColor;
   final Color? textColor;
+  final Color? hintColor;
   final Color? dropdownColor;
   final String? Function(List<String>?)? validator;
 
@@ -29,6 +30,7 @@ class CustomMultiSelectDropdown extends StatelessWidget {
     this.borderRadius,
     this.backgroundColor,
     this.textColor,
+    this.hintColor,
     this.dropdownColor,
     this.validator,
   });
@@ -91,7 +93,7 @@ class CustomMultiSelectDropdown extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: fontSize ?? 16.sp,
-                            color: textColor ?? AppColors.colorA3A3A3,
+                            color: hintColor ?? AppColors.colorFFFFFF,
                           ),
                         ),
                       ),
@@ -128,7 +130,7 @@ class CustomMultiSelectDropdown extends StatelessWidget {
             final dialogBg =
                 dropdownColor ?? AppColors.textFieldBackground;
             final dialogTextColor =
-                textColor ?? AppColors.colorFFFFFF;
+                textColor ?? AppColors.colorFF8600;
 
             return AlertDialog(
               backgroundColor: dialogBg,

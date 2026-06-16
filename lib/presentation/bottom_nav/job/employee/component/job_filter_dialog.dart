@@ -396,10 +396,10 @@ class JobFilterDialog extends GetView<JobController> {
       selectedValue: selectedValue,
       items: items,
       onChanged: onChanged,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.color000000,
       borderRadius: 10,
-      textColor: Colors.black,
-      dropdownColor: AppColors.colorFF8600,
+      textColor: AppColors.colorFF8600,
+      dropdownColor: AppColors.colorFFFFFF,
       borderColor: AppColors.colorA3A3A3,
     );
   }

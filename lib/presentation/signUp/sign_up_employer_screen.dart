@@ -439,8 +439,8 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
                                   ),
 
                                   CustomMultiSelectDropdown(
-                                    textColor: AppColors.colorFFFFFF,
-                                    dropdownColor: AppColors.colorFF8600,
+                                    textColor: AppColors.colorFF8600,
+                                    dropdownColor: AppColors.colorFFFFFF,
                                     hint: "Position Seeking",
                                     iconPath: AppAssets.cardIcon,
                                     selectedValues: controller.selectedSkills,
@@ -625,8 +625,8 @@ class SignUpEmployerScreen extends GetView<SignUpEmployerController> {
     bool readOnly = false,
   }) {
     return CustomDropdown(
-      textColor: AppColors.colorFFFFFF,
-      dropdownColor: AppColors.colorFF8600,
+      textColor: AppColors.colorFF8600,
+      dropdownColor: AppColors.colorFFFFFF,
       hint: hint,
       iconPath: iconPath,
       selectedValue: selectedValue,

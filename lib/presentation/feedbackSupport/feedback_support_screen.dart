@@ -112,8 +112,8 @@ class FeedbackSupportScreen extends GetView<FeedbackSupportController> {
             fontSize: 17.sp,
             borderRadius: 12.r,
             backgroundColor: AppColors.color000000,
-            textColor: AppColors.colorFFFFFF,
-            dropdownColor: AppColors.colorFF8600,
+            textColor: AppColors.colorFF8600,
+            dropdownColor: AppColors.colorFFFFFF,
             borderColor: AppColors.colorA3A3A3,
             validator: (value) {
               if (value == null || value.isEmpty) {

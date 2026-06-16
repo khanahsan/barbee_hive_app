@@ -1,7 +1,7 @@
 import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
-import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/utils/form_validators.dart';
+import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -223,8 +223,8 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
 
                                   /// EXPERIENCE
                                   CustomMultiSelectDropdown(
-                                    textColor: AppColors.colorFFFFFF,
-                                    dropdownColor: AppColors.colorFF8600,
+                                    textColor: AppColors.colorFF8600,
+                                    dropdownColor: AppColors.colorFFFFFF,
 
                                     hint: 'Skills',
                                     iconPath: AppAssets.cardIcon,
@@ -261,7 +261,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                 value: level.name,
                                                 child: CustomText(
                                                   title: level.name,
-                                                  color: AppColors.colorFFFFFF,
+                                                  color: AppColors.colorFF8600,
                                                   fontSize: 16,
                                                 ),
                                               ),
@@ -524,7 +524,7 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                                         title: gender.name,
                                                         color:
                                                             AppColors
-                                                                .colorFFFFFF,
+                                                                .colorFF8600,
                                                         fontSize: 16,
                                                       ),
                                                     ),
@@ -850,9 +850,10 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
     String? Function(String?)? validator,
   }) {
     return CustomDropdown(
-      textColor: AppColors.colorFFFFFF,
-      dropdownColor: AppColors.colorFF8600,
+      textColor: AppColors.colorFF8600,
+      dropdownColor: AppColors.colorFFFFFF,
       hint: hint,
+      hintColor: AppColors.colorFFFFFF,
       iconPath: iconPath,
       selectedValue: selectedValue,
       onChanged: onChanged,

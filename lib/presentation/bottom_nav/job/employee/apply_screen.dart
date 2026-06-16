@@ -517,8 +517,8 @@ class ApplyScreen extends GetView<ApplyScreenController> {
     String? Function(String?)? validator,
   }) {
     return CustomDropdown(
-      textColor: AppColors.colorFFFFFF,
-      dropdownColor: AppColors.colorFF8600,
+      textColor: AppColors.colorFF8600,
+      dropdownColor: AppColors.colorFFFFFF,
       hint: hint,
       iconPath: iconPath,
       selectedValue: selectedValue,

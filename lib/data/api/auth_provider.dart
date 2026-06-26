@@ -124,8 +124,12 @@ class AuthProvider {
   }
 
   /// FETCH ALL DURATIONS
-  static Future<DurationResponse> getDurations() async {
-    final data = await ApiService.get(ApiEndPoints.getDuration, auth: true);
+  /// [bid] 0 = job post durations, 1 = extend/renew durations
+  static Future<DurationResponse> getDurations({required int bid}) async {
+    final data = await ApiService.get(
+      '${ApiEndPoints.getDuration}?bid=$bid',
+      auth: true,
+    );
     return DurationResponse.fromJson(data);
   }
 

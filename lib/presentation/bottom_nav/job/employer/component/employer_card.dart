@@ -89,7 +89,7 @@ class EmployerCard extends StatelessWidget {
                     _isRenewing.value = true;
                     try {
                       final durationsResponse =
-                          await AuthProvider.getDurations();
+                          await AuthProvider.getDurations(bid: 1);
                       if (durationsResponse.duration.isEmpty) {
                         Utilities.showSnackBar(
                           title: 'Error',

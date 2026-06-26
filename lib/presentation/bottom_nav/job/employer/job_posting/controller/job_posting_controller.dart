@@ -335,7 +335,7 @@ class JobPostingController extends GetxController {
 
   Future<void> fetchDurations() async {
     try {
-      final response = await AuthProvider.getDurations();
+      final response = await AuthProvider.getDurations(bid: 0);
       durations.assignAll(response.duration);
       // if (durations.isNotEmpty) {
       //   selectedDurationLabel.value = durationLabel(durations.first);

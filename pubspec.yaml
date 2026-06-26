@@ -98,6 +98,10 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  # Opt out of Swift Package Manager for this project (use CocoaPods only).
+  config:
+    enable-swift-package-manager: false
+
   assets:
     - assets/
 #    - assets/service-account.json

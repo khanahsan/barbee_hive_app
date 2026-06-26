@@ -13,6 +13,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/hiv
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
@@ -80,11 +81,22 @@ class _HiveProfileScreenState extends State<HiveProfileScreen> {
       backgroundColor: AppColors.color000000,
       extendBodyBehindAppBar: true,
       appBar: customAppbar(
+        height: 70.h,
         context: context,
-        leadingTapFunction: Get.back,
-        title: "Profile",
-        showHexagon: false,
+        leadingTapFunction: () {
+          Get.back();
+        },
+        title: '',
+        titleWidget: SvgPicture.asset(
+          AppAssets.appIconTwo,
+          width: 50.w,
+          height: 50.h,
+          fit: BoxFit.cover,
+        ),
+        // title: controller.isEditing.value ? "Edit Profile" : "Profile",
+        showActions: false,
         leadingIconPath: AppAssets.backIcon,
+        showHexagon: false,
       ),
       body: Obx(() {
         final viewedProfile = controller.viewedUserProfile.value;

@@ -172,8 +172,8 @@ class CustomJobFilterDialog extends StatelessWidget {
       onChanged: (v) => selectedValue.value = v ?? '',
       backgroundColor: AppColors.color000000,
       borderRadius: 10,
-      textColor: AppColors.colorFF8600,
-      dropdownColor: AppColors.colorFFFFFF,
+      textColor: AppColors.colorFFFFFF,
+      dropdownColor: AppColors.color4A4A4A,
       borderColor: AppColors.colorA3A3A3,
     );
   }

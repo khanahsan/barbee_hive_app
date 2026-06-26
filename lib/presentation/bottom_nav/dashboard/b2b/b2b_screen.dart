@@ -9,6 +9,7 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/b2b_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
@@ -45,22 +46,31 @@ class _B2BScreenState extends State<B2BScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: customAppbar(
+        height: 70.h,
         context: context,
         leadingTapFunction: () {
           Get.back();
         },
-        showHexagon: false,
+        title: '',
+        titleWidget: SvgPicture.asset(
+          AppAssets.appIconTwo,
+          width: 50.w,
+          height: 50.h,
+          fit: BoxFit.cover,
+        ),
+        // title: controller.isEditing.value ? "Edit Profile" : "Profile",
+        showActions: false,
         leadingIconPath: AppAssets.backIcon,
-        title: "B2B",
+        showHexagon: false,
       ),
       body: Stack(
         children: [
           Positioned(
-            top: 102.h,
+            top: 85.h,
             left: 0,
             right: 0,
             child: SizedBox(
-              height: 300.h,
+              height: 350.h,
               width: double.infinity,
               child: Image.network(
                 widget.currentUser.profileImage ?? AppAssets.nullProfile,

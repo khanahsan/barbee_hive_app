@@ -223,8 +223,8 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
 
                                   /// EXPERIENCE
                                   CustomMultiSelectDropdown(
-                                    textColor: AppColors.colorFF8600,
-                                    dropdownColor: AppColors.colorFFFFFF,
+                                    textColor: AppColors.colorFFFFFF,
+                                    dropdownColor: AppColors.color4A4A4A,
 
                                     hint: 'Skills',
                                     iconPath: AppAssets.cardIcon,
@@ -850,8 +850,8 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
     String? Function(String?)? validator,
   }) {
     return CustomDropdown(
-      textColor: AppColors.colorFF8600,
-      dropdownColor: AppColors.colorFFFFFF,
+      textColor: AppColors.colorFFFFFF,
+      dropdownColor: AppColors.color4A4A4A,
       hint: hint,
       hintColor: AppColors.colorFFFFFF,
       iconPath: iconPath,

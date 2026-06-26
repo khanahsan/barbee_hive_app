@@ -128,9 +128,9 @@ class CustomMultiSelectDropdown extends StatelessWidget {
         return StatefulBuilder(
           builder: (context, setStateSB) {
             final dialogBg =
-                dropdownColor ?? AppColors.textFieldBackground;
+                dropdownColor ?? AppColors.color4A4A4A;
             final dialogTextColor =
-                textColor ?? AppColors.colorFF8600;
+                textColor ?? AppColors.colorFFFFFF;
 
             return AlertDialog(
               backgroundColor: dialogBg,
@@ -168,8 +168,8 @@ class CustomMultiSelectDropdown extends StatelessWidget {
                           style: TextStyle(color: dialogTextColor),
                         ),
                         value: isChecked,
-                        activeColor: AppColors.colorFF8600,
-                        checkColor: Colors.white,
+                        activeColor: AppColors.colorFFFFFF,
+                        checkColor: Colors.black,
                         onChanged: (val) {
                           setStateSB(() {
                             if (val == true) {
@@ -341,7 +341,7 @@ class CustomMultiSelectDropdown extends StatelessWidget {
       builder: (_) {
         return StatefulBuilder(
           builder: (context, setStateSB) {
-            final dialogBg = dropdownColor ?? AppColors.textFieldBackground;
+            final dialogBg = dropdownColor ?? AppColors.color4A4A4A;
             final dialogTextColor = textColor ?? AppColors.colorFFFFFF;
             return AlertDialog(
               backgroundColor: dialogBg,
@@ -357,7 +357,7 @@ class CustomMultiSelectDropdown extends StatelessWidget {
                             style: TextStyle(color: dialogTextColor),
                           ),
                           value: isChecked,
-                          activeColor: AppColors.colorFF8600,
+                          activeColor: AppColors.colorFFFFFF,
                           onChanged: (val) {
                             setStateSB(() {
                               if (val == true) {

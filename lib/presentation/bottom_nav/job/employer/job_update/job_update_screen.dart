@@ -394,8 +394,8 @@ class JobUpdateScreen extends GetView<JobUpdateController> {
     String? Function(String?)? validator,
   }) {
     return CustomDropdown(
-      textColor: AppColors.colorFF8600,
-      dropdownColor: AppColors.colorFFFFFF,
+      textColor: AppColors.colorFFFFFF,
+      dropdownColor: AppColors.color4A4A4A,
       hint: hint,
       iconPath: iconPath,
       selectedValue: selectedValue,

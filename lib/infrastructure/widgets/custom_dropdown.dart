@@ -116,7 +116,7 @@ class CustomDropdown extends StatelessWidget {
                   child: DropdownButton<String>(
                     isExpanded: true,
                     dropdownColor:
-                        dropdownColor ?? AppColors.textFieldBackground,
+                        dropdownColor ?? AppColors.color4A4A4A,
                     // dropdown background = black
                     style: TextStyle(
                       fontSize: fontSize ?? 16.sp,
@@ -164,7 +164,7 @@ class CustomDropdown extends StatelessWidget {
                             child: Text(
                               item.value ?? '',
                               style: TextStyle(
-                                color: textColor ?? AppColors.colorFF8600,
+                                color: textColor ?? AppColors.colorFFFFFF,
                                 fontSize: fontSize ?? 16.sp,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -220,7 +220,7 @@ class CustomDropdown extends StatelessWidget {
   void _showSearchDialog(BuildContext context, FormFieldState<String> state) {
     final TextEditingController searchController = TextEditingController();
 
-    final dialogBg = dropdownColor ?? AppColors.textFieldBackground;
+    final dialogBg = dropdownColor ?? AppColors.color4A4A4A;
     final dialogTextColor = textColor ?? AppColors.colorFFFFFF;
 
     Get.dialog(
@@ -327,7 +327,7 @@ class CustomDropdown extends StatelessWidget {
                 },
                 child: Text(
                   'Close',
-                  style: TextStyle(color: AppColors.colorFF8600),
+                  style: TextStyle(color: AppColors.colorFFFFFF),
                 ),
               ),
             ],

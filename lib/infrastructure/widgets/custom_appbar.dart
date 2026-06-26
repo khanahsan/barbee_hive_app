@@ -19,9 +19,10 @@ PreferredSizeWidget customAppbar({
   bool? showHexagon = true,
   VoidCallback? hexagonTapFunction,
   Widget? titleWidget, // Accept custom widget for the title
+  double? height,
 }) {
   return PreferredSize(
-    preferredSize: Size.fromHeight(90.h),
+    preferredSize: Size.fromHeight(height ?? 90.h),
     child: AppBar(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -30,7 +31,7 @@ PreferredSizeWidget customAppbar({
         ),
       ),
       backgroundColor: AppColors.color101010,
-      toolbarHeight: 100.h,
+      toolbarHeight: height ?? 100.h,
       elevation: 0,
       leading: Row(
         mainAxisSize: MainAxisSize.min,

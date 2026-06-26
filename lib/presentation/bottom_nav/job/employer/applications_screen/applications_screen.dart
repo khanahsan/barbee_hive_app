@@ -501,7 +501,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
   }) {
     return Obx(
       () => DropdownButtonFormField<String>(
-        dropdownColor: AppColors.colorFFFFFF,
+        dropdownColor: AppColors.color4A4A4A,
         decoration: InputDecoration(
           filled: true,
           fillColor: AppColors.colorFFFFFF,
@@ -538,7 +538,7 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
                   item.value!,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontSize: 15.sp,
-                    color: AppColors.colorFF8600,
+                    color: AppColors.colorFFFFFF,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

@@ -42,18 +42,6 @@ class ProfileScreen extends GetView<ProfileController> {
           showActions: false,
           leadingIconPath: AppAssets.backIcon,
           showHexagon: false,
-          // actions: [
-          //   GestureDetector(
-          //     onTap: () => Get.toNamed(Routes.settingsScreen),
-          //     child: SvgPicture.asset(
-          //       AppAssets.settingIcon,
-          //       fit: BoxFit.cover,
-          //       height: 23.h,
-          //       width: 23.w,
-          //       color: AppColors.colorFFFFFF,
-          //     ),
-          //   ),
-          // ],
         ),
       ),
       bottomNavigationBar: Obx(

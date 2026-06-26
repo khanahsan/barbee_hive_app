@@ -315,8 +315,8 @@ class EmployerCard extends StatelessWidget {
                               ),
                             );
                           }).toList(),
-                      textColor: AppColors.colorFF8600,
-                      dropdownColor: AppColors.colorFFFFFF,
+                      textColor: AppColors.colorFFFFFF,
+                      dropdownColor: AppColors.color4A4A4A,
                     ),
                     SizedBox(height: 20.h),
                     Obx(

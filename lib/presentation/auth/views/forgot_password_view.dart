@@ -92,9 +92,9 @@ class ForgotPasswordView extends GetView<ForgetPasswordController> {
                                       ),
                                       TextSpan(
                                         text:
-                                        'We Will send you a message to reset your\n\t\t\tnew password',
+                                        'We will send you a message to reset your\n\t\t\tnew password',
                                         style: TextStyle(
-                                          color: AppColors.textFieldTextColor,
+                                          color: AppColors.colorFFFFFF,
                                           fontSize: 15.sp,
                                         ),
                                       ),

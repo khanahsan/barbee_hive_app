@@ -4,8 +4,8 @@ class ApiEndPoints {
   //static const String basePoint = 'https://barbeehive.staging.pegasync.com/';
 
   /// Sandbox
-  static const String baseUrl = 'https://barbeehive.sandbox.pegasync.com/api/';
-  static const String basePoint = 'https://barbeehive.sandbox.pegasync.com/';
+  // static const String baseUrl = 'https://barbeehive.sandbox.pegasync.com/api/';
+  // static const String basePoint = 'https://barbeehive.sandbox.pegasync.com/';
 
   /// Live
   static const String baseUrl = 'https://barbeehive.com/api/';

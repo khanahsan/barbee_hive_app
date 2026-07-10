@@ -8,8 +8,8 @@ class ApiEndPoints {
   static const String basePoint = 'https://barbeehive.sandbox.pegasync.com/';
 
   /// Live
-  // static const String baseUrl = 'https://barbeehive.com/api/';
-  // static const String basePoint = 'https://barbeehive.com/';
+  static const String baseUrl = 'https://barbeehive.com/api/';
+  static const String basePoint = 'https://barbeehive.com/';
 
   /// Local
   // static const String baseUrl = 'http://192.168.10.60:8000/api/';

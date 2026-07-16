@@ -13,6 +13,7 @@ import 'package:my_responsive_ui/my_responsive_ui.dart';
 import 'data/api/api_service.dart';
 import 'data/api/firebase/firebase_service.dart';
 import 'firebase_options.dart';
+import 'infrastructure/helpers/ads_services.dart';
 import 'infrastructure/helpers/shared_preference_helper.dart';
 import 'infrastructure/utils/utilities.dart';
 import 'infrastructure/navigation/bindings/initial_binding.dart';
@@ -74,6 +75,13 @@ Future<void> _initializeRuntimeServices() async {
     await NotificationService.instance.initialize();
   } catch (e, stackTrace) {
     debugPrint("NotificationService initialization failed: $e");
+    debugPrintStack(stackTrace: stackTrace);
+  }
+
+  try {
+    await AdsHelper.initialize();
+  } catch (e, stackTrace) {
+    debugPrint("AdsHelper initialization failed: $e");
     debugPrintStack(stackTrace: stackTrace);
   }
 }

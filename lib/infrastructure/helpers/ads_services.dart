@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,9 @@ class AdsHelper {
     required Function(BannerAd) onAdLoaded,
     required Function onAdFailed,
   }) {
-    final bannerID = dotenv.env['BANNER_AD_UNIT_ID'];
+    final bannerID = Platform.isAndroid
+        ? dotenv.env['ANDROID_BANNER_AD_UNIT_ID']
+        : dotenv.env['IOS_BANNER_AD_UNIT_ID'];
 
     log('BANNER ID: $bannerID');
 
@@ -47,7 +50,9 @@ class AdsHelper {
 
   /// ✅ Interstitial Ad
   void loadInterstitialAd() {
-    final interstitialID = dotenv.env['INTERSTITIAL_AD_UNIT_ID'];
+    final interstitialID = Platform.isAndroid
+        ? dotenv.env['ANDROID_INTERSTITIAL_AD_UNIT_ID']
+        : dotenv.env['IOS_INTERSTITIAL_AD_UNIT_ID'];
 
     log('Interstitial ID: $interstitialID');
 

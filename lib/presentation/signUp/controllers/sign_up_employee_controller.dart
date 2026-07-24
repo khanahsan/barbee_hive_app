@@ -397,9 +397,6 @@ class SignUpEmployeeController extends GetxController {
     if (!isChecked.value) {
       return _showError('Please agree to the Terms of Service');
     }
-    if (selectedResume.value == null) {
-      return _showError('Please upload your resume');
-    }
     if (!await _ensureResumeWithinLimit()) {
       return;
     }
@@ -547,7 +544,7 @@ class SignUpEmployeeController extends GetxController {
   Future<bool> _ensureResumeWithinLimit() async {
     final file = selectedResume.value;
     if (file == null) {
-      return false;
+      return true;
     }
 
     try {
@@ -799,9 +796,6 @@ class SignUpEmployeeController extends GetxController {
     if (!isChecked.value) {
       return _showError('Please agree to the Terms of Service');
     }
-    if (selectedResume.value == null) {
-      return _showError('Please upload your resume');
-    }
     if (!await _ensureResumeWithinLimit()) {
       return;
     }
@@ -953,9 +947,6 @@ class SignUpEmployeeController extends GetxController {
     // Keep existing form validations for resume/image/terms/skills
     if (!isChecked.value) {
       return _showError('Please agree to the Terms of Service');
-    }
-    if (selectedResume.value == null) {
-      return _showError('Please upload your resume');
     }
     if (!await _ensureResumeWithinLimit()) {
       return;

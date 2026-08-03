@@ -25,7 +25,13 @@ class ApplicantProfileScreen extends GetView<ApplicantProfileController> {
       appBar: customAppbar(
         context: context,
         leadingTapFunction: Get.back,
-        title: "Profile",
+        title: "",
+        titleWidget: Image.asset(
+          AppAssets.appLogo4,
+          width: 195.w,
+          height: 54.h,
+          fit: BoxFit.cover,
+        ),
         showHexagon: false,
         leadingIconPath: AppAssets.backIcon,
       ),

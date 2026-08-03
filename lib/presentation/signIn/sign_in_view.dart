@@ -36,13 +36,13 @@ class SignInView extends GetView<SignInController> {
             crossAxisAlignment: CrossAxisAlignment.center,
             spacing: 15.h,
             children: [
-              SvgPicture.asset(
-                AppAssets.appIcon,
-                width: 85.w,
-                height: 85.h,
-                fit: BoxFit.cover,
+              Image.asset(
+                AppAssets.appLogo3,
+                width: 220.w,
+                height: 150.h,
+                fit: BoxFit.fill,
               ),
-              SizedBox(height: 10.h),
+              SizedBox(height: 5.h),
 
               // Positioned(
               //   left: 0,

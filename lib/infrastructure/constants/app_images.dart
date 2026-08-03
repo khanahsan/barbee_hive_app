@@ -87,6 +87,8 @@ class AppAssets {
   static String sampleCoverImage = '$imagesPath/sample_cover_image.png';
   static String sampleImage2 = '$imagesPath/sample_image2.jpg';
   static String backgroundLogo = '$imagesPath/background_logo.png';
+  static String appLogo3 = '$imagesPath/app_logo3.png';
+  static String appLogo4 = '$imagesPath/app_logo4.png';
 
   static String nullProfile =
       'https://cdna.artstation.com/p/assets/images/images/084/124/296/large/matthew-blank-profile-photo-1.jpg?1737590038';

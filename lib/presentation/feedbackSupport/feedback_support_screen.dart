@@ -24,7 +24,13 @@ class FeedbackSupportScreen extends GetView<FeedbackSupportController> {
         showHexagon: false,
         context: context,
         leadingIconPath: AppAssets.backIcon,
-        title: 'Feedback & Support',
+        title: '',
+          titleWidget: Image.asset(
+            AppAssets.appLogo4,
+            width: 195.w,
+            height: 54.h,
+            fit: BoxFit.cover,
+          )
       ),
       body: Obx(
         () => controller.isLoading.value

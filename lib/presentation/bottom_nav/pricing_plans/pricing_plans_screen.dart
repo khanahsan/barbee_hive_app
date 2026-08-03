@@ -39,10 +39,10 @@ class PricingPlansScreen extends GetView<PricingPlansController> {
         leadingIconPath: showBackButton ? AppAssets.backIcon : null,
         // show back icon if needed
         title: '',
-        titleWidget: SvgPicture.asset(
-          AppAssets.appIconTwo,
-          width: 50.w,
-          height: 50.h,
+        titleWidget: Image.asset(
+          AppAssets.appLogo4,
+          width: 195.w,
+          height: 54.h,
           fit: BoxFit.cover,
         ),
       ),

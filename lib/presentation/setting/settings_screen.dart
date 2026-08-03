@@ -20,7 +20,13 @@ class SettingsScreen extends GetView<SettingController> {
       appBar: customAppbar(
         context: context,
         leadingTapFunction: () => Get.back(),
-        title: "Settings",
+        title: "",
+        titleWidget: Image.asset(
+          AppAssets.appLogo4,
+          width: 195.w,
+          height: 54.h,
+          fit: BoxFit.cover,
+        ),
         leadingIconPath: AppAssets.backIcon,
         showHexagon: false,
       ),

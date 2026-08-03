@@ -164,7 +164,13 @@ class ApplicationsScreen extends GetView<ApplicationsController> {
         },
         leadingIconPath: AppAssets.backIcon,
         showHexagon: false,
-        title: "Applications",
+        title: "",
+          titleWidget: Image.asset(
+            AppAssets.appLogo4,
+            width: 195.w,
+            height: 54.h,
+            fit: BoxFit.cover,
+          )
       ),
       body: Obx(
         () => RefreshIndicator(

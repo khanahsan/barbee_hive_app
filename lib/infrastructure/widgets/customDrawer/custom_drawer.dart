@@ -19,141 +19,156 @@ class CustomDrawer extends GetView<CustomDrawerController> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Obx(
-        () => Stack(
-          fit: StackFit.expand,
-          children: [
-            /// Drawer background (only visible when open)
-            if (controller.isDrawerOpen.value)
-              FadeTransition(
-                opacity: controller.fadeAnimation,
-                child: Container(
-                  color: AppColors.black,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 25.w, top: 80.h),
-                    child: ScaleTransition(
-                      scale: controller.drawerScaleAnimation,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            onTap: controller.toggleDrawer,
-                            child: SvgPicture.asset(
-                              AppAssets.closeIcon,
-                              width: 15.w,
-                              height: 15.h,
-                              color: AppColors.colorFFFFFF,
-                            ).paddingSymmetric(horizontal: 5.w),
-                          ),
-                          SizedBox(height: 30.h),
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onHorizontalDragEnd: (details) {
+          final velocity = details.primaryVelocity ?? 0;
+          if (velocity < 0 && controller.isDrawerOpen.value) {
+            controller.toggleDrawer();
+          }
+        },
+        child: Obx(
+          () => Stack(
+            fit: StackFit.expand,
+            children: [
+              /// Home screen (always mounted as the base layer so closing
+              /// the drawer cross-fades into it in real time, instead of
+              /// staying black until the animation finishes).
+              IgnorePointer(
+                ignoring: controller.isDrawerOpen.value,
+                child: BottomNavScreen(onMenuPressed: controller.toggleDrawer),
+              ),
 
-                          HexagonAvatar(
-                            imagePath:
-                                Get.find<DashboardController>()
-                                    .userProfileImage
-                                    .value,
-                            width: 60.w,
-                            height: 70.h,
-                            borderColor: AppColors.colorFF8600,
-                          ),
-
-                          CustomText(
-                            title: "Welcome",
-                            fontSize: 19,
-                            color: AppColors.colorFF8600,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          SizedBox(
-                            width: 165.w,
-                            child: CustomText(
-                              title: controller.userName.value,
-                              fontSize: 30,
-                              maxLines: 2,
-                              color: AppColors.colorFFFFFF,
-                              fontWeight: FontWeight.w600,
-                              textOverflow: TextOverflow.ellipsis,
+              /// Drawer overlay (only mounted while open/animating)
+              if (controller.isDrawerOpen.value)
+                FadeTransition(
+                  opacity: controller.fadeAnimation,
+                  child: Container(
+                    color: AppColors.black,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 25.w, top: 80.h),
+                      child: ScaleTransition(
+                        scale: controller.drawerScaleAnimation,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              onTap: controller.toggleDrawer,
+                              child: SvgPicture.asset(
+                                AppAssets.closeIcon,
+                                width: 15.w,
+                                height: 15.h,
+                                color: AppColors.colorFFFFFF,
+                              ).paddingSymmetric(horizontal: 5.w),
                             ),
-                          ),
-                          SizedBox(height: 70.h),
+                            SizedBox(height: 30.h),
 
-                          drawerMenuTile(
-                            title: "My Profile",
-                            iconPath: AppAssets.editIcon,
-                            controller: controller,
-                            onTap: () {
-                              Get.toNamed(Routes.PROFILE_SCREEN);
-                            },
-                          ),
-                          SizedBox(height: 40.h),
+                            HexagonAvatar(
+                              imagePath:
+                                  Get.find<DashboardController>()
+                                      .userProfileImage
+                                      .value,
+                              width: 60.w,
+                              height: 70.h,
+                              borderColor: AppColors.colorFF8600,
+                            ),
 
-                          drawerMenuTile(
-                            title:
+                            CustomText(
+                              title: "Welcome",
+                              fontSize: 19,
+                              color: AppColors.colorFF8600,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            SizedBox(
+                              width: 165.w,
+                              child: CustomText(
+                                title: controller.userName.value,
+                                fontSize: 30,
+                                maxLines: 2,
+                                color: AppColors.colorFFFFFF,
+                                fontWeight: FontWeight.w600,
+                                textOverflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            SizedBox(height: 70.h),
+
+                            drawerMenuTile(
+                              title: "My Profile",
+                              iconPath: AppAssets.editIcon,
+                              controller: controller,
+                              onTap: () {
+                                Get.toNamed(Routes.PROFILE_SCREEN);
+                              },
+                            ),
+                            SizedBox(height: 40.h),
+
+                            drawerMenuTile(
+                              title:
+                                  controller.role == 2
+                                      ? "My Jobs"
+                                      : "My Applications",
+                              iconPath:
+                                  controller.role == 2
+                                      ? AppAssets.jobIcon
+                                      : AppAssets.personIconThree,
+                              controller: controller,
+                              onTap: () {
                                 controller.role == 2
-                                    ? "My Jobs"
-                                    : "My Applications",
-                            iconPath:
-                                controller.role == 2
-                                    ? AppAssets.jobIcon
-                                    : AppAssets.personIconThree,
-                            controller: controller,
-                            onTap: () {
-                              controller.role == 2
-                                  ? Get.toNamed(
-                                    Routes.jobs,
-                                    arguments: {"showBackButton": true},
-                                  )
-                                  : Get.toNamed(Routes.myJobs);
-                            },
-                          ),
-                          SizedBox(height: 40.h),
+                                    ? Get.toNamed(
+                                      Routes.jobs,
+                                      arguments: {"showBackButton": true},
+                                    )
+                                    : Get.toNamed(Routes.myJobs);
+                              },
+                            ),
+                            SizedBox(height: 40.h),
 
-                          drawerMenuTile(
-                            title: "Settings",
-                            iconPath: AppAssets.settingIcon,
-                            controller: controller,
-                            onTap: () {
-                              Get.toNamed(Routes.settingsScreen);
-                            },
-                          ),
-                          SizedBox(height: 40.h),
+                            drawerMenuTile(
+                              title: "Settings",
+                              iconPath: AppAssets.settingIcon,
+                              controller: controller,
+                              onTap: () {
+                                Get.toNamed(Routes.settingsScreen);
+                              },
+                            ),
+                            SizedBox(height: 40.h),
 
-                          drawerMenuTile(
-                            title: "Logout",
-                            iconPath: AppAssets.exitIcon,
-                            controller: controller,
-                            onTap: () {
-                              controller.logout();
-                            },
-                          ),
-                        ],
+                            drawerMenuTile(
+                              title: "Logout",
+                              iconPath: AppAssets.exitIcon,
+                              controller: controller,
+                              onTap: () {
+                                controller.logout();
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              )
-            else
-              BottomNavScreen(onMenuPressed: controller.toggleDrawer),
 
-            /// Foreground content
-            IgnorePointer(
-              ignoring: controller.isDrawerOpen.value,
-              child: SlideTransition(
-                position: controller.offsetAnimation,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: controller.toggleDrawer,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: ScaleTransition(
-                      scale: controller.dashboardStackScaleAnimation,
-                      child: _buildDashboardStack(controller),
+              /// Foreground content
+              IgnorePointer(
+                ignoring: controller.isDrawerOpen.value,
+                child: SlideTransition(
+                  position: controller.offsetAnimation,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: controller.toggleDrawer,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: ScaleTransition(
+                        scale: controller.dashboardStackScaleAnimation,
+                        child: _buildDashboardStack(controller),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

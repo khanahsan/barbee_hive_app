@@ -89,25 +89,31 @@ class CustomDrawerController extends GetxController
   }
 
 
-  Future<void> toggleDrawer() async {
-    // Toggle drawer state
-    if (isDrawerOpen.value) {
-      animationController.duration = const Duration(
-        milliseconds: 600,
-      ); // faster close
-      animationController.reverse();
-    } else {
-      animationController.duration = const Duration(
-        milliseconds: 600,
-      ); // normal open
-      animationController.forward();
-    }
+  bool _isToggling = false;
 
-    if (isDrawerOpen.value) {
-      await Future.delayed(Duration(milliseconds: 600));
+  Future<void> toggleDrawer() async {
+    // Guard against re-entrant calls (e.g. a swipe gesture firing twice)
+    // stacking multiple animation delays on top of each other.
+    if (_isToggling) return;
+    _isToggling = true;
+
+    try {
+      if (isDrawerOpen.value) {
+        animationController.reverseDuration = const Duration(
+          milliseconds: 600,
+        ); // faster close
+        await animationController.reverse();
+        isDrawerOpen.value = false;
+      } else {
+        animationController.duration = const Duration(
+          milliseconds: 600,
+        ); // normal open
+        isDrawerOpen.value = true;
+        await animationController.forward();
+      }
+    } finally {
+      _isToggling = false;
     }
-    isDrawerOpen.value = !isDrawerOpen.value;
-    //isAnimated.value = !isAnimated.value;  // Toggle drawer state
   }
 
   // Future<void> logout() async {

@@ -24,8 +24,8 @@ class SignInView extends GetView<SignInController> {
     // employer
     //controller.emailController.text = "employer5@gmail.com";
     // //employee
-    // controller.emailController.text = "employer1@gmail.com";
-    // controller.passwordController.text = "12345678";
+    controller.emailController.text = "jack@gmail.com";
+    controller.passwordController.text = "12345678";
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

@@ -457,8 +457,8 @@ class DashboardScreen extends GetView<DashboardController> {
   Widget hiveSection(BuildContext context) {
     return Obx(() {
       final users = controller.employees;
-      final double itemWidth = 95.w;
-      final double itemHeight = 105.h;
+      final double itemWidth = 77.w;
+      final double itemHeight = 87.h;
       final List<int> pattern = _getPattern(users.length, itemHeight);
 
       if (controller.isLoading.value) {

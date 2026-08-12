@@ -28,13 +28,9 @@ class NotificationsScreen extends GetView<NotificationsController> {
         },
         leadingIconPath: AppAssets.backIcon,
         title: '',
-          titleWidget: Image.asset(
-            AppAssets.appLogo4,
-            width: 195.w,
-            height: 54.h,
-            fit: BoxFit.cover,
-          ),
-        // profileImagePath: controller.userProfileImage.value,
+          titleWidget: Image.asset(AppAssets.appLogo4, width: 70.w, height: 70.h, fit: BoxFit.contain,),
+
+          // profileImagePath: controller.userProfileImage.value,
         showHexagon: false
       ),
 

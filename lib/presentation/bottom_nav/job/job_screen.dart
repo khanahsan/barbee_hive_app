@@ -43,39 +43,7 @@ class JobScreen extends GetView<JobController> {
           leadingIconPath: showBackButton == true ? AppAssets.backIcon : null,
           // title: isEmployer ? 'Job Applications' : 'Find Jobs',
           title: '',
-          titleWidget: RichText(
-            text: TextSpan(
-              style: TextStyle(fontSize: 12, color: AppColors.colorFFFFFF),
-              children: [
-                TextSpan(
-                  text: 'Bar',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontSize: 32.sp,
-                    color: AppColors.colorFFFFFF,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                TextSpan(
-                  text: 'Bee',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontSize: 32.sp,
-                    color: AppColors.colorFF8600,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                TextSpan(text: " "),
-
-                TextSpan(
-                  text: 'INC.',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontSize: 16.sp,
-                    color: AppColors.colorFFFFFF,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          titleWidget: Image.asset(AppAssets.appLogo4, width: 70.w, height: 70.h, fit: BoxFit.contain,),
           profileImagePath:
               Get.find<DashboardController>().userProfileImage.value,
         ),

@@ -29,12 +29,8 @@ class MessageScreen extends GetView<ChatController> {
           if (onMenuPressed != null) onMenuPressed!();
         },
         title: '',
-        titleWidget: Image.asset(
-          AppAssets.appLogo4,
-          width: 195.w,
-          height: 54.h,
-          fit: BoxFit.cover,
-        ),
+        titleWidget: Image.asset(AppAssets.appLogo4, width: 70.w, height: 70.h, fit: BoxFit.contain,),
+
       ),
       backgroundColor: AppColors.black,
       bottomNavigationBar: SafeArea(

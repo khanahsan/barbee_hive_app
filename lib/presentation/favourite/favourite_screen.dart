@@ -4,7 +4,6 @@ import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 
@@ -31,10 +30,11 @@ class FavouriteScreen extends GetView<JobController> {
         title: '',
         titleWidget: Image.asset(
           AppAssets.appLogo4,
-          width: 195.w,
-          height: 54.h,
-          fit: BoxFit.cover,
+          width: 70.w,
+          height: 70.h,
+          fit: BoxFit.contain,
         ),
+
         showHexagon: false,
         // profileImagePath: controller.userProfileImage.value,
       ),

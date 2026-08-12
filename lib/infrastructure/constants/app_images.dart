@@ -5,7 +5,6 @@ class AppAssets {
   static String gifPath = "assets/gifs";
   static String animationPath = 'assets/animations';
 
-
   //~~~~~~~~~~~~~~~~Icons~~~~~~~~~~~~~~~~~~~~~~~~~//
 
   static String menuIcon = '$iconPath/menu_icon.svg';
@@ -56,7 +55,6 @@ class AppAssets {
   static String experienceLevel = '$iconPath/experience_level.svg';
   static String salary = '$iconPath/salary.svg';
 
-
   static String countryLogo = '$iconPath/country_icon.png';
   static String cityLogo = '$iconPath/city_icon.png';
   static String stateLogo = '$iconPath/state_icon.png';
@@ -78,7 +76,7 @@ class AppAssets {
   static String salaryLogo = '$imagesPath/salary_logo.png';
   static String locationLogo = '$imagesPath/location_logo.png';
   static String experienceLogo = '$imagesPath/experience_logo.png';
-    static String experienceLogo2 = '$imagesPath/experience_logo2.png';
+  static String experienceLogo2 = '$imagesPath/experience_logo2.png';
   static String recruiterLogo = '$imagesPath/recruiter_logo.png';
   static String jobtyprLogo = '$imagesPath/jobtype_logo.png';
   static String uploadimgLogo = '$imagesPath/uploadimg_logo.png';
@@ -93,13 +91,12 @@ class AppAssets {
   static String nullProfile =
       'https://cdna.artstation.com/p/assets/images/images/084/124/296/large/matthew-blank-profile-photo-1.jpg?1737590038';
 
-
   //~~~~~~~~~~~~~~~~Animations~~~~~~~~~~~~~~~~~~~~~~~~~//
-
 
   static String splashLottie = '$iconPath/splash_lottie.json';
 
   ///// GIF PATH
 
   static String emailSend = '$gifPath/email-send.gif';
+  static String resumeReminder = '$gifPath/resume-reminder.gif';
 }

@@ -23,6 +23,7 @@ class CustomBtn extends StatelessWidget {
     this.iconPath, // New optional image path parameter
     this.iconColor, // New optional image path parameter
     this.borderRadius, // New optional image path parameter
+    this.showShadow = true, // New optional image path parameter
   });
 
   final String btnTitle;
@@ -40,6 +41,7 @@ class CustomBtn extends StatelessWidget {
   final String? iconPath; // Optional image path
   final Color? iconColor; // Optional image path
   final double? borderRadius; // Optional image path
+  final bool? showShadow; // Optional image path
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +55,7 @@ class CustomBtn extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius?.r ?? 10.r),
         ),
         shadowColor: const Color(0xff000000).withOpacity(0.25),
-        elevation: 4,
+        elevation: showShadow == true ? 4 : 0,
       ),
       child: Container(
         alignment: Alignment.center,
@@ -64,13 +66,13 @@ class CustomBtn extends StatelessWidget {
           color: btnBackgroundColor,
           border: Border.all(width: borderWidth, color: borderColor),
           borderRadius: BorderRadius.circular(borderRadius?.r ?? 10.r),
-          boxShadow: <BoxShadow>[
+          boxShadow: showShadow == true ? <BoxShadow>[
             BoxShadow(
               color: const Color(0xff000000).withOpacity(0.25),
               blurRadius: 4.r,
               offset: const Offset(0, 4),
             ),
-          ],
+          ] : null,
         ),
         child:
             isLoading

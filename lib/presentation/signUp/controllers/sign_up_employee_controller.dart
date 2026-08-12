@@ -88,6 +88,7 @@ class SignUpEmployeeController extends GetxController {
   final errorMessage = ''.obs;
 
   final formKey = GlobalKey<FormState>();
+  final resumeSectionKey = GlobalKey();
 
   // ======== Lifecycle Methods ========
   @override

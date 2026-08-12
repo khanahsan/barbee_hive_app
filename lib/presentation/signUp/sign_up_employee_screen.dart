@@ -15,6 +15,7 @@ import '../../infrastructure/widgets/custom_dropdown.dart';
 import '../../infrastructure/widgets/custom_multi_select_dropdown.dart';
 import '../../infrastructure/widgets/custom_profile_image.dart';
 import '../../infrastructure/widgets/custom_resume_widget.dart';
+import '../../infrastructure/widgets/resume_reminder_dialog.dart';
 import 'component/agree_terms_tile.dart';
 import 'controllers/sign_up_employee_controller.dart';
 
@@ -639,15 +640,22 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                   SizedBox(height: 15.h),
 
                                   /// RESUME UPLOAD
-                                  Obx(
-                                    () => CustomResumeWidget(
-                                      initialFileName:
-                                          controller.selectedResume.value?.path
-                                              .split('/')
-                                              .last,
-                                      onFileSelected: (file) {
-                                        controller.selectedResume.value = file;
-                                      },
+                                  KeyedSubtree(
+                                    key: controller.resumeSectionKey,
+                                    child: Obx(
+                                      () => CustomResumeWidget(
+                                        initialFileName:
+                                            controller
+                                                .selectedResume
+                                                .value
+                                                ?.path
+                                                .split('/')
+                                                .last,
+                                        onFileSelected: (file) {
+                                          controller.selectedResume.value =
+                                              file;
+                                        },
+                                      ),
                                     ),
                                   ),
 
@@ -676,7 +684,39 @@ class SignUpEmployeeScreen extends GetView<SignUpEmployeeController> {
                                       );
                                       if (controller.formKey.currentState!
                                           .validate()) {
-                                        controller.registerEmployee();
+                                        if (!controller.isChecked.value) {
+                                          Utilities.showSnackBar(
+                                            title: 'Error',
+                                            message:
+                                                'Please agree to the Terms of Service',
+                                            isSuccess: false,
+                                          );
+                                          return;
+                                        }
+                                        if (controller.selectedResume.value ==
+                                            null) {
+                                          showResumeReminderDialog(
+                                            onContinue:
+                                                controller.registerEmployee,
+                                            onUploadNow: () {
+                                              final resumeContext =
+                                                  controller
+                                                      .resumeSectionKey
+                                                      .currentContext;
+                                              if (resumeContext != null) {
+                                                Scrollable.ensureVisible(
+                                                  resumeContext,
+                                                  duration: const Duration(
+                                                    milliseconds: 400,
+                                                  ),
+                                                  curve: Curves.easeInOut,
+                                                );
+                                              }
+                                            },
+                                          );
+                                        } else {
+                                          controller.registerEmployee();
+                                        }
                                       }
                                     },
                                   ),

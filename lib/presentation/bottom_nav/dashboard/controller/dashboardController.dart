@@ -150,8 +150,16 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
   //       SharedPreferenceHelper.getInt(SharedPrefKeys.userId) ?? 0;
   // }
 
+  bool _isFetchingLocation = false;
+
   Future<void> getUserLocationAndFetchDashboard() async {
     if (!_hasActiveSession) return;
+    // Guard against overlapping calls (e.g. onInit's fetch racing with the
+    // lifecycle-resume fetch triggered by the location permission dialog),
+    // which previously caused the Hive list to flip between two counts as
+    // each call's GPS fix landed in a different order.
+    if (_isFetchingLocation) return;
+    _isFetchingLocation = true;
 
     isLoading.value = true;
 
@@ -195,6 +203,8 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
           onOpenSettings: () => Geolocator.openLocationSettings(),
         );
       }
+    } finally {
+      _isFetchingLocation = false;
     }
   }
 
@@ -225,11 +235,81 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
     );
   }
 
+  // ===== TEMP: dummy Hive data for testing the honeycomb layout =====
+  // Bypasses the real API so row counts (e.g. 33 users -> 4/5/4/5... rows)
+  // can be tested without depending on what the backend happens to return.
+  // Set to false, or delete this flag + the early-return below, to go back
+  // to live data.
+  static const bool _useDummyHiveData = true;
+  static const int _dummyHiveUserCount = 11;
+
+  List<User> _generateDummyHiveUsers(int count) {
+    const names = [
+      'Sarah',
+      'Rachel',
+      'Tina',
+      'Janifer',
+      'Mario',
+      'Elina',
+      'Vicky',
+      'Alex',
+      'Adam',
+      'Maria',
+      'John',
+      'Emma',
+      'Liam',
+      'Olivia',
+      'Noah',
+      'Ava',
+      'Ethan',
+      'Sophia',
+      'Mason',
+      'Isabella',
+    ];
+    return List.generate(count, (i) {
+      final name = names[i % names.length];
+      return User(
+        id: i + 1,
+        uid: 'dummy-$i',
+        email: '${name.toLowerCase()}$i@example.com',
+        role: 3,
+        isVerified: true,
+        isActive: true,
+        createdAt: '',
+        updatedAt: '',
+        distance: (0.1 + (i % 10) * 0.3).toStringAsFixed(1),
+        employee: Employee(
+          name: name,
+          initials: name.isNotEmpty ? name.substring(0, 1) : '',
+          dob: '',
+          gender: 'other',
+          height: 0,
+          isAvailable: true,
+          skills: const [],
+        ),
+      );
+    });
+  }
+  // ===== END TEMP dummy Hive data =====
+
+  // Monotonically increasing token so that if two fetches end up in flight
+  // at once, a slower/older response can't overwrite a newer one — only the
+  // result of the most-recently-started call is ever applied.
+  int _dashboardFetchRequestId = 0;
+
   Future<void> fetchDashboardUsers() async {
     if (!_hasActiveSession) {
       isLoading.value = false;
       return;
     }
+
+    // if (_useDummyHiveData) {
+    //   employees.assignAll(_generateDummyHiveUsers(_dummyHiveUserCount));
+    //   isLoading.value = false;
+    //   return;
+    // }
+
+    final requestId = ++_dashboardFetchRequestId;
 
     isLoading.value = true;
     errorMessage.value = '';
@@ -245,6 +325,12 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
         currentLatitude: currentLatitude.value.toString(),
         currentLongitude: currentLongitude.value.toString(),
       );
+
+      if (requestId != _dashboardFetchRequestId) {
+        // A newer fetch was started while this one was in flight; drop this
+        // stale response instead of letting it overwrite fresher data.
+        return;
+      }
 
       // Store all users (unfiltered)
       allEmployees.assignAll(response.data.employees);
@@ -262,6 +348,7 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
         );
       });
     } catch (e) {
+      if (requestId != _dashboardFetchRequestId) return;
       print('Dashboard Error: $e');
       errorMessage.value = e.toString().replaceFirst(
         'Exception: GET request error: Exception: ',
@@ -277,7 +364,9 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
         isSuccess: false,
       );
     } finally {
-      isLoading.value = false;
+      if (requestId == _dashboardFetchRequestId) {
+        isLoading.value = false;
+      }
     }
   }
 

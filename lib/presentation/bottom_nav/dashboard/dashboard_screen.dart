@@ -155,7 +155,6 @@ class DashboardScreen extends GetView<DashboardController> {
                   //         (val) => controller.selectedEyeColor.value = val,
                   //   ).paddingSymmetric(horizontal: 15.w),
                   // ),
-
                   SizedBox(height: 25.h),
                   Obx(
                     () => _buildDropdown(
@@ -302,7 +301,12 @@ class DashboardScreen extends GetView<DashboardController> {
           //     ],
           //   ),
           // ),
-          titleWidget: Image.asset(AppAssets.appLogo4, width: 70.w, height: 70.h, fit: BoxFit.contain,),
+          titleWidget: Image.asset(
+            AppAssets.appLogo4,
+            width: 70.w,
+            height: 70.h,
+            fit: BoxFit.contain,
+          ),
           title: '',
         ),
         backgroundColor: AppColors.black,
@@ -452,14 +456,15 @@ class DashboardScreen extends GetView<DashboardController> {
     );
   }
 
-  final RxDouble hOfW = 0.0.obs;
-
   Widget hiveSection(BuildContext context) {
     return Obx(() {
       final users = controller.employees;
-      final double itemWidth = 77.w;
-      final double itemHeight = 87.h;
-      final List<int> pattern = _getPattern(users.length, itemHeight);
+      final double itemWidth = 82.w;
+      final double itemHeight = 92.h;
+      final (List<int> pattern, double hiveHeight) = _getPattern(
+        users.length,
+        itemHeight,
+      );
 
       if (controller.isLoading.value) {
         return AppShimmer(height: 450.h, width: double.infinity);
@@ -483,21 +488,34 @@ class DashboardScreen extends GetView<DashboardController> {
       return Container(
         width: double.infinity,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          // A multi-row honeycomb can be wider than the screen (it's sized
+          // to its widest row), so centering it clipped the leftmost hexagon
+          // equally off both edges — left-align it in that case. A single
+          // row (<=4 users) is never wider than the screen though, so it
+          // should stay centered rather than being forced flush-left too.
+          crossAxisAlignment:
+              pattern.length <= 1
+                  ? CrossAxisAlignment.center
+                  : CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Text(
-              'HIVE',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: AppColors.colorFFFFFF,
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
+            SizedBox(
+              width: double.infinity,
+              child: Center(
+                child: Text(
+                  'HIVE',
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    color: AppColors.colorFFFFFF,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 15.h),
 
             Container(
-              height: hOfW.value,
+              height: hiveHeight,
               child: CustomMultiChildLayout(
                 delegate: HoneycombLayoutDelegate(
                   itemWidth: itemWidth,
@@ -590,48 +608,52 @@ class DashboardScreen extends GetView<DashboardController> {
     return '$value MI';
   }
 
-  List<int> _getPattern(int userCount, itemHeight) {
-    hOfW.value = 0.0;
+  (List<int>, double) _getPattern(int userCount, itemHeight) {
+    double hOfW = 0.0;
     print("cehck :");
-    if (userCount <= 0) return []; // Return empty list for invalid input
+    if (userCount <= 0) {
+      return (<int>[], hOfW); // Return empty list for invalid input
+    }
     if (userCount <= 4) {
-      hOfW.value = 90;
-      return [userCount]; // Single row for 4 or fewer users
+      hOfW = 90;
+      return ([userCount], hOfW); // Single row for 4 or fewer users
     }
 
-    final List<int> basePattern = [4, 3]; // Base repeating pattern
+    final List<int> basePattern = [4, 5]; // Base repeating pattern
     final int patternSum = basePattern.reduce(
       (a, b) => a + b,
-    ); // Sum of base pattern (7)
+    ); // Sum of base pattern (9)
     final int fullCycles =
-        userCount ~/ patternSum; // Number of complete 4-3 cycles
+        userCount ~/ patternSum; // Number of complete 4-5 cycles
     int remaining = userCount % patternSum; // Remaining items after full cycles
 
     List<int> pattern = [];
-    // Add full cycles of [4, 3]
+    // Add full cycles of [4, 5]
     for (int i = 0; i < fullCycles; i++) {
       pattern.addAll(basePattern);
     }
 
-    // Handle remaining items
+    // Handle remaining items. Store each row's full intended slot width (4
+    // or 5) rather than the truncated leftover count — otherwise a partially
+    // filled last row (e.g. only 2 users left for what should be a 5-row)
+    // gets centered as if it were genuinely a narrow row, throwing off its
+    // honeycomb offset relative to the other rows of the same slot type.
+    // The layout delegate already stops rendering once it runs out of real
+    // users, so this only affects positioning, not how many hexagons show.
     if (remaining > 0) {
       int index = 0;
       while (remaining > 0) {
-        print("remain $remaining");
-        final int itemsToAdd =
-            remaining >= basePattern[index % basePattern.length]
-                ? basePattern[index % basePattern.length]
-                : remaining;
-        print("items to add : $itemsToAdd");
-        pattern.add(itemsToAdd);
-        remaining -= itemsToAdd;
+        final int slotWidth = basePattern[index % basePattern.length];
+        print("remain $remaining, slot width $slotWidth");
+        pattern.add(slotWidth);
+        remaining -= slotWidth;
         index++;
       }
     }
 
-    hOfW.value = (pattern.length * 90).toDouble();
+    hOfW = (pattern.length * 90).toDouble();
 
-    print("HOW PSHLR : ${hOfW.value}");
+    print("HOW PSHLR : $hOfW");
     //var val = (82 * 0.75);
     // var val = (pattern.length - 1) * 20;
     var val = 31.5;
@@ -640,15 +662,15 @@ class DashboardScreen extends GetView<DashboardController> {
     var t = (pattern.length - 1) * val;
     // print("ttt : $t");
     // var res = t * val;
-    hOfW.value -= t;
+    hOfW -= t;
 
-    print("HOW AFTER : ${hOfW.value}");
+    print("HOW AFTER : $hOfW");
 
     //y = 1783
 
-    print("------------------ ${pattern.length} == hOfW.value = ${hOfW.value}");
+    print("------------------ ${pattern.length} == hOfW.value = $hOfW");
 
-    return pattern;
+    return (pattern, hOfW);
   }
 
   // Widget b2bSection(BuildContext context) {

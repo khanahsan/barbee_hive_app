@@ -336,7 +336,7 @@ class HexagonAvatar extends StatelessWidget {
                               ),
                             ),
                           ),*/
-                      /*  if (isBoosted && name != null && name!.isNotEmpty)
+                        /*  if (isBoosted && name != null && name!.isNotEmpty)
                           Positioned(
                             left: 6.w,
                             right: 6.w,
@@ -517,9 +517,17 @@ class HoneycombLayoutDelegate extends MultiChildLayoutDelegate {
     double y = 0;
     int patternIndex = 0;
 
+    final double stride = itemWidth - 1.5;
+    final int maxItemsInRow = pattern.reduce((a, b) => a > b ? a : b);
+
     while (index < users.length) {
       final int itemsInRow = pattern[patternIndex % pattern.length];
-      double x = (patternIndex % 2 == 0) ? 0 : itemWidth / 2;
+      // Center each row under the widest row in the pattern, rather than
+      // alternating a fixed half-item offset by row parity. This way a
+      // narrower row above and a wider row below stay properly interlocked
+      // — e.g. the 3rd hexagon of a 5-row nests between the 2nd and 3rd
+      // hexagons of the 4-row above it — regardless of which row is wider.
+      double x = (maxItemsInRow - itemsInRow) * stride / 2;
 
       for (int col = 0; col < itemsInRow && index < users.length; col++) {
         if (hasChild(index)) {
@@ -529,7 +537,7 @@ class HoneycombLayoutDelegate extends MultiChildLayoutDelegate {
           );
           positionChild(index, Offset(x, y));
         }
-        x += itemWidth - 1.5;
+        x += stride;
         index++;
       }
 

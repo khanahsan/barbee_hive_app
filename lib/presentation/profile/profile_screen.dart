@@ -24,21 +24,23 @@ class ProfileScreen extends GetView<ProfileController> {
     final topOffset = 170.h;
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: customAppbar(
-          context: context,
-          leadingTapFunction: () {
-            Get.back();
-          },
-          title: '',
-          titleWidget: Image.asset(AppAssets.appLogo4, width: 70.w, height: 70.h, fit: BoxFit.contain,),
-
-          // title: controller.isEditing.value ? "Edit Profile" : "Profile",
-          showActions: false,
-          leadingIconPath: AppAssets.backIcon,
-          showHexagon: false,
+      appBar: customAppbar(
+        context: context,
+        leadingTapFunction: () {
+          Get.back();
+        },
+        title: '',
+        titleWidget: Image.asset(
+          AppAssets.appLogo4,
+          width: 70.w,
+          height: 70.h,
+          fit: BoxFit.contain,
         ),
+
+        // title: controller.isEditing.value ? "Edit Profile" : "Profile",
+        showActions: false,
+        leadingIconPath: AppAssets.backIcon,
+        showHexagon: false,
       ),
       bottomNavigationBar: Obx(
         () =>

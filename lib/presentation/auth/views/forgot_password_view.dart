@@ -39,8 +39,8 @@ class ForgotPasswordView extends GetView<ForgetPasswordController> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        AppAssets.logo,
-                        width: 200.w,
+                        AppAssets.appLogo3,
+                        width: 250.w,
                       ),
                       SizedBox(height: 30.h),
                       Container(

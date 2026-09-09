@@ -22,8 +22,9 @@ class CustomDrawer extends GetView<CustomDrawerController> {
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onHorizontalDragEnd: (details) {
-          final velocity = details.primaryVelocity ?? 0;
-          if (velocity < 0 && controller.isDrawerOpen.value) {
+          // Close on a horizontal swipe in either direction, not just
+          // right-to-left.
+          if (controller.isDrawerOpen.value) {
             controller.toggleDrawer();
           }
         },

@@ -229,16 +229,8 @@ class CustomDrawer extends GetView<CustomDrawerController> {
     CustomDrawerController? controller,
   }) {
     return InkWell(
-      onTap: () async {
-        if (controller != null) {
-          // Close the drawer first
-          controller.toggleDrawer();
-
-          // Wait for the animation to finish (same as drawer animation duration)
-          await Future.delayed(const Duration(milliseconds: 280));
-        }
-
-        // Now navigate
+      onTap: () {
+        // Navigate without closing the drawer first.
         onTap();
       },
       child: Row(

@@ -57,3 +57,6 @@ app.*.map.json
 .gitignore
 assets/service-account.json
 **/service-account.json
+
+# JVM heap dumps from OutOfMemoryError
+*.hprof

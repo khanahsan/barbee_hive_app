@@ -50,7 +50,6 @@ class AppAssets {
   static String stateIcon = '$iconPath/state_icon.svg';
   static String cityIcon = '$iconPath/city_icon.svg';
   static String calendarIcon = '$iconPath/calender_icon.svg';
-  static String uploadImageIcon = '$iconPath/upload_image_icon.svg';
   static String cameraIcon = '$iconPath/camera_icon.svg';
   static String experienceLevel = '$iconPath/experience_level.svg';
   static String salary = '$iconPath/salary.svg';
@@ -60,7 +59,6 @@ class AppAssets {
   static String stateLogo = '$iconPath/state_icon.png';
 
   static String logo = '$imagesPath/barbee_logo.png';
-  static String exampleCoverPhoto = '$imagesPath/example_cover_photo.jpg';
   static String appleLogo = '$imagesPath/apple_logo.png';
   static String googleLogo = '$imagesPath/google_logo.png';
   static String employerLogo = '$imagesPath/employer_logo.png';
@@ -81,9 +79,6 @@ class AppAssets {
   static String jobtyprLogo = '$imagesPath/jobtype_logo.png';
   static String uploadimgLogo = '$imagesPath/uploadimg_logo.png';
   static String profileImage = '$imagesPath/profile_image.jpg';
-  static String sampleImage = '$imagesPath/sample_image.jpg';
-  static String sampleCoverImage = '$imagesPath/sample_cover_image.png';
-  static String sampleImage2 = '$imagesPath/sample_image2.jpg';
   static String backgroundLogo = '$imagesPath/background_logo.png';
   static String appLogo3 = '$imagesPath/app_logo3.png';
   static String appLogo4 = '$imagesPath/app_logo4.png';

@@ -38,6 +38,18 @@ class HiveProfileController extends GetxController {
     log("USER ID: ${userId.value}");
 
     final args = Get.arguments;
+
+    // The dashboard fetches the profile before navigating here, to check the
+    // view limit. Reuse that result instead of asking the server again.
+    final preloaded =
+        args is Map
+            ? args['viewedUserProfile'] as profile_model.UserProfileData?
+            : null;
+    if (preloaded != null) {
+      viewedUserProfile.value = preloaded;
+      return;
+    }
+
     final viewedUserId = args is Map ? args['viewedUserId'] as int? : null;
     if (viewedUserId != null && viewedUserId != 0) {
       await fetchViewedUserProfile(viewedUserId);

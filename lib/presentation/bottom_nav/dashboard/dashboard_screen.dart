@@ -574,6 +574,10 @@ class DashboardScreen extends GetView<DashboardController> {
                               arguments: {
                                 'currentUser': users[index],
                                 'viewedUserId': users[index].id,
+                                // The limit check above already fetched this
+                                // profile; hand it over so the screen does not
+                                // request the same thing a second time.
+                                'viewedUserProfile': response.data,
                               },
                             );
                           } catch (e) {

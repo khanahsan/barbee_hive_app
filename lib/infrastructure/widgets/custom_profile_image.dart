@@ -179,7 +179,7 @@ class CustomProfileImage extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.camera_alt, color: Colors.white),
                 title: const Text(
-                  "Pick from Camera",
+                  "Camera",
                   style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
@@ -190,7 +190,7 @@ class CustomProfileImage extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.photo_library, color: Colors.white),
                 title: const Text(
-                  "Pick from Gallery",
+                  "Gallery",
                   style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {

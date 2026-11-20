@@ -8,6 +8,7 @@ import 'package:barbee_hive_app/data/model/boost_response.dart';
 import 'package:barbee_hive_app/data/model/experience_level_response.dart';
 import 'package:barbee_hive_app/data/model/gender_response.dart';
 import 'package:barbee_hive_app/data/model/height_response.dart';
+import 'package:barbee_hive_app/infrastructure/constants/app_colors.dart';
 import 'package:barbee_hive_app/infrastructure/services/stripe_service.dart';
 import 'package:barbee_hive_app/infrastructure/utils/utilities.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_dialog.dart';
@@ -17,6 +18,7 @@ import 'package:barbee_hive_app/presentation/bottom_nav/job/controller/job_contr
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
@@ -86,9 +88,39 @@ class ProfileController extends GetxController {
       imageQuality: 70,
     );
 
-    if (image != null) {
-      coverImageFile.value = File(image.path);
-    }
+    if (image == null) return;
+
+    // Let the user choose which part of the photo becomes the cover. The
+    // cover is drawn as a full-width 200.h banner, so the crop is locked to
+    // 16:9 to match it.
+    final cropped = await ImageCropper().cropImage(
+      sourcePath: image.path,
+      aspectRatio: const CropAspectRatio(ratioX: 16, ratioY: 9),
+      compressQuality: 70,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Cover Photo',
+          toolbarColor: AppColors.colorFF8600,
+          toolbarWidgetColor: AppColors.colorFFFFFF,
+          backgroundColor: AppColors.black,
+          activeControlsWidgetColor: AppColors.colorFF8600,
+          lockAspectRatio: true,
+          hideBottomControls: true,
+          initAspectRatio: CropAspectRatioPreset.ratio16x9,
+        ),
+        IOSUiSettings(
+          title: 'Crop Cover Photo',
+          aspectRatioLockEnabled: true,
+          resetAspectRatioEnabled: false,
+          aspectRatioPickerButtonHidden: true,
+        ),
+      ],
+    );
+
+    // Null means the user backed out of the crop screen: keep the old cover.
+    if (cropped == null) return;
+
+    coverImageFile.value = File(cropped.path);
   }
 
   // Eye colors

@@ -344,114 +344,153 @@ class DashboardScreen extends GetView<DashboardController> {
                 await controller.getUserLocationAndFetchDashboard();
                 await controller.fetchUserProfile();
               },
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(), // <- Important
-
-                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 25.h),
+              // The B2B section sits outside the scroll view so it stays
+              // pinned while the rest of the dashboard scrolls under it. It is
+              // not a SliverPersistentHeader because its height changes between
+              // the loading shimmer and the loaded content, and a pinned sliver
+              // needs a fixed extent.
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 25.h,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    // if(controller.userID.value == 3)
-                    // GestureDetector(
-                    //   onTap: () {
-                    //     Clipboard.setData(
-                    //       ClipboardData(text: controller.fcmToken.value),
-                    //     );
-                    //
-                    //     Get.snackbar(
-                    //       'Copied',
-                    //       'FCM token copied to clipboard',
-                    //       snackPosition: SnackPosition.BOTTOM,
-                    //       backgroundColor: Colors.black87,
-                    //       colorText: Colors.white,
-                    //       margin: const EdgeInsets.all(12),
-                    //       duration: const Duration(seconds: 2),
-                    //     );
-                    //   },
-                    //   child: Container(
-                    //     padding: EdgeInsets.all(12.w),
-                    //     decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(8.r),
-                    //       border: Border.all(color: AppColors.colorFF8600),
-                    //     ),
-                    //     child: Row(
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-                    //         Expanded(
-                    //           child: CustomText(
-                    //             title: controller.fcmToken.value,
-                    //             fontSize: 14,
-                    //             color: AppColors.colorFFFFFF,
-                    //           ),
-                    //         ),
-                    //         SizedBox(width: 10.w),
-                    //         Icon(
-                    //           Icons.copy,
-                    //           color: AppColors.colorFF8600,
-                    //           size: 20.sp,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                    //
-                    // if(controller.userID.value == 3)
-                    //   GestureDetector(
-                    //   onTap: () {
-                    //     Clipboard.setData(
-                    //       ClipboardData(text: controller.testToken.value),
-                    //     );
-                    //
-                    //     Get.snackbar(
-                    //       'Copied',
-                    //       'Test token copied to clipboard',
-                    //       snackPosition: SnackPosition.BOTTOM,
-                    //       backgroundColor: Colors.black87,
-                    //       colorText: Colors.white,
-                    //       margin: const EdgeInsets.all(12),
-                    //       duration: const Duration(seconds: 2),
-                    //     );
-                    //   },
-                    //   child: Container(
-                    //     padding: EdgeInsets.all(12.w),
-                    //     decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(8.r),
-                    //       border: Border.all(color: AppColors.colorFF8600),
-                    //     ),
-                    //     child: Row(
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-                    //         Expanded(
-                    //           child: CustomText(
-                    //             title: controller.testToken.value,
-                    //             fontSize: 14,
-                    //             color: AppColors.colorFFFFFF,
-                    //           ),
-                    //         ),
-                    //         SizedBox(width: 10.w),
-                    //         Icon(
-                    //           Icons.copy,
-                    //           color: AppColors.colorFF8600,
-                    //           size: 20.sp,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
+                    SizedBox(height: 25.h),
 
-                    /// B2B SECTION
+                    /// B2B SECTION (pinned)
                     b2bSection(context),
+                    SizedBox(height: 25.h),
 
-                    /// HIVE SECTION
-                    hiveSection(context),
-                    SizedBox(height: 50),
+                    /// HIVE HEADING (pinned)
+                    hiveHeader(context),
+                    SizedBox(height: 15.h),
+
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics:
+                            const AlwaysScrollableScrollPhysics(), // <- Important
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 25.h,
+                          children: [
+                            // if(controller.userID.value == 3)
+                            // GestureDetector(
+                            //   onTap: () {
+                            //     Clipboard.setData(
+                            //       ClipboardData(text: controller.fcmToken.value),
+                            //     );
+                            //
+                            //     Get.snackbar(
+                            //       'Copied',
+                            //       'FCM token copied to clipboard',
+                            //       snackPosition: SnackPosition.BOTTOM,
+                            //       backgroundColor: Colors.black87,
+                            //       colorText: Colors.white,
+                            //       margin: const EdgeInsets.all(12),
+                            //       duration: const Duration(seconds: 2),
+                            //     );
+                            //   },
+                            //   child: Container(
+                            //     padding: EdgeInsets.all(12.w),
+                            //     decoration: BoxDecoration(
+                            //       borderRadius: BorderRadius.circular(8.r),
+                            //       border: Border.all(color: AppColors.colorFF8600),
+                            //     ),
+                            //     child: Row(
+                            //       crossAxisAlignment: CrossAxisAlignment.start,
+                            //       children: [
+                            //         Expanded(
+                            //           child: CustomText(
+                            //             title: controller.fcmToken.value,
+                            //             fontSize: 14,
+                            //             color: AppColors.colorFFFFFF,
+                            //           ),
+                            //         ),
+                            //         SizedBox(width: 10.w),
+                            //         Icon(
+                            //           Icons.copy,
+                            //           color: AppColors.colorFF8600,
+                            //           size: 20.sp,
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
+                            //
+                            // if(controller.userID.value == 3)
+                            //   GestureDetector(
+                            //   onTap: () {
+                            //     Clipboard.setData(
+                            //       ClipboardData(text: controller.testToken.value),
+                            //     );
+                            //
+                            //     Get.snackbar(
+                            //       'Copied',
+                            //       'Test token copied to clipboard',
+                            //       snackPosition: SnackPosition.BOTTOM,
+                            //       backgroundColor: Colors.black87,
+                            //       colorText: Colors.white,
+                            //       margin: const EdgeInsets.all(12),
+                            //       duration: const Duration(seconds: 2),
+                            //     );
+                            //   },
+                            //   child: Container(
+                            //     padding: EdgeInsets.all(12.w),
+                            //     decoration: BoxDecoration(
+                            //       borderRadius: BorderRadius.circular(8.r),
+                            //       border: Border.all(color: AppColors.colorFF8600),
+                            //     ),
+                            //     child: Row(
+                            //       crossAxisAlignment: CrossAxisAlignment.start,
+                            //       children: [
+                            //         Expanded(
+                            //           child: CustomText(
+                            //             title: controller.testToken.value,
+                            //             fontSize: 14,
+                            //             color: AppColors.colorFFFFFF,
+                            //           ),
+                            //         ),
+                            //         SizedBox(width: 10.w),
+                            //         Icon(
+                            //           Icons.copy,
+                            //           color: AppColors.colorFF8600,
+                            //           size: 20.sp,
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
+
+                            /// HIVE SECTION
+                            hiveSection(context),
+                            SizedBox(height: 50),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             );
           }
         }),
+      ),
+    );
+  }
+
+  /// The 'HIVE' heading, kept outside the scroll view so it stays put while
+  /// the honeycomb below it scrolls.
+  Widget hiveHeader(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Center(
+        child: Text(
+          'HIVE',
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+            color: AppColors.colorFFFFFF,
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }
@@ -499,21 +538,6 @@ class DashboardScreen extends GetView<DashboardController> {
                   : CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: Center(
-                child: Text(
-                  'HIVE',
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: AppColors.colorFFFFFF,
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 15.h),
-
             Container(
               height: hiveHeight,
               child: CustomMultiChildLayout(
@@ -563,30 +587,32 @@ class DashboardScreen extends GetView<DashboardController> {
                             );
                           }
                         },
-                        child: SingleChildScrollView(
-                          child: HexagonAvatar(
-                            imagePath:
-                                users[index].profileImage?.isNotEmpty == true
-                                    ? users[index].profileImage ?? ''
-                                    : '',
-                            // Set to null to trigger name-based avatar
-                            width: itemWidth,
-                            height: itemHeight,
-                            borderColor:
-                                index % 2 == 0
-                                    ? AppColors.colorFFFFFF
-                                    : AppColors.colorFF8600,
-                            name:
-                                (users[index].employee?.name ??
-                                            users[index].email.split('@').first)
-                                        .isNotEmpty
-                                    ? (users[index].employee?.name ??
-                                        users[index].email.split('@').first)
-                                    : 'Unknown Employee',
-                            totalMl: _formatHiveDistance(users[index].distance),
-                            isBoosted:
-                                users[index].employee?.hasActiveBoost ?? false,
-                          ),
+                        // No SingleChildScrollView around the avatar: it is a
+                        // vertical scrollable of its own, so it swallowed the
+                        // drag and the honeycomb would not scroll when the
+                        // gesture started on a hexagon.
+                        child: HexagonAvatar(
+                          imagePath:
+                              users[index].profileImage?.isNotEmpty == true
+                                  ? users[index].profileImage ?? ''
+                                  : '',
+                          // Set to null to trigger name-based avatar
+                          width: itemWidth,
+                          height: itemHeight,
+                          borderColor:
+                              index % 2 == 0
+                                  ? AppColors.colorFFFFFF
+                                  : AppColors.colorFF8600,
+                          name:
+                              (users[index].employee?.name ??
+                                          users[index].email.split('@').first)
+                                      .isNotEmpty
+                                  ? (users[index].employee?.name ??
+                                      users[index].email.split('@').first)
+                                  : 'Unknown Employee',
+                          totalMl: _formatHiveDistance(users[index].distance),
+                          isBoosted:
+                              users[index].employee?.hasActiveBoost ?? false,
                         ),
                       ),
                     ),

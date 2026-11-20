@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_responsive_ui/my_responsive_ui.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -226,9 +227,38 @@ class CustomProfileImage extends StatelessWidget {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: source, imageQuality: 80);
 
-    if (pickedFile != null && onImagePicked != null) {
-      onImagePicked!(File(pickedFile.path));
-    }
+    if (pickedFile == null || onImagePicked == null) return;
+
+    // Let the user pick which part of the photo becomes the avatar. Avatars
+    // are drawn in a hexagon, so the crop is locked to a square.
+    final cropped = await ImageCropper().cropImage(
+      sourcePath: pickedFile.path,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      compressQuality: 80,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Photo',
+          toolbarColor: AppColors.colorFF8600,
+          toolbarWidgetColor: AppColors.colorFFFFFF,
+          backgroundColor: AppColors.black,
+          activeControlsWidgetColor: AppColors.colorFF8600,
+          lockAspectRatio: true,
+          hideBottomControls: true,
+          initAspectRatio: CropAspectRatioPreset.square,
+        ),
+        IOSUiSettings(
+          title: 'Crop Photo',
+          aspectRatioLockEnabled: true,
+          resetAspectRatioEnabled: false,
+          aspectRatioPickerButtonHidden: true,
+        ),
+      ],
+    );
+
+    // Null means the user backed out of the crop screen: keep the old photo.
+    if (cropped == null) return;
+
+    onImagePicked!(File(cropped.path));
   }
 
   Future<bool> _requestPermission(ImageSource source) async {

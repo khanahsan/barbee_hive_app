@@ -110,7 +110,11 @@ class ChatScreen extends StatelessWidget {
               appBar: customAppbar(
                 profileImagePath: otherUserImage,
                 context: context,
-                leadingTapFunction: () => Get.back(),
+                leadingTapFunction: () {
+                  // Leave the screen without the keyboard trailing along.
+                  FocusScope.of(context).unfocus();
+                  Get.back();
+                },
                 title: otherUserName,
                 showActions: canBlock,
                 // FIXED
@@ -145,172 +149,181 @@ class ChatScreen extends StatelessWidget {
                         : null,
               ),
 
-              body: Column(
-                children: [
-                  // Banner Ad at top
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15.w,
-                      vertical: 10.h,
+              // Tapping anywhere outside the message box closes the keyboard.
+              // Children are hit-tested first, so buttons and the message list
+              // still get their own taps.
+              body: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: Column(
+                  children: [
+                    // Banner Ad at top
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 15.w,
+                        vertical: 10.h,
+                      ),
+                      child: const ChatBannerAdWidget(),
                     ),
-                    child: const ChatBannerAdWidget(),
-                  ),
-                  // messages
-                  Expanded(
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream:
-                          FirebaseFirestore.instance
-                              .collection("chats")
-                              .doc(chatId)
-                              .collection("messages")
-                              .orderBy("timestamp", descending: true)
-                              .snapshots(),
-                      builder: (context, messageSnapshot) {
-                        if (!messageSnapshot.hasData) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.color4C4C4C,
-                            ),
-                          );
-                        }
+                    // messages
+                    Expanded(
+                      child: StreamBuilder<QuerySnapshot>(
+                        stream:
+                            FirebaseFirestore.instance
+                                .collection("chats")
+                                .doc(chatId)
+                                .collection("messages")
+                                .orderBy("timestamp", descending: true)
+                                .snapshots(),
+                        builder: (context, messageSnapshot) {
+                          if (!messageSnapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.color4C4C4C,
+                              ),
+                            );
+                          }
 
-                        final messages = messageSnapshot.data!.docs;
+                          final messages = messageSnapshot.data!.docs;
 
-                        if (messages.isEmpty) {
-                          return const Center(
-                            child: Text(
-                              "No messages yet",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          );
-                        }
+                          if (messages.isEmpty) {
+                            return const Center(
+                              child: Text(
+                                "No messages yet",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            );
+                          }
 
-                        return ListView.separated(
-                          padding: EdgeInsets.only(top: 10, bottom: 15),
-                          reverse: true,
-                          separatorBuilder: (_, __) => SizedBox(height: 15.h),
-                          itemCount: messages.length,
-                          itemBuilder: (context, index) {
-                            final msg =
-                                messages[index].data() as Map<String, dynamic>;
-                            final isMe =
-                                msg["senderId"] ==
-                                chatController.currentUserId.value;
-                            final Timestamp? currentTimestamp =
-                                msg["timestamp"];
-                            final Timestamp? nextTimestamp =
-                                index + 1 < messages.length
-                                    ? (messages[index + 1].data()
-                                        as Map<String, dynamic>)["timestamp"]
-                                    : null;
-                            final showDateHeader =
-                                currentTimestamp != null &&
-                                (index == messages.length - 1 ||
-                                    !_isSameDay(
-                                      currentTimestamp,
-                                      nextTimestamp,
-                                    ));
+                          return ListView.separated(
+                            padding: EdgeInsets.only(top: 10, bottom: 15),
+                            reverse: true,
+                            separatorBuilder: (_, __) => SizedBox(height: 15.h),
+                            itemCount: messages.length,
+                            itemBuilder: (context, index) {
+                              final msg =
+                                  messages[index].data()
+                                      as Map<String, dynamic>;
+                              final isMe =
+                                  msg["senderId"] ==
+                                  chatController.currentUserId.value;
+                              final Timestamp? currentTimestamp =
+                                  msg["timestamp"];
+                              final Timestamp? nextTimestamp =
+                                  index + 1 < messages.length
+                                      ? (messages[index + 1].data()
+                                          as Map<String, dynamic>)["timestamp"]
+                                      : null;
+                              final showDateHeader =
+                                  currentTimestamp != null &&
+                                  (index == messages.length - 1 ||
+                                      !_isSameDay(
+                                        currentTimestamp,
+                                        nextTimestamp,
+                                      ));
 
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                if (showDateHeader)
-                                  Center(
-                                    child: CustomText(
-                                      title: formatDateHeader(currentTimestamp),
-                                      color: AppColors.colorEBEBF5,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                if (showDateHeader) SizedBox(height: 10.h),
-                                Row(
-                                  mainAxisAlignment:
-                                      isMe
-                                          ? MainAxisAlignment.end
-                                          : MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    if (!isMe) ...[
-                                      HexagonAvatar(
-                                        imagePath: otherUserImage,
-                                        width: 50.w,
-                                        height: 60.h,
-                                      ),
-                                      SizedBox(width: 5.w),
-                                    ],
-
-                                    // This ensures the bubble takes only necessary width
-                                    IntrinsicWidth(
-                                      stepWidth: 0,
-                                      child: ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                          maxWidth:
-                                              MediaQuery.of(
-                                                context,
-                                              ).size.width *
-                                              0.6, // max 70% width
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  if (showDateHeader)
+                                    Center(
+                                      child: CustomText(
+                                        title: formatDateHeader(
+                                          currentTimestamp,
                                         ),
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12.w,
-                                            vertical: 10.h,
+                                        color: AppColors.colorEBEBF5,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  if (showDateHeader) SizedBox(height: 10.h),
+                                  Row(
+                                    mainAxisAlignment:
+                                        isMe
+                                            ? MainAxisAlignment.end
+                                            : MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      if (!isMe) ...[
+                                        HexagonAvatar(
+                                          imagePath: otherUserImage,
+                                          width: 50.w,
+                                          height: 60.h,
+                                        ),
+                                        SizedBox(width: 5.w),
+                                      ],
+
+                                      // This ensures the bubble takes only necessary width
+                                      IntrinsicWidth(
+                                        stepWidth: 0,
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).size.width *
+                                                0.6, // max 70% width
                                           ),
-                                          decoration: BoxDecoration(
-                                            color:
-                                                isMe
-                                                    ? AppColors.colorFF8600
-                                                    : AppColors.color27272A,
-                                            borderRadius: BorderRadius.circular(
-                                              10.r,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 12.w,
+                                              vertical: 10.h,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  isMe
+                                                      ? AppColors.colorFF8600
+                                                      : AppColors.color27272A,
+                                              borderRadius:
+                                                  BorderRadius.circular(10.r),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                if (!isMe)
+                                                  CustomText(
+                                                    title: otherUserName,
+                                                    color:
+                                                        AppColors.colorFF8600,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12,
+                                                  ),
+                                                SizedBox(height: 3.h),
+                                                CustomText(
+                                                  title: msg["text"] ?? "",
+                                                  color: Colors.white,
+                                                  fontSize: 15,
+                                                  maxLines: null,
+                                                  softWrap: true,
+                                                ),
+                                                SizedBox(height: 5.h),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: CustomText(
+                                                    title:
+                                                        msg["timestamp"] != null
+                                                            ? formatTimestamp(
+                                                              msg["timestamp"],
+                                                            )
+                                                            : "",
+                                                    color: Colors.white70,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              if (!isMe)
-                                                CustomText(
-                                                  title: otherUserName,
-                                                  color: AppColors.colorFF8600,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12,
-                                                ),
-                                              SizedBox(height: 3.h),
-                                              CustomText(
-                                                title: msg["text"] ?? "",
-                                                color: Colors.white,
-                                                fontSize: 15,
-                                                maxLines: null,
-                                                softWrap: true,
-                                              ),
-                                              SizedBox(height: 5.h),
-                                              Align(
-                                                alignment:
-                                                    Alignment.centerRight,
-                                                child: CustomText(
-                                                  title:
-                                                      msg["timestamp"] != null
-                                                          ? formatTimestamp(
-                                                            msg["timestamp"],
-                                                          )
-                                                          : "",
-                                                  color: Colors.white70,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            );
+                                    ],
+                                  ),
+                                ],
+                              );
 
-                            /*        return Row(
+                              /*        return Row(
                                 mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
@@ -370,127 +383,129 @@ class ChatScreen extends StatelessWidget {
                                   ),
                                 ],
                               );*/
-                          },
-                        );
-                      },
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
 
-                  /// SHOW BLOCK / DISABLE CHAT STATUS
-                  if (isBlocked || isChatDisabled)
-                    CustomText(
-                      title:
-                          isChatDisabled
-                              ? "This chat has been disabled."
-                              : currentUserRole == 'employee'
-                              ? "The messages have been disabled by the employer"
-                              : "You cannot send a message to this user.",
-                      color: AppColors.expiredBannerColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ).paddingSymmetric(vertical: 25.h)
-                  /// SHOW MESSAGE FIELD
-                  else
-                    SafeArea(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 6.w,
-                          vertical: 5.h,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.r),
-                          border: Border.all(color: AppColors.color545458),
-                        ),
-                        child: Stack(
-                          children: [
-                            AppTextField(
-                              contentPadding: EdgeInsets.symmetric(
-                                horizontal: 3.w,
-                                vertical: 6.h,
+                    /// SHOW BLOCK / DISABLE CHAT STATUS
+                    if (isBlocked || isChatDisabled)
+                      CustomText(
+                        title:
+                            isChatDisabled
+                                ? "This chat has been disabled."
+                                : currentUserRole == 'employee'
+                                ? "The messages have been disabled by the employer"
+                                : "You cannot send a message to this user.",
+                        color: AppColors.expiredBannerColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ).paddingSymmetric(vertical: 25.h)
+                    /// SHOW MESSAGE FIELD
+                    else
+                      SafeArea(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 6.w,
+                            vertical: 5.h,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.r),
+                            border: Border.all(color: AppColors.color545458),
+                          ),
+                          child: Stack(
+                            children: [
+                              AppTextField(
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 3.w,
+                                  vertical: 6.h,
+                                ),
+                                fillColor: AppColors.color000000,
+                                filled: true,
+                                hintText: 'Type here...',
+                                controller: messageController,
+                                keyboardType: TextInputType.multiline,
+                                textInputAction: TextInputAction.newline,
+                                minLines: 1,
+                                maxLines: 5,
+                                focusedBorderColor: Colors.transparent,
+                                enabledBorderColor: Colors.transparent,
                               ),
-                              fillColor: AppColors.color000000,
-                              filled: true,
-                              hintText: 'Type here...',
-                              controller: messageController,
-                              keyboardType: TextInputType.multiline,
-                              textInputAction: TextInputAction.newline,
-                              minLines: 1,
-                              maxLines: 5,
-                              focusedBorderColor: Colors.transparent,
-                              enabledBorderColor: Colors.transparent,
-                            ),
 
-                            Positioned(
-                              bottom: 1.h,
-                              right: 1.w,
-                              child: Obx(
-                                () => GestureDetector(
-                                  behavior: HitTestBehavior.translucent,
-                                  onTap: () {
-                                    final limitReached = chatController
-                                        .hasReachedMessageLimitForReceiver(
-                                          otherUserId,
+                              Positioned(
+                                bottom: 1.h,
+                                right: 1.w,
+                                child: Obx(
+                                  () => GestureDetector(
+                                    behavior: HitTestBehavior.translucent,
+                                    onTap: () {
+                                      final limitReached = chatController
+                                          .hasReachedMessageLimitForReceiver(
+                                            otherUserId,
+                                          );
+                                      final limitMessage = chatController
+                                          .getMessageLimitErrorForReceiver(
+                                            otherUserId,
+                                          );
+
+                                      if (limitReached) {
+                                        Get.snackbar(
+                                          'Message Limit Reached',
+                                          limitMessage ??
+                                              'Message limit reached. Come back tomorrow or upgrade.',
+                                          backgroundColor: Colors.red,
+                                          colorText: Colors.white,
                                         );
-                                    final limitMessage = chatController
-                                        .getMessageLimitErrorForReceiver(
-                                          otherUserId,
+                                        return;
+                                      }
+
+                                      final text =
+                                          messageController.text.trim();
+                                      if (text.isNotEmpty) {
+                                        chatController.sendMessage(
+                                          chatId,
+                                          text,
+                                          {
+                                            "uid": otherUserId,
+                                            "name": otherUser["name"] ?? "",
+                                            "profileImage":
+                                                otherUser["profileImage"] ?? "",
+                                            "role": otherUser["role"] ?? "",
+                                          },
+                                          "${currentUserRole}_$otherUserRole",
                                         );
-
-                                    if (limitReached) {
-                                      Get.snackbar(
-                                        'Message Limit Reached',
-                                        limitMessage ??
-                                            'Message limit reached. Come back tomorrow or upgrade.',
-                                        backgroundColor: Colors.red,
-                                        colorText: Colors.white,
-                                      );
-                                      return;
-                                    }
-
-                                    final text = messageController.text.trim();
-                                    if (text.isNotEmpty) {
-                                      chatController.sendMessage(
-                                        chatId,
-                                        text,
-                                        {
-                                          "uid": otherUserId,
-                                          "name": otherUser["name"] ?? "",
-                                          "profileImage":
-                                              otherUser["profileImage"] ?? "",
-                                          "role": otherUser["role"] ?? "",
-                                        },
-                                        "${currentUserRole}_$otherUserRole",
-                                      );
-                                      messageController.clear();
-                                    }
-                                  },
-                                  child: Container(
-                                    width: 30.w,
-                                    height: 30.h,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          chatController
-                                                  .hasReachedMessageLimitForReceiver(
-                                                    otherUserId,
-                                                  )
-                                              ? AppColors.color545458
-                                              : AppColors.colorFF8600,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.arrow_forward,
-                                      color: AppColors.colorFFFFFF,
-                                      size: 22.sp,
+                                        messageController.clear();
+                                      }
+                                    },
+                                    child: Container(
+                                      width: 30.w,
+                                      height: 30.h,
+                                      decoration: BoxDecoration(
+                                        color:
+                                            chatController
+                                                    .hasReachedMessageLimitForReceiver(
+                                                      otherUserId,
+                                                    )
+                                                ? AppColors.color545458
+                                                : AppColors.colorFF8600,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.arrow_forward,
+                                        color: AppColors.colorFFFFFF,
+                                        size: 22.sp,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ).paddingSymmetric(horizontal: 10.w, vertical: 10.h),
-                ],
+                      ).paddingSymmetric(horizontal: 10.w, vertical: 10.h),
+                  ],
+                ),
               ),
             );
           },

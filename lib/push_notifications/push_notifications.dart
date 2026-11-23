@@ -69,8 +69,10 @@ class NotificationService {
 
       await _clearBadge();
 
-      // Handle the notification
-      //handleBackgroundMessage(initialMessage);
+      // Route to whatever the notification was about. Not awaited: the app
+      // still has to finish starting up, and handleNotificationAction waits
+      // for navigation to be ready itself.
+      handleBackgroundMessage(initialMessage);
     }
 
     final token = await _messaging.getToken();
@@ -217,7 +219,46 @@ class NotificationService {
       },
     );
 
+    // A cold start caused by tapping a notification is NOT handled here.
+    // On Android the chat push is data-only, so the tray notification is one
+    // this app drew itself, and neither `initialize` nor
+    // FirebaseMessaging.getInitialMessage() replays that tap. SplashController
+    // reads the launch details instead, because it is the one that decides the
+    // first route -- routing from here raced it, and its `Get.offAllNamed`
+    // wiped the chat screen a moment after it opened.
     _isFlutterLocalNotificationsInitialized = true;
+  }
+
+  /// Opens the chat with [senderUid], waiting for navigation to be ready.
+  ///
+  /// Used for a chat notification tapped while the app is already running, and
+  /// by SplashController once it has put the first route in place.
+  static Future<void> openChatWith(String senderUid) async {
+    if (senderUid.isEmpty) return;
+    if (!await _waitForNavigator()) {
+      log('Navigation never became ready, cannot open the chat');
+      return;
+    }
+    Get.toNamed(Routes.chatScreen, arguments: {'otherUserID': senderUid});
+  }
+
+  /// Waits until GetX navigation is usable, for up to [timeout].
+  ///
+  /// A notification tap can arrive before `runApp` has built the first route,
+  /// and `Get.toNamed` silently does nothing until then.
+  static Future<bool> _waitForNavigator({
+    Duration timeout = const Duration(seconds: 10),
+  }) async {
+    final deadline = DateTime.now().add(timeout);
+    while (DateTime.now().isBefore(deadline)) {
+      if (Get.key.currentState != null && Get.currentRoute.isNotEmpty) {
+        // Let the first route settle before pushing the chat on top of it.
+        await Future.delayed(const Duration(milliseconds: 400));
+        return true;
+      }
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    return false;
   }
 
   // Future foregroundIOSMessage() async {
@@ -341,6 +382,21 @@ class NotificationService {
       // controller.tabChangeForEmployeeNotifications(1);
     }
 
+    if (message.data['type'] == 'chat_message') {
+      log('NEW CHAT MESSAGE NOTIFICATION');
+
+      // From the receiver's side the sender is the other party in the chat,
+      // which is what ChatScreen takes.
+      final senderUid = message.data['sender_uid']?.toString() ?? '';
+      if (senderUid.isEmpty) {
+        log('chat_message notification without sender_uid, ignoring');
+        return;
+      }
+
+      await openChatWith(senderUid);
+      return;
+    }
+
     if (message.data['type'] == 'new_application') {
       log('NEW APPLICATION SUBMITTED NOTIFICATION');
 
@@ -379,6 +435,21 @@ class NotificationService {
   //
   //   }
   // );
+  /// True when the chat screen for [senderUid] is the route on screen.
+  static bool _isViewingChatWith(String? senderUid) {
+    if (senderUid == null || senderUid.isEmpty) return false;
+    try {
+      if (Get.currentRoute != Routes.chatScreen) return false;
+      final args = Get.arguments;
+      return args is Map && args['otherUserID']?.toString() == senderUid;
+    } catch (e) {
+      // Get isn't available in every isolate; when in doubt, show the
+      // notification rather than silently dropping it.
+      log('Could not read the current route: $e');
+      return false;
+    }
+  }
+
   Future<void> _setupMessageHandlers() async {
     //Foreground Message
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -386,6 +457,14 @@ class NotificationService {
       debugPrint(
         "MESSAGE NOTIFICATION ------------ ${message.notification?.title}",
       );
+      // Don't interrupt someone with a message they are already reading.
+      // Only foreground needs this check: in the background the chat screen
+      // isn't on screen even when it is the top route.
+      if (_isViewingChatWith(message.data['sender_uid']?.toString())) {
+        log('Already inside this chat, skipping notification');
+        return;
+      }
+
       if (Platform.isAndroid) {
         showNotification(message);
         // if (notificationType == "1") {

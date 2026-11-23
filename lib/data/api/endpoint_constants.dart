@@ -72,6 +72,9 @@ class ApiEndPoints {
   static const String getAllNotifications = 'notifications';
   static const String markAllAsRead = 'notifications/mark-all-read';
 
+  /// Chat messages live in Firebase; the backend only sends the push for them.
+  static const String chatNotify = 'chat/notify';
+
   ///Boost
   static const String activateBoost = 'boost/activate';
   static const String finalizeBoost = 'boost/finalize';

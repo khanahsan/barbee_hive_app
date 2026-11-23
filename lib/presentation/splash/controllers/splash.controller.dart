@@ -76,6 +76,19 @@ class SplashController extends GetxController
 
             await goto(indexToPass, jobId: jobId);
           }
+          if (type == 'chat_message') {
+            // The chat screen sits on top of the drawer, so put the normal
+            // first route in place first and then push the chat.
+            await goto(0);
+            await _openChatFromPayload(initialMessage.data);
+          }
+          if (type != 'new_job' &&
+              type != 'new_application' &&
+              type != 'chat_message') {
+            // Unknown type: fall back to the normal flow rather than sitting
+            // on the splash screen forever.
+            await goto(0);
+          }
 
           // notificationData = initialMessage.data;
 
@@ -98,40 +111,64 @@ class SplashController extends GetxController
       final plugin = FlutterLocalNotificationsPlugin();
       final details = await plugin.getNotificationAppLaunchDetails();
 
-      if (details?.didNotificationLaunchApp ??
-          false && details?.notificationResponse?.payload != null) {
+      // The payload of the notification that launched the app, when a tap is
+      // what started it. On Android the chat push is data-only, so the tray
+      // notification is one the app drew itself; this is the only place its tap
+      // can be read -- FirebaseMessaging.getInitialMessage() stays null for it.
+      Map<String, dynamic>? payload;
+      if ((details?.didNotificationLaunchApp ?? false) &&
+          (details?.notificationResponse?.payload?.isNotEmpty ?? false)) {
         try {
-          final payload = jsonDecode(details!.notificationResponse!.payload!);
-
-          final type = payload['type'];
-          final jobId =
-          int.tryParse(payload['job_id']?.toString() ?? '');
-
+          payload = Map<String, dynamic>.from(
+            jsonDecode(details!.notificationResponse!.payload!) as Map,
+          );
           log("Android Notification Payload: $payload");
-
-          if (type == 'new_job') {
-            indexToPass = 1;
-
-            await goto(indexToPass);
-
-          }
-          if (type == 'new_application') {
-            indexToPass = 1;
-
-            await goto(indexToPass, jobId: jobId);
-          }
-
-          // notificationData = Map<String, dynamic>.from(payload);
         } catch (e) {
           log("Android payload parse error: $e");
         }
       }
 
-      await goto(indexToPass);
+      final type = payload?['type']?.toString();
+      final jobId = int.tryParse(payload?['job_id']?.toString() ?? '');
+
+      if (type == 'new_job' || type == 'new_application') {
+        indexToPass = 1;
+      }
+
+      // Exactly one goto: it calls Get.offAllNamed, so calling it twice used to
+      // rebuild the first route and throw away whatever was pushed on top.
+      await goto(
+        indexToPass,
+        jobId: type == 'new_application' ? jobId : null,
+      );
+
+      if (type == 'chat_message') {
+        await _openChatFromPayload(payload!);
+      }
       // await _handleNotificationNavigation(notificationData);
     }
   }
 
+
+  /// Opens the chat a tapped chat notification points at.
+  ///
+  /// Only runs once [goto] has put the first route in place, and only for a
+  /// logged-in user -- a tap while logged out lands on sign-in instead.
+  Future<void> _openChatFromPayload(Map<String, dynamic> payload) async {
+    final senderUid = payload['sender_uid']?.toString() ?? '';
+    final token = SharedPreferenceHelper.getString(SharedPrefKeys.authToken);
+
+    if (senderUid.isEmpty) {
+      log('chat notification without sender_uid, staying on the dashboard');
+      return;
+    }
+    if (token == null || token.isEmpty) {
+      log('chat notification tapped while logged out, staying on sign-in');
+      return;
+    }
+
+    await NotificationService.openChatWith(senderUid);
+  }
 
   Future<void> goto(int index, {int? jobId}) async {
     final token = SharedPreferenceHelper.getString(SharedPrefKeys.authToken);

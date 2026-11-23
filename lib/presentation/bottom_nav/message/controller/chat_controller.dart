@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:barbee_hive_app/data/api/chat/chat_notify_api.dart';
 import 'package:barbee_hive_app/data/model/user_profile_response.dart'
     as profile_model;
 import 'package:barbee_hive_app/infrastructure/constants/shared_pref_keys.dart';
@@ -186,10 +187,14 @@ class ChatController extends GetxController {
   }
 
   String? getMessageLimitErrorForReceiver(String receiverId) {
-    if (!featureGuard.hasLimitedMessaging) return null;
-
+    // Read the observables before any early return. The send button calls this
+    // from inside an Obx, and Obx throws (rendering a red error box over the
+    // message field, which then swallows its taps) when a build reads nothing
+    // reactive. Returning early on a paid plan used to do exactly that.
     final currentCount = dailyMessageCounts[receiverId] ?? 0;
     final isNewRecipient = !dailyUniqueRecipients.contains(receiverId);
+
+    if (!featureGuard.hasLimitedMessaging) return null;
 
     if (isNewRecipient &&
         dailyUniqueRecipients.length >=
@@ -761,7 +766,7 @@ class ChatController extends GetxController {
     }
 
     // 🟢 Add message
-    await chatRef.collection('messages').add({
+    final messageRef = await chatRef.collection('messages').add({
       'senderId': currentUserId.value,
       'text': text,
       'timestamp': FieldValue.serverTimestamp(),
@@ -776,6 +781,16 @@ class ChatController extends GetxController {
     });
 
     await _incrementMessageQuotaUsage(receiverId);
+
+    // The message is already in Firebase; this only asks the backend to push a
+    // notification. It swallows its own errors so a failed push never looks
+    // like a failed message.
+    await ChatNotifyApi.notify(
+      receiverUid: receiverId,
+      message: text,
+      chatId: chatId,
+      messageId: messageRef.id,
+    );
   }
 
   /// Mark chat as read by current user

@@ -77,6 +77,15 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
+        getByName("profile") {
+            // Same key as debug. Left on the default debug key, a profile build
+            // could not be installed over a debug one and vice versa -- every
+            // switch between them failed with INSTALL_FAILED_UPDATE_INCOMPATIBLE
+            // and had to be resolved by uninstalling, which loses the session.
+            if (hasKeystoreProperties) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
     }
 }
 

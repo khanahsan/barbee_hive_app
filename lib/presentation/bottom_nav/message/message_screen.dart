@@ -154,12 +154,33 @@ class MessageScreen extends GetView<ChatController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// USER NAME
-                  CustomText(
-                    title: name,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.colorFFFFFF,
+                  /// USER NAME, WITH AN UNREAD DOT BESIDE IT
+                  Row(
+                    children: [
+                      // Flexible so a long name pushes the dot along instead
+                      // of overflowing the row.
+                      Flexible(
+                        child: CustomText(
+                          title: name,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.colorFFFFFF,
+                        ),
+                      ),
+                      if (isUnread) ...[
+                        SizedBox(width: 6.w),
+
+                        /// UNREAD DOT
+                        Container(
+                          width: 8.r,
+                          height: 8.r,
+                          decoration: const BoxDecoration(
+                            color: AppColors.colorFF8600,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
 
                   /// CHAT LAST MESSAGE

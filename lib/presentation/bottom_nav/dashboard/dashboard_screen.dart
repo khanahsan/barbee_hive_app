@@ -221,36 +221,44 @@ class DashboardScreen extends GetView<DashboardController> {
                     width: 24.w,
                   ),
 
-                  // Badge
-                  controller.count.value > 0
-                      ? Positioned(
-                        right: -2,
-                        top: -2,
-                        child: Container(
-                          constraints: BoxConstraints(
-                            minHeight: 16.r,
-                            minWidth: 16.r,
-                          ),
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Obx(
-                            () => Text(
-                              controller.count.value.toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 9.sp,
-                                height: 1, // 👈 IMPORTANT
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                      : SizedBox.shrink(),
+                  // Badge.
+                  //
+                  // Whether it is shown at all has to be decided inside the
+                  // Obx. It used to be read outside one, which left the badge
+                  // reactive only in its digits: a count going from zero to
+                  // one never appeared, because nothing rebuilt this part of
+                  // the appbar. Positioned stays outside the Obx because it
+                  // has to be a direct child of the Stack.
+                  Positioned(
+                    right: -2,
+                    top: -2,
+                    child: Obx(
+                      () =>
+                          controller.count.value > 0
+                              ? Container(
+                                constraints: BoxConstraints(
+                                  minHeight: 16.r,
+                                  minWidth: 16.r,
+                                ),
+                                alignment: Alignment.center,
+                                decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  controller.count.value.toString(),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 9.sp,
+                                    height: 1, // 👈 IMPORTANT
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              )
+                              : const SizedBox.shrink(),
+                    ),
+                  ),
                 ],
               ),
             ),

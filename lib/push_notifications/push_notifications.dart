@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:barbee_hive_app/presentation/bottom_nav/controller/bottom_nav_controller.dart';
+import 'package:barbee_hive_app/presentation/bottom_nav/dashboard/controller/dashboardController.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -457,6 +458,10 @@ class NotificationService {
       debugPrint(
         "MESSAGE NOTIFICATION ------------ ${message.notification?.title}",
       );
+      // The badge counts this message even when the notification is suppressed
+      // below, so refresh it before any early return.
+      DashboardController.refreshUnreadBadge();
+
       // Don't interrupt someone with a message they are already reading.
       // Only foreground needs this check: in the background the chat screen
       // isn't on screen even when it is the top route.

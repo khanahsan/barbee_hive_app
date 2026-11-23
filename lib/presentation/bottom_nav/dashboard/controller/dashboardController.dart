@@ -95,7 +95,21 @@ class DashboardController extends GetxController with WidgetsBindingObserver {
       Get.back<void>(closeOverlays: true);
     }
 
+    // A notification that arrived while the app was away is already counted on
+    // the server, so re-read it rather than leaving a stale badge.
+    getUnreadCount();
+
     _refreshLocationIfAvailable();
+  }
+
+  /// Re-reads the unread badge, if the dashboard is alive to show it.
+  ///
+  /// Called from outside the dashboard -- when a push arrives while the app is
+  /// open, and once notifications have been marked read -- so the badge does
+  /// not sit stale until something happens to rebuild the dashboard.
+  static void refreshUnreadBadge() {
+    if (!Get.isRegistered<DashboardController>()) return;
+    Get.find<DashboardController>().getUnreadCount();
   }
 
   Future<void> _refreshLocationIfAvailable() async {

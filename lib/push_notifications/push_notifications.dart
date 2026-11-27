@@ -61,19 +61,19 @@ class NotificationService {
     // Clear any existing badges when app starts
     await _clearBadge();
 
-    // Handle app opened from terminated state via notification
+    // A notification the app was launched from. SplashController routes it --
+    // on both platforms, because it is the one that decides the first route
+    // and its Get.offAllNamed would wipe anything opened from here. Routing
+    // from here as well is invisible on Android, where getInitialMessage()
+    // always returns null for the data-only pushes this app sends, but on iOS
+    // the system shows those pushes itself, so it returns the message and the
+    // same notification would be acted on twice.
     final initialMessage = await _messaging.getInitialMessage();
     log("initial message : ${initialMessage?.data}");
 
     if (initialMessage != null) {
       log("App opened from terminated state via notification");
-
       await _clearBadge();
-
-      // Route to whatever the notification was about. Not awaited: the app
-      // still has to finish starting up, and handleNotificationAction waits
-      // for navigation to be ready itself.
-      handleBackgroundMessage(initialMessage);
     }
 
     final token = await _messaging.getToken();

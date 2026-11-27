@@ -531,9 +531,7 @@ class ChatScreen extends StatelessWidget {
                     if (blockedByMe && !isChatDisabled)
                       CustomText(
                         textAlign: TextAlign.center,
-                        title:
-                            "You have turned off messages for this user. "
-                            "They cannot reply.",
+                        title: "Messages from this user is blocked",
                         color: AppColors.expiredBannerColor,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -549,7 +547,7 @@ class ChatScreen extends StatelessWidget {
                         title:
                             isChatDisabled
                                 ? "This chat has been disabled."
-                                : "The messages have been disabled by the employer",
+                                : "The messages have been blocked",
                         color: AppColors.expiredBannerColor,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

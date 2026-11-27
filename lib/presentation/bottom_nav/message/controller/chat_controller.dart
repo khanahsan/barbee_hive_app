@@ -749,6 +749,19 @@ class ChatController extends GetxController {
         );
         return;
       }
+
+      // Blocking silences the other person, not the employer who blocked.
+      // The screen already hides the field from them, but the rule belongs
+      // here as well so it does not depend on the screen being right.
+      final blockedBy = chatData['blockedBy'];
+      if (blockedBy != null && blockedBy != currentUserId.value) {
+        Utilities.showSnackBar(
+          title: "Messaging Disabled",
+          message: "The employer has turned off messages for this chat.",
+          isSuccess: false,
+        );
+        return;
+      }
     }
 
     // ✅ Only create chat if it doesn't exist

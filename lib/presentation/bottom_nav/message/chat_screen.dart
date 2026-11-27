@@ -202,6 +202,10 @@ class ChatScreen extends StatelessWidget {
                 chatSnapshot.data!.data() as Map<String, dynamic>? ?? {};
             final blockedBy = chatData["blockedBy"];
             final isBlocked = blockedBy != null;
+            // Blocking silences the other person, not the employer who did
+            // it, so which side is looking decides whether the field shows.
+            final blockedByMe =
+                isBlocked && blockedBy == chatController.currentUserId.value;
             final isChatDisabled = chatData["disableChat"] == true;
 
             log("IS BLOCKED VALUE: ${isBlocked}");
@@ -523,15 +527,29 @@ class ChatScreen extends StatelessWidget {
                       ),
                     ),
 
+                    /// TELL THE EMPLOYER THEIR SIDE STILL WORKS
+                    if (blockedByMe && !isChatDisabled)
+                      CustomText(
+                        textAlign: TextAlign.center,
+                        title:
+                            "You have turned off messages for this user. "
+                            "They cannot reply.",
+                        color: AppColors.expiredBannerColor,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ).paddingSymmetric(vertical: 8.h),
+
                     /// SHOW BLOCK / DISABLE CHAT STATUS
-                    if (isBlocked || isChatDisabled)
+                    ///
+                    /// Disabling a chat stops both sides. Blocking stops only
+                    /// the other person: the employer who blocked keeps the
+                    /// message field.
+                    if (isChatDisabled || (isBlocked && !blockedByMe))
                       CustomText(
                         title:
                             isChatDisabled
                                 ? "This chat has been disabled."
-                                : currentUserRole == 'employee'
-                                ? "The messages have been disabled by the employer"
-                                : "You cannot send a message to this user.",
+                                : "The messages have been disabled by the employer",
                         color: AppColors.expiredBannerColor,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

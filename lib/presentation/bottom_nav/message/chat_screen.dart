@@ -86,13 +86,32 @@ class ChatScreen extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
                 SizedBox(height: 20.h),
-                CustomBtn(
-                  buttonHeight: 55.h,
-                  btnTitle: 'Confirm',
-                  btnBackgroundColor: AppColors.colorFF8600,
-                  fontWeight: FontWeight.w800,
-                  btnTxtColor: AppColors.colorFFFFFF,
-                  onPressed: () => Get.back<bool>(result: true),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomBtn(
+                        buttonHeight: 52.h,
+                        btnTitle: 'Cancel',
+                        btnBackgroundColor: AppColors.textFieldBackground,
+                        borderColor: AppColors.colorFF8600,
+                        borderWidth: 1.5,
+                        fontWeight: FontWeight.w800,
+                        btnTxtColor: AppColors.colorFFFFFF,
+                        onPressed: () => Get.back<bool>(result: false),
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: CustomBtn(
+                        buttonHeight: 52.h,
+                        btnTitle: 'Confirm',
+                        btnBackgroundColor: AppColors.colorFF8600,
+                        fontWeight: FontWeight.w800,
+                        btnTxtColor: AppColors.colorFFFFFF,
+                        onPressed: () => Get.back<bool>(result: true),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ).paddingSymmetric(horizontal: 15.w, vertical: 25.h),

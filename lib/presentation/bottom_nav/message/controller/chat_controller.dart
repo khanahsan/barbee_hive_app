@@ -825,4 +825,92 @@ class ChatController extends GetxController {
       'blockedBy': null,
     });
   }
+
+  /// Text shown in place of a message that was deleted for everyone.
+  static const String deletedMessagePlaceholder = 'This message was deleted';
+
+  /// Deletes [messageId] for both sides of [chatId].
+  ///
+  /// Only the sender may do this, and it cannot be undone. The message
+  /// document is kept but its text is cleared, so the content is really gone
+  /// from the database rather than merely hidden by the app; what is left is a
+  /// marker both devices render as "This message was deleted". Keeping the
+  /// document also keeps the surrounding messages in order and their date
+  /// headers intact.
+  ///
+  /// Returns true when the message was deleted.
+  Future<bool> deleteMessageForEveryone({
+    required String chatId,
+    required String messageId,
+  }) async {
+    final messageRef = FirebaseFirestore.instance
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc(messageId);
+
+    try {
+      final snapshot = await messageRef.get();
+      if (!snapshot.exists) return false;
+
+      final data = snapshot.data() ?? <String, dynamic>{};
+
+      // Re-check the sender against the stored document rather than trusting
+      // the caller: the screen decides what to offer, this decides what is
+      // allowed.
+      if (data['senderId'] != currentUserId.value) {
+        log('Refusing to delete a message sent by someone else');
+        return false;
+      }
+      if (data['deleted'] == true) return true;
+
+      await messageRef.update({
+        'text': '',
+        'deleted': true,
+        'deletedAt': FieldValue.serverTimestamp(),
+      });
+
+      await _refreshChatPreview(chatId);
+      return true;
+    } catch (e) {
+      log('Could not delete the message: $e');
+      return false;
+    }
+  }
+
+  /// Re-reads the newest message and writes it back as the chat's preview.
+  ///
+  /// Without this the conversation list would keep showing the text of a
+  /// message that has just been deleted, since the preview is stored on the
+  /// chat document rather than read from the messages.
+  Future<void> _refreshChatPreview(String chatId) async {
+    try {
+      final chatRef = FirebaseFirestore.instance
+          .collection('chats')
+          .doc(chatId);
+
+      final newest =
+          await chatRef
+              .collection('messages')
+              .orderBy('timestamp', descending: true)
+              .limit(1)
+              .get();
+
+      if (newest.docs.isEmpty) {
+        await chatRef.update({'lastMessage': ''});
+        return;
+      }
+
+      final data = newest.docs.first.data();
+      await chatRef.update({
+        'lastMessage':
+            data['deleted'] == true
+                ? deletedMessagePlaceholder
+                : (data['text'] ?? ''),
+        'lastMessageSenderId': data['senderId'] ?? '',
+      });
+    } catch (e) {
+      log('Could not refresh the chat preview: $e');
+    }
+  }
 }

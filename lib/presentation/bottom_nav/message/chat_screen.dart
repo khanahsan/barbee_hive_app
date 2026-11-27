@@ -5,6 +5,7 @@ import 'package:barbee_hive_app/infrastructure/constants/app_images.dart';
 import 'package:barbee_hive_app/infrastructure/helpers/ads_services.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/app_text_field.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_appbar.dart';
+import 'package:barbee_hive_app/infrastructure/widgets/custom_btn.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/custom_text.dart';
 import 'package:barbee_hive_app/infrastructure/widgets/hexagon_clipper.dart';
 import 'package:barbee_hive_app/presentation/bottom_nav/message/controller/chat_controller.dart';
@@ -42,6 +43,91 @@ class ChatScreen extends StatelessWidget {
   bool _isSameDay(Timestamp? a, Timestamp? b) {
     if (a == null || b == null) return false;
     return DateUtils.isSameDay(a.toDate(), b.toDate());
+  }
+
+  /// Asks before deleting a message for both sides, then deletes it.
+  ///
+  /// Deleting for everyone cannot be undone and changes what the other person
+  /// sees, so it is never done on the long press alone.
+  Future<void> _confirmDeleteMessage({
+    required BuildContext context,
+    required ChatController chatController,
+    required String chatId,
+    required String messageId,
+  }) async {
+    final confirmed = await Get.dialog<bool>(
+      Dialog(
+        insetPadding: EdgeInsets.symmetric(horizontal: 30.w),
+        backgroundColor: AppColors.textFieldBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.r),
+          side: const BorderSide(color: AppColors.colorFF8600, width: 1.5),
+        ),
+        child: Stack(
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 10.h),
+                CustomText(
+                  title: 'Delete message?',
+                  color: AppColors.colorFFFFFF,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                SizedBox(height: 10.h),
+                CustomText(
+                  textAlign: TextAlign.center,
+                  title:
+                      'This message will be removed for you and for '
+                      'the other person. This cannot be undone.',
+                  color: AppColors.lightgrey,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+                SizedBox(height: 20.h),
+                CustomBtn(
+                  buttonHeight: 55.h,
+                  btnTitle: 'Confirm',
+                  btnBackgroundColor: AppColors.colorFF8600,
+                  fontWeight: FontWeight.w800,
+                  btnTxtColor: AppColors.colorFFFFFF,
+                  onPressed: () => Get.back<bool>(result: true),
+                ),
+              ],
+            ).paddingSymmetric(horizontal: 15.w, vertical: 25.h),
+
+            // Close button (X)
+            Positioned(
+              right: 10.w,
+              top: 10.h,
+              child: GestureDetector(
+                onTap: () => Get.back<bool>(result: false),
+                child: const Icon(Icons.close, color: Colors.grey),
+              ),
+            ),
+          ],
+        ),
+      ),
+      barrierDismissible: true,
+    );
+
+    if (confirmed != true) return;
+
+    final deleted = await chatController.deleteMessageForEveryone(
+      chatId: chatId,
+      messageId: messageId,
+    );
+
+    if (!deleted) {
+      Get.snackbar(
+        'Could not delete',
+        'The message could not be deleted. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppColors.color27272A,
+        colorText: AppColors.colorFFFFFF,
+      );
+    }
   }
 
   @override
@@ -207,6 +293,8 @@ class ChatScreen extends StatelessWidget {
                               final isMe =
                                   msg["senderId"] ==
                                   chatController.currentUserId.value;
+                              final isDeleted = msg["deleted"] == true;
+                              final messageId = messages[index].id;
                               final Timestamp? currentTimestamp =
                                   msg["timestamp"];
                               final Timestamp? nextTimestamp =
@@ -253,8 +341,23 @@ class ChatScreen extends StatelessWidget {
                                         SizedBox(width: 5.w),
                                       ],
 
-                                      // This ensures the bubble takes only necessary width
-                                      IntrinsicWidth(
+                                      // Long-pressing your own message offers
+                                      // to delete it for both sides. Someone
+                                      // else's message, and one already
+                                      // deleted, has nothing to offer.
+                                      GestureDetector(
+                                        onLongPress:
+                                            isMe && !isDeleted
+                                                ? () => _confirmDeleteMessage(
+                                                  context: context,
+                                                  chatController:
+                                                      chatController,
+                                                  chatId: chatId,
+                                                  messageId: messageId,
+                                                )
+                                                : null,
+                                        // This ensures the bubble takes only necessary width
+                                        child: IntrinsicWidth(
                                         stepWidth: 0,
                                         child: ConstrainedBox(
                                           constraints: BoxConstraints(
@@ -292,8 +395,19 @@ class ChatScreen extends StatelessWidget {
                                                   ),
                                                 SizedBox(height: 3.h),
                                                 CustomText(
-                                                  title: msg["text"] ?? "",
-                                                  color: Colors.white,
+                                                  title:
+                                                      isDeleted
+                                                          ? ChatController
+                                                              .deletedMessagePlaceholder
+                                                          : (msg["text"] ?? ""),
+                                                  color:
+                                                      isDeleted
+                                                          ? Colors.white70
+                                                          : Colors.white,
+                                                  fontStyle:
+                                                      isDeleted
+                                                          ? FontStyle.italic
+                                                          : FontStyle.normal,
                                                   fontSize: 15,
                                                   maxLines: null,
                                                   softWrap: true,
@@ -316,6 +430,7 @@ class ChatScreen extends StatelessWidget {
                                               ],
                                             ),
                                           ),
+                                        ),
                                         ),
                                       ),
                                     ],
